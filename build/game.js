@@ -20193,6 +20193,370 @@ tm.define("glb.Hud", {
 
 (function() {
 
+    tm.define("glb.Matrix3", {
+
+        array: null,
+
+        init: function() {
+            this.array = mat3.create();
+        },
+
+        fromMat4: function(m) {
+            mat3.fromMat4(this.array, m.array);
+            return this;
+        },
+
+        clone: function() {
+            var result = glb.Matrix3();
+            result.array = mat3.clone(this.array);
+            return result;
+        },
+
+        identity: function() {
+            mat3.identity(this.array);
+            return this;
+        },
+
+        transpose: function() {
+            mat3.transpose(this.array, this.array);
+            return this;
+        },
+
+        invert: function() {
+            mat3.invert(this.array, this.array);
+            return this;
+        },
+
+        adjoint: function() {
+            mat3.adjoint(this.array, this.array);
+            return this;
+        },
+
+        determinant: function() {
+            return mat3.determinant(this.array);
+        },
+
+        mul: function(m) {
+            mat3.multiply(this.array, this.array, m.array);
+            return this;
+        },
+
+        translate: function(v) {
+            mat3.translate(this.array, this.array, v.array);
+            return this;
+        },
+
+        scale: function(v) {
+            mat3.scale(this.array, this.array, v.array);
+            return this;
+        },
+
+        rotate: function(rad, axis) {
+            mat3.rotate(this.array, this.array, rad, axis.array);
+            return this;
+        },
+
+        fromTranslation: function(v) {
+            mat3.fromTranslation(this.array, v.array);
+        },
+
+        fromRotation: function(rad) {
+            mat3.fromRotation(this.array, rad);
+            return this;
+        },
+
+        fromScaling: function(v) {
+            mat3.fromScaling(this.array, v.array);
+            return this;
+        },
+
+        fromQuat: function(q) {
+            mat3.fromQuat(this.array, q.array);
+            return this;
+        },
+
+        normalFromMat4: function(m) {
+            mat3.normalFromMat4(this.array, m.array);
+            return this;
+        },
+
+    });
+
+})();
+
+(function() {
+
+    tm.define("glb.Matrix4", {
+
+        array: null,
+
+        init: function() {
+            this.array = mat4.create();
+        },
+
+        clone: function() {
+            var result = glb.Matrix4();
+            result.array = mat4.clone(this.array);
+            return result;
+        },
+
+        identity: function() {
+            mat4.identity(this.array);
+            return this;
+        },
+
+        transpose: function() {
+            mat4.transpose(this.array, this.array);
+            return this;
+        },
+
+        invert: function() {
+            mat4.invert(this.array, this.array);
+            return this;
+        },
+
+        adjoint: function() {
+            mat4.adjoint(this.array, this.array);
+            return this;
+        },
+
+        determinant: function() {
+            return mat4.determinant(this.array);
+        },
+
+        mul: function(m) {
+            mat4.multiply(this.array, this.array, m.array);
+            return this;
+        },
+
+        translate: function(v) {
+            mat4.translate(this.array, this.array, v.array);
+            return this;
+        },
+
+        scale: function(v) {
+            mat4.scale(this.array, this.array, v.array);
+            return this;
+        },
+
+        rotate: function(rad, axis) {
+            mat4.rotate(this.array, this.array, rad, axis.array);
+            return this;
+        },
+
+        rotateX: function(rad) {
+            mat4.rotateX(this.array, this.array, rad);
+            return this;
+        },
+        rotateY: function(rad) {
+            mat4.rotateY(this.array, this.array, rad);
+            return this;
+        },
+        rotateZ: function(rad) {
+            mat4.rotateZ(this.array, this.array, rad);
+            return this;
+        },
+
+        fromTranslation: function(v) {
+            mat4.fromTranslation(this.array, v.array);
+            return this;
+        },
+
+        fromScaling: function(v) {
+            mat4.fromScaling(this.array, v.array);
+            return this;
+        },
+
+        fromRotation: function(rad, axis) {
+            mat4.fromRotation(this.array, rad, axis.array);
+            return this;
+        },
+
+        fromXRotation: function(rad) {
+            mat4.fromXRotation(this.array, rad);
+            return this;
+        },
+        fromYRotation: function(rad) {
+            mat4.fromYRotation(this.array, rad);
+            return this;
+        },
+        fromZRotation: function(rad) {
+            mat4.fromZRotation(this.array, rad);
+            return this;
+        },
+
+        fromRotationTranslation: function(q, v) {
+            mat4.fromRotationTranslation(this.array, q.array, v.array);
+            return this;
+        },
+
+        fromRotationTranslationScale: function(q, v, s) {
+            mat4.fromRotationTranslationScale(this.array, q.array, v.array, s.array);
+            return this;
+        },
+
+        fromRotationTranslationScaleOrigin: function(q, v, s, o) {
+            mat4.fromRotationTranslationScaleOrigin(this.array, q.array, v.array, s.array, o.array);
+            return this;
+        },
+
+        fromQuat: function(q) {
+            mat4.fromQuat(this.array, q.array);
+            return this;
+        },
+
+        frustum: function(left, right, bottom, top, near, far) {
+            mat4.frustum(this.array, left, right, bottom, top, near, far);
+            return this;
+        },
+
+        perspective: function(fovy, aspect, near, far) {
+            mat4.perspective(this.array, fovy, aspect, near, far);
+            return this;
+        },
+
+        perspectiveFromFieldOfView: function(fov, near, far) {
+            mat4.perspectiveFromFieldOfView(this.array, fov, near, far);
+            return this;
+        },
+
+        ortho: function(left, right, bottom, top, near, far) {
+            mat4.ortho(this.array, left, right, bottom, top, near, far);
+            return this;
+        },
+
+        lookAt: function(eye, center, up) {
+            mat4.lookAt(this.array, eye.array, center.array, up.array);
+            return this;
+        },
+    });
+
+    glb.Matrix4.mul = function(a, b) {
+        var result = glb.Matrix4();
+        mat4.mul(result.array, a.array, b.array);
+        return result;
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.Quat", {
+
+        array: null,
+
+        init: function(x, y, z, w) {
+            this.array = quat.create();
+            this.set(x || 0, y || 0, z || 0, w || 1);
+        },
+
+        set: function(x, y, z, w) {
+            quat.set(this.array, x, y, z, w);
+            return this;
+        },
+
+        rotationTo: function(va, vb) {
+            quat.rotationTo(this.array, va.array, vb.array);
+            return this;
+        },
+
+        setAxes: function(view, right, up) {
+            quat.setAxes(this.array, view.array, right.array, up.array);
+            return this;
+        },
+
+        clone: function() {
+            var result = glb.Quat();
+            quat.clone(result.array, this.array);
+            return result;
+        },
+
+        identity: function() {
+            quat.identity(this.array);
+            return this;
+        },
+
+        setAxisAngle: function(axis, rad) {
+            quat.setAxisAngle(this.array, axis.array, rad);
+            return this;
+        },
+
+        add: function(q) {
+            quat.add(this.array, this.array, q.array);
+            return this;
+        },
+
+        mul: function(q) {
+            quat.multiply(this.array, this.array, q.array);
+            return this;
+        },
+
+        rotateX: function(rad) {
+            quat.rotateX(this.array, this.array, rad);
+            return this;
+        },
+        rotateY: function(rad) {
+            quat.rotateY(this.array, this.array, rad);
+            return this;
+        },
+        rotateZ: function(rad) {
+            quat.rotateZ(this.array, this.array, rad);
+            return this;
+        },
+
+        calculateW: function() {
+            quat.calculateW(this.array, this.array);
+            return this;
+        },
+
+        dot: function(q) {
+            return quat.dot(this.array, q.array);
+        },
+
+        slerp: function(q, t) {
+            quat.slerp(this.array, this.array, q.array, t);
+            return this;
+        },
+        
+        invert: function() {
+            quat.invert(this.array, this.array);
+            return this;
+        },
+        
+        conjugate: function() {
+            quat.conjugate(this.array, this.array);
+            return this;
+        },
+        
+        length: function() {
+            return quat.length(this.array);
+        },
+        squaredLength: function() {
+            return quat.squaredLength(this.array);
+        },
+        
+        normalize: function() {
+            quat.normalize(this.array, this.array);
+            return this;
+        },
+        
+        fromMat3: function(m) {
+            quat.fromMat3(this.array, m.array);
+            return this;
+        },
+
+    });
+
+    glb.Quat.slerp = function(a, b, t) {
+        var result = glb.Quat();
+        quat.slerp(result.array, a.array, b.array, t);
+        return result;
+    };
+
+})();
+
+(function() {
+
     tm.define("glb.Vector2", {
 
         init: function(x, y) {
@@ -20252,7 +20616,9 @@ tm.define("glb.Hud", {
         },
 
         cross: function(v) {
-            return vec2.cross(vec3.create(), this.array, v.array);
+            var result = glb.Vector3();
+            vec2.cross(result.array, this.array, v.array);
+            return result;
         },
 
     });
@@ -20283,6 +20649,129 @@ tm.define("glb.Hud", {
 
 })();
 
+(function() {
+    tm.define("glb.Vector3", {
+        array: null,
+
+        init: function(x, y, z) {
+            this.array = vec3.create();
+            this.set(x || 0, y || 0, z || 0);
+        },
+
+        set: function(x, y, z) {
+            vec3.set(this.array, x, y, z);
+            return this;
+        },
+
+        clone: function() {
+            return glb.Vector3(this.x, this.y, this.z);
+        },
+        
+        add: function(v) {
+            vec3.add(this.array, this.array, v.array);
+            return this;
+        },
+        
+        sub: function(v) {
+            vec3.sub(this.array, this.array, v.array);
+            return this;
+        },
+        
+        mul: function(v) {
+            vec3.scale(this.array, v);
+            return this;
+        },
+        
+        length: function() {
+            return vec3.length(this.array);
+        },
+        squaredLength: function() {
+            return vec3.squaredLength(this.array);
+        },
+        
+        negate: function() {
+            vec3.negate(this.array, this.array);
+            return this;
+        },
+        
+        inverse: function() {
+            vec3.inverse(this.array, this.array);
+            return this;
+        },
+        
+        normalize: function() {
+            vec3.normalize(this.array, this.array);
+            return this;
+        },
+        
+        dot: function(v) {
+            return vec3.dot(this.array, v.array);
+        },
+        
+        cross: function(v) {
+            var result = glb.Vector3();
+            vec3.create(result.array, this.array, v.array);
+            return result;
+        },
+        
+        transformMat4: function(m) {
+            vec3.transformMat4(this.array, this.array, m.array);
+            return this;
+        },
+
+        transformMat3: function(m) {
+            vec3.transformMat3(this.array, this.array, m.array);
+            return this;
+        },
+        
+        transformQuat: function(q) {
+            vec3.transformQuat(this.array, this.array, q.array);
+            return this;
+        },
+        
+    });
+
+    glb.Vector3.prototype.accessor("x", {
+        set: function(v) {
+            this.array[0] = v;
+        },
+        get: function() {
+            return this.array[0];
+        },
+    });
+    glb.Vector3.prototype.accessor("y", {
+        set: function(v) {
+            this.array[1] = v;
+        },
+        get: function() {
+            return this.array[1];
+        },
+    });
+    glb.Vector3.prototype.accessor("z", {
+        set: function(v) {
+            this.array[2] = v;
+        },
+        get: function() {
+            return this.array[2];
+        },
+    });
+    
+    glb.Vector3.distance = function(a, b) {
+        return vec3.distance(a.array, b.array);
+    };
+    glb.Vector3.squaredDistance = function(a, b) {
+        return vec3.squaredDistance(a.array, b.array);
+    };
+    
+    glb.Vector3.angle = function(a, b) {
+        return vec3.angle(a.array, b.array);
+    }
+
+    glb.Vector3.X = glb.Vector3(1, 0, 0);
+    glb.Vector3.Y = glb.Vector3(0, 1, 0);
+    glb.Vector3.Z = glb.Vector3(0, 0, 1);
+
+})();
 
 (function() {
 
@@ -20417,6 +20906,10 @@ tm.define("glb.Hud", {
             var gl = glContext.gl;
 
             var uni = this.uniforms[name];
+            
+            if (value.array) {
+                value = value.array;
+            }
 
             if (uni) {
                 switch (uni.type) {
@@ -20531,12 +21024,12 @@ tm.define("glb.Hud", {
         vpMatrix: null,
 
         init: function() {
-            this.position = vec3.set(vec3.create(), 0, 0, SCREEN_WIDTH * 0.5);
-            this.target = vec3.create();
-            this.up = vec3.set(vec3.create(), 0, 1, 0);
-            this.vMatrix = mat4.create();
+            this.position = glb.Vector3(0, 0, SCREEN_WIDTH * 0.5);
+            this.target = glb.Vector3();
+            this.up = glb.Vector3(0, 1, 0);
+            this.vMatrix = glb.Matrix4();
             this.pMatrix = this._setupProjectionMatrix();
-            this.vpMatrix = mat4.create();
+            this.vpMatrix = glb.Matrix4();
 
             this.updateMatrix();
 
@@ -20544,7 +21037,7 @@ tm.define("glb.Hud", {
         },
         
         _setupProjectionMatrix: function() {
-            return mat4.perspective(mat4.create(), 45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
+            return glb.Matrix4().perspective(45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
         },
 
         _defineAccessors: function() {
@@ -20580,22 +21073,18 @@ tm.define("glb.Hud", {
         },
 
         calcVpMatrix: function() {
-            return mat4.multiply(this.vpMatrix, this.pMatrix, this.vMatrix);
+            this.vpMatrix = glb.Matrix4.mul(this.pMatrix, this.vMatrix);
+            return this.vpMatrix;
         },
 
         updateMatrix: function() {
-            mat4.lookAt(this.vMatrix, this.position, this.target, this.up);
+            this.vMatrix.lookAt(this.position, this.target, this.up);
         },
 
     });
 
 })();
 
-glb.Vec3 = {
-    X: vec3.set(vec3.create(), 1, 0, 0),
-    Y: vec3.set(vec3.create(), 0, 1, 0),
-    Z: vec3.set(vec3.create(), 0, 0, 1),
-};
 
 tm.define("glb.DirectionalLight", {
     superClass: "tm.app.Element",
@@ -20824,12 +21313,12 @@ tm.define("glb.GLContext", {
         init: function(geometry, material) {
             this.superInit();
 
-            this.mMatrix = mat4.create();
-            this.uvTranslate = vec2.create();
+            this.mMatrix = glb.Matrix4();
+            this.uvTranslate = glb.Vector2();
 
-            this.position = vec3.create();
-            this.rotation = quat.create();
-            this.scale = vec3.set(vec3.create(), 1, 1, 1);
+            this.position = glb.Vector3();
+            this.rotation = glb.Quat();
+            this.scale = glb.Vector3(1, 1, 1);
 
             this.geometry = geometry;
             this.material = material;
@@ -20851,50 +21340,50 @@ tm.define("glb.GLContext", {
         _defineAccessors: function() {
             this.accessor("x", {
                 set: function(v) {
-                    this.position[0] = v;
+                    this.position.x = v;
                 },
                 get: function() {
-                    return this.position[0];
+                    return this.position.x;
                 },
             });
             this.accessor("y", {
                 set: function(v) {
-                    this.position[1] = v;
+                    this.position.y = v;
                 },
                 get: function() {
-                    return this.position[1];
+                    return this.position.y;
                 },
             });
             this.accessor("z", {
                 set: function(v) {
-                    this.position[2] = v;
+                    this.position.z = v;
                 },
                 get: function() {
-                    return this.position[2];
+                    return this.position.z;
                 },
             });
             this.accessor("scaleX", {
                 set: function(v) {
-                    this.scale[0] = v;
+                    this.scale.x = v;
                 },
                 get: function() {
-                    return this.scale[0];
+                    return this.scale.x;
                 },
             });
             this.accessor("scaleY", {
                 set: function(v) {
-                    this.scale[1] = v;
+                    this.scale.y = v;
                 },
                 get: function() {
-                    return this.scale[1];
+                    return this.scale.y;
                 },
             });
             this.accessor("scaleZ", {
                 set: function(v) {
-                    this.scale[2] = v;
+                    this.scale.z = v;
                 },
                 get: function() {
-                    return this.scale[2];
+                    return this.scale.z;
                 },
             });
         },
@@ -20905,7 +21394,7 @@ tm.define("glb.GLContext", {
         },
 
         updateMatrix: function() {
-            mat4.fromRotationTranslationScale(this.mMatrix, this.rotation, this.position, this.scale);
+            this.mMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
             return this;
         },
 
@@ -20925,7 +21414,7 @@ tm.define("glb.GLContext", {
         },
 
         setPosition: function(x, y, z) {
-            vec3.set(this.position, x, y, z);
+            this.position.set(x, y, z);
             return this;
         },
 
@@ -20934,22 +21423,22 @@ tm.define("glb.GLContext", {
                 y = x;
                 z = x;
             }
-            vec3.set(this.scale, x, y, z);
+            this.scale.set(x, y, z);
             return this;
         },
 
         setRotationX: function(rad) {
-            quat.setAxisAngle(this.rotation, glb.Vec3.X, rad);
+            this.rotation.setAxisAngle(glb.Vector3.X, rad);
             return this;
         },
 
         setRotationY: function(rad) {
-            quat.setAxisAngle(this.rotation, glb.Vec3.Y, rad);
+            this.rotation.setAxisAngle(glb.Vector3.Y, rad);
             return this;
         },
 
         setRotationZ: function(rad) {
-            quat.setAxisAngle(this.rotation, glb.Vec3.Z, rad);
+            this.rotation.setAxisAngle(glb.Vector3.Z, rad);
             return this;
         },
 
@@ -20972,15 +21461,15 @@ tm.define("glb.GLContext", {
         },
 
         rotateX: function(rad) {
-            quat.rotateX(this.rotation, this.rotation, rad);
+            this.rotation.rotateX(rad);
             return this;
         },
         rotateY: function(rad) {
-            quat.rotateY(this.rotation, this.rotation, rad);
+            this.rotation.rotateY(rad);
             return this;
         },
         rotateZ: function(rad) {
-            quat.rotateZ(this.rotation, this.rotation, rad);
+            this.rotation.rotateZ(rad);
             return this;
         },
     });
@@ -21011,7 +21500,7 @@ tm.define("glb.OrthoCamera", {
     },
 
     _setupProjectionMatrix: function() {
-        return mat4.ortho(mat4.create(),
+        return glb.Matrix4().ortho(
             SCREEN_WIDTH * -0.5,
             SCREEN_WIDTH * 0.5,
             SCREEN_HEIGHT * -0.5,
@@ -21133,21 +21622,19 @@ tm.define("glb.GameScene", {
             this.glContext = e.app.glContext;
         });
         
-        var axis = vec3.set(vec3.create(), 3, 1, 0);
-        vec3.normalize(axis, axis);
-        var rot = quat.setAxisAngle(quat.create(), axis, 0.02);
+        var axis = glb.Vector3(3, 1, 0).normalize();
+        var rot = glb.Quat().setAxisAngle(axis, 0.02);
         glb.Mesh(
             glb.BoxGeometry(60),
             glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
         )
             .addChildTo(this)
             .on("enterframe", function() {
-                quat.mul(this.rotation, this.rotation, rot);
+                this.rotation.mul(rot);
             });
 
-        var axis2 = vec3.set(vec3.create(), -3, 1, 0);
-        vec3.normalize(axis2, axis2);
-        var rot2 = quat.setAxisAngle(quat.create(), axis2, 0.03);
+        var axis2 = glb.Vector3(-3, 1, 0).normalize();
+        var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
         glb.Mesh(
             glb.BoxGeometry(60, 20, 100),
             glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
@@ -21155,7 +21642,7 @@ tm.define("glb.GameScene", {
             .setPosition(-30, 0, 0)
             .addChildTo(this)
             .on("enterframe", function() {
-                quat.mul(this.rotation, this.rotation, rot2);
+                this.rotation.mul(rot2);
             });
 
         var geo = glb.PlaneGeometry(32, 8, 1);
@@ -21177,7 +21664,7 @@ tm.define("glb.GameScene", {
                         this.remove();
                     }
                 });
-            bullet.uvTranslate[0] = Math.rand(0, 7) / 8;
+            bullet.uvTranslate.x = Math.rand(0, 7) / 8;
         });
     },
 

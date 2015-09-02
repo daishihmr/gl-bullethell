@@ -131,6 +131,10 @@
             var gl = glContext.gl;
 
             var uni = this.uniforms[name];
+            
+            if (value.array) {
+                value = value.array;
+            }
 
             if (uni) {
                 switch (uni.type) {

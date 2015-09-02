@@ -17,12 +17,12 @@
         init: function(geometry, material) {
             this.superInit();
 
-            this.mMatrix = mat4.create();
-            this.uvTranslate = vec2.create();
+            this.mMatrix = glb.Matrix4();
+            this.uvTranslate = glb.Vector2();
 
-            this.position = vec3.create();
-            this.rotation = quat.create();
-            this.scale = vec3.set(vec3.create(), 1, 1, 1);
+            this.position = glb.Vector3();
+            this.rotation = glb.Quat();
+            this.scale = glb.Vector3(1, 1, 1);
 
             this.geometry = geometry;
             this.material = material;
@@ -44,50 +44,50 @@
         _defineAccessors: function() {
             this.accessor("x", {
                 set: function(v) {
-                    this.position[0] = v;
+                    this.position.x = v;
                 },
                 get: function() {
-                    return this.position[0];
+                    return this.position.x;
                 },
             });
             this.accessor("y", {
                 set: function(v) {
-                    this.position[1] = v;
+                    this.position.y = v;
                 },
                 get: function() {
-                    return this.position[1];
+                    return this.position.y;
                 },
             });
             this.accessor("z", {
                 set: function(v) {
-                    this.position[2] = v;
+                    this.position.z = v;
                 },
                 get: function() {
-                    return this.position[2];
+                    return this.position.z;
                 },
             });
             this.accessor("scaleX", {
                 set: function(v) {
-                    this.scale[0] = v;
+                    this.scale.x = v;
                 },
                 get: function() {
-                    return this.scale[0];
+                    return this.scale.x;
                 },
             });
             this.accessor("scaleY", {
                 set: function(v) {
-                    this.scale[1] = v;
+                    this.scale.y = v;
                 },
                 get: function() {
-                    return this.scale[1];
+                    return this.scale.y;
                 },
             });
             this.accessor("scaleZ", {
                 set: function(v) {
-                    this.scale[2] = v;
+                    this.scale.z = v;
                 },
                 get: function() {
-                    return this.scale[2];
+                    return this.scale.z;
                 },
             });
         },
@@ -98,7 +98,7 @@
         },
 
         updateMatrix: function() {
-            mat4.fromRotationTranslationScale(this.mMatrix, this.rotation, this.position, this.scale);
+            this.mMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
             return this;
         },
 
@@ -118,7 +118,7 @@
         },
 
         setPosition: function(x, y, z) {
-            vec3.set(this.position, x, y, z);
+            this.position.set(x, y, z);
             return this;
         },
 
@@ -127,22 +127,22 @@
                 y = x;
                 z = x;
             }
-            vec3.set(this.scale, x, y, z);
+            this.scale.set(x, y, z);
             return this;
         },
 
         setRotationX: function(rad) {
-            quat.setAxisAngle(this.rotation, glb.Vec3.X, rad);
+            this.rotation.setAxisAngle(glb.Vector3.X, rad);
             return this;
         },
 
         setRotationY: function(rad) {
-            quat.setAxisAngle(this.rotation, glb.Vec3.Y, rad);
+            this.rotation.setAxisAngle(glb.Vector3.Y, rad);
             return this;
         },
 
         setRotationZ: function(rad) {
-            quat.setAxisAngle(this.rotation, glb.Vec3.Z, rad);
+            this.rotation.setAxisAngle(glb.Vector3.Z, rad);
             return this;
         },
 
@@ -165,15 +165,15 @@
         },
 
         rotateX: function(rad) {
-            quat.rotateX(this.rotation, this.rotation, rad);
+            this.rotation.rotateX(rad);
             return this;
         },
         rotateY: function(rad) {
-            quat.rotateY(this.rotation, this.rotation, rad);
+            this.rotation.rotateY(rad);
             return this;
         },
         rotateZ: function(rad) {
-            quat.rotateZ(this.rotation, this.rotation, rad);
+            this.rotation.rotateZ(rad);
             return this;
         },
     });

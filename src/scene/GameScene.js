@@ -23,21 +23,19 @@ tm.define("glb.GameScene", {
             this.glContext = e.app.glContext;
         });
         
-        var axis = vec3.set(vec3.create(), 3, 1, 0);
-        vec3.normalize(axis, axis);
-        var rot = quat.setAxisAngle(quat.create(), axis, 0.02);
+        var axis = glb.Vector3(3, 1, 0).normalize();
+        var rot = glb.Quat().setAxisAngle(axis, 0.02);
         glb.Mesh(
             glb.BoxGeometry(60),
             glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
         )
             .addChildTo(this)
             .on("enterframe", function() {
-                quat.mul(this.rotation, this.rotation, rot);
+                this.rotation.mul(rot);
             });
 
-        var axis2 = vec3.set(vec3.create(), -3, 1, 0);
-        vec3.normalize(axis2, axis2);
-        var rot2 = quat.setAxisAngle(quat.create(), axis2, 0.03);
+        var axis2 = glb.Vector3(-3, 1, 0).normalize();
+        var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
         glb.Mesh(
             glb.BoxGeometry(60, 20, 100),
             glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
@@ -45,7 +43,7 @@ tm.define("glb.GameScene", {
             .setPosition(-30, 0, 0)
             .addChildTo(this)
             .on("enterframe", function() {
-                quat.mul(this.rotation, this.rotation, rot2);
+                this.rotation.mul(rot2);
             });
 
         var geo = glb.PlaneGeometry(32, 8, 1);
@@ -67,7 +65,7 @@ tm.define("glb.GameScene", {
                         this.remove();
                     }
                 });
-            bullet.uvTranslate[0] = Math.rand(0, 7) / 8;
+            bullet.uvTranslate.x = Math.rand(0, 7) / 8;
         });
     },
 

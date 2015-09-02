@@ -10,12 +10,12 @@
         vpMatrix: null,
 
         init: function() {
-            this.position = vec3.set(vec3.create(), 0, 0, SCREEN_WIDTH * 0.5);
-            this.target = vec3.create();
-            this.up = vec3.set(vec3.create(), 0, 1, 0);
-            this.vMatrix = mat4.create();
+            this.position = glb.Vector3(0, 0, SCREEN_WIDTH * 0.5);
+            this.target = glb.Vector3();
+            this.up = glb.Vector3(0, 1, 0);
+            this.vMatrix = glb.Matrix4();
             this.pMatrix = this._setupProjectionMatrix();
-            this.vpMatrix = mat4.create();
+            this.vpMatrix = glb.Matrix4();
 
             this.updateMatrix();
 
@@ -23,7 +23,7 @@
         },
         
         _setupProjectionMatrix: function() {
-            return mat4.perspective(mat4.create(), 45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
+            return glb.Matrix4().perspective(45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
         },
 
         _defineAccessors: function() {
@@ -59,11 +59,12 @@
         },
 
         calcVpMatrix: function() {
-            return mat4.multiply(this.vpMatrix, this.pMatrix, this.vMatrix);
+            this.vpMatrix = glb.Matrix4.mul(this.pMatrix, this.vMatrix);
+            return this.vpMatrix;
         },
 
         updateMatrix: function() {
-            mat4.lookAt(this.vMatrix, this.position, this.target, this.up);
+            this.vMatrix.lookAt(this.position, this.target, this.up);
         },
 
     });

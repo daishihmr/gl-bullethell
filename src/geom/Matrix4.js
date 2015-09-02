@@ -145,4 +145,10 @@
         },
     });
 
+    glb.Matrix4.mul = function(a, b) {
+        var result = glb.Matrix4();
+        mat4.mul(result.array, a.array, b.array);
+        return result;
+    };
+
 })();

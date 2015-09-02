@@ -6,7 +6,7 @@ tm.define("glb.OrthoCamera", {
     },
 
     _setupProjectionMatrix: function() {
-        return mat4.ortho(mat4.create(),
+        return glb.Matrix4().ortho(
             SCREEN_WIDTH * -0.5,
             SCREEN_WIDTH * 0.5,
             SCREEN_HEIGHT * -0.5,

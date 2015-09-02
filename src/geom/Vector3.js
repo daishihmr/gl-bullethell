@@ -116,4 +116,8 @@
         return vec3.angle(a.array, b.array);
     }
 
+    glb.Vector3.X = glb.Vector3(1, 0, 0);
+    glb.Vector3.Y = glb.Vector3(0, 1, 0);
+    glb.Vector3.Z = glb.Vector3(0, 0, 1);
+
 })();
