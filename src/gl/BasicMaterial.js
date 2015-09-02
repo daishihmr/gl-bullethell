@@ -41,7 +41,13 @@
             var gl = glContext.gl;
             var vs = this._createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
             var fs = this._createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
-            this.program = this._createProgram(gl, vs, fs);
+            this.program = gl.createProgram();
+            gl.attachShader(this.program, vs);
+            gl.attachShader(this.program, fs);
+            gl.linkProgram(this.program);
+            if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+                throw new Error(gl.getProgramInfoLog(this.program));
+            }
 
             this.attributes = ATTRIBUTES.reduce(function(attributes, attr) {
                 attributes[attr.name] = {
@@ -71,17 +77,6 @@
                 return shader;
             } else {
                 console.error(gl.getShaderInfoLog(shader));
-            }
-        },
-        _createProgram: function(gl, vs, fs) {
-            var program = gl.createProgram();
-            gl.attachShader(program, vs);
-            gl.attachShader(program, fs);
-            gl.linkProgram(program);
-            if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                return program;
-            } else {
-                console.error(gl.getProgramInfoLog(program));
             }
         },
 

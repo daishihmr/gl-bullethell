@@ -1,10 +1,13 @@
 tm.define("glb.PlaneGeometry", {
+    superClass: "glb.Geometry",
     
     vertex: null,
     uv: null,
     index: null,
 
     init: function(size, frameCountH, frameCountV) {
+        this.superInit();
+
         size = size || 32;
         frameCountH = frameCountH || 1;
         frameCountV = frameCountV || 1;
@@ -25,9 +28,10 @@ tm.define("glb.PlaneGeometry", {
     },
     
     initialize: function(glContext) {
-        this.vertex = glContext.createVbo(this.vertexData);
-        this.uv = glContext.createVbo(this.uvData);
-        this.index = glContext.createIbo(this.indexData);
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
     },
     
 });

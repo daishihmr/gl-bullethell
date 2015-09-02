@@ -20199,9 +20199,9 @@ tm.define("glb.Hud", {
 
         attributes: null,
         uniforms: null,
-        
+
         color: null,
-        
+
         image: null,
         _texture: null,
 
@@ -20209,14 +20209,7 @@ tm.define("glb.Hud", {
             this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
             this.image = image;
         },
-        
-        initialize: function(glContext) {
-            this.createProgram(glContext);
-            if (this.image) {
-                this.createTexture(glContext);
-            }
-        },
-        
+
         setRGBA: function(r, g, b, a) {
             this.color[0] = r;
             this.color[1] = g;
@@ -20225,11 +20218,29 @@ tm.define("glb.Hud", {
             return this;
         },
 
-        createProgram: function(glContext) {
+        setColor: function(color) {
+            vec4.copy(this.color, color);
+            return this;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _createProgram: function(glContext) {
             var gl = glContext.gl;
             var vs = this._createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
             var fs = this._createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
-            this.program = this._createProgram(gl, vs, fs);
+            this.program = gl.createProgram();
+            gl.attachShader(this.program, vs);
+            gl.attachShader(this.program, fs);
+            gl.linkProgram(this.program);
+            if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+                throw new Error(gl.getProgramInfoLog(this.program));
+            }
 
             this.attributes = ATTRIBUTES.reduce(function(attributes, attr) {
                 attributes[attr.name] = {
@@ -20248,7 +20259,7 @@ tm.define("glb.Hud", {
                 };
                 return uniforms;
             }.bind(this), {});
-            
+
             return this;
         },
         _createShader: function(gl, type, source) {
@@ -20261,22 +20272,11 @@ tm.define("glb.Hud", {
                 console.error(gl.getShaderInfoLog(shader));
             }
         },
-        _createProgram: function(gl, vs, fs) {
-            var program = gl.createProgram();
-            gl.attachShader(program, vs);
-            gl.attachShader(program, fs);
-            gl.linkProgram(program);
-            if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                return program;
-            } else {
-                console.error(gl.getProgramInfoLog(program));
-            }
-        },
-        
-        createTexture: function(glContext) {
+
+        _createTexture: function(glContext) {
             this._texture = glContext.createTexture(this.image);
         },
-        
+
         setProgram: function(glContext) {
             var gl = glContext.gl;
             gl.useProgram(this.program);
@@ -20285,7 +20285,7 @@ tm.define("glb.Hud", {
         setAttributes: function(glContext, attributeValues) {
             var gl = glContext.gl;
             var attributes = this.attributes;
-            
+
             Object.keys(this.attributes).forEach(function(name) {
                 var attr = attributes[name];
 
@@ -20294,7 +20294,6 @@ tm.define("glb.Hud", {
                     gl.enableVertexAttribArray(attr.location);
                     gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
                 }
-                
             });
 
             if (this.image) {
@@ -20303,7 +20302,7 @@ tm.define("glb.Hud", {
                 gl.bindTexture(gl.TEXTURE_2D, null);
             }
         },
-        
+
         setUniforms: function(glContext, uniformValues) {
             var gl = glContext.gl;
             var self = this;
@@ -20311,7 +20310,7 @@ tm.define("glb.Hud", {
 
             this.setUniform(glContext, "color", this.color);
             this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
-            
+
             Object.keys(this.uniforms).forEach(function(name) {
                 var attr = uniforms[name];
 
@@ -20352,7 +20351,7 @@ tm.define("glb.Hud", {
                 }
             }
         },
-        
+
         draw: function(glContext, length) {
             var gl = glContext.gl;
             gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
@@ -20391,11 +20390,11 @@ tm.define("glb.Hud", {
     var VERTEX_SHADER_SOURCE = [
         "attribute vec3 vertex;",
         "attribute vec2 uv;",
-        
+
         "uniform mat4 mMatrix;",
         "uniform mat4 vpMatrix;",
         "uniform vec4 color;",
-        
+
         "varying vec2 vUv;",
         "varying vec4 vColor;",
 
@@ -20408,14 +20407,14 @@ tm.define("glb.Hud", {
 
     var FRAGMENT_SHADER_SOURCE = [
         "precision mediump float;",
-        
+
         "uniform sampler2D texture;",
         "uniform vec2 uvTranslate;",
         "uniform int useTexture;",
-        
+
         "varying vec2 vUv;",
         "varying vec4 vColor;",
-        
+
         "void main(void) {",
         "    if (bool(useTexture)) {",
         "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
@@ -20443,20 +20442,16 @@ tm.define("glb.Hud", {
             this.target = vec3.create();
             this.up = vec3.set(vec3.create(), 0, 1, 0);
             this.vMatrix = mat4.create();
-            this.pMatrix = mat4.perspective(mat4.create(), 45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
-            // this.pMatrix = mat4.ortho (mat4.create(),
-            //     SCREEN_WIDTH * -0.5,
-            //     SCREEN_WIDTH * 0.5,
-            //     SCREEN_HEIGHT * -0.5,
-            //     SCREEN_HEIGHT * 0.5,
-            //     0.1,
-            //     1000
-            // );
+            this.pMatrix = this._setupProjectionMatrix();
             this.vpMatrix = mat4.create();
 
             this.updateMatrix();
 
             this._defineAccessors();
+        },
+        
+        _setupProjectionMatrix: function() {
+            return mat4.perspective(mat4.create(), 45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
         },
 
         _defineAccessors: function() {
@@ -20509,13 +20504,27 @@ glb.Vec3 = {
     Z: vec3.set(vec3.create(), 0, 0, 1),
 };
 
+tm.define("glb.DirectionalLight", {
+    superClass: "tm.app.Element",
+    
+    position: null,
+    
+    init: function() {
+        this.superInit();
+    }
+
+});
+
 tm.define("glb.BoxGeometry", {
+    superClass: "glb.Geometry",
     
     vertex: null,
     uv: null,
     index: null,
 
     init: function(w, h, d) {
+        this.superInit();
+
         w = w || 1;
         h = h || w;
         d = d || w;
@@ -20566,23 +20575,44 @@ tm.define("glb.BoxGeometry", {
     },
     
     initialize: function(glContext) {
-        this.vertex = glContext.createVbo(this.vertexData);
-        this.uv = glContext.createVbo(this.uvData);
-        this.index = glContext.createIbo(this.indexData);
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
     },
-    
+
+});
+
+tm.define("glb.Geometry", {
+    init: function() {},
+
+    initialize: function(glContext) {},
+
+    createVbo: function(gl, data) {
+        var vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        return vbo;
+    },
+
+    createIbo: function(gl, data) {
+        var ibo = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        return ibo;
+    },
 });
 
 tm.define("glb.GLContext", {
-    
+
     element: null,
     gl: null,
-    vpMatrix: null,
 
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
         this.gl = this.element.getContext("webgl");
-        this.mvpMatrix = mat4.create();
 
         var gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
@@ -20634,28 +20664,10 @@ tm.define("glb.GLContext", {
         if (everFlag) {
             window.addEventListener("resize", _fitFunc, false);
         }
-        
+
         return this;
     },
 
-    createVbo: function(data) {
-        var gl = this.gl;
-        var vbo = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-        return vbo;
-    },
-
-    createIbo: function(data) {
-        var gl = this.gl;
-        var ibo = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-        return ibo;
-    },
-    
     createTexture: function(img) {
         var gl = this.gl;
         var texture = gl.createTexture();
@@ -20665,7 +20677,19 @@ tm.define("glb.GLContext", {
         gl.bindTexture(gl.TEXTURE_2D, null);
         return texture;
     },
-    
+
+    attachScreen: function(screen) {
+        var gl = this.gl;
+
+        if (screen) {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, screen.frameBuffer);
+        } else {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        }
+
+        return this;
+    },
+
     render: function(scene, camera) {
         var gl = this.gl;
 
@@ -20720,6 +20744,15 @@ tm.define("glb.GLContext", {
             this.updateMatrix();
 
             this._defineAccessors();
+        },
+        
+        setGeometry: function(geometry) {
+            this.geometry = geometry;
+            return this;
+        },
+        getMaterial: function(material) {
+            this.material = material;
+            return this;
         },
 
         _defineAccessors: function() {
@@ -20877,13 +20910,36 @@ tm.define("glb.Object3D", {
 
 });
 
+tm.define("glb.OrthoCamera", {
+    superClass: "glb.Camera",
+
+    init: function() {
+        this.superInit();
+    },
+
+    _setupProjectionMatrix: function() {
+        return mat4.ortho(mat4.create(),
+            SCREEN_WIDTH * -0.5,
+            SCREEN_WIDTH * 0.5,
+            SCREEN_HEIGHT * -0.5,
+            SCREEN_HEIGHT * 0.5,
+            0.1,
+            1000
+        );
+    },
+
+});
+
 tm.define("glb.PlaneGeometry", {
+    superClass: "glb.Geometry",
     
     vertex: null,
     uv: null,
     index: null,
 
     init: function(size, frameCountH, frameCountV) {
+        this.superInit();
+
         size = size || 32;
         frameCountH = frameCountH || 1;
         frameCountV = frameCountV || 1;
@@ -20904,9 +20960,10 @@ tm.define("glb.PlaneGeometry", {
     },
     
     initialize: function(glContext) {
-        this.vertex = glContext.createVbo(this.vertexData);
-        this.uv = glContext.createVbo(this.uvData);
-        this.index = glContext.createIbo(this.indexData);
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
     },
     
 });
@@ -20916,6 +20973,46 @@ tm.define("glb.Scene", {
     init: function() {
         this.superInit();
     }
+});
+
+tm.define("glb.Screen", {
+
+    depthRenderBuffer: null,
+    frameBuffer: null,
+    texture: null,
+
+    init: function(width, height) {
+        this.width = width || 512;
+        this.height = height || 512;
+    },
+
+    initialize: function(glContext) {
+        var gl = glContext.gl;
+
+        this.frameBuffer = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+
+        this.depthRenderBuffer = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthRenderBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
+        
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthRenderBuffer);
+        
+        this.texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        
+        gl.texParameter(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameter(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        
+        gl.frameBufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+        
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        
+        return this;
+    },
 });
 
 tm.define("glb.GameScene", {
