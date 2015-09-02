@@ -5,7 +5,7 @@ var SCREEN_HEIGHT = 960;
 
 var ASSETS = {
     bullet: "./asset/bullets.png",
-}
+};
 
 tm.main(function() {
     var application = tm.display.CanvasApp("#c2");

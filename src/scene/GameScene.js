@@ -24,8 +24,7 @@ tm.define("glb.GameScene", {
         });
 
         var geo = glb.SpriteGeometry(32, 8, 1);
-        var mat = glb.BasicMaterial();
-        mat.image = tm.asset.Manager.get("bullet").element;
+        var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
         
         this.on("enterframe", function(e) {
             if (e.app.frame % 5 !== 0) return;
