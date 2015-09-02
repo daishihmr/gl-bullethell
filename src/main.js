@@ -4,7 +4,7 @@ var SCREEN_WIDTH = 640;
 var SCREEN_HEIGHT = 960;
 
 var ASSETS = {
-    bullet: "./asset/bullets.png",
+    bullets: "./asset/bullets.png",
 };
 
 tm.main(function() {
@@ -25,4 +25,8 @@ tm.main(function() {
         assets: ASSETS,
         nextScene: glb.GameScene,
     }));
+    
+    tm.asset.Script.loadStats().onload = function() {
+        application.enableStats();
+    };
 });

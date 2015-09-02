@@ -20145,7 +20145,7 @@ var SCREEN_WIDTH = 640;
 var SCREEN_HEIGHT = 960;
 
 var ASSETS = {
-    bullet: "./asset/bullets.png",
+    bullets: "./asset/bullets.png",
 };
 
 tm.main(function() {
@@ -20166,21 +20166,330 @@ tm.main(function() {
         assets: ASSETS,
         nextScene: glb.GameScene,
     }));
+    
+    tm.asset.Script.loadStats().onload = function() {
+        application.enableStats();
+    };
 });
 
 (function() {
 
-    tm.define("Bullets", {
-        init: function() {
+    tm.define("glb.Bullets", {
+        superClass: "glb.Object3D",
 
-        },
-        draw: function() {
+        geometry: null,
+        material: null,
 
+        bullets: null,
+
+        init: function(texture) {
+            this.superInit();
+
+            this.geometry = glb.BulletsGeometry();
+            this.material = glb.BulletsMaterial(texture);
+
+            this.bullets = [];
         },
+
+        initialize: function(glContext) {
+            this.geometry.initialize(glContext);
+            this.material.initialize(glContext);
+        },
+
+        update: function(app) {
+            this.geometry.update();
+
+            var self = this;
+            this.bullets = this.bullets.filter(function(b) {
+                b.position.add(b.velocity);
+                if (b.position.x < SCREEN_WIDTH * -0.2 || SCREEN_WIDTH * 0.2 < b.position.x ||
+                    b.position.y < SCREEN_HEIGHT * -0.2 || SCREEN_HEIGHT * 0.2 < b.position.y) {
+                    self.despawn(b.index);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        },
+
+        render: function(glContext, vpMatrix) {
+            var gl = glContext.gl;
+
+            if (this.geometry.vboNeedUpdate) {
+                this.geometry.rebind(gl);
+                this.geometry.vboNeedUpdate = false;
+            }
+
+            this.material.setProgram(glContext);
+            this.material.setAttributes(glContext, this.geometry);
+
+            this.material.setUniforms(glContext, this);
+            this.material.setUniform(glContext, "time", this.geometry.time);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+
+            this.material.draw(glContext, this.geometry.COUNT);
+        },
+
+        spawn: function(pos, vel) {
+            var index = this.geometry.spawn(pos, vel);
+            if (index < 0) return;
+            this.bullets.push({
+                position: pos,
+                velocity: vel,
+                index: index,
+            });
+            return index;
+        },
+
+        despawn: function(index) {
+            this.geometry.despawn(index);
+        },
+
     });
-    
+
     var VERTEX_SHADER = "";
     var FRAGMENT_SHADER = "";
+
+})();
+
+(function() {
+
+    tm.define("glb.BulletsGeometry", {
+        superClass: "glb.Geometry",
+
+        COUNT: 4096,
+
+        bufferUsage: 1,
+
+        initialPositionData: null,
+        velocityData: null,
+        spawnTimeData: null,
+        activeData: null,
+
+        initialPosition: null,
+        velocity: null,
+        spawnTime: null,
+        active: null,
+
+        time: 0,
+
+        vboNeedUpdate: false,
+
+        init: function() {
+            this.superInit();
+
+            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());;
+            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+        },
+
+        initialize: function(glContext) {
+            var gl = glContext.gl;
+
+            this.initialPosition = this.createVbo(gl, this.initialPositionData);
+            this.velocity = this.createVbo(gl, this.velocityData);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
+            this.active = this.createVbo(gl, this.activeData);
+        },
+
+        rebind: function(gl) {
+            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
+            this.transfarVbo(gl, this.velocity, this.velocityData);
+            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
+            this.transfarVbo(gl, this.active, this.activeData);
+        },
+
+        spawn: function(pos, vel) {
+            var index = find(this.activeData, 0);
+            if (index < 0) {
+                console.warn("弾が足りない");
+                return -1;
+            }
+
+            this.initialPositionData[index * 2 + 0] = pos.x;
+            this.initialPositionData[index * 2 + 1] = pos.y;
+            this.velocityData[index * 2 + 0] = vel.x;
+            this.velocityData[index * 2 + 1] = vel.y;
+            this.spawnTimeData[index] = this.time;
+            this.activeData[index] = 1;
+
+            this.vboNeedUpdate = true;
+
+            return index;
+        },
+
+        despawn: function(index) {
+            if (index < this.activeData.length) {
+                this.activeData[index] = 0;
+                this.vboNeedUpdate = true;
+            }
+        },
+
+        update: function() {
+            this.time += 0.0001;
+        },
+
+    });
+
+    var find = function(array, value) {
+        return Array.prototype.indexOf.call(array, value);
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.BulletsMaterial", {
+        superClass: "glb.Material",
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+            this.image = image;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            this.superSetAttributes(glContext, attributeValues);
+
+            var gl = glContext.gl;
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+            gl.drawArrays(gl.POINTS, 0, length);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "initialPosition",
+        size: 2,
+    }, {
+        name: "velocity",
+        size: 2,
+    }, {
+        name: "spawnTime",
+        size: 1,
+    }, {
+        name: "active",
+        size: 1,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "time",
+        type: "float",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec2 initialPosition;",
+        "attribute vec2 velocity;",
+        "attribute float spawnTime;",
+        "attribute float active;",
+
+        "uniform mat4 vpMatrix;",
+        "uniform float time;",
+
+        "varying float vActive;",
+        "varying float vAngle;",
+
+        "void main(void) {",
+        "    vActive = active;",
+        "    if (active < 0.5) {",
+        "        vAngle = 0.0;",
+        "        gl_Position = vec4(0.0);",
+        "        gl_PointSize = 0.0;",
+        "    } else {",
+        "        vAngle = atan(velocity.y, velocity.x);",
+        "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
+        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
+        "        gl_PointSize = 64.0;",
+        "    }",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+
+        "uniform sampler2D texture;",
+
+        "varying float vActive;",
+        "varying float vAngle;",
+
+        "mat3 translate(float x, float y) {",
+        "    return mat3(",
+        "        1.0, 0.0, 0.0,",
+        "        0.0, 1.0, 0.0,",
+        "          x,   y, 1.0",
+        "    );",
+        "}",
+
+        "mat3 rotate(float rad) {",
+        "    float s = sin(rad);",
+        "    float c = cos(rad);",
+        "    return mat3(",
+        "        c, s, 0,",
+        "       -s, c, 0,",
+        "        0, 0, 1",
+        "    );",
+        "}",
+
+        "void main(void) {",
+        "    if (vActive < 0.5) discard;",
+
+        // "    mat3 m = translate(-0.5, -0.5) * rotate(vAngle) * translate(0.5, 0.5);",
+        // "    vec3 uv = m * vec3(gl_PointCoord, 1.0);",
+        "    vec2 uv = vec2(gl_PointCoord.x * 0.125, gl_PointCoord.y);",
+        "    gl_FragColor = texture2D(texture, uv);",
+        "}",
+    ].join("\n");
 
 })();
 
@@ -20775,245 +21084,6 @@ tm.define("glb.Hud", {
 
 (function() {
 
-    tm.define("glb.BasicMaterial", {
-
-        program: null,
-
-        attributes: null,
-        uniforms: null,
-
-        color: null,
-
-        image: null,
-        _texture: null,
-
-        init: function(image) {
-            this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
-            this.image = image;
-        },
-
-        setRGBA: function(r, g, b, a) {
-            this.color[0] = r;
-            this.color[1] = g;
-            this.color[2] = b;
-            this.color[3] = a;
-            return this;
-        },
-
-        setColor: function(color) {
-            vec4.copy(this.color, color);
-            return this;
-        },
-
-        initialize: function(glContext) {
-            this._createProgram(glContext);
-            if (this.image) {
-                this._createTexture(glContext);
-            }
-        },
-
-        _createProgram: function(glContext) {
-            var gl = glContext.gl;
-            var vs = this._createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
-            var fs = this._createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
-            this.program = gl.createProgram();
-            gl.attachShader(this.program, vs);
-            gl.attachShader(this.program, fs);
-            gl.linkProgram(this.program);
-            if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-                throw new Error(gl.getProgramInfoLog(this.program));
-            }
-
-            this.attributes = ATTRIBUTES.reduce(function(attributes, attr) {
-                attributes[attr.name] = {
-                    name: attr.name,
-                    size: attr.size,
-                    location: gl.getAttribLocation(this.program, attr.name),
-                };
-                return attributes;
-            }.bind(this), {});
-
-            this.uniforms = UNIFORMS.reduce(function(uniforms, uni) {
-                uniforms[uni.name] = {
-                    name: uni.name,
-                    type: uni.type,
-                    location: gl.getUniformLocation(this.program, uni.name),
-                };
-                return uniforms;
-            }.bind(this), {});
-
-            return this;
-        },
-        _createShader: function(gl, type, source) {
-            var shader = gl.createShader(type);
-            gl.shaderSource(shader, source)
-            gl.compileShader(shader);
-            if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                return shader;
-            } else {
-                console.error(gl.getShaderInfoLog(shader));
-            }
-        },
-
-        _createTexture: function(glContext) {
-            this._texture = glContext.createTexture(this.image);
-        },
-
-        setProgram: function(glContext) {
-            var gl = glContext.gl;
-            gl.useProgram(this.program);
-        },
-
-        setAttributes: function(glContext, attributeValues) {
-            var gl = glContext.gl;
-            var attributes = this.attributes;
-
-            Object.keys(this.attributes).forEach(function(name) {
-                var attr = attributes[name];
-
-                if (attributeValues[name]) {
-                    gl.bindBuffer(gl.ARRAY_BUFFER, attributeValues[name]);
-                    gl.enableVertexAttribArray(attr.location);
-                    gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
-                }
-            });
-
-            if (this.image) {
-                gl.bindTexture(gl.TEXTURE_2D, this._texture);
-            } else {
-                gl.bindTexture(gl.TEXTURE_2D, null);
-            }
-        },
-
-        setUniforms: function(glContext, uniformValues) {
-            var gl = glContext.gl;
-            var self = this;
-            var uniforms = this.uniforms;
-
-            this.setUniform(glContext, "color", this.color);
-            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
-
-            Object.keys(this.uniforms).forEach(function(name) {
-                var attr = uniforms[name];
-
-                if (uniformValues[name]) {
-                    self.setUniform(glContext, name, uniformValues[name]);
-                }
-            });
-        },
-
-        setUniform: function(glContext, name, value) {
-            var gl = glContext.gl;
-
-            var uni = this.uniforms[name];
-            
-            if (value.array) {
-                value = value.array;
-            }
-
-            if (uni) {
-                switch (uni.type) {
-                    case "float":
-                        gl.uniform1f(uni.location, value);
-                        break;
-                    case "int":
-                        gl.uniform1i(uni.location, value);
-                        break;
-                    case "vec2":
-                        gl.uniform2fv(uni.location, value);
-                        break;
-                    case "vec3":
-                        gl.uniform3fv(uni.location, value);
-                        break;
-                    case "vec4":
-                        gl.uniform4fv(uni.location, value);
-                        break;
-                    case "mat3":
-                        gl.uniformMatrix3fv(uni.location, false, value);
-                        break;
-                    case "mat4":
-                        gl.uniformMatrix4fv(uni.location, false, value);
-                        break;
-                }
-            }
-        },
-
-        draw: function(glContext, length) {
-            var gl = glContext.gl;
-            gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
-        },
-
-    });
-
-    var ATTRIBUTES = [{
-        name: "vertex",
-        size: 3,
-    }, {
-        name: "uv",
-        size: 2,
-    }, ];
-
-    var UNIFORMS = [{
-        name: "mMatrix",
-        type: "mat4",
-    }, {
-        name: "vpMatrix",
-        type: "mat4",
-    }, {
-        name: "texture",
-        type: "texture",
-    }, {
-        name: "uvTranslate",
-        type: "vec2",
-    }, {
-        name: "color",
-        type: "vec4",
-    }, {
-        name: "useTexture",
-        type: "int",
-    }, ];
-
-    var VERTEX_SHADER_SOURCE = [
-        "attribute vec3 vertex;",
-        "attribute vec2 uv;",
-
-        "uniform mat4 mMatrix;",
-        "uniform mat4 vpMatrix;",
-        "uniform vec4 color;",
-
-        "varying vec2 vUv;",
-        "varying vec4 vColor;",
-
-        "void main(void) {",
-        "    vUv = uv;",
-        "    vColor = color;",
-        "    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);",
-        "}",
-    ].join("\n");
-
-    var FRAGMENT_SHADER_SOURCE = [
-        "precision mediump float;",
-
-        "uniform sampler2D texture;",
-        "uniform vec2 uvTranslate;",
-        "uniform int useTexture;",
-
-        "varying vec2 vUv;",
-        "varying vec4 vColor;",
-
-        "void main(void) {",
-        "    if (bool(useTexture)) {",
-        "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
-        "    } else {",
-        "        gl_FragColor = vColor;",
-        "    }",
-        "}",
-    ].join("\n");
-
-})();
-
-(function() {
-
     tm.define("glb.Camera", {
 
         position: null,
@@ -21169,8 +21239,12 @@ tm.define("glb.Geometry", {
     init: function() {},
 
     initialize: function(glContext) {},
+    
+    bufferUsage: 0,
 
     createVbo: function(gl, data) {
+        var usage = [gl.STATIC_DRAW, gl.DYNAMIC_DRAW][this.bufferUsage];
+        
         var vbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
         gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
@@ -21178,13 +21252,62 @@ tm.define("glb.Geometry", {
         return vbo;
     },
 
+    transfarVbo: function(gl, vbo, data) {
+        var usage = [gl.STATIC_DRAW, gl.DYNAMIC_DRAW][this.bufferUsage];
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        return vbo;
+    },
+
     createIbo: function(gl, data) {
+        var usage = [gl.STATIC_DRAW, gl.DYNAMIC_DRAW][this.bufferUsage];
+
         var ibo = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
         return ibo;
     },
+});
+
+tm.define("glb.PlaneGeometry", {
+    superClass: "glb.Geometry",
+    
+    vertex: null,
+    uv: null,
+    index: null,
+
+    init: function(size, frameCountH, frameCountV) {
+        this.superInit();
+
+        size = size || 32;
+        frameCountH = frameCountH || 1;
+        frameCountV = frameCountV || 1;
+
+        this.vertexData = new Float32Array([
+            -size * 0.5, -size * 0.5, 0,
+             size * 0.5, -size * 0.5, 0,
+            -size * 0.5,  size * 0.5, 0,
+             size * 0.5,  size * 0.5, 0,
+        ]);
+        this.uvData = new Float32Array([
+            0,               1 / frameCountV,
+            1 / frameCountH, 1 / frameCountV,
+            0,               0,
+            1 / frameCountH, 0,
+        ]);
+        this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
+    },
+    
+    initialize: function(glContext) {
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
+    },
+    
 });
 
 tm.define("glb.GLContext", {
@@ -21293,6 +21416,321 @@ tm.define("glb.GLContext", {
     },
 
 });
+
+(function() {
+
+    tm.define("glb.BasicMaterial", {
+        superClass: "glb.Material",
+
+        color: null,
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+
+            this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
+            this.image = image;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+        
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            this.superSetAttributes(glContext, attributeValues);
+
+            var gl = glContext.gl;
+
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+            
+            this.setUniform(glContext, "color", this.color);
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        setRGBA: function(r, g, b, a) {
+            this.color[0] = r;
+            this.color[1] = g;
+            this.color[2] = b;
+            this.color[3] = a;
+            return this;
+        },
+
+        setColor: function(color) {
+            vec4.copy(this.color, color);
+            return this;
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+            gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "vertex",
+        size: 3,
+    }, {
+        name: "uv",
+        size: 2,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "mMatrix",
+        type: "mat4",
+    }, {
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "texture",
+        type: "texture",
+    }, {
+        name: "uvTranslate",
+        type: "vec2",
+    }, {
+        name: "color",
+        type: "vec4",
+    }, {
+        name: "useTexture",
+        type: "int",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec3 vertex;",
+        "attribute vec2 uv;",
+
+        "uniform mat4 mMatrix;",
+        "uniform mat4 vpMatrix;",
+        "uniform vec4 color;",
+
+        "varying vec2 vUv;",
+        "varying vec4 vColor;",
+
+        "void main(void) {",
+        "    vUv = uv;",
+        "    vColor = color;",
+        "    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+
+        "uniform sampler2D texture;",
+        "uniform vec2 uvTranslate;",
+        "uniform int useTexture;",
+
+        "varying vec2 vUv;",
+        "varying vec4 vColor;",
+
+        "void main(void) {",
+        "    if (bool(useTexture)) {",
+        "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
+        "    } else {",
+        "        gl_FragColor = vColor;",
+        "    }",
+        "}",
+    ].join("\n");
+
+})();
+
+(function() {
+
+    tm.define("glb.Material", {
+
+        program: null,
+
+        attributes: null,
+        uniforms: null,
+
+        init: function() {
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+        },
+        
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+
+        _createProgram: function(glContext) {
+            var gl = glContext.gl;
+            var vs = this._createShader(gl, gl.VERTEX_SHADER, this._getVertexShaderSource());
+            var fs = this._createShader(gl, gl.FRAGMENT_SHADER, this._getFragmentShaderSource());
+            this.program = gl.createProgram();
+            gl.attachShader(this.program, vs);
+            gl.attachShader(this.program, fs);
+            gl.linkProgram(this.program);
+            if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+                throw new Error(gl.getProgramInfoLog(this.program));
+            }
+
+            this.attributes = this._getAttributeMetaData().reduce(function(attributes, attr) {
+                attributes[attr.name] = {
+                    name: attr.name,
+                    size: attr.size,
+                    location: gl.getAttribLocation(this.program, attr.name),
+                };
+                return attributes;
+            }.bind(this), {});
+
+            this.uniforms = this._getUniformMetaData().reduce(function(uniforms, uni) {
+                uniforms[uni.name] = {
+                    name: uni.name,
+                    type: uni.type,
+                    location: gl.getUniformLocation(this.program, uni.name),
+                };
+                return uniforms;
+            }.bind(this), {});
+
+            return this;
+        },
+        _createShader: function(gl, type, source) {
+            var shader = gl.createShader(type);
+            gl.shaderSource(shader, source)
+            gl.compileShader(shader);
+            if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                return shader;
+            } else {
+                console.error(gl.getShaderInfoLog(shader));
+            }
+        },
+
+        setProgram: function(glContext) {
+            var gl = glContext.gl;
+            gl.useProgram(this.program);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            var gl = glContext.gl;
+            var attributes = this.attributes;
+
+            Object.keys(this.attributes).forEach(function(name) {
+                var attr = attributes[name];
+
+                if (attributeValues[name]) {
+                    gl.bindBuffer(gl.ARRAY_BUFFER, attributeValues[name]);
+                    gl.enableVertexAttribArray(attr.location);
+                    gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
+                }
+            });
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            var gl = glContext.gl;
+            var self = this;
+            var uniforms = this.uniforms;
+
+            Object.keys(this.uniforms).forEach(function(name) {
+                var attr = uniforms[name];
+
+                if (uniformValues[name]) {
+                    self.setUniform(glContext, name, uniformValues[name]);
+                }
+            });
+        },
+
+        setUniform: function(glContext, name, value) {
+            var gl = glContext.gl;
+
+            var uni = this.uniforms[name];
+            
+            if (value.array) {
+                value = value.array;
+            }
+
+            if (uni) {
+                switch (uni.type) {
+                    case "float":
+                        gl.uniform1f(uni.location, value);
+                        break;
+                    case "int":
+                        gl.uniform1i(uni.location, value);
+                        break;
+                    case "vec2":
+                        gl.uniform2fv(uni.location, value);
+                        break;
+                    case "vec3":
+                        gl.uniform3fv(uni.location, value);
+                        break;
+                    case "vec4":
+                        gl.uniform4fv(uni.location, value);
+                        break;
+                    case "mat3":
+                        gl.uniformMatrix3fv(uni.location, false, value);
+                        break;
+                    case "mat4":
+                        gl.uniformMatrix4fv(uni.location, false, value);
+                        break;
+                }
+            }
+        },
+
+        draw: function(glContext, length) {},
+    });
+
+    glb.Material.prototype.superSetAttributes = glb.Material.prototype.setAttributes;
+    glb.Material.prototype.superSetUniforms = glb.Material.prototype.setUniforms;
+
+    var ATTRIBUTE_META_DATA = [];
+
+    var UNIFORM_META_DATA = [];
+
+    var VERTEX_SHADER_SOURCE = [
+        "void main(void) {",
+        "    gl_Position = vec4(1.0);",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+
+        "void main(void) {",
+        "    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);",
+        "}",
+    ].join("\n");
+
+})();
 
 (function() {
 
@@ -21512,44 +21950,6 @@ tm.define("glb.OrthoCamera", {
 
 });
 
-tm.define("glb.PlaneGeometry", {
-    superClass: "glb.Geometry",
-    
-    vertex: null,
-    uv: null,
-    index: null,
-
-    init: function(size, frameCountH, frameCountV) {
-        this.superInit();
-
-        size = size || 32;
-        frameCountH = frameCountH || 1;
-        frameCountV = frameCountV || 1;
-
-        this.vertexData = new Float32Array([
-            -size * 0.5, -size * 0.5, 0,
-             size * 0.5, -size * 0.5, 0,
-            -size * 0.5,  size * 0.5, 0,
-             size * 0.5,  size * 0.5, 0,
-        ]);
-        this.uvData = new Float32Array([
-            0,               1 / frameCountV,
-            1 / frameCountH, 1 / frameCountV,
-            0,               0,
-            1 / frameCountH, 0,
-        ]);
-        this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
-    },
-    
-    initialize: function(glContext) {
-        var gl = glContext.gl;
-        this.vertex = this.createVbo(gl, this.vertexData);
-        this.uv = this.createVbo(gl, this.uvData);
-        this.index = this.createIbo(gl, this.indexData);
-    },
-    
-});
-
 tm.define("glb.Scene", {
     superClass: "glb.Object3D",
     init: function() {
@@ -21621,50 +22021,69 @@ tm.define("glb.GameScene", {
             e.app.background = "transparent";
             this.glContext = e.app.glContext;
         });
-        
-        var axis = glb.Vector3(3, 1, 0).normalize();
-        var rot = glb.Quat().setAxisAngle(axis, 0.02);
-        glb.Mesh(
-            glb.BoxGeometry(60),
-            glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
-        )
-            .addChildTo(this)
-            .on("enterframe", function() {
-                this.rotation.mul(rot);
-            });
 
-        var axis2 = glb.Vector3(-3, 1, 0).normalize();
-        var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
-        glb.Mesh(
-            glb.BoxGeometry(60, 20, 100),
-            glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
-        )
-            .setPosition(-30, 0, 0)
-            .addChildTo(this)
-            .on("enterframe", function() {
-                this.rotation.mul(rot2);
-            });
+        // var axis = glb.Vector3(3, 1, 0).normalize();
+        // var rot = glb.Quat().setAxisAngle(axis, 0.02);
+        // glb.Mesh(
+        //     glb.BoxGeometry(60),
+        //     glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
+        // )
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         this.rotation.mul(rot);
+        //     });
 
-        var geo = glb.PlaneGeometry(32, 8, 1);
-        var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
+        // var axis2 = glb.Vector3(-3, 1, 0).normalize();
+        // var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
+        // glb.Mesh(
+        //     glb.BoxGeometry(60, 20, 100),
+        //     glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
+        // )
+        //     .setPosition(-30, 0, 0)
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         this.rotation.mul(rot2);
+        //     });
+
+        // var geo = glb.PlaneGeometry(32, 8, 1);
+        // var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
+        // this.on("enterframe", function(e) {
+        //     if (e.app.frame % 5 !== 0) return;
+
+        //     var dir = Math.randf(0, Math.PI * 2);
+        //     var bullet = glb.Mesh(geo, mat)
+        //         .addChildTo(this)
+        //         .setRotationZ(dir)
+        //         .on("enterframe", function(e) {
+        //             this.x += Math.cos(dir) * 2;
+        //             this.y += Math.sin(dir) * 2;
+        //             this.setScale(1, 0.9 + Math.sin(e.app.frame) * 0.1, 1);
+
+        //             if (this.x < -SCREEN_WIDTH * 0.5 || SCREEN_WIDTH * 0.5 < this.x
+        //                 || this.y < -SCREEN_HEIGHT * 0.5 || SCREEN_HEIGHT * 0.5 < this.y) {
+        //                 this.remove();
+        //             }
+        //         });
+        //     bullet.uvTranslate.x = Math.rand(0, 7) / 8;
+        // });
+
+        var bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
+
         this.on("enterframe", function(e) {
-            if (e.app.frame % 5 !== 0) return;
+            Array.range(0, 6).forEach(function(i) {
+                var d = Math.PI * 2 * i / 6 + e.app.frame * 0.1;
+                var s = 1.5;
+                bullets.spawn(
+                    glb.Vector2(0, 0),
+                    glb.Vector2(Math.cos(d) * s, Math.sin(d) * s)
+                );
 
-            var dir = Math.randf(0, Math.PI * 2);
-            var bullet = glb.Mesh(geo, mat)
-                .addChildTo(this)
-                .setRotationZ(dir)
-                .on("enterframe", function(e) {
-                    this.x += Math.cos(dir) * 2;
-                    this.y += Math.sin(dir) * 2;
-                    this.setScale(1, 0.9 + Math.sin(e.app.frame) * 0.1, 1);
-                    
-                    if (this.x < -SCREEN_WIDTH * 0.5 || SCREEN_WIDTH * 0.5 < this.x
-                        || this.y < -SCREEN_HEIGHT * 0.5 || SCREEN_HEIGHT * 0.5 < this.y) {
-                        this.remove();
-                    }
-                });
-            bullet.uvTranslate.x = Math.rand(0, 7) / 8;
+                d = Math.PI * 2 * i / 6 - e.app.frame * 0.1;
+                bullets.spawn(
+                    glb.Vector2(0, 0),
+                    glb.Vector2(Math.cos(d) * s, Math.sin(d) * s)
+                );
+            });
         });
     },
 
