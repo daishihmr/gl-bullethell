@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"></head>
+<body>
+<script src="../lib/tmlib.js"></script>
+<script>
+var sz = 64;
+var H = 8;
+var V = 1;
+
+tm.main(function() {
+    tm.globalize();
+    
+    var output = Canvas().resize(sz * H, sz * V);
+    
+    for (var y = 0; y < V; y++) {
+        for (var x = 0; x < H; x++) {
+            var cell = drawCell(x, y);
+            output.drawImage(cell.element, x * sz, y * sz);
+        }
+    }
+    
+    document.body.appendChild(output.element);
+});
+
+var drawParticle = function(canvas, x, y, radius, colors) {
+    var colorStopList = [];
+    
+    var offsetStep = 1.0 / (arguments.length - 4);
+    var offset = 0;
+    for (var i = 4; i < arguments.length; i++) {
+        colorStopList.push({
+            offset: offset,
+            color: arguments[i],
+        });
+        
+        offset += offsetStep;
+    }
+    
+    canvas.globalCompositeOperation = "lighter";
+    canvas.setFillStyle(
+        RadialGradient(x, y, 0, x, y, radius)
+            .addColorStopList(colorStopList)
+            .toStyle()
+    );
+    canvas.fillCircle(x, y, radius);
+};
+
+var drawCell = function(x, y) {
+    var canvas = Canvas().resize(sz, sz);
+    var index = y * H + x;
+    
+    if (types[index]) types[index](canvas);
+    
+    // canvas.globalCompositeOperation = "source-over";
+    // canvas.setFillStyle("red").fillRect(sz*0.5,sz*0.5,1,1);
+    return canvas;
+};
+
+var types = [];
+var _ = function(f) { types.push(f) };
+
+_(function(canvas) {
+    (4).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 12 * d, (7 - i) / 7 * 0.5);
+            
+            var p = Vector2(sz - 15, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 1 + Math.sin(j / range.length * Math.PI) * 3;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(230,80%,50%,0.5)",
+                    "hsla(230,80%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (5).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 12 * d, (10 - i) / 10 * 0.3);
+            
+            var p = Vector2(sz - 22, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 1 + Math.sin(j / range.length * Math.PI) * 2;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(230,80%,50%,0.5)",
+                    "hsla(230,80%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (4).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 6 * d, (7 - i) / 7 * 0.5);
+            
+            var p = Vector2(sz - 15, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 0.5 + Math.sin(j / range.length * Math.PI) * 2;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(230,80%,50%,0.5)",
+                    "hsla(230,80%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (4).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 10 * d, (7 - i) / 7 * 0.5);
+            
+            var p = Vector2(sz - 15, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 1 + Math.sin(j / range.length * Math.PI) * 3;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(230,40%,20%,0.5)",
+                    "hsla(230,60%,30%,0.5)",
+                    "hsla(230,95%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (4).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 12 * d, (7 - i) / 7 * 0.5);
+            
+            var p = Vector2(sz - 15, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 1 + Math.sin(j / range.length * Math.PI) * 3;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(2,90%,20%,0.5)",
+                    "hsla(2,80%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (5).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 12 * d, (10 - i) / 10 * 0.3);
+            
+            var p = Vector2(sz - 22, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 1 + Math.sin(j / range.length * Math.PI) * 2;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(2,90%,20%,0.5)",
+                    "hsla(2,80%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (4).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 6 * d, (7 - i) / 7 * 0.5);
+            
+            var p = Vector2(sz - 15, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 0.5 + Math.sin(j / range.length * Math.PI) * 2;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(2,90%,20%,0.5)",
+                    "hsla(2,80%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+_(function(canvas) {
+    (4).times(function(i) {
+        [-1, 1].forEach(function(d) {
+            var v = Vector2().setAngle(180 + i * 10 * d, (7 - i) / 7 * 0.5);
+            
+            var p = Vector2(sz - 15, sz * 0.5);
+            
+            Array.range(0, 90).forEach(function(j, _, range) {
+                var rad = 1 + Math.sin(j / range.length * Math.PI) * 3;
+                drawParticle(canvas, p.x, p.y, rad,
+                    "hsla(2,40%,20%,0.5)",
+                    "hsla(2,60%,30%,0.5)",
+                    "hsla(2,95%,30%,0.5)"
+                );
+                p.add(v);
+            });
+        });
+    });
+});
+
+</script>
+</body>
+</html>
