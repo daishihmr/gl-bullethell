@@ -1,4 +1,4 @@
-tm.define("glb.SpriteGeometry", {
+tm.define("glb.PlaneGeometry", {
     
     vertex: null,
     uv: null,

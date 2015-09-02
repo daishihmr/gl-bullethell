@@ -98,13 +98,14 @@
             
             this.updateMatrix();
 
+            this.material.setProgram(glContext);
             this.material.setAttributes(glContext, this.geometry);
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
 
-            this.vpMatrix = vpMatrix;
             this.material.setUniforms(glContext, this);
-
-            gl.drawElements(gl.TRIANGLES, this.geometry.indexData.length, gl.UNSIGNED_SHORT, 0);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+            
+            this.material.draw(glContext, this.geometry.indexData.length);
         },
 
         setPosition: function(x, y, z) {

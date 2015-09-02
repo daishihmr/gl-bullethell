@@ -7,16 +7,29 @@
         attributes: null,
         uniforms: null,
         
+        color: null,
+        
         image: null,
         _texture: null,
 
         init: function(image) {
+            this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
             this.image = image;
         },
         
         initialize: function(glContext) {
             this.createProgram(glContext);
-            this.createTexture(glContext);
+            if (this.image) {
+                this.createTexture(glContext);
+            }
+        },
+        
+        setRGBA: function(r, g, b, a) {
+            this.color[0] = r;
+            this.color[1] = g;
+            this.color[2] = b;
+            this.color[3] = a;
+            return this;
         },
 
         createProgram: function(glContext) {
@@ -61,7 +74,6 @@
             gl.attachShader(program, fs);
             gl.linkProgram(program);
             if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                gl.useProgram(program);
                 return program;
             } else {
                 console.error(gl.getProgramInfoLog(program));
@@ -70,6 +82,11 @@
         
         createTexture: function(glContext) {
             this._texture = glContext.createTexture(this.image);
+        },
+        
+        setProgram: function(glContext) {
+            var gl = glContext.gl;
+            gl.useProgram(this.program);
         },
 
         setAttributes: function(glContext, attributeValues) {
@@ -87,13 +104,20 @@
                 
             });
 
-            gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
         },
         
         setUniforms: function(glContext, uniformValues) {
             var gl = glContext.gl;
             var self = this;
             var uniforms = this.uniforms;
+
+            this.setUniform(glContext, "color", this.color);
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
             
             Object.keys(this.uniforms).forEach(function(name) {
                 var attr = uniforms[name];
@@ -115,7 +139,6 @@
                         gl.uniform1f(uni.location, value);
                         break;
                     case "int":
-                    case "texture":
                         gl.uniform1i(uni.location, value);
                         break;
                     case "vec2":
@@ -135,6 +158,11 @@
                         break;
                 }
             }
+        },
+        
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+            gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
         },
 
     });
@@ -159,28 +187,48 @@
     }, {
         name: "uvTranslate",
         type: "vec2",
+    }, {
+        name: "color",
+        type: "vec4",
+    }, {
+        name: "useTexture",
+        type: "int",
     }, ];
 
     var VERTEX_SHADER_SOURCE = [
         "attribute vec3 vertex;",
         "attribute vec2 uv;",
+        
         "uniform mat4 mMatrix;",
         "uniform mat4 vpMatrix;",
+        "uniform vec4 color;",
+        
         "varying vec2 vUv;",
+        "varying vec4 vColor;",
 
         "void main(void) {",
         "    vUv = uv;",
+        "    vColor = color;",
         "    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);",
         "}",
     ].join("\n");
 
     var FRAGMENT_SHADER_SOURCE = [
         "precision mediump float;",
+        
         "uniform sampler2D texture;",
         "uniform vec2 uvTranslate;",
+        "uniform int useTexture;",
+        
         "varying vec2 vUv;",
+        "varying vec4 vColor;",
+        
         "void main(void) {",
-        "    gl_FragColor = texture2D(texture, uvTranslate + vUv);",
+        "    if (bool(useTexture)) {",
+        "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
+        "    } else {",
+        "        gl_FragColor = vColor;",
+        "    }",
         "}",
     ].join("\n");
 

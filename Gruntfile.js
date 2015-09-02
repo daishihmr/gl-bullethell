@@ -19,11 +19,18 @@ module.exports = function(grunt) {
     SRC.unshift("./src/main.js");
     
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
     grunt.initConfig({
         uglify: {
-            main: {
+            product: {
+                src: LIB.concat(SRC),
+                dest: "build/game.js",
+            }
+        },
+        concat: {
+            develop: {
                 src: LIB.concat(SRC),
                 dest: "build/game.js",
                 options: {
@@ -32,9 +39,9 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            main: {
+            develop: {
                 files: LIB.concat(SRC),
-                tasks: ["uglify"],
+                tasks: ["concat"],
             }
         }
     });

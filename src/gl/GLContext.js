@@ -12,6 +12,8 @@ tm.define("glb.GLContext", {
         var gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
         gl.clearDepth(1);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

@@ -22,13 +22,37 @@ tm.define("glb.GameScene", {
             e.app.background = "transparent";
             this.glContext = e.app.glContext;
         });
-
-        var geo = glb.SpriteGeometry(32, 8, 1);
-        var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
         
+        var axis = vec3.set(vec3.create(), 3, 1, 0);
+        vec3.normalize(axis, axis);
+        var rot = quat.setAxisAngle(quat.create(), axis, 0.02);
+        glb.Mesh(
+            glb.BoxGeometry(60),
+            glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
+        )
+            .addChildTo(this)
+            .on("enterframe", function() {
+                quat.mul(this.rotation, this.rotation, rot);
+            });
+
+        var axis2 = vec3.set(vec3.create(), -3, 1, 0);
+        vec3.normalize(axis2, axis2);
+        var rot2 = quat.setAxisAngle(quat.create(), axis2, 0.03);
+        glb.Mesh(
+            glb.BoxGeometry(60, 20, 100),
+            glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
+        )
+            .setPosition(-30, 0, 0)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                quat.mul(this.rotation, this.rotation, rot2);
+            });
+
+        var geo = glb.PlaneGeometry(32, 8, 1);
+        var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
         this.on("enterframe", function(e) {
             if (e.app.frame % 5 !== 0) return;
-            
+
             var dir = Math.randf(0, Math.PI * 2);
             var bullet = glb.Mesh(geo, mat)
                 .addChildTo(this)
