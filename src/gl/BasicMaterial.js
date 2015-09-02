@@ -6,9 +6,9 @@
 
         attributes: null,
         uniforms: null,
-        
+
         color: null,
-        
+
         image: null,
         _texture: null,
 
@@ -16,14 +16,7 @@
             this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
             this.image = image;
         },
-        
-        initialize: function(glContext) {
-            this.createProgram(glContext);
-            if (this.image) {
-                this.createTexture(glContext);
-            }
-        },
-        
+
         setRGBA: function(r, g, b, a) {
             this.color[0] = r;
             this.color[1] = g;
@@ -32,7 +25,19 @@
             return this;
         },
 
-        createProgram: function(glContext) {
+        setColor: function(color) {
+            vec4.copy(this.color, color);
+            return this;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _createProgram: function(glContext) {
             var gl = glContext.gl;
             var vs = this._createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
             var fs = this._createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
@@ -55,7 +60,7 @@
                 };
                 return uniforms;
             }.bind(this), {});
-            
+
             return this;
         },
         _createShader: function(gl, type, source) {
@@ -79,11 +84,11 @@
                 console.error(gl.getProgramInfoLog(program));
             }
         },
-        
-        createTexture: function(glContext) {
+
+        _createTexture: function(glContext) {
             this._texture = glContext.createTexture(this.image);
         },
-        
+
         setProgram: function(glContext) {
             var gl = glContext.gl;
             gl.useProgram(this.program);
@@ -92,7 +97,7 @@
         setAttributes: function(glContext, attributeValues) {
             var gl = glContext.gl;
             var attributes = this.attributes;
-            
+
             Object.keys(this.attributes).forEach(function(name) {
                 var attr = attributes[name];
 
@@ -101,7 +106,6 @@
                     gl.enableVertexAttribArray(attr.location);
                     gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
                 }
-                
             });
 
             if (this.image) {
@@ -110,7 +114,7 @@
                 gl.bindTexture(gl.TEXTURE_2D, null);
             }
         },
-        
+
         setUniforms: function(glContext, uniformValues) {
             var gl = glContext.gl;
             var self = this;
@@ -118,7 +122,7 @@
 
             this.setUniform(glContext, "color", this.color);
             this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
-            
+
             Object.keys(this.uniforms).forEach(function(name) {
                 var attr = uniforms[name];
 
@@ -159,7 +163,7 @@
                 }
             }
         },
-        
+
         draw: function(glContext, length) {
             var gl = glContext.gl;
             gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
@@ -198,11 +202,11 @@
     var VERTEX_SHADER_SOURCE = [
         "attribute vec3 vertex;",
         "attribute vec2 uv;",
-        
+
         "uniform mat4 mMatrix;",
         "uniform mat4 vpMatrix;",
         "uniform vec4 color;",
-        
+
         "varying vec2 vUv;",
         "varying vec4 vColor;",
 
@@ -215,14 +219,14 @@
 
     var FRAGMENT_SHADER_SOURCE = [
         "precision mediump float;",
-        
+
         "uniform sampler2D texture;",
         "uniform vec2 uvTranslate;",
         "uniform int useTexture;",
-        
+
         "varying vec2 vUv;",
         "varying vec4 vColor;",
-        
+
         "void main(void) {",
         "    if (bool(useTexture)) {",
         "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",

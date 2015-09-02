@@ -31,6 +31,15 @@
 
             this._defineAccessors();
         },
+        
+        setGeometry: function(geometry) {
+            this.geometry = geometry;
+            return this;
+        },
+        getMaterial: function(material) {
+            this.material = material;
+            return this;
+        },
 
         _defineAccessors: function() {
             this.accessor("x", {

@@ -1,13 +1,11 @@
 tm.define("glb.GLContext", {
-    
+
     element: null,
     gl: null,
-    vpMatrix: null,
 
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
         this.gl = this.element.getContext("webgl");
-        this.mvpMatrix = mat4.create();
 
         var gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
@@ -59,28 +57,10 @@ tm.define("glb.GLContext", {
         if (everFlag) {
             window.addEventListener("resize", _fitFunc, false);
         }
-        
+
         return this;
     },
 
-    createVbo: function(data) {
-        var gl = this.gl;
-        var vbo = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-        return vbo;
-    },
-
-    createIbo: function(data) {
-        var gl = this.gl;
-        var ibo = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-        return ibo;
-    },
-    
     createTexture: function(img) {
         var gl = this.gl;
         var texture = gl.createTexture();
@@ -90,7 +70,19 @@ tm.define("glb.GLContext", {
         gl.bindTexture(gl.TEXTURE_2D, null);
         return texture;
     },
-    
+
+    attachScreen: function(screen) {
+        var gl = this.gl;
+
+        if (screen) {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, screen.frameBuffer);
+        } else {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        }
+
+        return this;
+    },
+
     render: function(scene, camera) {
         var gl = this.gl;
 

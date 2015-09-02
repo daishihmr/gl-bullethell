@@ -55,9 +55,28 @@ tm.define("glb.BoxGeometry", {
     },
     
     initialize: function(glContext) {
-        this.vertex = glContext.createVbo(this.vertexData);
-        this.uv = glContext.createVbo(this.uvData);
-        this.index = glContext.createIbo(this.indexData);
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
     },
     
+    createVbo: function(gl, data) {
+        var gl = this.gl;
+        var vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        return vbo;
+    },
+
+    createIbo: function(gl, data) {
+        var gl = this.gl;
+        var ibo = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        return ibo;
+    },
+
 });

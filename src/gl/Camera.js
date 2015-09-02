@@ -14,20 +14,16 @@
             this.target = vec3.create();
             this.up = vec3.set(vec3.create(), 0, 1, 0);
             this.vMatrix = mat4.create();
-            this.pMatrix = mat4.perspective(mat4.create(), 45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
-            // this.pMatrix = mat4.ortho (mat4.create(),
-            //     SCREEN_WIDTH * -0.5,
-            //     SCREEN_WIDTH * 0.5,
-            //     SCREEN_HEIGHT * -0.5,
-            //     SCREEN_HEIGHT * 0.5,
-            //     0.1,
-            //     1000
-            // );
+            this.pMatrix = this._setupProjectionMatrix();
             this.vpMatrix = mat4.create();
 
             this.updateMatrix();
 
             this._defineAccessors();
+        },
+        
+        _setupProjectionMatrix: function() {
+            return mat4.perspective(mat4.create(), 45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
         },
 
         _defineAccessors: function() {
