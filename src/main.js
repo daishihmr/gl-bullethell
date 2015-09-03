@@ -18,7 +18,7 @@ tm.main(function() {
         .run();
         
     application.glContext = glb.GLContext("#c3")
-        .resize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        .resize(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.5)
         .fitWindow();
 
     application.replaceScene(tm.game.LoadingScene({

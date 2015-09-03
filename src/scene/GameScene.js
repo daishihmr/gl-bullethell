@@ -72,7 +72,7 @@ tm.define("glb.GameScene", {
         this.on("enterframe", function(e) {
             var f = e.app.frame;
             if (f % 1 !== 0) return;
-            var way = 6;
+            var way = 1;
             Array.range(0, way).forEach(function(i) {
                 var d = Math.PI * 2 * i / way + e.app.frame * 0.1;
                 var s = 1.5;
