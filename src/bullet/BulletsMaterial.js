@@ -135,7 +135,7 @@
         "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
         "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
         "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
-        "        gl_PointSize = 80.0 * 0.5 + c;",
+        "        gl_PointSize = (80.0 + c) * {0};".format(GL_QUALITY),
         "    }",
         "}",
     ].join("\n");

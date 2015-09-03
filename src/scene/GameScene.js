@@ -72,32 +72,32 @@ tm.define("glb.GameScene", {
         this.on("enterframe", function(e) {
             var f = e.app.frame;
             if (f % 1 !== 0) return;
-            var way = 1;
+            var way = 2;
             Array.range(0, way).forEach(function(i) {
-                var d = Math.PI * 2 * i / way + e.app.frame * 0.1;
+                var d = Math.PI*2 * i/way + e.app.frame * 0.1;
                 var s = 1.5;
                 bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * 0.04, 60),
+                    glb.Vector2().fromAngleLength(f * 0.02, 60),
                     glb.Vector2().fromAngleLength(d, s),
                     0
                 );
 
                 bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * 0.04 + Math.PI, 60),
+                    glb.Vector2().fromAngleLength(f * 0.02 + Math.PI, 60),
                     glb.Vector2().fromAngleLength(d, s),
                     4
                 );
 
-                d = Math.PI * 2 * i / way - e.app.frame * 0.1;
+                d = Math.PI*2 * i/way - e.app.frame * 0.1;
                 s = 1.2;
 
                 bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * -0.04 + Math.PI * 0.5, 40),
+                    glb.Vector2().fromAngleLength(f * -0.02 + Math.PI * 0.5, 40),
                     glb.Vector2().fromAngleLength(d, s),
                     8
                 );
                 bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * -0.04 + Math.PI * 1.5, 40),
+                    glb.Vector2().fromAngleLength(f * -0.02 + Math.PI * 1.5, 40),
                     glb.Vector2().fromAngleLength(d, s),
                     10
                 );
