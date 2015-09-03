@@ -71,7 +71,7 @@ tm.define("glb.GameScene", {
         var bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
         this.on("enterframe", function(e) {
             var f = e.app.frame;
-            if (f % 1 !== 0) return;
+            if (f % 10 !== 0) return;
             var way = 2;
             Array.range(0, way).forEach(function(i) {
                 var d = Math.PI*2 * i/way + e.app.frame * 0.1;
@@ -111,6 +111,27 @@ tm.define("glb.GameScene", {
             .on("enterframe", function() {
                 this.text = "bullet count = " + bullets.bullets.length;
             });
+            
+        var particles = glb.Particle(tm.asset.Manager.get("particles").element).addChildTo(this);
+        this.on("enterframe", function() {
+            (50).times(function() {
+                var d = Math.randf(-Math.PI, Math.PI);
+                var s = 0.8;
+
+                var v = glb.Vector2().fromAngleLength(d, s);
+                var a = glb.Vector2(0, 0.05);
+                particles.spawn({
+                    position: glb.Vector2(Math.rand(-100, 100), SCREEN_HEIGHT * -0.15),
+                    velocity: v,
+                    accel: a,
+                    ttl: 50 * 0.0001,
+                    sizeFrom: 10,
+                    sizeTo: 300,
+                    type: 2,
+                });
+            });
+        });
+        
     },
 
     draw: function() {

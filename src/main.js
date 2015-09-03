@@ -3,10 +3,12 @@ var glb = {};
 var SCREEN_WIDTH = 640;
 var SCREEN_HEIGHT = 960;
 
-var GL_QUALITY = 0.5;
+var BULLET_APPEALANCE = "160.0";
+var GL_QUALITY = "0.5";
 
 var ASSETS = {
     bullets: "./asset/bullets.png",
+    particles: "./asset/particles.png",
     
     test: "./asset/test.png",
 };

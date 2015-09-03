@@ -19,8 +19,6 @@
         active: null,
         type: null,
 
-        time: 0,
-
         vboNeedUpdate: false,
 
         init: function() {
@@ -61,7 +59,7 @@
             this.transfarVbo(gl, this.type, this.typeData);
         },
 
-        spawn: function(pos, vel, type) {
+        spawn: function(now, pos, vel, type) {
             var index = find(this.activeData, 0);
             if (index < 0) {
                 console.warn("弾が足りない");
@@ -72,7 +70,7 @@
             this.initialPositionData[index * 2 + 1] = pos.y;
             this.velocityData[index * 2 + 0] = vel.x;
             this.velocityData[index * 2 + 1] = vel.y;
-            this.spawnTimeData[index] = this.time;
+            this.spawnTimeData[index] = now;
             this.activeData[index] = 1;
             this.typeData[index] = type;
 
@@ -86,10 +84,6 @@
                 this.activeData[index] = 0;
                 this.vboNeedUpdate = true;
             }
-        },
-
-        update: function() {
-            this.time += 0.0001;
         },
 
     });

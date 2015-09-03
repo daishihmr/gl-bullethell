@@ -1,22 +1,24 @@
 (function() {
 
-    tm.define("glb.Bullets", {
+    tm.define("glb.Particle", {
         superClass: "glb.Object3D",
 
         geometry: null,
         material: null,
 
+        particles: null,
+        
         time: 0,
-
-        bullets: null,
 
         init: function(texture) {
             this.superInit();
 
-            this.geometry = glb.BulletsGeometry();
-            this.material = glb.BulletsMaterial(texture);
+            this.geometry = glb.ParticleGeometry();
+            this.material = glb.ParticleMaterial(texture);
 
-            this.bullets = [];
+            this.particles = [];
+            
+            this.time = 0;
         },
 
         initialize: function(glContext) {
@@ -28,11 +30,10 @@
             this.time += 0.0001;
 
             var self = this;
-            this.bullets = this.bullets.filter(function(b) {
-                b.position.add(b.velocity);
-                if (b.position.x < SCREEN_WIDTH * -0.2 || SCREEN_WIDTH * 0.2 < b.position.x ||
-                    b.position.y < SCREEN_HEIGHT * -0.2 || SCREEN_HEIGHT * 0.2 < b.position.y) {
-                    self.despawn(b.index);
+            var time = this.time;
+            this.particles = this.particles.filter(function(p) {
+                if (p.deathTime <= time) {
+                    self.despawn(p.index);
                     return false;
                 } else {
                     return true;
@@ -58,12 +59,11 @@
             this.material.draw(glContext, this.geometry.COUNT);
         },
 
-        spawn: function(pos, vel, type) {
-            var index = this.geometry.spawn(this.time, pos, vel, type);
+        spawn: function(param) {
+            var index = this.geometry.spawn(this.time, {}.$extend(DEFAULT_PARAM, param));
             if (index < 0) return;
-            this.bullets.push({
-                position: pos,
-                velocity: vel,
+            this.particles.push({
+                deathTime: this.time + param.ttl,
                 index: index,
             });
             return index;
@@ -74,5 +74,17 @@
         },
 
     });
+
+    var DEFAULT_PARAM = {
+        position: { x:0, y:0 },
+        velocity: { x:1, y:0 },
+        accel: { x:-0.1, y:0 },
+        type: 0,
+        ttl: 60 * 0.0001,
+        sizeFrom: 30,
+        sizeTo: 30,
+        colorFrom: { r:255, g:255, b:255, a:1 },
+        colorTo: { r:255, g:255, b:255, a:0 },
+    };
 
 })();

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"></head>
+<body style="background:black">
+<script src="../lib/tmlib.js"></script>
+<script>
+var sz = 64;
+var H = 16;
+var V = 1;
+
+tm.main(function() {
+    tm.globalize();
+    
+    var output = Canvas().resize(sz * 2 * H, sz * 2 * V);
+    
+    for (var y = 0; y < V; y++) {
+        for (var x = 0; x < H; x++) {
+            var cell = drawCell(x, y);
+            output.drawImage(cell.element, (x + 0.25) * sz * 2, (y + 0.25) * sz * 2);
+        }
+    }
+    
+    document.body.appendChild(output.element);
+});
+
+var drawParticle = function(canvas, x, y, radius, colors) {
+    var colorStopList = [];
+    
+    var offsetStep = 1.0 / (arguments.length - 4);
+    var offset = 0;
+    for (var i = 4; i < arguments.length; i++) {
+        colorStopList.push({
+            offset: offset,
+            color: arguments[i],
+        });
+        
+        offset += offsetStep;
+    }
+    
+    canvas.globalCompositeOperation = "lighter";
+    canvas.setFillStyle(
+        RadialGradient(x + radius * 0.2, y, 0, x, y, radius)
+            .addColorStopList(colorStopList)
+            .toStyle()
+    );
+    canvas.fillCircle(x, y, radius);
+};
+
+var drawCell = function(x, y) {
+    var canvas = Canvas().resize(sz, sz);
+    var index = y * H + x;
+    
+    if (types[index]) types[index](canvas);
+    
+    // canvas.globalCompositeOperation = "source-over";
+    // canvas.setFillStyle("red").fillRect(sz*0.5,sz*0.5,1,1);
+    return canvas;
+};
+
+var types = [];
+var _ = function(f) { types.push(f) };
+
+_(function(canvas) {
+    drawParticle(canvas, sz*0.5, sz*0.5, sz*0.4,
+        "rgba(255,255,255,1)",
+        "rgba(255,255,255,1)",
+        "rgba(255,255,255,1)",
+        "rgba(255,255,255,0)"
+    );
+});
+
+_(function(canvas) {
+    drawParticle(canvas, sz*0.5, sz*0.5, sz*0.4,
+        "rgba(255,255,255,1)",
+        "rgba(255,255,255,0)"
+    );
+});
+
+_(function(canvas) {
+    drawParticle(canvas, sz*0.5, sz*0.5, sz*0.4,
+        "rgba(255,255,255,1.0)",
+        "rgba(255,255,255,1.0)",
+        "rgba(255,255,  0,1.0)",
+        "rgba(255,  0,  0,1.0)",
+        "rgba(255,  0,  0,0.0)"
+    );
+});
+
+</script>
+</body>
+</html>

@@ -1,9 +1,22593 @@
-!function(a,b){if("object"==typeof exports&&"object"==typeof module)module.exports=b();else if("function"==typeof define&&define.amd)define(b);else{var c=b();for(var d in c)("object"==typeof exports?exports:a)[d]=c[d]}}(this,function(){return function(a){function b(d){if(c[d])return c[d].exports;var e=c[d]={exports:{},id:d,loaded:!1};return a[d].call(e.exports,e,e.exports,b),e.loaded=!0,e.exports}var c={};return b.m=a,b.c=c,b.p="",b(0)}([function(a,b,c){b.glMatrix=c(1),b.mat2=c(2),b.mat2d=c(3),b.mat3=c(4),b.mat4=c(5),b.quat=c(6),b.vec2=c(9),b.vec3=c(7),b.vec4=c(8)},function(a,b){var c={};c.EPSILON=1e-6,c.ARRAY_TYPE="undefined"!=typeof Float32Array?Float32Array:Array,c.RANDOM=Math.random,c.setMatrixArrayType=function(a){GLMAT_ARRAY_TYPE=a};var d=Math.PI/180;c.toRadian=function(a){return a*d},a.exports=c},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(4);return a[0]=1,a[1]=0,a[2]=0,a[3]=1,a},e.clone=function(a){var b=new d.ARRAY_TYPE(4);return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[3],a},e.identity=function(a){return a[0]=1,a[1]=0,a[2]=0,a[3]=1,a},e.transpose=function(a,b){if(a===b){var c=b[1];a[1]=b[2],a[2]=c}else a[0]=b[0],a[1]=b[2],a[2]=b[1],a[3]=b[3];return a},e.invert=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=c*f-e*d;return g?(g=1/g,a[0]=f*g,a[1]=-d*g,a[2]=-e*g,a[3]=c*g,a):null},e.adjoint=function(a,b){var c=b[0];return a[0]=b[3],a[1]=-b[1],a[2]=-b[2],a[3]=c,a},e.determinant=function(a){return a[0]*a[3]-a[2]*a[1]},e.multiply=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=c[0],i=c[1],j=c[2],k=c[3];return a[0]=d*h+f*i,a[1]=e*h+g*i,a[2]=d*j+f*k,a[3]=e*j+g*k,a},e.mul=e.multiply,e.rotate=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=Math.sin(c),i=Math.cos(c);return a[0]=d*i+f*h,a[1]=e*i+g*h,a[2]=d*-h+f*i,a[3]=e*-h+g*i,a},e.scale=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=c[0],i=c[1];return a[0]=d*h,a[1]=e*h,a[2]=f*i,a[3]=g*i,a},e.fromRotation=function(a,b){var c=Math.sin(b),d=Math.cos(b);return a[0]=d,a[1]=c,a[2]=-c,a[3]=d,a},e.fromScaling=function(a,b){return a[0]=b[0],a[1]=0,a[2]=0,a[3]=b[1],a},e.str=function(a){return"mat2("+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+")"},e.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2))},e.LDU=function(a,b,c,d){return a[2]=d[2]/d[0],c[0]=d[0],c[1]=d[1],c[3]=d[3]-a[2]*c[1],[a,b,c]},a.exports=e},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(6);return a[0]=1,a[1]=0,a[2]=0,a[3]=1,a[4]=0,a[5]=0,a},e.clone=function(a){var b=new d.ARRAY_TYPE(6);return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[3],a[4]=b[4],a[5]=b[5],a},e.identity=function(a){return a[0]=1,a[1]=0,a[2]=0,a[3]=1,a[4]=0,a[5]=0,a},e.invert=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=b[4],h=b[5],i=c*f-d*e;return i?(i=1/i,a[0]=f*i,a[1]=-d*i,a[2]=-e*i,a[3]=c*i,a[4]=(e*h-f*g)*i,a[5]=(d*g-c*h)*i,a):null},e.determinant=function(a){return a[0]*a[3]-a[1]*a[2]},e.multiply=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=c[0],k=c[1],l=c[2],m=c[3],n=c[4],o=c[5];return a[0]=d*j+f*k,a[1]=e*j+g*k,a[2]=d*l+f*m,a[3]=e*l+g*m,a[4]=d*n+f*o+h,a[5]=e*n+g*o+i,a},e.mul=e.multiply,e.rotate=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=Math.sin(c),k=Math.cos(c);return a[0]=d*k+f*j,a[1]=e*k+g*j,a[2]=d*-j+f*k,a[3]=e*-j+g*k,a[4]=h,a[5]=i,a},e.scale=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=c[0],k=c[1];return a[0]=d*j,a[1]=e*j,a[2]=f*k,a[3]=g*k,a[4]=h,a[5]=i,a},e.translate=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=c[0],k=c[1];return a[0]=d,a[1]=e,a[2]=f,a[3]=g,a[4]=d*j+f*k+h,a[5]=e*j+g*k+i,a},e.fromRotation=function(a,b){var c=Math.sin(b),d=Math.cos(b);return a[0]=d,a[1]=c,a[2]=-c,a[3]=d,a[4]=0,a[5]=0,a},e.fromScaling=function(a,b){return a[0]=b[0],a[1]=0,a[2]=0,a[3]=b[1],a[4]=0,a[5]=0,a},e.fromTranslation=function(a,b){return a[0]=1,a[1]=0,a[2]=0,a[3]=1,a[4]=b[0],a[5]=b[1],a},e.str=function(a){return"mat2d("+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+", "+a[4]+", "+a[5]+")"},e.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2)+Math.pow(a[4],2)+Math.pow(a[5],2)+1)},a.exports=e},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(9);return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=1,a[5]=0,a[6]=0,a[7]=0,a[8]=1,a},e.fromMat4=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[4],a[4]=b[5],a[5]=b[6],a[6]=b[8],a[7]=b[9],a[8]=b[10],a},e.clone=function(a){var b=new d.ARRAY_TYPE(9);return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8],b},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[3],a[4]=b[4],a[5]=b[5],a[6]=b[6],a[7]=b[7],a[8]=b[8],a},e.identity=function(a){return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=1,a[5]=0,a[6]=0,a[7]=0,a[8]=1,a},e.transpose=function(a,b){if(a===b){var c=b[1],d=b[2],e=b[5];a[1]=b[3],a[2]=b[6],a[3]=c,a[5]=b[7],a[6]=d,a[7]=e}else a[0]=b[0],a[1]=b[3],a[2]=b[6],a[3]=b[1],a[4]=b[4],a[5]=b[7],a[6]=b[2],a[7]=b[5],a[8]=b[8];return a},e.invert=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=b[4],h=b[5],i=b[6],j=b[7],k=b[8],l=k*g-h*j,m=-k*f+h*i,n=j*f-g*i,o=c*l+d*m+e*n;return o?(o=1/o,a[0]=l*o,a[1]=(-k*d+e*j)*o,a[2]=(h*d-e*g)*o,a[3]=m*o,a[4]=(k*c-e*i)*o,a[5]=(-h*c+e*f)*o,a[6]=n*o,a[7]=(-j*c+d*i)*o,a[8]=(g*c-d*f)*o,a):null},e.adjoint=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=b[4],h=b[5],i=b[6],j=b[7],k=b[8];return a[0]=g*k-h*j,a[1]=e*j-d*k,a[2]=d*h-e*g,a[3]=h*i-f*k,a[4]=c*k-e*i,a[5]=e*f-c*h,a[6]=f*j-g*i,a[7]=d*i-c*j,a[8]=c*g-d*f,a},e.determinant=function(a){var b=a[0],c=a[1],d=a[2],e=a[3],f=a[4],g=a[5],h=a[6],i=a[7],j=a[8];return b*(j*f-g*i)+c*(-j*e+g*h)+d*(i*e-f*h)},e.multiply=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=b[6],k=b[7],l=b[8],m=c[0],n=c[1],o=c[2],p=c[3],q=c[4],r=c[5],s=c[6],t=c[7],u=c[8];return a[0]=m*d+n*g+o*j,a[1]=m*e+n*h+o*k,a[2]=m*f+n*i+o*l,a[3]=p*d+q*g+r*j,a[4]=p*e+q*h+r*k,a[5]=p*f+q*i+r*l,a[6]=s*d+t*g+u*j,a[7]=s*e+t*h+u*k,a[8]=s*f+t*i+u*l,a},e.mul=e.multiply,e.translate=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=b[6],k=b[7],l=b[8],m=c[0],n=c[1];return a[0]=d,a[1]=e,a[2]=f,a[3]=g,a[4]=h,a[5]=i,a[6]=m*d+n*g+j,a[7]=m*e+n*h+k,a[8]=m*f+n*i+l,a},e.rotate=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=b[6],k=b[7],l=b[8],m=Math.sin(c),n=Math.cos(c);return a[0]=n*d+m*g,a[1]=n*e+m*h,a[2]=n*f+m*i,a[3]=n*g-m*d,a[4]=n*h-m*e,a[5]=n*i-m*f,a[6]=j,a[7]=k,a[8]=l,a},e.scale=function(a,b,c){var d=c[0],e=c[1];return a[0]=d*b[0],a[1]=d*b[1],a[2]=d*b[2],a[3]=e*b[3],a[4]=e*b[4],a[5]=e*b[5],a[6]=b[6],a[7]=b[7],a[8]=b[8],a},e.fromTranslation=function(a,b){return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=1,a[5]=0,a[6]=b[0],a[7]=b[1],a[8]=1,a},e.fromRotation=function(a,b){var c=Math.sin(b),d=Math.cos(b);return a[0]=d,a[1]=c,a[2]=0,a[3]=-c,a[4]=d,a[5]=0,a[6]=0,a[7]=0,a[8]=1,a},e.fromScaling=function(a,b){return a[0]=b[0],a[1]=0,a[2]=0,a[3]=0,a[4]=b[1],a[5]=0,a[6]=0,a[7]=0,a[8]=1,a},e.fromMat2d=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=0,a[3]=b[2],a[4]=b[3],a[5]=0,a[6]=b[4],a[7]=b[5],a[8]=1,a},e.fromQuat=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=c+c,h=d+d,i=e+e,j=c*g,k=d*g,l=d*h,m=e*g,n=e*h,o=e*i,p=f*g,q=f*h,r=f*i;return a[0]=1-l-o,a[3]=k-r,a[6]=m+q,a[1]=k+r,a[4]=1-j-o,a[7]=n-p,a[2]=m-q,a[5]=n+p,a[8]=1-j-l,a},e.normalFromMat4=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=b[4],h=b[5],i=b[6],j=b[7],k=b[8],l=b[9],m=b[10],n=b[11],o=b[12],p=b[13],q=b[14],r=b[15],s=c*h-d*g,t=c*i-e*g,u=c*j-f*g,v=d*i-e*h,w=d*j-f*h,x=e*j-f*i,y=k*p-l*o,z=k*q-m*o,A=k*r-n*o,B=l*q-m*p,C=l*r-n*p,D=m*r-n*q,E=s*D-t*C+u*B+v*A-w*z+x*y;return E?(E=1/E,a[0]=(h*D-i*C+j*B)*E,a[1]=(i*A-g*D-j*z)*E,a[2]=(g*C-h*A+j*y)*E,a[3]=(e*C-d*D-f*B)*E,a[4]=(c*D-e*A+f*z)*E,a[5]=(d*A-c*C-f*y)*E,a[6]=(p*x-q*w+r*v)*E,a[7]=(q*u-o*x-r*t)*E,a[8]=(o*w-p*u+r*s)*E,a):null},e.str=function(a){return"mat3("+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+", "+a[4]+", "+a[5]+", "+a[6]+", "+a[7]+", "+a[8]+")"},e.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2)+Math.pow(a[4],2)+Math.pow(a[5],2)+Math.pow(a[6],2)+Math.pow(a[7],2)+Math.pow(a[8],2))},a.exports=e},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(16);return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=1,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=1,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.clone=function(a){var b=new d.ARRAY_TYPE(16);return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8],b[9]=a[9],b[10]=a[10],b[11]=a[11],b[12]=a[12],b[13]=a[13],b[14]=a[14],b[15]=a[15],b},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[3],a[4]=b[4],a[5]=b[5],a[6]=b[6],a[7]=b[7],a[8]=b[8],a[9]=b[9],a[10]=b[10],a[11]=b[11],a[12]=b[12],a[13]=b[13],a[14]=b[14],a[15]=b[15],a},e.identity=function(a){return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=1,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=1,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.transpose=function(a,b){if(a===b){var c=b[1],d=b[2],e=b[3],f=b[6],g=b[7],h=b[11];a[1]=b[4],a[2]=b[8],a[3]=b[12],a[4]=c,a[6]=b[9],a[7]=b[13],a[8]=d,a[9]=f,a[11]=b[14],a[12]=e,a[13]=g,a[14]=h}else a[0]=b[0],a[1]=b[4],a[2]=b[8],a[3]=b[12],a[4]=b[1],a[5]=b[5],a[6]=b[9],a[7]=b[13],a[8]=b[2],a[9]=b[6],a[10]=b[10],a[11]=b[14],a[12]=b[3],a[13]=b[7],a[14]=b[11],a[15]=b[15];return a},e.invert=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=b[4],h=b[5],i=b[6],j=b[7],k=b[8],l=b[9],m=b[10],n=b[11],o=b[12],p=b[13],q=b[14],r=b[15],s=c*h-d*g,t=c*i-e*g,u=c*j-f*g,v=d*i-e*h,w=d*j-f*h,x=e*j-f*i,y=k*p-l*o,z=k*q-m*o,A=k*r-n*o,B=l*q-m*p,C=l*r-n*p,D=m*r-n*q,E=s*D-t*C+u*B+v*A-w*z+x*y;return E?(E=1/E,a[0]=(h*D-i*C+j*B)*E,a[1]=(e*C-d*D-f*B)*E,a[2]=(p*x-q*w+r*v)*E,a[3]=(m*w-l*x-n*v)*E,a[4]=(i*A-g*D-j*z)*E,a[5]=(c*D-e*A+f*z)*E,a[6]=(q*u-o*x-r*t)*E,a[7]=(k*x-m*u+n*t)*E,a[8]=(g*C-h*A+j*y)*E,a[9]=(d*A-c*C-f*y)*E,a[10]=(o*w-p*u+r*s)*E,a[11]=(l*u-k*w-n*s)*E,a[12]=(h*z-g*B-i*y)*E,a[13]=(c*B-d*z+e*y)*E,a[14]=(p*t-o*v-q*s)*E,a[15]=(k*v-l*t+m*s)*E,a):null},e.adjoint=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=b[4],h=b[5],i=b[6],j=b[7],k=b[8],l=b[9],m=b[10],n=b[11],o=b[12],p=b[13],q=b[14],r=b[15];return a[0]=h*(m*r-n*q)-l*(i*r-j*q)+p*(i*n-j*m),a[1]=-(d*(m*r-n*q)-l*(e*r-f*q)+p*(e*n-f*m)),a[2]=d*(i*r-j*q)-h*(e*r-f*q)+p*(e*j-f*i),a[3]=-(d*(i*n-j*m)-h*(e*n-f*m)+l*(e*j-f*i)),a[4]=-(g*(m*r-n*q)-k*(i*r-j*q)+o*(i*n-j*m)),a[5]=c*(m*r-n*q)-k*(e*r-f*q)+o*(e*n-f*m),a[6]=-(c*(i*r-j*q)-g*(e*r-f*q)+o*(e*j-f*i)),a[7]=c*(i*n-j*m)-g*(e*n-f*m)+k*(e*j-f*i),a[8]=g*(l*r-n*p)-k*(h*r-j*p)+o*(h*n-j*l),a[9]=-(c*(l*r-n*p)-k*(d*r-f*p)+o*(d*n-f*l)),a[10]=c*(h*r-j*p)-g*(d*r-f*p)+o*(d*j-f*h),a[11]=-(c*(h*n-j*l)-g*(d*n-f*l)+k*(d*j-f*h)),a[12]=-(g*(l*q-m*p)-k*(h*q-i*p)+o*(h*m-i*l)),a[13]=c*(l*q-m*p)-k*(d*q-e*p)+o*(d*m-e*l),a[14]=-(c*(h*q-i*p)-g*(d*q-e*p)+o*(d*i-e*h)),a[15]=c*(h*m-i*l)-g*(d*m-e*l)+k*(d*i-e*h),a},e.determinant=function(a){var b=a[0],c=a[1],d=a[2],e=a[3],f=a[4],g=a[5],h=a[6],i=a[7],j=a[8],k=a[9],l=a[10],m=a[11],n=a[12],o=a[13],p=a[14],q=a[15],r=b*g-c*f,s=b*h-d*f,t=b*i-e*f,u=c*h-d*g,v=c*i-e*g,w=d*i-e*h,x=j*o-k*n,y=j*p-l*n,z=j*q-m*n,A=k*p-l*o,B=k*q-m*o,C=l*q-m*p;return r*C-s*B+t*A+u*z-v*y+w*x},e.multiply=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=b[6],k=b[7],l=b[8],m=b[9],n=b[10],o=b[11],p=b[12],q=b[13],r=b[14],s=b[15],t=c[0],u=c[1],v=c[2],w=c[3];return a[0]=t*d+u*h+v*l+w*p,a[1]=t*e+u*i+v*m+w*q,a[2]=t*f+u*j+v*n+w*r,a[3]=t*g+u*k+v*o+w*s,t=c[4],u=c[5],v=c[6],w=c[7],a[4]=t*d+u*h+v*l+w*p,a[5]=t*e+u*i+v*m+w*q,a[6]=t*f+u*j+v*n+w*r,a[7]=t*g+u*k+v*o+w*s,t=c[8],u=c[9],v=c[10],w=c[11],a[8]=t*d+u*h+v*l+w*p,a[9]=t*e+u*i+v*m+w*q,a[10]=t*f+u*j+v*n+w*r,a[11]=t*g+u*k+v*o+w*s,t=c[12],u=c[13],v=c[14],w=c[15],a[12]=t*d+u*h+v*l+w*p,a[13]=t*e+u*i+v*m+w*q,a[14]=t*f+u*j+v*n+w*r,a[15]=t*g+u*k+v*o+w*s,a},e.mul=e.multiply,e.translate=function(a,b,c){var d,e,f,g,h,i,j,k,l,m,n,o,p=c[0],q=c[1],r=c[2];return b===a?(a[12]=b[0]*p+b[4]*q+b[8]*r+b[12],a[13]=b[1]*p+b[5]*q+b[9]*r+b[13],a[14]=b[2]*p+b[6]*q+b[10]*r+b[14],a[15]=b[3]*p+b[7]*q+b[11]*r+b[15]):(d=b[0],e=b[1],f=b[2],g=b[3],h=b[4],i=b[5],j=b[6],k=b[7],l=b[8],m=b[9],n=b[10],o=b[11],a[0]=d,a[1]=e,a[2]=f,a[3]=g,a[4]=h,a[5]=i,a[6]=j,a[7]=k,a[8]=l,a[9]=m,a[10]=n,a[11]=o,a[12]=d*p+h*q+l*r+b[12],a[13]=e*p+i*q+m*r+b[13],a[14]=f*p+j*q+n*r+b[14],a[15]=g*p+k*q+o*r+b[15]),a},e.scale=function(a,b,c){var d=c[0],e=c[1],f=c[2];return a[0]=b[0]*d,a[1]=b[1]*d,a[2]=b[2]*d,a[3]=b[3]*d,a[4]=b[4]*e,a[5]=b[5]*e,a[6]=b[6]*e,a[7]=b[7]*e,a[8]=b[8]*f,a[9]=b[9]*f,a[10]=b[10]*f,a[11]=b[11]*f,a[12]=b[12],a[13]=b[13],a[14]=b[14],a[15]=b[15],a},e.rotate=function(a,b,c,e){var f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D=e[0],E=e[1],F=e[2],G=Math.sqrt(D*D+E*E+F*F);return Math.abs(G)<d.EPSILON?null:(G=1/G,D*=G,E*=G,F*=G,f=Math.sin(c),g=Math.cos(c),h=1-g,i=b[0],j=b[1],k=b[2],l=b[3],m=b[4],n=b[5],o=b[6],p=b[7],q=b[8],r=b[9],s=b[10],t=b[11],u=D*D*h+g,v=E*D*h+F*f,w=F*D*h-E*f,x=D*E*h-F*f,y=E*E*h+g,z=F*E*h+D*f,A=D*F*h+E*f,B=E*F*h-D*f,C=F*F*h+g,a[0]=i*u+m*v+q*w,a[1]=j*u+n*v+r*w,a[2]=k*u+o*v+s*w,a[3]=l*u+p*v+t*w,a[4]=i*x+m*y+q*z,a[5]=j*x+n*y+r*z,a[6]=k*x+o*y+s*z,a[7]=l*x+p*y+t*z,a[8]=i*A+m*B+q*C,a[9]=j*A+n*B+r*C,a[10]=k*A+o*B+s*C,a[11]=l*A+p*B+t*C,b!==a&&(a[12]=b[12],a[13]=b[13],a[14]=b[14],a[15]=b[15]),a)},e.rotateX=function(a,b,c){var d=Math.sin(c),e=Math.cos(c),f=b[4],g=b[5],h=b[6],i=b[7],j=b[8],k=b[9],l=b[10],m=b[11];return b!==a&&(a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[3],a[12]=b[12],a[13]=b[13],a[14]=b[14],a[15]=b[15]),a[4]=f*e+j*d,a[5]=g*e+k*d,a[6]=h*e+l*d,a[7]=i*e+m*d,a[8]=j*e-f*d,a[9]=k*e-g*d,a[10]=l*e-h*d,a[11]=m*e-i*d,a},e.rotateY=function(a,b,c){var d=Math.sin(c),e=Math.cos(c),f=b[0],g=b[1],h=b[2],i=b[3],j=b[8],k=b[9],l=b[10],m=b[11];return b!==a&&(a[4]=b[4],a[5]=b[5],a[6]=b[6],a[7]=b[7],a[12]=b[12],a[13]=b[13],a[14]=b[14],a[15]=b[15]),a[0]=f*e-j*d,a[1]=g*e-k*d,a[2]=h*e-l*d,a[3]=i*e-m*d,a[8]=f*d+j*e,a[9]=g*d+k*e,a[10]=h*d+l*e,a[11]=i*d+m*e,a},e.rotateZ=function(a,b,c){var d=Math.sin(c),e=Math.cos(c),f=b[0],g=b[1],h=b[2],i=b[3],j=b[4],k=b[5],l=b[6],m=b[7];return b!==a&&(a[8]=b[8],a[9]=b[9],a[10]=b[10],a[11]=b[11],a[12]=b[12],a[13]=b[13],a[14]=b[14],a[15]=b[15]),a[0]=f*e+j*d,a[1]=g*e+k*d,a[2]=h*e+l*d,a[3]=i*e+m*d,a[4]=j*e-f*d,a[5]=k*e-g*d,a[6]=l*e-h*d,a[7]=m*e-i*d,a},e.fromTranslation=function(a,b){return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=1,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=1,a[11]=0,a[12]=b[0],a[13]=b[1],a[14]=b[2],a[15]=1,a},e.fromScaling=function(a,b){return a[0]=b[0],a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=b[1],a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=b[2],a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.fromRotation=function(a,b,c){var e,f,g,h=c[0],i=c[1],j=c[2],k=Math.sqrt(h*h+i*i+j*j);return Math.abs(k)<d.EPSILON?null:(k=1/k,h*=k,i*=k,j*=k,e=Math.sin(b),f=Math.cos(b),g=1-f,a[0]=h*h*g+f,a[1]=i*h*g+j*e,a[2]=j*h*g-i*e,a[3]=0,a[4]=h*i*g-j*e,a[5]=i*i*g+f,a[6]=j*i*g+h*e,a[7]=0,a[8]=h*j*g+i*e,a[9]=i*j*g-h*e,a[10]=j*j*g+f,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a)},e.fromXRotation=function(a,b){var c=Math.sin(b),d=Math.cos(b);return a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=d,a[6]=c,a[7]=0,a[8]=0,a[9]=-c,a[10]=d,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.fromYRotation=function(a,b){var c=Math.sin(b),d=Math.cos(b);return a[0]=d,a[1]=0,a[2]=-c,a[3]=0,a[4]=0,a[5]=1,a[6]=0,a[7]=0,a[8]=c,a[9]=0,a[10]=d,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.fromZRotation=function(a,b){var c=Math.sin(b),d=Math.cos(b);return a[0]=d,a[1]=c,a[2]=0,a[3]=0,a[4]=-c,a[5]=d,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=1,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.fromRotationTranslation=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=d+d,i=e+e,j=f+f,k=d*h,l=d*i,m=d*j,n=e*i,o=e*j,p=f*j,q=g*h,r=g*i,s=g*j;return a[0]=1-(n+p),a[1]=l+s,a[2]=m-r,a[3]=0,a[4]=l-s,a[5]=1-(k+p),a[6]=o+q,a[7]=0,a[8]=m+r,a[9]=o-q,a[10]=1-(k+n),a[11]=0,a[12]=c[0],a[13]=c[1],a[14]=c[2],a[15]=1,a},e.fromRotationTranslationScale=function(a,b,c,d){var e=b[0],f=b[1],g=b[2],h=b[3],i=e+e,j=f+f,k=g+g,l=e*i,m=e*j,n=e*k,o=f*j,p=f*k,q=g*k,r=h*i,s=h*j,t=h*k,u=d[0],v=d[1],w=d[2];return a[0]=(1-(o+q))*u,a[1]=(m+t)*u,a[2]=(n-s)*u,a[3]=0,a[4]=(m-t)*v,a[5]=(1-(l+q))*v,a[6]=(p+r)*v,a[7]=0,a[8]=(n+s)*w,a[9]=(p-r)*w,a[10]=(1-(l+o))*w,a[11]=0,a[12]=c[0],a[13]=c[1],a[14]=c[2],a[15]=1,a},e.fromRotationTranslationScaleOrigin=function(a,b,c,d,e){var f=b[0],g=b[1],h=b[2],i=b[3],j=f+f,k=g+g,l=h+h,m=f*j,n=f*k,o=f*l,p=g*k,q=g*l,r=h*l,s=i*j,t=i*k,u=i*l,v=d[0],w=d[1],x=d[2],y=e[0],z=e[1],A=e[2];return a[0]=(1-(p+r))*v,a[1]=(n+u)*v,a[2]=(o-t)*v,a[3]=0,a[4]=(n-u)*w,a[5]=(1-(m+r))*w,a[6]=(q+s)*w,a[7]=0,a[8]=(o+t)*x,a[9]=(q-s)*x,a[10]=(1-(m+p))*x,a[11]=0,a[12]=c[0]+y-(a[0]*y+a[4]*z+a[8]*A),a[13]=c[1]+z-(a[1]*y+a[5]*z+a[9]*A),a[14]=c[2]+A-(a[2]*y+a[6]*z+a[10]*A),a[15]=1,a},e.fromQuat=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=c+c,h=d+d,i=e+e,j=c*g,k=d*g,l=d*h,m=e*g,n=e*h,o=e*i,p=f*g,q=f*h,r=f*i;return a[0]=1-l-o,a[1]=k+r,a[2]=m-q,a[3]=0,a[4]=k-r,a[5]=1-j-o,a[6]=n+p,a[7]=0,a[8]=m+q,a[9]=n-p,a[10]=1-j-l,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},e.frustum=function(a,b,c,d,e,f,g){var h=1/(c-b),i=1/(e-d),j=1/(f-g);return a[0]=2*f*h,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=2*f*i,a[6]=0,a[7]=0,a[8]=(c+b)*h,a[9]=(e+d)*i,a[10]=(g+f)*j,a[11]=-1,a[12]=0,a[13]=0,a[14]=g*f*2*j,a[15]=0,a},e.perspective=function(a,b,c,d,e){var f=1/Math.tan(b/2),g=1/(d-e);return a[0]=f/c,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=f,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=(e+d)*g,a[11]=-1,a[12]=0,a[13]=0,a[14]=2*e*d*g,a[15]=0,a},e.perspectiveFromFieldOfView=function(a,b,c,d){var e=Math.tan(b.upDegrees*Math.PI/180),f=Math.tan(b.downDegrees*Math.PI/180),g=Math.tan(b.leftDegrees*Math.PI/180),h=Math.tan(b.rightDegrees*Math.PI/180),i=2/(g+h),j=2/(e+f);return a[0]=i,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=j,a[6]=0,a[7]=0,a[8]=-((g-h)*i*.5),a[9]=(e-f)*j*.5,a[10]=d/(c-d),a[11]=-1,a[12]=0,a[13]=0,a[14]=d*c/(c-d),a[15]=0,a},e.ortho=function(a,b,c,d,e,f,g){var h=1/(b-c),i=1/(d-e),j=1/(f-g);return a[0]=-2*h,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=-2*i,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=2*j,a[11]=0,a[12]=(b+c)*h,a[13]=(e+d)*i,a[14]=(g+f)*j,a[15]=1,a},e.lookAt=function(a,b,c,f){var g,h,i,j,k,l,m,n,o,p,q=b[0],r=b[1],s=b[2],t=f[0],u=f[1],v=f[2],w=c[0],x=c[1],y=c[2];return Math.abs(q-w)<d.EPSILON&&Math.abs(r-x)<d.EPSILON&&Math.abs(s-y)<d.EPSILON?e.identity(a):(m=q-w,n=r-x,o=s-y,p=1/Math.sqrt(m*m+n*n+o*o),m*=p,n*=p,o*=p,g=u*o-v*n,h=v*m-t*o,i=t*n-u*m,p=Math.sqrt(g*g+h*h+i*i),p?(p=1/p,g*=p,h*=p,i*=p):(g=0,h=0,i=0),j=n*i-o*h,k=o*g-m*i,l=m*h-n*g,p=Math.sqrt(j*j+k*k+l*l),p?(p=1/p,j*=p,k*=p,l*=p):(j=0,k=0,l=0),a[0]=g,a[1]=j,a[2]=m,a[3]=0,a[4]=h,a[5]=k,a[6]=n,a[7]=0,a[8]=i,a[9]=l,a[10]=o,a[11]=0,a[12]=-(g*q+h*r+i*s),a[13]=-(j*q+k*r+l*s),a[14]=-(m*q+n*r+o*s),a[15]=1,a)},e.str=function(a){return"mat4("+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+", "+a[4]+", "+a[5]+", "+a[6]+", "+a[7]+", "+a[8]+", "+a[9]+", "+a[10]+", "+a[11]+", "+a[12]+", "+a[13]+", "+a[14]+", "+a[15]+")"},e.frob=function(a){return Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2)+Math.pow(a[3],2)+Math.pow(a[4],2)+Math.pow(a[5],2)+Math.pow(a[6],2)+Math.pow(a[7],2)+Math.pow(a[8],2)+Math.pow(a[9],2)+Math.pow(a[10],2)+Math.pow(a[11],2)+Math.pow(a[12],2)+Math.pow(a[13],2)+Math.pow(a[14],2)+Math.pow(a[15],2))},a.exports=e},function(a,b,c){var d=c(1),e=c(4),f=c(7),g=c(8),h={};h.create=function(){var a=new d.ARRAY_TYPE(4);return a[0]=0,a[1]=0,a[2]=0,a[3]=1,a},h.rotationTo=function(){var a=f.create(),b=f.fromValues(1,0,0),c=f.fromValues(0,1,0);return function(d,e,g){var i=f.dot(e,g);return-.999999>i?(f.cross(a,b,e),f.length(a)<1e-6&&f.cross(a,c,e),f.normalize(a,a),h.setAxisAngle(d,a,Math.PI),d):i>.999999?(d[0]=0,d[1]=0,d[2]=0,d[3]=1,d):(f.cross(a,e,g),d[0]=a[0],d[1]=a[1],d[2]=a[2],d[3]=1+i,h.normalize(d,d))}}(),h.setAxes=function(){var a=e.create();return function(b,c,d,e){return a[0]=d[0],a[3]=d[1],a[6]=d[2],a[1]=e[0],a[4]=e[1],a[7]=e[2],a[2]=-c[0],a[5]=-c[1],a[8]=-c[2],h.normalize(b,h.fromMat3(b,a))}}(),h.clone=g.clone,h.fromValues=g.fromValues,h.copy=g.copy,h.set=g.set,h.identity=function(a){return a[0]=0,a[1]=0,a[2]=0,a[3]=1,a},h.setAxisAngle=function(a,b,c){c=.5*c;var d=Math.sin(c);return a[0]=d*b[0],a[1]=d*b[1],a[2]=d*b[2],a[3]=Math.cos(c),a},h.add=g.add,h.multiply=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3],h=c[0],i=c[1],j=c[2],k=c[3];return a[0]=d*k+g*h+e*j-f*i,a[1]=e*k+g*i+f*h-d*j,a[2]=f*k+g*j+d*i-e*h,a[3]=g*k-d*h-e*i-f*j,a},h.mul=h.multiply,h.scale=g.scale,h.rotateX=function(a,b,c){c*=.5;var d=b[0],e=b[1],f=b[2],g=b[3],h=Math.sin(c),i=Math.cos(c);return a[0]=d*i+g*h,a[1]=e*i+f*h,a[2]=f*i-e*h,a[3]=g*i-d*h,a},h.rotateY=function(a,b,c){c*=.5;var d=b[0],e=b[1],f=b[2],g=b[3],h=Math.sin(c),i=Math.cos(c);return a[0]=d*i-f*h,a[1]=e*i+g*h,a[2]=f*i+d*h,a[3]=g*i-e*h,a},h.rotateZ=function(a,b,c){c*=.5;var d=b[0],e=b[1],f=b[2],g=b[3],h=Math.sin(c),i=Math.cos(c);return a[0]=d*i+e*h,a[1]=e*i-d*h,a[2]=f*i+g*h,a[3]=g*i-f*h,a},h.calculateW=function(a,b){var c=b[0],d=b[1],e=b[2];return a[0]=c,a[1]=d,a[2]=e,a[3]=Math.sqrt(Math.abs(1-c*c-d*d-e*e)),a},h.dot=g.dot,h.lerp=g.lerp,h.slerp=function(a,b,c,d){var e,f,g,h,i,j=b[0],k=b[1],l=b[2],m=b[3],n=c[0],o=c[1],p=c[2],q=c[3];return f=j*n+k*o+l*p+m*q,0>f&&(f=-f,n=-n,o=-o,p=-p,q=-q),1-f>1e-6?(e=Math.acos(f),g=Math.sin(e),h=Math.sin((1-d)*e)/g,i=Math.sin(d*e)/g):(h=1-d,i=d),a[0]=h*j+i*n,a[1]=h*k+i*o,a[2]=h*l+i*p,a[3]=h*m+i*q,a},h.sqlerp=function(){var a=h.create(),b=h.create();return function(c,d,e,f,g,i){return h.slerp(a,d,g,i),h.slerp(b,e,f,i),h.slerp(c,a,b,2*i*(1-i)),c}}(),h.invert=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=c*c+d*d+e*e+f*f,h=g?1/g:0;return a[0]=-c*h,a[1]=-d*h,a[2]=-e*h,a[3]=f*h,a},h.conjugate=function(a,b){return a[0]=-b[0],a[1]=-b[1],a[2]=-b[2],a[3]=b[3],a},h.length=g.length,h.len=h.length,h.squaredLength=g.squaredLength,h.sqrLen=h.squaredLength,h.normalize=g.normalize,h.fromMat3=function(a,b){var c,d=b[0]+b[4]+b[8];if(d>0)c=Math.sqrt(d+1),a[3]=.5*c,c=.5/c,a[0]=(b[5]-b[7])*c,a[1]=(b[6]-b[2])*c,a[2]=(b[1]-b[3])*c;else{var e=0;b[4]>b[0]&&(e=1),b[8]>b[3*e+e]&&(e=2);var f=(e+1)%3,g=(e+2)%3;c=Math.sqrt(b[3*e+e]-b[3*f+f]-b[3*g+g]+1),a[e]=.5*c,c=.5/c,a[3]=(b[3*f+g]-b[3*g+f])*c,a[f]=(b[3*f+e]+b[3*e+f])*c,a[g]=(b[3*g+e]+b[3*e+g])*c}return a},h.str=function(a){return"quat("+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+")"},a.exports=h},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(3);return a[0]=0,a[1]=0,a[2]=0,a},e.clone=function(a){var b=new d.ARRAY_TYPE(3);return b[0]=a[0],b[1]=a[1],b[2]=a[2],b},e.fromValues=function(a,b,c){var e=new d.ARRAY_TYPE(3);return e[0]=a,e[1]=b,e[2]=c,e},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a},e.set=function(a,b,c,d){return a[0]=b,a[1]=c,a[2]=d,a},e.add=function(a,b,c){return a[0]=b[0]+c[0],a[1]=b[1]+c[1],a[2]=b[2]+c[2],a},e.subtract=function(a,b,c){return a[0]=b[0]-c[0],a[1]=b[1]-c[1],a[2]=b[2]-c[2],a},e.sub=e.subtract,e.multiply=function(a,b,c){return a[0]=b[0]*c[0],a[1]=b[1]*c[1],a[2]=b[2]*c[2],a},e.mul=e.multiply,e.divide=function(a,b,c){return a[0]=b[0]/c[0],a[1]=b[1]/c[1],a[2]=b[2]/c[2],a},e.div=e.divide,e.min=function(a,b,c){return a[0]=Math.min(b[0],c[0]),a[1]=Math.min(b[1],c[1]),a[2]=Math.min(b[2],c[2]),a},e.max=function(a,b,c){return a[0]=Math.max(b[0],c[0]),a[1]=Math.max(b[1],c[1]),a[2]=Math.max(b[2],c[2]),a},e.scale=function(a,b,c){return a[0]=b[0]*c,a[1]=b[1]*c,a[2]=b[2]*c,a},e.scaleAndAdd=function(a,b,c,d){return a[0]=b[0]+c[0]*d,a[1]=b[1]+c[1]*d,a[2]=b[2]+c[2]*d,a},e.distance=function(a,b){var c=b[0]-a[0],d=b[1]-a[1],e=b[2]-a[2];return Math.sqrt(c*c+d*d+e*e)},e.dist=e.distance,e.squaredDistance=function(a,b){var c=b[0]-a[0],d=b[1]-a[1],e=b[2]-a[2];return c*c+d*d+e*e},e.sqrDist=e.squaredDistance,e.length=function(a){var b=a[0],c=a[1],d=a[2];return Math.sqrt(b*b+c*c+d*d)},e.len=e.length,e.squaredLength=function(a){var b=a[0],c=a[1],d=a[2];return b*b+c*c+d*d},e.sqrLen=e.squaredLength,e.negate=function(a,b){return a[0]=-b[0],a[1]=-b[1],a[2]=-b[2],a},e.inverse=function(a,b){return a[0]=1/b[0],a[1]=1/b[1],a[2]=1/b[2],a},e.normalize=function(a,b){var c=b[0],d=b[1],e=b[2],f=c*c+d*d+e*e;return f>0&&(f=1/Math.sqrt(f),a[0]=b[0]*f,a[1]=b[1]*f,a[2]=b[2]*f),a},e.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]},e.cross=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=c[0],h=c[1],i=c[2];return a[0]=e*i-f*h,a[1]=f*g-d*i,a[2]=d*h-e*g,a},e.lerp=function(a,b,c,d){var e=b[0],f=b[1],g=b[2];return a[0]=e+d*(c[0]-e),a[1]=f+d*(c[1]-f),a[2]=g+d*(c[2]-g),a},e.hermite=function(a,b,c,d,e,f){var g=f*f,h=g*(2*f-3)+1,i=g*(f-2)+f,j=g*(f-1),k=g*(3-2*f);return a[0]=b[0]*h+c[0]*i+d[0]*j+e[0]*k,a[1]=b[1]*h+c[1]*i+d[1]*j+e[1]*k,a[2]=b[2]*h+c[2]*i+d[2]*j+e[2]*k,a},e.bezier=function(a,b,c,d,e,f){var g=1-f,h=g*g,i=f*f,j=h*g,k=3*f*h,l=3*i*g,m=i*f;return a[0]=b[0]*j+c[0]*k+d[0]*l+e[0]*m,a[1]=b[1]*j+c[1]*k+d[1]*l+e[1]*m,a[2]=b[2]*j+c[2]*k+d[2]*l+e[2]*m,a},e.random=function(a,b){b=b||1;var c=2*d.RANDOM()*Math.PI,e=2*d.RANDOM()-1,f=Math.sqrt(1-e*e)*b;return a[0]=Math.cos(c)*f,a[1]=Math.sin(c)*f,a[2]=e*b,a},e.transformMat4=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=c[3]*d+c[7]*e+c[11]*f+c[15];return g=g||1,a[0]=(c[0]*d+c[4]*e+c[8]*f+c[12])/g,a[1]=(c[1]*d+c[5]*e+c[9]*f+c[13])/g,a[2]=(c[2]*d+c[6]*e+c[10]*f+c[14])/g,a},e.transformMat3=function(a,b,c){var d=b[0],e=b[1],f=b[2];return a[0]=d*c[0]+e*c[3]+f*c[6],a[1]=d*c[1]+e*c[4]+f*c[7],a[2]=d*c[2]+e*c[5]+f*c[8],a},e.transformQuat=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=c[0],h=c[1],i=c[2],j=c[3],k=j*d+h*f-i*e,l=j*e+i*d-g*f,m=j*f+g*e-h*d,n=-g*d-h*e-i*f;return a[0]=k*j+n*-g+l*-i-m*-h,a[1]=l*j+n*-h+m*-g-k*-i,a[2]=m*j+n*-i+k*-h-l*-g,a},e.rotateX=function(a,b,c,d){var e=[],f=[];return e[0]=b[0]-c[0],e[1]=b[1]-c[1],e[2]=b[2]-c[2],f[0]=e[0],f[1]=e[1]*Math.cos(d)-e[2]*Math.sin(d),f[2]=e[1]*Math.sin(d)+e[2]*Math.cos(d),a[0]=f[0]+c[0],a[1]=f[1]+c[1],a[2]=f[2]+c[2],a},e.rotateY=function(a,b,c,d){var e=[],f=[];return e[0]=b[0]-c[0],e[1]=b[1]-c[1],e[2]=b[2]-c[2],f[0]=e[2]*Math.sin(d)+e[0]*Math.cos(d),f[1]=e[1],f[2]=e[2]*Math.cos(d)-e[0]*Math.sin(d),a[0]=f[0]+c[0],a[1]=f[1]+c[1],a[2]=f[2]+c[2],a},e.rotateZ=function(a,b,c,d){var e=[],f=[];return e[0]=b[0]-c[0],e[1]=b[1]-c[1],e[2]=b[2]-c[2],f[0]=e[0]*Math.cos(d)-e[1]*Math.sin(d),f[1]=e[0]*Math.sin(d)+e[1]*Math.cos(d),f[2]=e[2],a[0]=f[0]+c[0],a[1]=f[1]+c[1],a[2]=f[2]+c[2],a},e.forEach=function(){var a=e.create();return function(b,c,d,e,f,g){var h,i;for(c||(c=3),d||(d=0),i=e?Math.min(e*c+d,b.length):b.length,h=d;i>h;h+=c)a[0]=b[h],a[1]=b[h+1],a[2]=b[h+2],f(a,a,g),b[h]=a[0],b[h+1]=a[1],b[h+2]=a[2];return b}}(),e.angle=function(a,b){var c=e.fromValues(a[0],a[1],a[2]),d=e.fromValues(b[0],b[1],b[2]);e.normalize(c,c),e.normalize(d,d);var f=e.dot(c,d);return f>1?0:Math.acos(f)},e.str=function(a){return"vec3("+a[0]+", "+a[1]+", "+a[2]+")"},a.exports=e},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(4);return a[0]=0,a[1]=0,a[2]=0,a[3]=0,a},e.clone=function(a){var b=new d.ARRAY_TYPE(4);return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b},e.fromValues=function(a,b,c,e){var f=new d.ARRAY_TYPE(4);return f[0]=a,f[1]=b,f[2]=c,f[3]=e,f},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a[2]=b[2],a[3]=b[3],a},e.set=function(a,b,c,d,e){return a[0]=b,a[1]=c,a[2]=d,a[3]=e,a},e.add=function(a,b,c){return a[0]=b[0]+c[0],a[1]=b[1]+c[1],a[2]=b[2]+c[2],a[3]=b[3]+c[3],a},e.subtract=function(a,b,c){return a[0]=b[0]-c[0],a[1]=b[1]-c[1],a[2]=b[2]-c[2],a[3]=b[3]-c[3],a},e.sub=e.subtract,e.multiply=function(a,b,c){return a[0]=b[0]*c[0],a[1]=b[1]*c[1],a[2]=b[2]*c[2],a[3]=b[3]*c[3],a},e.mul=e.multiply,e.divide=function(a,b,c){return a[0]=b[0]/c[0],a[1]=b[1]/c[1],a[2]=b[2]/c[2],a[3]=b[3]/c[3],a},e.div=e.divide,e.min=function(a,b,c){return a[0]=Math.min(b[0],c[0]),a[1]=Math.min(b[1],c[1]),a[2]=Math.min(b[2],c[2]),a[3]=Math.min(b[3],c[3]),a},e.max=function(a,b,c){return a[0]=Math.max(b[0],c[0]),a[1]=Math.max(b[1],c[1]),a[2]=Math.max(b[2],c[2]),a[3]=Math.max(b[3],c[3]),a},e.scale=function(a,b,c){return a[0]=b[0]*c,a[1]=b[1]*c,a[2]=b[2]*c,a[3]=b[3]*c,a},e.scaleAndAdd=function(a,b,c,d){return a[0]=b[0]+c[0]*d,a[1]=b[1]+c[1]*d,a[2]=b[2]+c[2]*d,a[3]=b[3]+c[3]*d,a},e.distance=function(a,b){var c=b[0]-a[0],d=b[1]-a[1],e=b[2]-a[2],f=b[3]-a[3];return Math.sqrt(c*c+d*d+e*e+f*f)},e.dist=e.distance,e.squaredDistance=function(a,b){var c=b[0]-a[0],d=b[1]-a[1],e=b[2]-a[2],f=b[3]-a[3];return c*c+d*d+e*e+f*f},e.sqrDist=e.squaredDistance,e.length=function(a){var b=a[0],c=a[1],d=a[2],e=a[3];return Math.sqrt(b*b+c*c+d*d+e*e)},e.len=e.length,e.squaredLength=function(a){var b=a[0],c=a[1],d=a[2],e=a[3];return b*b+c*c+d*d+e*e},e.sqrLen=e.squaredLength,e.negate=function(a,b){return a[0]=-b[0],a[1]=-b[1],a[2]=-b[2],a[3]=-b[3],a},e.inverse=function(a,b){return a[0]=1/b[0],a[1]=1/b[1],a[2]=1/b[2],a[3]=1/b[3],a},e.normalize=function(a,b){var c=b[0],d=b[1],e=b[2],f=b[3],g=c*c+d*d+e*e+f*f;return g>0&&(g=1/Math.sqrt(g),a[0]=c*g,a[1]=d*g,a[2]=e*g,a[3]=f*g),a},e.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]},e.lerp=function(a,b,c,d){var e=b[0],f=b[1],g=b[2],h=b[3];return a[0]=e+d*(c[0]-e),a[1]=f+d*(c[1]-f),a[2]=g+d*(c[2]-g),a[3]=h+d*(c[3]-h),a},e.random=function(a,b){return b=b||1,a[0]=d.RANDOM(),a[1]=d.RANDOM(),a[2]=d.RANDOM(),a[3]=d.RANDOM(),e.normalize(a,a),e.scale(a,a,b),a},e.transformMat4=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=b[3];return a[0]=c[0]*d+c[4]*e+c[8]*f+c[12]*g,a[1]=c[1]*d+c[5]*e+c[9]*f+c[13]*g,a[2]=c[2]*d+c[6]*e+c[10]*f+c[14]*g,a[3]=c[3]*d+c[7]*e+c[11]*f+c[15]*g,a},e.transformQuat=function(a,b,c){var d=b[0],e=b[1],f=b[2],g=c[0],h=c[1],i=c[2],j=c[3],k=j*d+h*f-i*e,l=j*e+i*d-g*f,m=j*f+g*e-h*d,n=-g*d-h*e-i*f;return a[0]=k*j+n*-g+l*-i-m*-h,a[1]=l*j+n*-h+m*-g-k*-i,a[2]=m*j+n*-i+k*-h-l*-g,a[3]=b[3],a},e.forEach=function(){var a=e.create();return function(b,c,d,e,f,g){var h,i;for(c||(c=4),d||(d=0),i=e?Math.min(e*c+d,b.length):b.length,h=d;i>h;h+=c)a[0]=b[h],a[1]=b[h+1],a[2]=b[h+2],a[3]=b[h+3],f(a,a,g),b[h]=a[0],b[h+1]=a[1],b[h+2]=a[2],b[h+3]=a[3];return b}}(),e.str=function(a){return"vec4("+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+")"},a.exports=e},function(a,b,c){var d=c(1),e={};e.create=function(){var a=new d.ARRAY_TYPE(2);return a[0]=0,a[1]=0,a},e.clone=function(a){var b=new d.ARRAY_TYPE(2);return b[0]=a[0],b[1]=a[1],b},e.fromValues=function(a,b){var c=new d.ARRAY_TYPE(2);return c[0]=a,c[1]=b,c},e.copy=function(a,b){return a[0]=b[0],a[1]=b[1],a},e.set=function(a,b,c){return a[0]=b,a[1]=c,a},e.add=function(a,b,c){return a[0]=b[0]+c[0],a[1]=b[1]+c[1],a},e.subtract=function(a,b,c){return a[0]=b[0]-c[0],a[1]=b[1]-c[1],a},e.sub=e.subtract,e.multiply=function(a,b,c){return a[0]=b[0]*c[0],a[1]=b[1]*c[1],a},e.mul=e.multiply,e.divide=function(a,b,c){return a[0]=b[0]/c[0],a[1]=b[1]/c[1],a},e.div=e.divide,e.min=function(a,b,c){return a[0]=Math.min(b[0],c[0]),a[1]=Math.min(b[1],c[1]),a},e.max=function(a,b,c){return a[0]=Math.max(b[0],c[0]),a[1]=Math.max(b[1],c[1]),a},e.scale=function(a,b,c){return a[0]=b[0]*c,a[1]=b[1]*c,a},e.scaleAndAdd=function(a,b,c,d){return a[0]=b[0]+c[0]*d,a[1]=b[1]+c[1]*d,a},e.distance=function(a,b){var c=b[0]-a[0],d=b[1]-a[1];return Math.sqrt(c*c+d*d)},e.dist=e.distance,e.squaredDistance=function(a,b){var c=b[0]-a[0],d=b[1]-a[1];return c*c+d*d},e.sqrDist=e.squaredDistance,e.length=function(a){var b=a[0],c=a[1];return Math.sqrt(b*b+c*c)},e.len=e.length,e.squaredLength=function(a){var b=a[0],c=a[1];return b*b+c*c},e.sqrLen=e.squaredLength,e.negate=function(a,b){return a[0]=-b[0],a[1]=-b[1],a},e.inverse=function(a,b){return a[0]=1/b[0],a[1]=1/b[1],a},e.normalize=function(a,b){var c=b[0],d=b[1],e=c*c+d*d;return e>0&&(e=1/Math.sqrt(e),a[0]=b[0]*e,a[1]=b[1]*e),a},e.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]},e.cross=function(a,b,c){var d=b[0]*c[1]-b[1]*c[0];return a[0]=a[1]=0,a[2]=d,a},e.lerp=function(a,b,c,d){var e=b[0],f=b[1];return a[0]=e+d*(c[0]-e),a[1]=f+d*(c[1]-f),a},e.random=function(a,b){b=b||1;var c=2*d.RANDOM()*Math.PI;return a[0]=Math.cos(c)*b,a[1]=Math.sin(c)*b,a},e.transformMat2=function(a,b,c){var d=b[0],e=b[1];return a[0]=c[0]*d+c[2]*e,a[1]=c[1]*d+c[3]*e,a},e.transformMat2d=function(a,b,c){var d=b[0],e=b[1];return a[0]=c[0]*d+c[2]*e+c[4],a[1]=c[1]*d+c[3]*e+c[5],a},e.transformMat3=function(a,b,c){
-var d=b[0],e=b[1];return a[0]=c[0]*d+c[3]*e+c[6],a[1]=c[1]*d+c[4]*e+c[7],a},e.transformMat4=function(a,b,c){var d=b[0],e=b[1];return a[0]=c[0]*d+c[4]*e+c[12],a[1]=c[1]*d+c[5]*e+c[13],a},e.forEach=function(){var a=e.create();return function(b,c,d,e,f,g){var h,i;for(c||(c=2),d||(d=0),i=e?Math.min(e*c+d,b.length):b.length,h=d;i>h;h+=c)a[0]=b[h],a[1]=b[h+1],f(a,a,g),b[h]=a[0],b[h+1]=a[1];return b}}(),e.str=function(a){return"vec2("+a[0]+", "+a[1]+")"},a.exports=e}])}),function(){"use strict"}();var tm=tm||{};tm.global=window||global||this,null!=tm.global.Meteor&&(tm.global.tm=tm),"undefined"!=typeof module&&module.exports&&(module.exports=tm),function(){tm.VERSION="0.5.0",tm.LIB_ROOT=function(){if(window.document)for(var a=document.getElementsByTagName("script"),b=0,c=a.length;c>b;++b);}(),tm.BROWSER=function(){return window.navigator?/chrome/i.test(navigator.userAgent)?"Chrome":/safari/i.test(navigator.userAgent)?"Safari":/firefox/i.test(navigator.userAgent)?"Firefox":/opera/i.test(navigator.userAgent)?"Opera":/getcko/i.test(navigator.userAgent)?"Getcko":/msie/i.test(navigator.userAgent)?"IE":"":void 0}(),tm.VENDER_PREFIX=function(){if(window){var a={Chrome:"webkit",Safari:"webkit",Firefox:"moz",Opera:"o",IE:"ms"};return a[tm.BROWSER]||""}}(),tm.isMobile=function(){if(window.navigator){var a=navigator.userAgent;return a.indexOf("iPhone")>0||a.indexOf("iPad")>0||a.indexOf("Android")>0}}(),tm.isLocal=function(){var a="file:"==location.protocol;return function(){return a}}(),tm.createClass=function(a){a.init=a.init||function(){},a.superClass=a.superClass||null;var b=function(){var a=new b.prototype.creator;return b.prototype.init.apply(a,arguments),a};a.superClass&&(a.init.owner=b,b.prototype=Object.create(a.superClass.prototype),b.prototype.superInit=function(){var a=this.superInit.caller,b=a.owner,c=b.prototype.superClass,d=c.prototype.init;d.apply(this,arguments)},b.prototype.constructor=b),b.prototype.selfClass=b;for(var c in a)b.prototype[c]=a[c];return b.prototype.creator=function(){return this},b.prototype.creator.prototype=b.prototype,b._class=!0,b},tm.classes={};var _calssDefinedCallback={};tm.define=function(a,b){var c=a.lastIndexOf("."),d=a.substring(0,c),e=d?tm.using(d):tm.global,f=d?a.substring(c+1):a;Function.prototype.bind,Array.prototype.unshift;b._path=a,b._className=f;var g=null,h=b.superClass;if(h&&"string"==typeof h){var i=h;if(h=tm.using(h),!h._class)return _calssDefinedCallback[i]||(_calssDefinedCallback[i]=[]),void _calssDefinedCallback[i].push(function(){tm.define(a,b)});b.superClass=h,g=tm.createClass(b)}else g=tm.createClass(b);if(e[f]=tm.classes[a]=g,_calssDefinedCallback[a]){for(var j=_calssDefinedCallback[a],k=0,l=j.length;l>k;++k)j[k]();delete _calssDefinedCallback[a]}return g},tm.namespace=function(a,b){var a=tm.using(a);b.call(a,a)},tm.using=function(a){if(tm.classes[a])return tm.classes[a];for(var b=a.split(/[,.\/ ]|::/),c=tm.global,d=0,e=b.length;e>d;++d){var f=b[d];c=c[f]||(c[f]={})}return tm.classes[a]=c,c},tm.globalize=function(a){return tm.$forIn(function(a,b){"object"==typeof b&&"classes"!==a&&"global"!==a&&"event"!==a&&"dom"!==a&&b.$forIn(function(a,b){window[a]||(window[a]=b)})}),this},tm["import"]=function(a){var b=tm[a];return tm.global.$strict(b),this},tm.setLoop=function(a,b){var c=function(){var c=(new Date).getTime();a();var d=(new Date).getTime()-c,e=b-d;e=e>0?e:0,setTimeout(arguments.callee,e)};setTimeout(c,b)},tm.inform=function(parent){parent=parent||document.body;var eInfo=document.createElement("div");with(eInfo.setAttribute("class","tm-info"),eInfo.addEventListener("mouseover",function(){this.style.opacity=.9},!1),eInfo.addEventListener("mouseout",function(){this.style.opacity=.25},!1),eInfo.style)position="absolute",width="100%",bottom="0px",left="0px",right="0px",margin="0px",padding="10px 0px",zIndex="0",textAlign="center",fontFamily='"Meiryo", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif',fontSize="13px",opacity="0.25",backgroundColor="rgb(230,230,255)",background="-webkit-linear-gradient(top, hsla(0, 100%, 100%, 0.8) 0%, hsla(0, 100%, 100%, 0.3) 50%, hsla(0, 100%, 100%, 0.1) 51%, hsla(0, 100%, 100%, 0.2) 100%), rgb(190,190,210)",background="-moz-linear-gradient(top, hsla(0, 100%, 100%, 0.8) 0%, hsla(0, 100%, 100%, 0.3) 50%, hsla(0, 100%, 100%, 0.1) 51%, hsla(0, 100%, 100%, 0.2) 100%), rgb(190,190,210)",WebkitTransition="1s",MozTransition="1s";eInfo.innerHTML="このプログラムで利用している JavaScript ライブラリ 『tmlib.js』 については<a href='{projectLink}'>こちら</a>.".format({projectLink:"https://github.com/phi1618/tmlib.js"}),parent.appendChild(eInfo)}}(),function(){window&&(window.requestAnimationFrame||(window.requestAnimationFrame=window[tm.VENDER_PREFIX+"RequestAnimationFrame"]||function(a){window.setTimeout(a,1e3/60)}),window.cancelRequestAnimationFrame||(window.cancelRequestAnimationFrame=window[tm.VENDER_PREFIX+"CancelRequestAnimationFrame"]||window.clearTimeout))}(),function(){if(window.document){var a=[];tm.main=function(c){c?a.push(c):b()};var b=function(){for(var b=0,c=a.length;c>b;++b)a[b]();a=[]};window.addEventListener("load",function(){b()},!1)}}(),function(){Object.defineProperty(Object.prototype,"defineVariable",{value:function(a,b){Object.defineProperty(this,a,{value:b,enumerable:!0,writable:!0})}}),Object.defineProperty(Object.prototype,"defineFunction",{value:function(a,b){Object.defineProperty(this,a,{value:b,enumerable:!1,writable:!0})}}),Object.prototype.defineFunction("defineInstanceVariable",function(a,b){Object.defineProperty(this.prototype,a,{value:b,enumerable:!0,writable:!0})}),Object.prototype.defineFunction("defineInstanceMethod",function(a,b){Object.defineProperty(this.prototype,a,{value:b,enumerable:!1,writable:!0})}),Object.defineInstanceMethod("setter",function(a,b){Object.defineProperty(this,a,{set:b,enumerable:!1,configurable:!0})}),Object.defineInstanceMethod("getter",function(a,b){Object.defineProperty(this,a,{get:b,enumerable:!1,configurable:!0})}),Object.defineInstanceMethod("accessor",function(a,b){Object.defineProperty(this,a,{set:b.set,get:b.get,enumerable:!1,configurable:!0})}),Object.defineInstanceMethod("$forIn",function(a,b){return b=b||this,Object.keys(this).forEach(function(c,d){var e=this[c];a.call(b,c,e,d)},this),this}),Object.defineInstanceMethod("$has",function(a){return this.hasOwnProperty(a)}),Object.defineInstanceMethod("$extend",function(){return Array.prototype.forEach.call(arguments,function(a){for(var b in a)this[b]=a[b]},this),this}),Object.defineInstanceMethod("$safe",function(a){return Array.prototype.forEach.call(arguments,function(a){for(var b in a)void 0===this[b]&&(this[b]=a[b])},this),this}),Object.defineInstanceMethod("$strict",function(a){return Array.prototype.forEach.call(arguments,function(a){for(var b in a)console.assert(!this[b],"tm error: {0} is Already".format(b)),this[b]=a[b]},this),this}),Object.defineInstanceMethod("$pick",function(){var a={};return Array.prototype.forEach.call(arguments,function(b){b in this&&(a[b]=this[b])},this),a}),Object.defineInstanceMethod("$omit",function(){var a={};for(var b in this)-1==Array.prototype.indexOf.call(arguments,b)&&(a[b]=this[b]);return a})}(),function(){Array.prototype.accessor("first",{get:function(){return this[0]},set:function(a){this[0]=a}}),Array.prototype.accessor("last",{get:function(){return this[this.length-1]},set:function(a){this[this.length-1]=a}}),Array.defineInstanceMethod("equals",function(a){if(this.length!==a.length)return!1;for(var b=0,c=this.length;c>b;++b)if(this[b]!==a[b])return!1;return!0}),Array.defineInstanceMethod("deepEquals",function(a){if(this.length!==a.length)return!1;for(var b=0,c=this.length;c>b;++b){var d=this[b].deepEquals?this[b].deepEquals(a[b]):this[b]===a[b];if(d===!1)return!1}return!0}),Array.defineInstanceMethod("contains",function(a,b){return-1!=this.indexOf(a,b)}),Array.defineInstanceMethod("at",function(a){return a%=this.length,a+=this.length,a%=this.length,this[a]}),Array.defineInstanceMethod("swap",function(a,b){var c=this[a];return this[a]=this[b],this[b]=c,this}),Array.defineInstanceMethod("erase",function(a){var b=this.indexOf(a);return b>=0&&this.splice(b,1),this}),Array.defineInstanceMethod("eraseAll",function(a){for(var b=0,c=this.length;c>b;++b)this[b]==a&&this.splice(b--,1);return this}),Array.defineInstanceMethod("eraseIf",function(a){for(var b=0,c=this.length;c>b;++b)if(a(this[b],b,this)){this.splice(b,1);break}return this}),Array.defineInstanceMethod("eraseIfAll",function(a){for(var b=0,c=this.length;c>b;++b)a(this[b],b,this)&&this.splice(b,1);return this}),Array.defineInstanceMethod("random",function(a,b){return a=a||0,b=b||this.length-1,this[Math.rand(a,b)]}),Array.defineInstanceMethod("pickup",function(a,b){return a=a||0,b=b||this.length-1,this[Math.rand(a,b)]}),Array.defineInstanceMethod("uniq",function(a){return this.filter(function(a,b,c){return c.indexOf(a)===b})}),Array.defineInstanceMethod("flatten",function(a){var b=null;if(a){b=this;for(var c=0;a>c;++c)b=Array.prototype.concat.apply([],b)}else b=this.reduce(function(a,b){return Array.isArray(b)?a.concat(b.flatten()):a.concat(b)},[]);return b}),Array.defineInstanceMethod("clone",function(a){if(1==a){for(var b=Array(this.length),c=0,d=this.length;d>c;++c)b[c]=this[c].clone?this[c].clone(a):this[c];return b}return Array.prototype.slice.apply(this)}),Array.defineInstanceMethod("clear",function(){return this.length=0,this}),Array.defineInstanceMethod("fill",function(a,b,c){b=b||0,c=c||this.length;for(var d=b;c>d;++d)this[d]=a;return this}),Array.defineInstanceMethod("range",function(a,b,c){if(1==arguments.length){this.clear();for(var d=0;a>d;++d)this[d]=d}else if(b>a){c=c||1,this.clear();for(var d=a,e=0;b>d;d+=c,++e)this[e]=d}else{c=c||-1,this.clear();for(var d=a,e=0;d>b;d+=c,++e)this[e]=d}return this}),Array.defineInstanceMethod("shuffle",function(){for(var a=0,b=this.length;b>a;++a){var c=Math.rand(0,b-1);a!=c&&this.swap(a,c)}return this}),Array.defineInstanceMethod("sum",function(){for(var a=0,b=0,c=this.length;c>b;++b)a+=this[b];return a}),Array.defineInstanceMethod("average",function(){for(var a=0,b=this.length,c=0;b>c;++c)a+=this[c];return a/b}),Array.defineInstanceMethod("each",function(){return this.forEach.apply(this,arguments),this}),Array.defineInstanceMethod("toULElement",function(){}),Array.defineInstanceMethod("toOLElement",function(){}),Array.defineFunction("range",function(a,b,c){return Array.prototype.range.apply([],arguments)})}(),function(){var a=["January","February","March","April","May","June","July","August","September","October","November","December"],b=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];Date.defineInstanceMethod("format",function(c){for(var d=this.getFullYear(),e=this.getMonth(),f=this.getDate(),g=this.getDay(),h=this.getHours(),i=this.getMinutes(),j=this.getSeconds(),k=this.getMilliseconds(),l="",m=0,n=c.length;n>m;++m){var o=c.charAt(m),p="";switch(o){case"d":p=f.padding(2,"0");break;case"D":p=b[g].substr(0,3);break;case"j":p=f;break;case"l":p=b[g];break;case"F":p=a[e];break;case"m":p=(e+1).padding(2,"0");break;case"M":p=a[e].substr(0,3);break;case"n":p=e+1;break;case"Y":p=d;break;case"y":p=d.toString().substr(2,2);break;case"G":p=h;break;case"H":p=h.padding(2,"0");break;case"i":p=i.padding(2,"0");break;case"s":p=j.padding(2,"0");break;case"S":p=k.padding(3,"0");break;default:p=o}l+=p}return l})}(),function(){Function.prototype.bind||Function.defineInstanceMethod("bind",function(a){var b=this;return function(){b.apply(a,arguments)}}),Function.prototype.$has("name")||Function.prototype.getter("name",function(){return(""+this).replace(/^\s*function\s*([^\(]*)[\S\s]+$/im,"$1")}),Function.defineInstanceMethod("toArrayFunction",function(){var a=this;return function(){for(var b=[],c=0,d=this.length;d>c;++c)b.push(a.apply(this[c],arguments));return b}})}(),function(){Math.DEG_TO_RAD=Math.PI/180,Math.RAD_TO_DEG=180/Math.PI,Math.degToRad=function(a){return a*Math.DEG_TO_RAD},Math.radToDeg=function(a){return a*Math.RAD_TO_DEG},Math.defineFunction("clamp",function(a,b,c){return b>a?b:a>c?c:a}),Math.defineFunction("inside",function(a,b,c){return a>=b&&c>=a}),Math.defineFunction("rand",function(a,b){return window.Math.floor(Math.random()*(b-a+1))+a}),Math.defineFunction("randf",function(a,b){return window.Math.random()*(b-a)+a})}(),function(){Number.defineInstanceMethod("round",function(a){a=a||0;var b=Math.pow(10,a),c=this*b;return c=Math.round(c),c/b}),Number.defineInstanceMethod("ceil",function(a){a=a||0;var b=Math.pow(10,a),c=this*b;return c=Math.ceil(c),c/b}),Number.defineInstanceMethod("floor",function(a){a=a||0;var b=Math.pow(10,a),c=this*b;return c=Math.floor(c),c/b}),Number.defineInstanceMethod("toInt",function(){return 0|this}),Number.defineInstanceMethod("toHex",function(){return this.toString(16)}),Number.defineInstanceMethod("toBin",function(){return this.toString(2)}),Number.defineInstanceMethod("toUnsigned",function(){return this>>>0}),Number.defineInstanceMethod("padding",function(a,b){var c=this+"";for(a-=c.length,b=b||"0";a-->0;)c=b+c;return c}),Number.defineInstanceMethod("times",function(a,b){b=b||this;for(var c=0;this>c;++c)a.call(b,c);return this}),Number.defineInstanceMethod("upto",function(a,b,c){c=c||this;for(var d=+this;a>=d;++d)b.call(c,d);return this}),Number.defineInstanceMethod("downto",function(a,b,c){c=c||this;for(var d=+this;d>=a;--d)b.call(c,d);return this}),Number.defineInstanceMethod("step",function(a,b,c,d){d=d||this;for(var e=+this;a>=e;e+=b)c.call(d,e);return this})}(),function(){String.defineInstanceMethod("format",function(a){var b=void 0;if("object"==typeof a)b=function(b,c){return void 0===a[c]?"":a[c]};else{var c=arguments;b=function(a,b){return c[parseInt(b)]}}return this.replace(/\{(\w+)\}/g,b)}),String.defineInstanceMethod("trim",function(){return this.replace(/^\s+|\s+$/g,"")}),String.defineInstanceMethod("capitalize",function(){return this.replace(/\w+/g,function(a){return a.capitalizeFirstLetter()})}),String.defineInstanceMethod("capitalizeFirstLetter",function(){return this.charAt(0).toUpperCase()+this.substr(1).toLowerCase()}),String.defineInstanceMethod("toDash",function(){return this.replace(/([A-Z])/g,function(a){return"-"+a.toLowerCase()})}),String.defineInstanceMethod("toHash",function(){return this.toCRC32()}),String.defineInstanceMethod("padding",function(a,b){var c=this.toString();for(a-=c.length,b=b||" ";a-->0;)c=b+c;return c}),String.defineInstanceMethod("paddingLeft",function(a,b){var c=this.toString();for(a-=c.length,b=b||" ";a-->0;)c=b+c;return c}),String.defineInstanceMethod("paddingRight",function(a,b){var c=this.toString();for(a-=c.length,b=b||" ";a-->0;)c+=b;return c}),String.defineInstanceMethod("quotemeta",function(a){return this.replace(/([^0-9A-Za-z_])/g,"\\$1")}),String.defineInstanceMethod("repeat",function(a){for(var b=Array(a),c=0;a>c;++c)b[c]=this;return b.join("")}),String.defineInstanceMethod("count",function(a){var b=new RegExp(a,"gm");return this.match(b).length}),String.defineInstanceMethod("toArray",function(){for(var a=[],b=0,c=this.length;c>b;++b)a.push(this[b]);return a});var a="00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D".split(" ");String.defineInstanceMethod("toCRC32",function(){var b=0,c=0,d=0;b=-1^b;for(var e=0,f=this.length;f>e;++e)d=255&(b^this.charCodeAt(e)),c="0x"+a[d],b=b>>>8^c;return(-1^b)>>>0})}(),tm.event=tm.event||{},function(){tm.event.Event=tm.createClass({type:null,init:function(a){this.type=a}})}(),function(){tm.event.TweenEvent=tm.createClass({superClass:tm.event.Event,time:null,now:null,init:function(a,b,c){this.superInit(a),this.time=b,this.now=c}}),tm.event.TweenEvent.CHANGE="change",tm.event.TweenEvent.FINISH="finish",tm.event.TweenEvent.LOOP="loop",tm.event.TweenEvent.RESUME="resume",tm.event.TweenEvent.START="start",tm.event.TweenEvent.STOP="stop"}(),function(){tm.event.MouseEvent=tm.createClass({superClass:tm.event.Event,app:null,pointing:null,init:function(a,b,c){this.superInit(a),this.app=b,this.pointing=c}})}(),function(){tm.event.TouchEvent=tm.createClass({superClass:tm.event.Event,app:null,pointing:null,init:function(a,b,c){this.superInit(a),this.app=b,this.pointing=c}})}(),function(){tm.event.PointingEvent=tm.createClass({superClass:tm.event.Event,app:null,pointing:null,init:function(a,b,c){this.superInit(a),this.app=b,this.pointing=c}})}(),tm.event=tm.event||{},function(){tm.define("tm.event.EventDispatcher",{init:function(){this._listeners={}},on:function(a,b){return void 0===this._listeners[a]&&(this._listeners[a]=[]),this._listeners[a].push(b),this},off:function(a,b){var c=this._listeners[a],d=c.indexOf(b);return-1!=d&&c.splice(d,1),this},fire:function(a){a.target=this;var b="on"+a.type;this[b]&&this[b](a);var c=this._listeners[a.type];if(c)for(var d=c.clone(),e=0,f=d.length;f>e;++e)d[e].call(this,a);return this},flare:function(a,b){var c=tm.event.Event(a);return b&&c.$extend(b),this.fire(c),this},one:function(a,b){var c=this,d=function(){var e=b.apply(c,arguments);return c.off(a,d),e};return this.on(a,d),this},hasEventListener:function(a){return void 0!==this._listeners[a]||this["on"+a]?!0:!1},clearEventListener:function(a){var b="on"+a;return this[b]&&delete this[b],this._listeners[a]=[],this}});var a=tm.event.EventDispatcher.prototype;a.addEventListener=a.on,a.removeEventListener=a.off,a.dispatchEvent=a.fire,a.trigger=a.fire}(),tm.util=tm.util||{},function(){tm.util.Random={randint:function(a,b){return window.Math.floor(Math.random()*(b-a+1))+a},randfloat:function(a,b){return window.Math.random()*(b-a)+a},randbool:function(){return 1===this.randint(0,1)}}}(),tm.util=tm.util||{},function(){var AJAX_DEFAULT_SETTINGS={type:"GET",async:!0,data:null,contentType:"application/x-www-form-urlencoded",dataType:"text",responseType:"",username:null,password:null,success:function(a){alert("success!!\n"+a)},error:function(a){alert("error!!")},beforeSend:null};tm.util.Ajax={load:function(a){for(var b in AJAX_DEFAULT_SETTINGS)a[b]=a[b]||AJAX_DEFAULT_SETTINGS[b];var c=new XMLHttpRequest,d=tm.util.Ajax.DATA_CONVERTE_TABLE[a.dataType];a.url;if(a.data){var e="";e="string"==typeof a.data?a.data:tm.util.QueryString.stringify(a.data),"GET"==a.type?(a.url+="?"+e,a.data=null):"POST"==a.type&&(a.data=e)}c.onreadystatechange=function(){if(4==c.readyState)if(200===c.status||201===c.status||0===c.status)if("arraybuffer"!==a.responseType){var b=d(c.responseText);a.success(b)}else a.success(this.response);else a.error(c.responseText)},c.open(a.type,a.url,a.async,a.username,a.password),"POST"===a.type&&c.setRequestHeader("Content-Type",a.contentType),a.responseType&&(c.responseType=a.responseType),a.beforeSend&&a.beforeSend(c),a.password&&(c.withCredentials=!0),c.send(a.data)},loadJSONP:function(a,b){var c=tm.global;c.tmlib_js_dummy_func_count=tm.global.tmlib_js_dummy_func||0;var d="tmlib_js_dummy_func"+c.tmlib_js_dummy_func_count++;c[d]=b;var e=document.createElement("script");e.type="text/javascript",e.charset="UTF-8",e.src=a+(a.indexOf("?")<0?"?":"&")+"callback="+d,e.setAttribute("defer",!0),document.getElementsByTagName("head")[0].appendChild(e)}},tm.util.Ajax.DATA_CONVERTE_TABLE={undefined:function(a){return a},text:function(a){return a},xml:function(a){var b=new DOMParser,c=b.parseFromString(a,"text/xml");return c},dom:function(a){var b=document.createElement("div");return b.innerHTML=a,tm.dom.Element(b)},json:function(a){try{return JSON.parse(a)}catch(b){console.dir(b),console.dir(a)}},script:function(data){return eval(data),data},bin:function(a){for(var b=[],c=0,d=a.length;d>c;++c)b[c]=255&a.charCodeAt(c);return b}},tm.util.Ajax.DEFAULT_SETTINGS=AJAX_DEFAULT_SETTINGS}(),tm.util=tm.util||{},function(){tm.define("tm.util.File",{superClass:"tm.event.EventDispatcher",data:null,loaded:!1,init:function(a){this.superInit(),this.loaded=!1,1==arguments.length&&this.load(a)},load:function(a){if("string"==typeof a){var b=a;a={url:b}}var c=this;a.success=function(a){c.setData(a);var b=tm.event.Event("load");c.dispatchEvent(b)},tm.util.Ajax.load(a)},setData:function(a){this.data=a,this.loaded=!0},loadLocalStorage:function(){}})}(),tm.util=tm.util||{},function(){tm.util.Timeline=tm.createClass({target:null,tasks:null,fps:30,init:function(){this.tasks=[],this.time=0},at:function(a,b){return this.tasks.push({time:a,action:b}),this},after:function(a,b){return this.at(this.time+a,b),this},clear:function(){return this.tasks=[],this},removeTime:function(a){},removeAction:function(a){},start:function(){this.isPlaying=!0,this._startTime(),this._updateTime()},resume:function(){this.isPlaying=!0,this._resumeTime(),this._updateTime()},stop:function(){this.isPlaying=!1},rewind:function(){this.time=0},update:function(){if(this.tasks.length>0)for(var a=0,b=this.tasks.length;b>a;++a){var c=this.tasks[a];this.prev<=c.time&&c.time<this.time&&c.action()}},_startTime:function(){this.startTime=(new Date).getTime()},_resumeTime:function(){this.startTime=(new Date).getTime()-this.time},_updateTime:function(){this.isPlaying&&(this._nextTime(),setTimeout(arguments.callee.bind(this),1e3/this.fps))},_nextTime:function(){this.prev=this.time,this.time=(new Date).getTime()-this.startTime,this.update()}})}(),tm.util=tm.util||{},function(){tm.util.DataManager={data:{}},tm.util.DataManager.save=function(){for(var a in this.data){var b=this.data[a];localStorage[a]=JSON.stringify(b)}},tm.util.DataManager.load=function(a){for(var a in localStorage)this.data[a]=JSON.parse(localStorage[a])},tm.util.DataManager.set=function(a,b){return this.data[a]=b,this},tm.util.DataManager.get=function(a){return this.data[a]}}(),tm.util=tm.util||{},function(){tm.util.QueryString={parse:function(a,b,c){b=b||"&",c=c||"=";for(var d={},e=a.split(b),f=0,g=e.length;g>f;++f){var h=e[f],i=h.indexOf(c);if(i>0){var j=h.substring(0,i),k=h.substring(i+1);d[j]=k}}return d},stringify:function(a,b,c){b=b||"&",c=c||"=";var d=[];for(var e in a){var f=encodeURIComponent(a[e]);d.push(e+c+f)}return d.join(b)}}}(),tm.namespace("tm.util.Type",function(){var a=this,b=Object.prototype.toString;this.defineFunction("isObject",function(a){return a===Object(a)}),this.defineFunction("isArray",function(a){return"[object Array]"==b.call(a)}),this.defineFunction("isArguments",function(a){return"[object Arguments]"==b.call(a)}),this.defineFunction("isFunction",function(a){return"[object Function]"==b.call(a)}),this.defineFunction("isString",function(a){return"[object String]"==b.call(a)}),this.defineFunction("isNumber",function(a){return"[object Number]"==b.call(a)}),this.defineFunction("isDate",function(a){return"[object Date]"==b.call(a)}),this.defineFunction("isRegExp",function(a){return"[object RegExp]"==b.call(a)}),this.defineFunction("isEmpty",function(b){if(!b)return!0;if(a.isArray(b)||a.isString(b)||a.isArguments(b))return 0===b.length;for(var c in b)if(c)return!1;return!0})}),tm.define("tm.util.Flow",{superClass:"tm.event.EventDispatcher",waits:0,counter:0,args:null,init:function(a,b){this.superInit(),a=a||0,b=b||null,this.setup(a,b)},setup:function(a,b){return this.waits=a,this.callback=b,this.counter=0,this.args={},this._check(),this},pass:function(a,b){++this.counter,arguments.length>=2&&(this.args[a]=b),this._check()},isFinish:function(){return this.counter===this.waits},_check:function(){if(this.isFinish()){var a=this.args;this.callback&&(this.callback(a),this.args=null,this.callback=null);var b=tm.event.Event("flowfinish");b.args=a,this.fire(b)}}}),tm.define("tm.util.GridSystem",{width:640,col:12,init:function(a,b){if("object"==typeof arguments[0]){var c=arguments[0];a=c.width,b=c.col}this.width=a,this.col=b,this.unitWidth=this.width/this.col},span:function(a){return a+=this.col,a%=this.col,this.unitWidth*a},center:function(){return this.unitWidth*(this.col/2)}}),tm.geom=tm.geom||{},function(){tm.geom.Vector2=tm.createClass({x:0,y:0,init:function(a,b){this.set(a,b)},clone:function(){return tm.geom.Vector2(this.x,this.y)},equals:function(a){return this.x===a.x&&this.y===a.y?!0:!1},equalsNumber:function(a,b){return this.x===a&&this.y===b?!0:!1},equalsArray:function(a){return this.x===a[0]&&this.y===a[1]?!0:!1},set:function(a,b){this.x=a,this.y=b},setNumber:function(a,b){return this.x=a,this.y=b,this},setArray:function(a){return this.x=a[0],this.y=a[1],this},setObject:function(a){return this.x=a.x,this.y=a.y,this},setString:function(a){var b=a.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);return this.x=parseFloat(b[1]),this.y=parseFloat(b[3]),this},setSmart:function(a,b){var c=arguments[0];if(2===arguments.length)this.x=a,this.y=b;else if(c instanceof Array)this.x=c[0],this.y=c[1];else if(c instanceof Object)this.x=c.x,this.y=c.y;else if("string"==typeof c){var d=c.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);this.x=parseFloat(d[1]),this.y=parseFloat(d[3])}return this},setAngle:function(a,b){var c=a*Math.DEG_TO_RAD;return b=b||1,this.x=Math.cos(c)*b,this.y=Math.sin(c)*b,this},setRadian:function(a,b){return b=b||1,this.x=Math.cos(a)*b,this.y=Math.sin(a)*b,this},setDegree:function(a,b){var c=a*Math.DEG_TO_RAD;return b=b||1,this.x=Math.cos(c)*b,this.y=Math.sin(c)*b,this},setRandom:function(a,b,c){return a=a||0,b=b||360,c=c||1,this.setDegree(Math.randf(a,b),c),this},add:function(a){return this.x+=a.x,this.y+=a.y,this},sub:function(a){return this.x-=a.x,this.y-=a.y,this},mul:function(a){return this.x*=a,this.y*=a,this},div:function(a){return a=a||.01,this.x/=a,this.y/=a,this},negate:function(){return this.x=-this.x,this.y=-this.y,this},dot:function(a){return this.x*a.x+this.y*a.y},cross:function(a){return this.x*a.y-this.y*a.x},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y)},lengthSquared:function(){return this.x*this.x+this.y*this.y},distance:function(a){return Math.sqrt(Math.pow(this.x-a.x,2)+Math.pow(this.y-a.y,2))},distanceSquared:function(a){return Math.pow(this.x-a.x,2)+Math.pow(this.y-a.y,2)},normalize:function(){var a=this.length();return this.div(a),this},toAngle:function(){return Math.atan2(this.y,this.x)},toStyleString:function(){return"{x:{x}, y:{y}}".format(this)},toString:function(){return"{x:{x}, y:{y}}".format(this)},setX:function(a){return this.x=a,this},setY:function(a){return this.y=a,this}}),tm.geom.Vector2.min=function(a,b){return tm.geom.Vector2(a.x<b.x?a.x:b.x,a.y<b.y?a.y:b.y)},tm.geom.Vector2.max=function(a,b){return tm.geom.Vector2(a.x>b.x?a.x:b.x,a.y>b.y?a.y:b.y)},tm.geom.Vector2.add=function(a,b){return tm.geom.Vector2(a.x+b.x,a.y+b.y)},tm.geom.Vector2.sub=function(a,b){return tm.geom.Vector2(a.x-b.x,a.y-b.y)},tm.geom.Vector2.mul=function(a,b){return tm.geom.Vector2(a.x*b,a.y*b)},tm.geom.Vector2.div=function(a,b){return tm.geom.Vector2(a.x/b,a.y/b)},tm.geom.Vector2.negate=function(a){return tm.geom.Vector2(-a.x,-a.y)},tm.geom.Vector2.dot=function(a,b){return a.x*b.x+a.y*b.y},tm.geom.Vector2.cross=function(a,b){return a.x*b.y-a.y*b.x},tm.geom.Vector2.distance=function(a,b){return Math.sqrt(Math.pow(a.x-b.x,2)+Math.pow(a.y-b.y,2))},tm.geom.Vector2.distanceSquared=function(a,b){return Math.pow(a.x-b.x,2)+Math.pow(a.y-b.y,2)},tm.geom.Vector2.manhattanDistance=function(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)},tm.geom.Vector2.reflect=function(a,b){var c=Vector2.dot(a,b),d=Vector2.mul(b,2*c);return tm.geom.Vector2.sub(a,d)},tm.geom.Vector2.lerp=function(a,b,c){return tm.geom.Vector2(a.x+(b.x-a.x)*c,a.y+(b.y-a.y)*c)},tm.geom.Vector2.slerp=function(a,b,c){},tm.geom.Vector2.random=function(a,b,c){return a=a||0,b=b||360,c=c||1,tm.geom.Vector2().setDegree(Math.randf(a,b),c)},tm.geom.Vector2.ZERO=tm.geom.Vector2(0,0),tm.geom.Vector2.LEFT=tm.geom.Vector2(-1,0),tm.geom.Vector2.RIGHT=tm.geom.Vector2(1,0),tm.geom.Vector2.UP=tm.geom.Vector2(0,1),tm.geom.Vector2.DOWN=tm.geom.Vector2(0,-1)}(),tm.geom=tm.geom||{},function(){tm.geom.Vector3=tm.createClass({x:0,y:0,z:0,init:function(a,b,c){this.set(a,b,c)},set:function(a,b,c){return this.x=a,this.y=b,this.z=c,this},setNumber:function(a,b,c){return this.x=a,this.y=b,this.z=c,this},setArray:function(a){return this.x=a[0],this.y=a[1],this.z=a[2],this},setObject:function(a){return this.x=a.x,this.y=a.y,this.z=a.z,this},setString:function(a){var b=a.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);return this.x=parseFloat(b[1]),this.y=parseFloat(b[3]),this.z=parseFloat(b[5]),this},setAngle:function(a,b,c){return c=c||1,this.x=c*Math.cos(a)*Math.sin(b),this.y=c*Math.sin(a),this.z=c*Math.cos(a)*Math.cos(b),this},setRadian:function(a,b,c){return this.setAngle(a,b,c)},setDegree:function(a,b,c){return this.setAngle(a*Math.DEG_TO_RAD,b*Math.DEG_TO_RAD,c)},setSmart:function(a,b,c){var d=arguments[0];if(3===arguments.length)this.x=a,this.y=b,this.z=c;else if(d instanceof Array)this.x=d[0],this.y=d[1],this.z=d[2];else if(d instanceof Object)this.x=d.x,this.y=d.y,this.z=d.z;else if("string"==typeof d){var e=d.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);this.x=parseFloat(e[1]),this.y=parseFloat(e[3]),this.z=parseFloat(e[5])}return this},add:function(a){return this.x+=a.x,this.y+=a.y,this.z+=a.z,this},sub:function(a){return this.x-=a.x,this.y-=a.y,this.z-=a.z,this},mul:function(a){return this.x*=a,this.y*=a,this.z*=a,this},div:function(a){return console.assert(0!=a,"0 division!!"),this.x/=a,this.y/=a,this.z/=a,this},negate:function(){return this.x=-this.x,this.y=-this.y,this.z=-this.z,this},dot:function(a){return this.x*a.x+this.y*a.y+this.z*a.z},cross:function(a){var b=this.y*a.z-this.z*a.y,c=this.z*a.x-this.x*a.z,d=this.x*a.y-this.y*a.x;return this.set(b,c,d),this},length:function(){return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z)},lengthSquared:function(){return this.x*this.x+this.y*this.y+this.z*this.z},normalize:function(){var a=this.length();return this.div(a),this},toVector2:function(){},toAngleXY:function(){return Math.atan2(this.y,this.x)},to3D:function(){},equals:function(a,b,c){return this.x===a&&this.y===b&&this.z===c;
-},equalsArray:function(a){return this.equals(a[0],a[1],a[2])},equalsObject:function(a){return this.equals(a.x,a.y,a.z)},equalsSmart:function(){},toStyleString:function(){return"{x:{x}, y:{y}, z:{z}}".format(this)},toString:function(){return"{x:{x}, y:{y}, z:{z}}".format(this)},setX:function(a){return this.x=a,this},setY:function(a){return this.y=a,this},setZ:function(a){return this.z=a,this}}),tm.geom.Vector3.min=function(a,b){return Vector3(a.x<b.x?a.x:b.x,a.y<b.y?a.y:b.y,a.z<b.z?a.z:b.z)},tm.geom.Vector3.max=function(a,b){return Vector3(a.x>b.x?a.x:b.x,a.y>b.y?a.y:b.y,a.z>b.z?a.z:b.z)},tm.geom.Vector3.add=function(a,b){return tm.geom.Vector3(a.x+b.x,a.y+b.y,a.z+b.z)},tm.geom.Vector3.sub=function(a,b){return tm.geom.Vector3(a.x-b.x,a.y-b.y,a.z-b.z)},tm.geom.Vector3.mul=function(a,b){return tm.geom.Vector3(a.x*b,a.y*b,a.z*b)},tm.geom.Vector3.div=function(a,b){return tm.geom.Vector3(a.x/b,a.y/b,a.z/b)},tm.geom.Vector3.dot=function(a,b){return a.x*b.x+a.y*b.y+a.z*b.z},tm.geom.Vector3.cross=function(a,b){return tm.geom.Vector3(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x)},tm.geom.Vector3.negate=function(a){return tm.geom.Vector3(-a.x,-a.y,-a.z)},tm.geom.Vector3.distance=function(a,b){return Math.sqrt(Math.pow(a.x-b.x,2)+Math.pow(a.y-b.y,2)+Math.pow(a.z-b.z,2))},tm.geom.Vector3.distanceSquared=function(a,b){return Math.pow(a.x-b.x,2)+Math.pow(a.y-b.y,2)+Math.pow(a.z-b.z,2)},tm.geom.Vector3.manhattanDistance=function(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+Math.abs(a.z-b.z)},tm.geom.Vector3.reflect=function(a,b){var c=Vector3.dot(a,b),d=Vector3.mul(b,2*c);return Vector3.sub(a,d)},tm.geom.Vector3.lerp=function(a,b,c){return tm.geom.Vector3(a.x+(b.x-a.x)*c,a.y+(b.y-a.y)*c,a.z+(b.z-a.z)*c)},tm.geom.Vector3.slerp=function(a,b,c){},tm.geom.Vector3.random=function(a,b,c,d,e){return a=a||0,b=b||360,c=c||0,d=d||360,e=e||1,TM.Geom.Vector3().setFromDegree(TM.randomf(a,b),TM.randomf(c,d),e)},tm.geom.Vector3.ZERO=tm.geom.Vector3(0,0,0),tm.geom.Vector3.LEFT=tm.geom.Vector3(-1,0,0),tm.geom.Vector3.RIGHT=tm.geom.Vector3(1,0,0),tm.geom.Vector3.UP=tm.geom.Vector3(0,1,0),tm.geom.Vector3.DOWN=tm.geom.Vector3(0,-1,0),tm.geom.Vector3.FORWARD=tm.geom.Vector3(0,0,-1),tm.geom.Vector3.BACKWARD=tm.geom.Vector3(0,0,1)}(),tm.geom=tm.geom||{},function(){tm.define("tm.geom.Matrix33",{m:null,init:function(){this.m=[],arguments.length>=9?this.set.apply(this,arguments):this.identity()},clone:function(){var a=this.m;return tm.geom.Matrix33(a[0],a[3],a[6],a[1],a[4],a[7],a[2],a[5],a[8])},set:function(a,b,c,d,e,f,g,h,i){return console.assert(arguments.length>=9,""),this.m00=a,this.m01=b,this.m02=c,this.m10=d,this.m11=e,this.m12=f,this.m20=g,this.m21=h,this.m22=i,this},setArray:function(a){return this.set(a[0],a[3],a[6],a[1],a[4],a[7],a[2],a[5],a[8]),this},setObject:function(a){return this.set(a.m00,a.m01,a.m02,a.m10,a.m11,a.m12,a.m20,a.m21,a.m22),this},identity:function(){var a=this.m;return a[0]=1,a[3]=0,a[6]=0,a[1]=0,a[4]=1,a[7]=0,a[2]=0,a[5]=0,a[8]=1,this},transpose:function(){return this.m.swap(1,3),this.m.swap(2,6),this.m.swap(5,7),this},invert:function(){var a=this.m,b=a[0],c=a[3],d=a[6],e=a[1],f=a[4],g=a[7],h=a[2],i=a[5],j=a[8],k=this.determinant();return this.m00=(f*j-g*i)/k,this.m01=(e*j-g*h)/k*-1,this.m02=(e*i-f*h)/k,this.m10=(c*j-d*i)/k*-1,this.m11=(b*j-d*h)/k,this.m12=(b*i-c*h)/k*-1,this.m20=(c*g-d*f)/k,this.m21=(b*g-d*e)/k*-1,this.m22=(b*f-c*e)/k,this.transpose(),this},determinant:function(){var a=this.m,b=a[0],c=a[3],d=a[6],e=a[1],f=a[4],g=a[7],h=a[2],i=a[5],j=a[8];return b*f*j+e*i*d+c*g*h-d*f*h-c*e*j-g*i*b},zero:function(){return this.set(0,0,0,0,0,0,0,0,0),this},translate:function(a,b){var c=this.m;return c[6]=c[0]*a+c[3]*b+c[6],c[7]=c[1]*a+c[4]*b+c[7],c[8]=c[2]*a+c[5]*b+c[8],this},rotateX:function(a){return this.multiply(tm.geom.Matrix33.rotateX(a))},rotateY:function(a){return this.multiply(tm.geom.Matrix33.rotateY(a))},rotateZ:function(a){var b=(Math.sin(a),Math.cos(a),this.m);b[0],b[1],b[2],b[3],b[4],b[5];return this.multiply(tm.geom.Matrix33.rotateZ(a))},scale:function(a,b){var c=this.m;return c[0]*=a,c[3]*=b,c[1]*=a,c[4]*=b,c[2]*=a,c[5]*=b,this},multiply:function(a){var b=this.m,c=a.m,d=b[0],e=b[3],f=b[6],g=b[1],h=b[4],i=b[7],j=b[2],k=b[5],l=b[8],m=c[0],n=c[3],o=c[6],p=c[1],q=c[4],r=c[7],s=c[2],t=c[5],u=c[8];return b[0]=d*m+e*p+f*s,b[3]=d*n+e*q+f*t,b[6]=d*o+e*r+f*u,b[1]=g*m+h*p+i*s,b[4]=g*n+h*q+i*t,b[7]=g*o+h*r+i*u,b[2]=j*m+k*p+l*s,b[5]=j*n+k*q+l*t,b[8]=j*o+k*r+l*u,this},multiplyVector2:function(a){var b=this.m00*a.x+this.m01*a.y+this.m02,c=this.m10*a.x+this.m11*a.y+this.m12;return tm.geom.Vector2(b,c)},multiplyVector3:function(a){var b=this.m00*a.x+this.m01*a.y+this.m02*a.z,c=this.m10*a.x+this.m11*a.y+this.m12*a.z,d=this.m20*a.x+this.m21*a.y+this.m22*a.z;return tm.geom.Vector3(b,c,d)},toArray:function(){return this.m.slice()},toString:function(){return"|{m00}, {m01}, {m02}|\n|{m10}, {m11}, {m12}|\n|{m20}, {m21}, {m22}|".format(this)}}),tm.geom.Matrix33.prototype.accessor("m00",{get:function(){return this.m[0]},set:function(a){this.m[0]=a}}),tm.geom.Matrix33.prototype.accessor("m10",{get:function(){return this.m[1]},set:function(a){this.m[1]=a}}),tm.geom.Matrix33.prototype.accessor("m20",{get:function(){return this.m[2]},set:function(a){this.m[2]=a}}),tm.geom.Matrix33.prototype.accessor("m01",{get:function(){return this.m[3]},set:function(a){this.m[3]=a}}),tm.geom.Matrix33.prototype.accessor("m11",{get:function(){return this.m[4]},set:function(a){this.m[4]=a}}),tm.geom.Matrix33.prototype.accessor("m21",{get:function(){return this.m[5]},set:function(a){this.m[5]=a}}),tm.geom.Matrix33.prototype.accessor("m02",{get:function(){return this.m[6]},set:function(a){this.m[6]=a}}),tm.geom.Matrix33.prototype.accessor("m12",{get:function(){return this.m[7]},set:function(a){this.m[7]=a}}),tm.geom.Matrix33.prototype.accessor("m22",{get:function(){return this.m[8]},set:function(a){this.m[8]=a}}),tm.geom.Matrix33.prototype.accessor("a",{get:function(){return this.m[0]},set:function(a){this.m[0]=a}}),tm.geom.Matrix33.prototype.accessor("b",{get:function(){return this.m[3]},set:function(a){this.m[3]=a}}),tm.geom.Matrix33.prototype.accessor("c",{get:function(){return this.m[1]},set:function(a){this.m[1]=a}}),tm.geom.Matrix33.prototype.accessor("d",{get:function(){return this.m[4]},set:function(a){this.m[4]=a}}),tm.geom.Matrix33.prototype.accessor("tx",{get:function(){return this.m[6]},set:function(a){this.m[6]=a}}),tm.geom.Matrix33.prototype.accessor("ty",{get:function(){return this.m[7]},set:function(a){this.m[7]=a}}),tm.geom.Matrix33.translate=function(a,b){return tm.geom.Matrix33(1,0,a,0,1,b,0,0,1)},tm.geom.Matrix33.rotateX=function(a){var b=Math.cos(a),c=Math.sin(a);return tm.geom.Matrix33(1,0,0,0,b,-c,0,c,b)},tm.geom.Matrix33.rotateY=function(a){var b=Math.cos(a),c=Math.sin(a);return tm.geom.Matrix33(b,0,c,0,1,0,-c,0,b)},tm.geom.Matrix33.rotateZ=function(a){var b=Math.cos(a),c=Math.sin(a);return tm.geom.Matrix33(b,-c,0,c,b,0,0,0,1)},tm.geom.Matrix33.scale=function(a,b){var c=tm.geom.Matrix33();return void 0==b&&(b=a),c.set(a,0,0,0,b,0,0,0,1),c}}(),tm.geom=tm.geom||{},function(){tm.geom.Matrix44=tm.createClass({m:null,init:function(){this.m=[],arguments.length>=16?this.set.apply(this,arguments):this.identity()},set:function(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p){return console.assert(arguments.length>=16,""),this.m00=a,this.m01=b,this.m02=c,this.m03=d,this.m10=e,this.m11=f,this.m12=g,this.m13=h,this.m20=i,this.m21=j,this.m22=k,this.m23=l,this.m30=m,this.m31=n,this.m32=o,this.m33=p,this},setArray:function(a){return this.set(a[0],a[4],a[8],a[12],a[1],a[5],a[9],a[13],a[2],a[6],a[10],a[14],a[3],a[7],a[11],a[15]),this},setObject:function(a){return this.set(a.m00,a.m01,a.m02,a.m03,a.m10,a.m11,a.m12,a.m13,a.m20,a.m21,a.m22,a.m23,a.m30,a.m31,a.m32,a.m33),this},identity:function(){return this.set(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1),this},transpose:function(){return this.m.swap(1,4),this.m.swap(2,8),this.m.swap(3,12),this.m.swap(6,9),this.m.swap(7,13),this.m.swap(11,14),this},translate:function(a,b,c){return this.multiply(tm.geom.Matrix44.translate(a,b,c))},rotate:function(a){console.error("Unimplemented")},rotateX:function(a){return this.multiply(tm.geom.Matrix44.rotateX(a))},rotateY:function(a){return this.multiply(tm.geom.Matrix44.rotateY(a))},rotateZ:function(a){return this.multiply(tm.geom.Matrix44.rotateZ(a))},scale:function(a,b,c){return this.multiply(tm.geom.Matrix44.scale(a,b,c))},zero:function(){return this.set(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),this},multiply:function(a){var b=this.m00*a.m00+this.m01*a.m10+this.m02*a.m20+this.m03*a.m30,c=this.m00*a.m01+this.m01*a.m11+this.m02*a.m21+this.m03*a.m31,d=this.m00*a.m02+this.m01*a.m12+this.m02*a.m22+this.m03*a.m32,e=this.m00*a.m03+this.m01*a.m13+this.m02*a.m23+this.m03*a.m33,f=this.m10*a.m00+this.m11*a.m10+this.m12*a.m20+this.m13*a.m30,g=this.m10*a.m01+this.m11*a.m11+this.m12*a.m21+this.m13*a.m31,h=this.m10*a.m02+this.m11*a.m12+this.m12*a.m22+this.m13*a.m32,i=this.m10*a.m03+this.m11*a.m13+this.m12*a.m23+this.m13*a.m33,j=this.m20*a.m00+this.m21*a.m10+this.m22*a.m20+this.m23*a.m30,k=this.m20*a.m01+this.m21*a.m11+this.m22*a.m21+this.m23*a.m31,l=this.m20*a.m02+this.m21*a.m12+this.m22*a.m22+this.m23*a.m32,m=this.m20*a.m03+this.m21*a.m13+this.m22*a.m23+this.m23*a.m33,n=this.m30*a.m00+this.m31*a.m10+this.m32*a.m20+this.m33*a.m30,o=this.m30*a.m01+this.m31*a.m11+this.m32*a.m21+this.m33*a.m31,p=this.m30*a.m02+this.m31*a.m12+this.m32*a.m22+this.m33*a.m32,q=this.m30*a.m03+this.m31*a.m13+this.m32*a.m23+this.m33*a.m33;return this.set(b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q)},getAxisX:function(){return TM.Geom.Vector3(this.m00,this.m01,this.m02)},getAxisY:function(){return TM.Geom.Vector3(this.m10,this.m11,this.m12)},getAxisZ:function(){return TM.Geom.Vector3(this.m20,this.m21,this.m22)},setAxisX:function(a){this.m00=a.x,this.m01=a.y,this.m02=a.z},setAxisY:function(a){this.m10=a.x,this.m11=a.y,this.m12=a.z},setAxisZ:function(a){this.m20=a.x,this.m21=a.y,this.m22=a.z},toMatrix33:function(){},toArray:function(){return this.m.slice()},toString:function(){return"|{m00}, {m01}, {m02}, {m03}|\n|{m10}, {m11}, {m12}, {m13}|\n|{m20}, {m21}, {m22}, {m23}|\n|{m30}, {m31}, {m32}, {m33}|".format(this)}}),tm.geom.Matrix44.prototype.accessor("m00",{get:function(){return this.m[0]},set:function(a){this.m[0]=a}}),tm.geom.Matrix44.prototype.accessor("m10",{get:function(){return this.m[1]},set:function(a){this.m[1]=a}}),tm.geom.Matrix44.prototype.accessor("m20",{get:function(){return this.m[2]},set:function(a){this.m[2]=a}}),tm.geom.Matrix44.prototype.accessor("m30",{get:function(){return this.m[3]},set:function(a){this.m[3]=a}}),tm.geom.Matrix44.prototype.accessor("m01",{get:function(){return this.m[4]},set:function(a){this.m[4]=a}}),tm.geom.Matrix44.prototype.accessor("m11",{get:function(){return this.m[5]},set:function(a){this.m[5]=a}}),tm.geom.Matrix44.prototype.accessor("m21",{get:function(){return this.m[6]},set:function(a){this.m[6]=a}}),tm.geom.Matrix44.prototype.accessor("m31",{get:function(){return this.m[7]},set:function(a){this.m[7]=a}}),tm.geom.Matrix44.prototype.accessor("m02",{get:function(){return this.m[8]},set:function(a){this.m[8]=a}}),tm.geom.Matrix44.prototype.accessor("m12",{get:function(){return this.m[9]},set:function(a){this.m[9]=a}}),tm.geom.Matrix44.prototype.accessor("m22",{get:function(){return this.m[10]},set:function(a){this.m[10]=a}}),tm.geom.Matrix44.prototype.accessor("m32",{get:function(){return this.m[11]},set:function(a){this.m[11]=a}}),tm.geom.Matrix44.prototype.accessor("m03",{get:function(){return this.m[12]},set:function(a){this.m[12]=a}}),tm.geom.Matrix44.prototype.accessor("m13",{get:function(){return this.m[13]},set:function(a){this.m[13]=a}}),tm.geom.Matrix44.prototype.accessor("m23",{get:function(){return this.m[14]},set:function(a){this.m[14]=a}}),tm.geom.Matrix44.prototype.accessor("m33",{get:function(){return this.m[15]},set:function(a){this.m[15]=a}}),tm.geom.Matrix44.translate=function(a,b,c){return tm.geom.Matrix44(1,0,0,a,0,1,0,b,0,0,1,c,0,0,0,1)},tm.geom.Matrix44.rotateX=function(a){var b=Math.cos(a),c=Math.sin(a);return tm.geom.Matrix44(1,0,0,0,0,b,-c,0,0,c,b,0,0,0,0,1)},tm.geom.Matrix44.rotateY=function(a){var b=Math.cos(a),c=Math.sin(a);return tm.geom.Matrix44(b,0,c,0,0,1,0,0,-c,0,b,0,0,0,0,1)},tm.geom.Matrix44.rotateZ=function(a){var b=Math.cos(a),c=Math.sin(a);return tm.geom.Matrix44(b,-c,0,0,c,b,0,0,0,0,1,0,0,0,0,1)},tm.geom.Matrix44.scale=function(a,b,c){var d=tm.geom.Matrix44();return void 0==b&&(b=a),void 0==c&&(c=a),d.set(a,0,0,0,0,b,0,0,0,0,c,0,0,0,0,1),d},tm.geom.Matrix44.perspective=function(a,b,c,d){var e=1/Math.tan(.5*a*Math.PI/180),f=e/b;return tm.geom.Matrix44(f,0,0,0,0,e,0,0,0,0,d/(d-c),c*d/(c-d),0,0,1,0)},tm.geom.Matrix44.ortho=function(a,b,c,d,e,f){var g=b-a,h=d-c,i=f-e;return tm.geom.Matrix44(2/g,0,0,0,0,2/h,0,0,0,0,-2/i,0,-(a+b)/g,-(d+c)/h,-(f+e)/i,1).transpose()},tm.geom.Matrix44.lookAt=function(a,b,c){var d=tm.geom.Vector3.sub(a,b).normalize(),e=tm.geom.Vector3.cross(c,d).normalize(),f=tm.geom.Vector3.cross(d,e).normalize(),g=tm.geom.Matrix44(e.x,f.x,d.x,0,e.y,f.y,d.y,0,e.z,f.z,d.z,0,0,0,0,1),h=tm.geom.Matrix44(1,0,0,0,0,1,0,0,0,0,1,0,-a.x,-a.y,-a.z,1);return h.multiply(g)}}(),tm.geom=tm.geom||{},function(){tm.geom.Rect=tm.createClass({x:0,y:0,width:0,height:0,init:function(a,b,c,d){this.set(a,b,c,d)},set:function(a,b,c,d){return this.x=a,this.y=b,this.width=c,this.height=d,this},move:function(a,b){return this.x=a,this.y=b,this},moveBy:function(a,b){return this.x+=a,this.y+=b,this},resize:function(a,b){return this.width=a,this.height=b,this},resizeBy:function(a,b){return this.width+=a,this.height+=b,this},padding:function(a,b,c,d){switch(arguments.length){case 1:a=b=c=d=arguments[0];break;case 2:a=c=arguments[0],b=d=arguments[1];break;case 3:a=arguments[0],b=d=arguments[1],c=arguments[2]}return this.x+=d,this.y+=a,this.width-=d+b,this.height-=a+c,this},contains:function(a,b){return this.left<=a&&a<=this.right&&this.top<=b&&b<=this.bottom},clone:function(){return tm.geom.Rect(this.x,this.y,this.width,this.height)},toCircle:function(){return tm.geom.Circle(this.centerX,this.centerY,(this.width<this.height?this.width:this.height)/2)},toArray:function(){return[this.x,this.y,this.width,this.height]}}),tm.geom.Rect.prototype.accessor("left",{get:function(){return this.x},set:function(a){this.width-=a-this.x,this.x=a}}),tm.geom.Rect.prototype.accessor("top",{get:function(){return this.y},set:function(a){this.height-=a-this.y,this.y=a}}),tm.geom.Rect.prototype.accessor("right",{get:function(){return this.x+this.width},set:function(a){this.width+=a-this.right}}),tm.geom.Rect.prototype.accessor("bottom",{get:function(){return this.y+this.height},set:function(a){this.height+=a-this.bottom}}),tm.geom.Rect.prototype.accessor("centerX",{get:function(){return this.x+this.width/2},set:function(a){}}),tm.geom.Rect.prototype.accessor("centerY",{get:function(){return this.y+this.height/2},set:function(a){}})}(),tm.geom=tm.geom||{},function(){tm.define("tm.geom.Circle",{x:0,y:0,radius:0,init:function(a,b,c){this.set(a,b,c)},set:function(a,b,c){return this.x=a,this.y=b,this.radius=c,this},move:function(a,b){return this.x=a,this.y=b,this},moveBy:function(a,b){return this.x+=a,this.y+=b,this},resize:function(a){return this.radius=a,this},resizeBy:function(a){return this.radius+=a,this},contains:function(a,b){var c=this.x-a,d=this.y-b,e=c*c+d*d;return e<=this.radius*this.radius},clone:function(){return tm.geom.Circle(this.x,this.y,this.radius)},toRect:function(){return tm.geom.Rect(this.x-this.radius,this.y-this.radius,2*this.radius,2*this.radius)},toArray:function(){return[this.x,this.y,this.radius]}}),tm.geom.Circle.prototype.getter("left",function(){return this.x-this.radius}),tm.geom.Circle.prototype.getter("top",function(){return this.y-this.radius}),tm.geom.Circle.prototype.getter("right",function(){return this.x+this.radius}),tm.geom.Circle.prototype.getter("bottom",function(){return this.y+this.radius})}(),tm.collision=tm.collision||{},function(){tm.collision,tm.collision.testCircleCircle=function(a,b){var c=tm.geom.Vector2.distanceSquared(a,b);return c<=Math.pow(a.radius+b.radius,2)},tm.collision.testRectRect=function(a,b){return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top},tm.collision.testCircleRect=function(a,b){var c=tm.geom.Rect(b.left-a.radius,b.top-a.radius,b.width+2*a.radius,b.height+2*a.radius);if(0==c.contains(a.x,a.y))return!1;var d=tm.geom.Rect(b.left-a.radius,b.top,b.width+2*a.radius,b.height);if(d.contains(a.x,a.y))return!0;if(d.set(b.left,b.top-a.radius,b.width,b.height+2*a.radius),d.contains(a.x,a.y))return!0;var e=tm.geom.Circle(a.x,a.y,a.radius);return e.contains(b.left,b.top)?!0:e.contains(b.right,b.top)?!0:e.contains(b.right,b.bottom)?!0:e.contains(b.left,b.bottom)?!0:!1},tm.collision.testRectCircle=function(a,b){return this.testCircleRect(b,a)}}(),tm.dom=tm.dom||{},function(){tm.dom.Element=tm.createClass({element:null,init:function(){this.set.apply(this,arguments)},set:function(a){"string"==typeof a?this.element=document.querySelector(a):void 0!=a?this.element=a:this.element=document},append:function(a){return this.element.appendChild(a.element),this},prepend:function(a){return this.element.insertBefore(a.element,this.element.firstChild),this},after:function(a){return this.element.parentNode.insertBefore(a.element,this.element.nextSibling),this},before:function(a){return this.element.parentNode.insertBefore(a.element,this.element),this},appendTo:function(a){return a.append(this),this},prependTo:function(a){return a.prepend(this),this},clone:function(){return tm.dom.Element(this.element.cloneNode(!0))},remove:function(){return this.element.parentNode.removeChild(this.element),this},create:function(a,b){var c=tm.dom.Element(document.createElement(a));return b||(b="append"),this[b](c),c},query:function(a,b){var c=b?this.element.querySelectorAll(a)[b]:this.element.querySelector(a);return tm.dom.Element(c)},queryAll:function(a){var b=this.element.querySelectorAll(a);return tm.dom.ElementList(b)},fixed:function(a,b,c,d){return this.style.set("position","fixed"),a&&(this.x=a),b&&(this.y=b),c&&(this.width=c),d&&(this.height=d),this},absolute:function(a,b,c,d){return this.style.set("position","absolute"),a&&(this.x=a),b&&(this.y=b),c&&(this.width=c),d&&(this.height=d),this},fullScreen:function(){this.element.webkitRequestFullScreen()},show:function(){this.visible=!0},hide:function(){this.visible=!1},toString:function(){return"tm.dom.element"},getElement:function(){return this.element}}),tm.dom.Element.prototype.accessor("html",{get:function(){return this.element.innerHTML},set:function(a){this.element.innerHTML=a}}),tm.dom.Element.prototype.accessor("value",{get:function(){return this.element.value},set:function(a){this.element.value=a}}),tm.dom.Element.prototype.accessor("x",{get:function(){return Number(this.element.style.left.replace("px",""))},set:function(a){this.element.style.left=a+"px"}}),tm.dom.Element.prototype.accessor("y",{get:function(){return Number(this.element.style.top.replace("px",""))},set:function(a){this.element.style.top=a+"px"}}),tm.dom.Element.prototype.accessor("width",{get:function(){return Number(this.element.style.width.replace("px",""))},set:function(a){this.element.style.width=a+"px"}}),tm.dom.Element.prototype.accessor("height",{get:function(){return Number(this.element.style.height.replace("px",""))},set:function(a){this.element.style.height=a+"px"}}),tm.dom.Element.prototype.accessor("color",{get:function(){return this.element.style.color},set:function(a){this.element.style.color=a}}),tm.dom.Element.prototype.accessor("backgroundColor",{get:function(){return this.element.style.backgroundColor},set:function(a){this.element.style.backgroundColor=a}}),tm.dom.Element.prototype.accessor("visible",{get:function(){return"hidden"!=this.element.style.visibility},set:function(a){this.element.style.visibility=1==a?"visible":"hidden"}}),tm.dom.Element.prototype.accessor("text",{get:function(){return this.element.innerText||this.element.textContent},set:function(a){this.element.innerText?this.element.innerText=a:this.element.textContent=a}}),tm.dom.Element.prototype.getter("classList",function(){return this.element.classList}),tm.dom.Element.prototype.getter("parent",function(){return void 0!=this.element.parentNode?tm.dom.Element(this.element.parentNode):null}),tm.dom.Element.prototype.getter("prev",function(){return void 0!=this.element.previousSibling?tm.dom.Element(this.element.previousSibling):null}),tm.dom.Element.prototype.getter("next",function(){return void 0!=this.element.nextSibling?tm.dom.Element(this.element.nextSibling):null}),tm.dom.Element.prototype.getter("children",function(){return tm.dom.ElementList(this.element.children)})}(),function(){tm.dom.ElementList=tm.createClass({superClass:Array,init:function(a){if("string"==typeof arguments[0]){var b=arguments[0];a=document.querySelectorAll(b)}else if(void 0==a)return;for(var c=0,d=a.length;d>c;++c)this.push(tm.dom.Element(a[c]))},toString:function(){return""}})}(),tm.dom=tm.dom||{},function(){Event.prototype.stopPropagation||(Event.prototype.stopPropagation=function(){this.cancelBubble=!0}),Event.prototype.preventDefault||(Event.prototype.preventDefault=function(){this.returnValue=!1}),Event.prototype.stop=function(){this.preventDefault(),this.stopPropagation()}}(),function(){KeyboardEvent.prototype.getter("character",function(){return String.fromCharCode(this.keyCode)})}(),function(){MouseEvent.prototype.getter("pointX",function(){return this.clientX-this.target.getBoundingClientRect().left}),MouseEvent.prototype.getter("pointY",function(){return this.clientY-this.target.getBoundingClientRect().top})}(),function(){void 0!==window.TouchEvent&&(TouchEvent.prototype.getter("pointX",function(){return this.touches[0].clientX-this.target.getBoundingClientRect().left}),TouchEvent.prototype.getter("pointY",function(){return this.touches[0].clientY-this.target.getBoundingClientRect().top}))}(),function(){tm.dom.Event=tm.createClass({element:null,funcList:null,funcIndex:0,init:function(a){this.element=a,this.domElement=a.element,this.funcList={}},add:function(a,b,c){var d=this.element,e=function(a){var c=b.apply(d,arguments);return c===!1&&(a.preventDefault(),a.returnValue=!1,a.stopPropagation()),c};return this._funcIndex=this._funcIndex||0,c=c||this._funcIndex++,this.funcList[a]=this.funcList[a]||{},this.funcList[a][c]=e,b._id=c,this.domElement.addEventListener(a,e,!1),this},remove:function(a,b){var c="function"==typeof b?b._id:b,d=this.getFunc(a,c);this.domElement.removeEventListener(a,d,!1),delete this.funcList[a][c]},click:function(a,b){return this.add("click",a,b),this},mdlclick:function(a,b){var c=function(b){1==b.button&&a(b)};this.add("click",c,b)},pointstart:function(a,b){this.add(tm.dom.Event.POINT_START,a,b)},pointmove:function(a,b){this.add(tm.dom.Event.POINT_MOVE,a,b)},pointend:function(a,b){this.add(tm.dom.Event.POINT_END,a,b)},hover:function(a,b){return this.add("mouseover",a,b),this},one:function(a,b,c){var d=this,e=this.element,f=function(){var c=b.apply(e,arguments);return d.remove(a,f),c};return this.add(a,f,c),this},toggle:function(a,b){for(var c=this,d=this.element,e=[],f=0;f<b.length;++f){var g=function(f){return function(){var g=b[f].apply(d,arguments);if(g!==!1){var h=(f+1)%b.length;c.one(a,e[h])}}}(f);e.push(g)}return this.one(a,e[0]),this},getFunc:function(a,b){return this.funcList[a][b]}}),tm.dom.Event.POINT_START=tm.isMobile?"touchstart":"mousedown",tm.dom.Event.POINT_MOVE=tm.isMobile?"touchmove":"mousemove",tm.dom.Event.POINT_END=tm.isMobile?"touchend":"mouseup",tm.dom.Element.prototype.getter("event",function(){return this._event||(this._event=tm.dom.Event(this))})}(),tm.dom=tm.dom||{},function(){tm.dom.Attr=tm.createClass({element:null,init:function(a){this.element=a},set:function(a,b){return this.element.setAttribute(a,b),this},add:function(a,b){var c=this.get(a);return b=c?c+" "+b:b,this.element.setAttribute(a,b),this},remove:function(a,b){if(b){var c=this.get(a),d=c?c.replace(b,"").replace("  "," "):"";this.element.setAttribute(a,d.trim())}else this.element.removeAttribute(a);return this},get:function(a){return this.element.getAttribute(a)},contains:function(a,b){var c=this.get(a);return 1==arguments.length?null!=c:2==arguments.length?(" "+c+" ").indexOf(" "+b+" ")>-1:!1},toggle:function(a,b){return this.contains(a,b)?this.remove(a,b):this.add(a,b),this}}),tm.dom.Element.prototype.getter("attr",function(){return this._attr||(this._attr=tm.dom.Attr(this.element))})}(),tm.dom=tm.dom||{},function(){tm.dom.Style=tm.createClass({element:null,init:function(a){this.element=a},set:function(a,b){return this.element.style[a]=b,this},remove:function(a){return this.element.style.removeProperty(a),this},clear:function(a){return this},get:function(a){return this.element.style[a]},getPropValue:function(a){return document.defaultView.getComputedStyle(this.element,"").getPropertyValue(a)}}),tm.dom.Element.prototype.getter("style",function(){return this._style||(this._style=tm.dom.Style(this.element))})}(),tm.dom=tm.dom||{},function(){var a=tm.VENDER_PREFIX,b=a+"Animation",c=a+"AnimationEnd",d=a+"AnimationPlayState",e=a+"AnimationName",f=a+"AnimationDuration",g=a+"AnimationTimingFunction",h=a+"AnimationDelay",i=a+"AnimationIterationCount";tm.dom.Anim=tm.createClass({init:function(a){this.element=a;var b=this;this.element.addEventListener(c,function(){b.stop()},!1)},start:function(){return this.element.style[d]="running",this},stop:function(){return this.element.style[d]="paused",this},setProperty:function(a){if("string"==typeof a)this.element.style[b]=a;else for(var c in a){var d=j[c],e=a[c];d.call(this,e)}return this},setName:function(a){return this.element.style[e]=a,this},setDuration:function(a){return this.element.style[f]=a,this},setTimingFunction:function(a){return this.element.style[g]=a,this},setIterationCount:function(a){return this.element.style[i]=a,this},setDelay:function(a){return this.element.style[h]=a,this},setDirection:function(a){return this.element.style[f]=a,this}});var j={name:tm.dom.Anim.prototype.setName,duration:tm.dom.Anim.prototype.setDuration,timingFunction:tm.dom.Anim.prototype.setTimingFunction,iterationCount:tm.dom.Anim.prototype.setIterationCount,delay:tm.dom.Anim.prototype.setDelay,Name:tm.dom.Anim.prototype.setName,Duration:tm.dom.Anim.prototype.setDuration,TimingFunction:tm.dom.Anim.prototype.setTimingFunction,IterationCount:tm.dom.Anim.prototype.setIterationCount,Delay:tm.dom.Anim.prototype.setDelay};tm.dom.Element.prototype.getter("anim",function(){return this._anim||(this._anim=tm.dom.Anim(this.element))})}(),function(){tm.dom.Trans=tm.createClass({element:null,init:function(a){this.element=a},to:function(a,b){return this.set(a).duration(b||1e3),this},set:function(a){var c=this.element.style,d=[];for(var e in a){var f=b(e);d.push(f.toDash()),c[f]=a[e]+""}return c[tm.dom.Trans.PROPERTY]=d.join(", "),this},duration:function(a){var b=this.element.style;return"number"==typeof a&&(a+="ms"),b[tm.dom.Trans.DURATION]=a,this},easing:function(a){var b=this.element.style;return b[tm.dom.Trans.TIMING_FUNCTION]=func,this},end:function(a){var b=tm.dom.Element(this.element);return b.event.add(tm.dom.Trans.END_EVENT,a),this},reset:function(){var a=this.element.style;return a[tm.dom.Trans.PROPERTY]="none",this},translate:function(a,b,c){return this.to({transform:"translate({0}px,{1}px)".format(a,b)},c),this},translate3d:function(a,b,c,d){return this.to({transform:"translate3d({0}px,{1}px,{2}px)".format(a,b,c)},d),this},rotate:function(a,b){return this.to({transform:"rotate({0}deg)".format(a)},b),this},rotate3d:function(a,b,c,d,e){return this.to({transform:"rotate3d({0},{1},{2},{3}deg)".format(a,b,c,d)},e),this},scale:function(a,b,c){return this.to({transform:"scale({0},{1})".format(a,b)},c),this},transform:function(){},setProp:function(a){var c=this.element.style,d=[];for(var e in a){var f=b(e);d.push(f.toDash()),c[f]=a[e]}return c[tm.dom.Trans.PROPERTY]=d.join(", "),this},setDuration:function(a){var b=this.element.style;return b[tm.dom.Trans.DURATION]=a,this},setTimingFunction:function(a){var b=this.element.style;return b[tm.dom.Trans.TIMING_FUNCTION]=a,this},resetProp:function(){var a=this.element.style;return a[tm.dom.Trans.PROPERTY]="none",this},setEndFunction:function(a){var b=tm.dom.Element(this.element);return b.event.add(tm.dom.Trans.END_EVENT,a),this}}),tm.dom.Trans.PROPERTY=tm.VENDER_PREFIX+"TransitionProperty",tm.dom.Trans.DURATION=tm.VENDER_PREFIX+"TransitionDuration",tm.dom.Trans.TIMING_FUNCTION=tm.VENDER_PREFIX+"TransitionTimingFunction",tm.dom.Trans.DELAY=tm.VENDER_PREFIX+"TransitionDelay",tm.dom.Trans.END_EVENT=function(){return{webkit:"webkitTransitionEnd",moz:"transitionend",o:"oTransitionEnd"}[tm.VENDER_PREFIX]}(),tm.dom.Element.prototype.getter("trans",function(){return this._trans||(this._trans=tm.dom.Trans(this.element))});var a={transform:!0},b=function(b){return a[b]===!0?"-"+tm.VENDER_PREFIX+b.capitalizeFirstLetter():b}}(),function(){tm.define("tm.dom.Data",{element:null,init:function(a){this.element=a},set:function(a,b){var c="data-"+a.toDash();return this.element.setAttribute(c,b),this},get:function(a,b){var c="data-"+a.toDash();return this.element.attributes[c].value}}),tm.dom.Element.prototype.getter("data",function(){return this._data||(this._data=tm.dom.Data(this.element))})}(),function(){tm.asset=tm.asset||{},tm.asset.Manager={assets:{},get:function(a){return this.assets[a]},set:function(a,b){return this.assets[a]=b,this},contains:function(a){return this.assets[a]?!0:!1}}}(),function(){tm.define("tm.asset.Loader",{superClass:"tm.event.EventDispatcher",init:function(){this.superInit(),this.assets={}},contains:function(a){return this.assets[a]?!0:!1},load:function(a){return tm.util.Type.isObject(a)?this._loadByObject(a):this._loadString(arguments[0],arguments[1],arguments[2]),this},get:function(a){return this.assets[a]},set:function(a,b){return this.assets[a]=b,tm.asset.Manager.set(a,b),this},_load:function(a,b,c){b=b||a,c=c||b.split("?")[0].split("#")[0].split(".").last;var d=tm.asset.Loader._funcs[c](b,a);return this.set(a,d),d},_loadString:function(a,b,c){var d={};d[a]={url:b,type:c},this._loadByObject(d)},_loadByObject:function(a){var b=tm.util.Flow(Object.keys(a).length,function(){var a=tm.event.Event("load");this.dispatchEvent(a)}.bind(this)),c=function(a,c){var d=tm.event.Event("progress");d.key=c,d.asset=a,d.progress=(b.counter+1)/b.waits,this.dispatchEvent(d),b.pass()}.bind(this);Object.keys(a).each(function(b){var d=a[b],e=null;e="string"==typeof d?this._load(b,d):this._load(b,d.url||d.src||d.path,d.type),e.loaded?c(e,b):e.on("load",function(){c(e,b)})}.bind(this))}}),tm.asset.Loader._funcs=[],tm.asset.Loader.defineFunction("register",function(a,b){this._funcs[a]=b});var a=function(a){var b=tm.asset.Texture(a);return b},b=function(a){var b=tm.sound.WebAudio(a);return b},c=function(a){var b=tm.asset.MapSheet(a);return b},d=function(a){var b=tm.asset.SpriteSheet(a);return b},e=function(a){var b=tm.util.File();if("string"==typeof a)b.load({url:a,dataType:"json"});else{b.setData(a),b.loaded=!0}return b},f=function(a){var b=tm.asset.Script(a);return b};tm.asset.Loader.register("png",a),tm.asset.Loader.register("gif",a),tm.asset.Loader.register("jpg",a),tm.asset.Loader.register("jpeg",a),tm.asset.Loader.register("wav",b),tm.asset.Loader.register("mp3",b),tm.asset.Loader.register("ogg",b),tm.asset.Loader.register("m4a",b),tm.asset.Loader.register("json",e),tm.asset.Loader.register("tmx",c),tm.asset.Loader.register("tmss",d),tm.asset.Loader.register("js",f)}(),function(){tm.define("tm.asset.Texture",{superClass:"tm.event.EventDispatcher",element:null,loaded:!1,init:function(a){this.superInit(),this.element=new Image,!tm.isLocal()&&!/^data:/.test(a),this.element.src=a;var b=this;this.element.onload=function(){b.loaded=!0;var a=tm.event.Event("load");b.dispatchEvent(a)},this.element.onerror=function(b){console.error("[tmlib] {0}の読み込みに失敗!".format(a));var c=a.split("/").last.replace(".png","").split("?").first.split("#").first,d=b.target;
-d.src="http://dummyimage.com/128x128/444444/eeeeee&text="+c,d.onerror=null}},getElement:function(){return this.element}}),tm.asset.Texture.prototype.getter("width",function(){return this.element.width}),tm.asset.Texture.prototype.getter("height",function(){return this.element.height})}(),function(){tm.define("tm.asset.SpriteSheet",{superClass:"tm.event.EventDispatcher",loaded:!1,init:function(a){this.superInit(),this.loaded=!1,"string"==typeof a?this.load(a):(this.parse(a),this.loaded=!0,this.dispatchEvent(tm.event.Event("load")))},load:function(a){tm.util.Ajax.load({url:a,dataType:"json",success:function(a){this.parse(a),this.loaded=!0}.bind(this)})},parse:function(a){if(this.frame=a.frame,"string"==typeof a.image){if(!tm.asset.Manager.contains(a.image)){var b=tm.asset.Loader();b.load(a.image)}this.image=tm.asset.Manager.get(a.image)}else this.image=a.image;if(this.image.loaded===!1)this.image.addEventListener("load",function(){this._calcFrames(a.frame);var b=tm.event.Event("load");this.dispatchEvent(b)}.bind(this),!1);else{this._calcFrames(a.frame);var c=tm.event.Event("load");this.dispatchEvent(c)}this._calcAnim(a.animations)},getFrame:function(a){return this.frames[a]},getAnimation:function(a){return this.animations[a]},_calcFrames:function(a){var b=this.frames=[],c=a.width,d=a.height,e=~~(this.image.width/c),f=~~(this.image.height/d);a.count||(a.count=e*f);for(var g=0,h=a.count;h>g;++g){var i=g%e,j=g/e|0,k={x:i*c,y:j*d,width:c,height:d};b.push(k)}},_calcAnim:function(a){this.animations={};for(var b in a){var c=a[b];c instanceof Array?this.animations[b]={frames:[].range(c[0],c[1]),next:c[2],frequency:c[3]||1}:"number"==typeof c?this.animations[b]={frames:[c],next:null,frequency:1}:this.animations[b]={frames:c.frames,next:c.next,frequency:c.frequency||1}}this.animations["default"]={frames:[].range(0,this.frame.count),next:"default",frequency:1}}})}(),function(){tm.define("tm.asset.MapSheet",{superClass:"tm.event.EventDispatcher",init:function(a){this.superInit(),this.loaded=!1,"string"==typeof a?tm.util.Ajax.load({url:a,success:function(a){var b=this._parse(a);this.$extend(b),this._checkImage()}.bind(this)}):(this.$extend(arguments[0]),this._checkImage())},_parse:function(a){var b=(Array.prototype.forEach,{}),c=new DOMParser,d=c.parseFromString(a,"text/xml"),e=this._attrToJSON(d.getElementsByTagName("map")[0]);return this.$extend(e),b.tilesets=this._parseTilesets(d),b.layers=this._parseLayers(d),b},_parseTilesets:function(a){var b=Array.prototype.forEach,c=this,d=[],e=a.getElementsByTagName("tileset");return b.call(e,function(a){var b={},e=c._propertiesToJson(a);e.src?b.image=e.src:b.image=a.getElementsByTagName("image")[0].getAttribute("source"),d.push(b)}),d},_parseLayers:function(a){var b=Array.prototype.forEach,c=[],d=a.getElementsByTagName("map")[0],e=[];return b.call(d.childNodes,function(a){("layer"==a.tagName||"objectgroup"==a.tagName||"imagelayer"==a.tagName)&&e.push(a)}),e.each(function(a){if("layer"==a.tagName){var d=a.getElementsByTagName("data")[0],e=d.getAttribute("encoding"),f={type:"layer",name:a.getAttribute("name")};"csv"==e?f.data=this._parseCSV(d.textContent):"base64"==e&&(f.data=this._parseBase64(d.textContent));var g=this._attrToJSON(a);f.$extend(g),c.push(f)}else if("objectgroup"==a.tagName){var f={type:"objectgroup",objects:[],name:a.getAttribute("name")};b.call(a.childNodes,function(a){if(3!=a.nodeType){var b=this._attrToJSON(a);b.properties=this._propertiesToJson(a),f.objects.push(b)}}.bind(this)),c.push(f)}else if("imagelayer"==a.tagName){var f={type:"imagelayer",name:a.getAttribute("name"),x:a.getAttribute("x")||0,y:a.getAttribute("y")||0,alpha:a.getAttribute("opacity")||1,visible:void 0===a.getAttribute("visible")||0!=a.getAttribute("visible")},h=a.getElementsByTagName("image")[0];f.image={source:h.getAttribute("source")},c.push(f)}}.bind(this)),c},_parseCSV:function(a){var b=a.split(","),c=[];return b.each(function(a,b){var d=parseInt(a,10)-1;c.push(d)}),c},_parseBase64:function(a){var b=atob(a.trim()),c=[];b=b.split("").map(function(a){return a.charCodeAt(0)});for(var d=0,e=b.length/4;e>d;++d){var f=b[4*d];c[d]=parseInt(f,10)-1}return c},_propertiesToJson:function(a){var b=a.getElementsByTagName("properties")[0],c={};if(void 0===b)return c;for(var d=0;d<b.childNodes.length;d++){var e=b.childNodes[d];"property"===e.tagName&&(c[e.getAttribute("name")]=e.getAttribute("value"))}return c},_attrToJSON:function(a){for(var b={},c=0;c<a.attributes.length;c++){var d=a.attributes[c].value;d=isNaN(parseFloat(d))?d:parseFloat(d),b[a.attributes[c].name]=d}return b},_checkImage:function(){var a=this,b=[];if(this.tilesets.length&&Array.prototype.push.apply(b,this.tilesets.map(function(a){return a.image})),this.layers.each(function(a){"imagelayer"==a.type&&b.push(a.image.source)}),b.length){var c=0,d=b.length,e=function(){if(c++,c==d){this.loaded=!0;var a=tm.event.Event("load");this.dispatchEvent(a)}}.bind(this);b.each(function(b){var f=tm.asset.Manager.get(b);if(f)if(f.loaded){if(++c,c==d){this.loaded=!0;var g=tm.event.Event("load");a.dispatchEvent(g)}}else f.addEventListener("load",e);else{var h=tm.asset.Loader();h.load(b);var i=tm.asset.Manager.get(b);i.addEventListener("load",e)}})}else{this.loaded=!0;var f=tm.event.Event("load");this.dispatchEvent(f)}}})}(),tm.asset=tm.asset||{},function(){tm.define("tm.asset.Font",{superClass:"tm.event.EventDispatcher",init:function(a,b,c){this.superInit();var d=tm.dom.Element("head").create("style");d.text="@font-face { font-family: '{0}'; src: url({1}) format('{2}'); }".format(b,a,c),tm.asset.Font.checkLoaded(b,function(){this.flare("load")}.bind(this))}}),tm.asset.Font.checkLoaded=function(a,b){var c=tm.graphics.Canvas(),d=c.context.font.split(" ")[1];c.context.font="40px "+d;var e="1234567890-^\\qwertyuiop@[asdfghjkl;:]zxcvbnm,./!\"#$%&'()=~|QWERTYUIOP`{ASDFGHJKL+*}ZXCVBNM<>?_１２３４５６７８９０－＾￥ｑｗｅｒｔｙｕｉｏｐａｓｄｆｇｈｊｋｌｚｘｃｖｂｎｍ，．あいうかさたなをん時は金なり",f=c.context.measureText(e).width;c.context.font="40px "+a+", "+d;var g=function(){c.context.measureText(e).width!==f?b&&b():setTimeout(g,100)};setTimeout(g,100)},tm.asset.Loader.register("ttf",function(a,b){return tm.asset.Font(a,b,"truetype")}),tm.asset.Loader.register("otf",function(a,b){return tm.asset.Font(a,b,"opentype")}),tm.asset.Loader.register("woff",function(a,b){return tm.asset.Font(a,b,"woff")}),tm.asset.Loader.register("woff2",function(a,b){return tm.asset.Font(a,b,"woff2")})}(),tm.util=tm.util||{},function(){tm.define("tm.asset.Script",{superClass:"tm.event.EventDispatcher",element:null,loaded:!1,init:function(a){this.superInit(),this.loaded=!1,this.element=document.createElement("script"),this.element.type="text/javascript",this.element.src=a,this.element.charset="UTF-8",this.element.setAttribute("defer",!0),document.head.appendChild(this.element);var b=this;this.element.onload=function(){b.loaded=!0,b.fire(tm.event.Event("load"))}},getElement:function(){return this.element}}),tm.asset.Script.load=function(a){var b=tm.asset.Script(a);return b},tm.asset.Script.loadStats=function(a){a=a||"r11";var b=null;return b=-1!=["r6","r7","r8","r9","10"].indexOf(a)?"http://rawgithub.com/mrdoob/stats.js/"+a+"/build/Stats.js":"http://rawgithub.com/mrdoob/stats.js/"+a+"/build/stats.min.js",this.load(b)},tm.asset.Script.loadDatGUI=function(a){a=a||"0.5";var b="http://dat-gui.googlecode.com/git/build/dat.gui.js";return this.load(b)},tm.asset.Script.loadThree=function(a){var b="http://rawgithub.com/mrdoob/three.js/{version}/build/three.js";a=a||"r55";var c=b.format({version:a});return this.load(c)},tm.asset.Script.loadBulletML=function(a){var b="http://rawgithub.com/daishihmr/bulletml.js/{version}/target/bulletml.for.tmlib.js";a=a||"v0.4.2";var c=b.format({version:a});return this.load(c)}}(),tm.input=tm.input||{},function(){tm.input.Keyboard=tm.createClass({element:null,key:null,press:null,down:null,up:null,last:null,init:function(a){this.element=a||document,this.key={},this.press={},this.down={},this.up={},this.last={};var b=this;this.element.addEventListener("keydown",function(a){b.key[a.keyCode]=!0}),this.element.addEventListener("keyup",function(a){b.key[a.keyCode]=!1}),this.element.addEventListener("keypress",function(a){})},run:function(a){var b=this;a=a||30,tm.setLoop(function(){b._update(),b.update&&b.update()},1e3/a)},_update:function(){for(var a in this.key)this.last[a]=this.press[a],this.press[a]=this.key[a],this.down[a]=(this.press[a]^this.last[a])&this.press[a],this.up[a]=(this.press[a]^this.last[a])&this.last[a];return this},getKey:function(a){return"string"==typeof a&&(a=b[a]),1==this.press[a]},getKeyDown:function(a){return"string"==typeof a&&(a=b[a]),1==this.down[a]},getKeyUp:function(a){return"string"==typeof a&&(a=b[a]),1==this.up[a]},getKeyAngle:function(){var b=null,c=this.getKey("left")<<3|this.getKey("up")<<2|this.getKey("right")<<1|this.getKey("down");return 0!=c&&a.hasOwnProperty(c)&&(b=a[c]),b},getKeyDirection:function(){var a=tm.geom.Vector2(0,0);return this.getKey("left")?a.x=-1:this.getKey("right")&&(a.x=1),this.getKey("up")?a.y=-1:this.getKey("down")&&(a.y=1),a.x&&a.y&&a.div(Math.SQRT2),a},setKey:function(a,c){return"string"==typeof a&&(a=b[a]),this.key[a]=c,this},clearKey:function(){return this.key={},this}});var a={1:270,2:0,4:90,8:180,6:45,3:315,12:135,9:225,14:90,13:180,11:270,7:0},b={backspace:8,tab:9,enter:13,"return":13,shift:16,ctrl:17,alt:18,pause:19,capslock:20,escape:27,pageup:33,pagedown:34,end:35,home:36,left:37,up:38,right:39,down:40,insert:45,"delete":46,0:48,1:49,2:50,3:51,4:52,5:53,6:54,7:55,8:56,9:57,a:65,A:65,b:66,B:66,c:67,C:67,d:68,D:68,e:69,E:69,f:70,F:70,g:71,G:71,h:72,H:72,i:73,I:73,j:74,J:74,k:75,K:75,l:76,L:76,m:77,M:77,n:78,N:78,o:79,O:79,p:80,P:80,q:81,Q:81,r:82,R:82,s:83,S:83,t:84,T:84,u:85,U:85,v:86,V:86,w:87,W:87,x:88,X:88,y:89,Y:89,z:90,Z:90,numpad0:96,numpad1:97,numpad2:98,numpad3:99,numpad4:100,numpad5:101,numpad6:102,numpad7:103,numpad8:104,numpad9:105,multiply:106,add:107,subtract:109,decimalpoint:110,divide:111,f1:112,f2:113,f3:114,f4:115,f5:116,f6:117,f7:118,f8:119,f9:120,f10:121,f11:122,f12:123,numlock:144,scrolllock:145,semicolon:186,equalsign:187,comma:188,dash:189,period:190,"forward slash":191,"/":191,"grave accent":192,"open bracket":219,"back slash":220,"close bracket":221,"single quote":222,space:32}}(),tm.input=tm.input||{},function(){tm.input.Mouse=tm.createClass({element:null,init:function(a){this.element=a||window.document,this.position=tm.geom.Vector2(0,0),this.deltaPosition=tm.geom.Vector2(0,0),this.prevPosition=tm.geom.Vector2(0,0),this._x=0,this._y=0,this.touches=[];var b=this;this.element.addEventListener("mousedown",function(a){b._mousemove(a),b.prevPosition.set(b._x,b._y),b.button|=1<<a.button}),this.element.addEventListener("mouseup",function(a){b.button&=~(1<<a.button)}),this.element.addEventListener("mousemove",function(a){b._mousemove(a)})},run:function(a){var b=this;return a=a||30,tm.setLoop(function(){b.update()},1e3/a),this},update:function(){this.last=this.press,this.press=this.button,this.down=(this.press^this.last)&this.press,this.up=(this.press^this.last)&this.last,this.deltaPosition.x=this._x-this.position.x,this.deltaPosition.y=this._y-this.position.y,this.prevPosition.setObject(this.position),this.position.set(this._x,this._y)},getButton:function(b){return"string"==typeof b&&(b=a[b]),0!=(this.press&b)},getButtonDown:function(b){return"string"==typeof b&&(b=a[b]),0!=(this.down&b)},getButtonUp:function(b){return"string"==typeof b&&(b=a[b]),0!=(this.up&b)},_mousemove:function(a){var b=a.target.getBoundingClientRect();this._x=a.clientX-b.left,this._y=a.clientY-b.top},_mousemoveNormal:function(a){var b=a.target.getBoundingClientRect();this._x=a.clientX-b.left,this._y=a.clientY-b.top},_mousemoveScale:function(a){var b=a.target.getBoundingClientRect();this._x=a.clientX-b.left,this._y=a.clientY-b.top,a.target.style.width&&(this._x*=a.target.width/parseInt(a.target.style.width)),a.target.style.height&&(this._y*=a.target.height/parseInt(a.target.style.height))}}),tm.input.Mouse.BUTTON_LEFT=1,tm.input.Mouse.BUTTON_MIDDLE=2,tm.input.Mouse.BUTTON_RIGHT=4;var a={left:tm.input.Mouse.BUTTON_LEFT,middle:tm.input.Mouse.BUTTON_MIDDLE,right:tm.input.Mouse.BUTTON_RIGHT};tm.input.Mouse.prototype.accessor("x",{get:function(){return this.position.x},set:function(a){this.position.x=a}}),tm.input.Mouse.prototype.accessor("y",{get:function(){return this.position.y},set:function(a){this.position.y=a}}),tm.input.Mouse.prototype.accessor("dx",{get:function(){return this.deltaPosition.x},set:function(a){this.deltaPosition.x=a}}),tm.input.Mouse.prototype.accessor("dy",{get:function(){return this.deltaPosition.y},set:function(a){this.deltaPosition.y=a}}),tm.input.Mouse.prototype.getPointing=function(){return this.getButton("left")},tm.input.Mouse.prototype.getPointingStart=function(){return this.getButtonDown("left")},tm.input.Mouse.prototype.getPointingEnd=function(){return this.getButtonUp("left")}}(),tm.input=tm.input||{},function(){tm.input.Touch=tm.createClass({element:null,touched:!1,init:function(a){this.element=a||window.document,this.position=tm.geom.Vector2(0,0),this.deltaPosition=tm.geom.Vector2(0,0),this.prevPosition=tm.geom.Vector2(0,0),this._x=0,this._y=0,this.touches=[];var b=this;this.element.addEventListener("touchstart",function(a){b.touched=!0,b._touchmove(a),b.position.set(b._x,b._y),b.prevPosition.set(b._x,b._y),b._setTouches(a)}),this.element.addEventListener("touchend",function(a){b.touched=!1,b._setTouches(a)}),this.element.addEventListener("touchmove",function(a){b._touchmove(a),a.stop(),b._setTouches(a)})},run:function(a){var b=this;return a=a||30,tm.setLoop(function(){b.update()},1e3/a),this},update:function(){this.last=this.now,this.now=Number(this.touched),this.start=(this.now^this.last)&this.now,this.end=(this.now^this.last)&this.last,this.deltaPosition.x=this._x-this.position.x,this.deltaPosition.y=this._y-this.position.y,this.prevPosition.setObject(this.position),this.position.set(this._x,this._y)},getTouch:function(){return 0!=this.touched},getTouchStart:function(){return 0!=this.start},getTouchEnd:function(){return 0!=this.end},_touchmove:function(a){var b=a.touches[0],c=a.target.getBoundingClientRect();this._x=b.clientX-c.left,this._y=b.clientY-c.top},_touchmoveScale:function(a){var b=a.touches[0],c=a.target.getBoundingClientRect();this._x=b.clientX-c.left,this._y=b.clientY-c.top,a.target.style.width&&(this._x*=a.target.width/parseInt(a.target.style.width)),a.target.style.height&&(this._y*=a.target.height/parseInt(a.target.style.height))},_getAdjustPoint:function(a){var b=this.element,c=b.style,d=b.getBoundingClientRect(),a={x:a.clientX-d.left,y:a.clientY-d.top};return c.width&&(a.x*=b.width/parseInt(c.width)),c.height&&(a.y*=b.height/parseInt(c.height)),a},_setTouches:function(a){var b=a.touches;this.touches.clear();for(var c=0,d=b.length;d>c;++c){var e=this._getAdjustPoint(b[c]);this.touches.push(e)}return this}}),tm.input.Touch.prototype.accessor("x",{get:function(){return this.position.x},set:function(a){this.position.x=a}}),tm.input.Touch.prototype.accessor("y",{get:function(){return this.position.y},set:function(a){this.position.y=a}}),tm.input.Touch.prototype.accessor("dx",{get:function(){return this.deltaPosition.x},set:function(a){this.deltaPosition.x=a}}),tm.input.Touch.prototype.accessor("dy",{get:function(){return this.deltaPosition.y},set:function(a){this.deltaPosition.y=a}}),tm.input.Touch.prototype.getPointing=tm.input.Touch.prototype.getTouch,tm.input.Touch.prototype.getPointingStart=tm.input.Touch.prototype.getTouchStart,tm.input.Touch.prototype.getPointingEnd=tm.input.Touch.prototype.getTouchEnd}(),tm.input=tm.input||{},function(){tm.input.Accelerometer=tm.createClass({init:function(a){this.gravity=tm.geom.Vector3(0,0,0),this.acceleration=tm.geom.Vector3(0,0,0),this.rotation=tm.geom.Vector3(0,0,0),this.orientation=tm.geom.Vector3(0,0,0);var b=this;window.addEventListener("devicemotion",function(a){var c=b.acceleration,d=b.gravity,e=b.rotation;a.acceleration&&(c.x=a.acceleration.x,c.y=a.acceleration.y,c.z=a.acceleration.z),a.accelerationIncludingGravity&&(d.x=a.accelerationIncludingGravity.x,d.y=a.accelerationIncludingGravity.y,d.z=a.accelerationIncludingGravity.z),a.rotationRate&&(e.x=e.beta=a.rotationRate.beta,e.y=e.gamma=a.rotationRate.gamma,e.z=e.alpha=a.rotationRate.alpha)}),window.addEventListener("deviceorientation",function(a){var c=b.orientation;c.alpha=a.alpha,c.beta=a.beta,c.gamma=a.gamma})}})}(),tm.graphics=tm.graphics||{},function(){tm.graphics.Color=tm.createClass({r:255,g:255,b:255,a:1,init:function(a,b,c,d){this.set.apply(this,arguments)},set:function(a,b,c,d){return this.r=a,this.g=b,this.b=c,this.a=void 0!==d?d:1,this},setFromNumber:function(a,b,c,d){return this.r=a,this.g=b,this.b=c,this.a=void 0!==d?d:1,this},setFromArray:function(a){return this.set.apply(this,a)},setFromObject:function(a){return this.set(a.r,a.g,a.b,a.a)},setFromString:function(a){var b=tm.graphics.Color.stringToNumber(a);return this.set(b[0],b[1],b[2],b[3])},setSmart:function(){var a=arguments[0];return arguments.length>=3?this.set(arguments.r,arguments.g,arguments.b,arguments.a):a instanceof Array?this.setFromArray(a):a instanceof Object?this.setFromObject(a):"string"==typeof a&&this.setFromString(a),this},toStyleAsHex:function(){return"#{0}{1}{2}".format(this.r.toString(16).padding(2,"0"),this.g.toString(16).padding(2,"0"),this.b.toString(16).padding(2,"0"))},toStyleAsRGB:function(){return"rgb({r},{g},{b})".format({r:~~this.r,g:~~this.g,b:~~this.b})},toStyleAsRGBA:function(){return"rgba({r},{g},{b},{a})".format({r:~~this.r,g:~~this.g,b:~~this.b,a:this.a})},toStyle:function(){return"rgba({r},{g},{b},{a})".format({r:~~this.r,g:~~this.g,b:~~this.b,a:this.a})}});var a={hex111:{reg:/^#(\w{1})(\w{1})(\w{1})$/,exec:function(a){return[parseInt(a[1]+a[1],16),parseInt(a[2]+a[2],16),parseInt(a[3]+a[3],16)]}},hex222:{reg:/^#(\w{2})(\w{2})(\w{2})$/,exec:function(a){return[parseInt(a[1],16),parseInt(a[2],16),parseInt(a[3],16)]}},rgb:{reg:/^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,exec:function(a){return[parseInt(a[1]),parseInt(a[2]),parseInt(a[3])]}},rgba:{reg:/^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1}(\.{1}\d+)?)\)$/,exec:function(a){return[parseInt(a[1]),parseInt(a[2]),parseInt(a[3]),parseFloat(a[4])]}},hsl:{reg:/^hsl\((\d{1,3}),\s*(\d{1,3})%,\s*(\d{1,3})%\)$/,exec:function(a){return tm.graphics.Color.HSLtoRGB(a[1],a[2],a[3])}},hsla:{reg:/^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1}(\.{1}\d+)?)\)$/,exec:function(a){return Color.HSLAtoRGBA(a[1],a[2],a[3],a[4])}}};tm.graphics.Color.COLOR_LIST={black:[0,0,0],silver:[192,192,192],gray:[128,128,128],white:[255,255,255],maroon:[128,0,0],red:[255,0,0],purple:[128,0,128],fuchsia:[255,0,255],green:[0,128,0],lime:[0,255,0],olive:[128,128,0],yellow:[255,255,0],navy:[0,0,128],blue:[0,0,255],teal:[0,128,128],aqua:[0,255,255]},tm.graphics.Color.strToNum=tm.graphics.Color.stringToNumber=function(b){var c=null;if("#"===b[0]?c=4==b.length?"hex111":"hex222":"r"===b[0]&&"g"===b[1]&&"b"===b[2]?c="a"==b[3]?"rgba":"rgb":"h"===b[0]&&"s"===b[1]&&"l"===b[2]&&(c="a"==b[3]?"hsla":"hsl"),c){var d=a[c],e=b.match(d.reg);value=d.exec(e)}else Color.COLOR_LIST[b]&&(value=Color.COLOR_LIST[b]);return value},tm.graphics.Color.HSLtoRGB=function(a,b,c){var d,e,f;if(a%=360,a+=360,a%=360,b*=.01,c*=.01,0==b){var c=Math.round(255*c);return[c,c,c]}var g=.5>c?c*(1+b):c+b-c*b,h=2*c-g,i=(a+120)%360;return d=60>i?h+(g-h)*i/60:180>i?g:h,i=a,e=60>i?h+(g-h)*i/60:180>i?g:240>i?h+(g-h)*(240-i)/60:h,i=(a-120+360)%360,f=60>i?h+(g-h)*i/60:180>i?g:240>i?h+(g-h)*(240-i)/60:h,[parseInt(255*d),parseInt(255*e),parseInt(255*f)]},tm.graphics.Color.HSLAtoRGBA=function(a,b,c,d){var e=Color.HSLtoRGB(a,b,c);return e[3]=d,rgb},tm.graphics.Color.createStyleRGB=function(a,b,c){return"rgba("+a+","+b+","+c+")"},tm.graphics.Color.createStyleRGBA=function(a,b,c,d){return"rgba("+a+","+b+","+c+","+d+")"},tm.graphics.Color.createStyleHSL=function(a,b,c){return"hsl("+a+","+b+"%,"+c+"%)"},tm.graphics.Color.createStyleHSLA=function(a,b,c,d){return"hsla("+a+","+b+"%,"+c+"%,"+d+")"}}(),tm.graphics=tm.graphics||{},function(){tm.graphics.Canvas=tm.createClass({element:null,canvas:null,context:null,init:function(a){this.canvas=null,"string"==typeof a?this.canvas=document.querySelector(a):this.canvas=a||document.createElement("canvas"),this.element=this.canvas,this.context=this.canvas.getContext("2d"),this.context.lineCap="round",this.context.lineJoin="round"},resize:function(a,b){return this.canvas.width=a,this.canvas.height=b,this},resizeWindow:function(){return this.canvas.style.position="fixed",this.canvas.style.margin="0px",this.canvas.style.padding="0px",this.canvas.style.left="0px",this.canvas.style.top="0px",this.resize(window.innerWidth,window.innerHeight)},resizeToFitScreen:function(){return this.canvas.style.position="fixed",this.canvas.style.margin="0px",this.canvas.style.padding="0px",this.canvas.style.left="0px",this.canvas.style.top="0px",this.resize(window.innerWidth,window.innerHeight)},fitWindow:function(a){var b=function(){a=void 0===a?!0:a;var b=this.element,c=b.style;c.position="absolute",c.margin="auto",c.left="0px",c.top="0px",c.bottom="0px",c.right="0px";var d=b.width/window.innerWidth,e=b.height/window.innerHeight,f=b.height/b.width;d>e?(c.width=innerWidth.floor()+"px",c.height=(innerWidth*f).floor()+"px"):(c.width=(innerHeight/f).floor()+"px",c.height=innerHeight.floor()+"px")}.bind(this);b(),a&&window.addEventListener("resize",b,!1)},clear:function(a,b,c,d){return a=a||0,b=b||0,c=c||this.width,d=d||this.height,this.context.clearRect(a,b,c,d),this},clearColor:function(a,b,c,d,e){return b=b||0,c=c||0,d=d||this.width,e=e||this.height,this.save(),this.resetTransform(),this.fillStyle=a,this.context.fillRect(b,c,d,e),this.restore(),this},beginPath:function(){return this.context.beginPath(),this},closePath:function(){return this.context.closePath(),this},moveTo:function(a,b){return this.context.moveTo(a,b),this},lineTo:function(a,b){return this.context.lineTo(a,b),this},fill:function(){return this.context.fill(),this},stroke:function(){return this.context.stroke(),this},clip:function(){return this.context.clip(),this},drawPoint:function(a,b){return this.strokeRect(a,b,1,1)},line:function(a,b,c,d){return this.moveTo(a,b).lineTo(c,d)},drawLine:function(a,b,c,d){return this.beginPath().line(a,b,c,d).stroke()},drawDashLine:function(a,b,c,d,e){var f=null;"string"==typeof e?f=e:(e=e||61680,f=e.toString(2)),f=f.padding(16,"1");var g=c-a,h=d-b,i=Math.sqrt(g*g+h*h);g/=i,h/=i;for(var j=a,k=b,l=0;i>l;++l)"1"==f[l%16]&&this.drawPoint(j,k),j+=g,k+=h;return this},drawArrow:function(a,b,c,d,e){var f=c-a,g=d-b,h=180*Math.atan2(g,f)/Math.PI;return this.drawLine(a,b,c,d),this.fillPolygon(c,d,e||5,3,h),this},lines:function(){this.moveTo(arguments[0],arguments[1]);for(var a=1,b=arguments.length/2;b>a;++a)this.lineTo(arguments[2*a],arguments[2*a+1]);return this},strokeLines:function(){return this.beginPath(),this.lines.apply(this,arguments),this.stroke(),this},fillLines:function(){return this.beginPath(),this.lines.apply(this,arguments),this.fill(),this},rect:function(a,b,c,d){return this.context.rect.apply(this.context,arguments),this},fillRect:function(){return this.context.fillRect.apply(this.context,arguments),this},strokeRect:function(){return this.context.strokeRect.apply(this.context,arguments),this},roundRect:function(a,b,c,d,e){var f=a+e,g=a+c-e,h=b+e,i=b+d-e;return this.context.arc(f,h,e,-Math.PI,.5*-Math.PI,!1),this.context.arc(g,h,e,.5*-Math.PI,0,!1),this.context.arc(g,i,e,0,.5*Math.PI,!1),this.context.arc(f,i,e,.5*Math.PI,Math.PI,!1),this.closePath(),this},fillRoundRect:function(a,b,c,d,e){return this.beginPath().roundRect(a,b,c,d,e).fill()},strokeRoundRect:function(a,b,c,d,e){return this.beginPath().roundRect(a,b,c,d,e).stroke()},polygon:function(a,b,c,d,e){var f=2*Math.PI/d,g=void 0!=e?e*Math.PI/180:-Math.PI/2;this.moveTo(a+Math.cos(g)*c,b+Math.sin(g)*c);for(var h=1;d>h;++h){var i=f*h+g;this.lineTo(a+Math.cos(i)*c,b+Math.sin(i)*c)}return this.closePath(),this},fillPolygon:function(a,b,c,d,e){return this.beginPath().polygon(a,b,c,d,e).fill()},strokePolygon:function(a,b,c,d,e){return this.beginPath().polygon(a,b,c,d,e).stroke()},star:function(a,b,c,d,e,f){var g=c*(e||.38),h=f?f*Math.PI/180:-Math.PI/2,i=2*Math.PI/d/2;this.moveTo(a+Math.cos(h)*c,b+Math.sin(h)*c);for(var j=1;2*d>j;++j){var k=i*j+h,l=j%2?g:c;this.lineTo(a+Math.cos(k)*l,b+Math.sin(k)*l)}return this.closePath(),this},fillStar:function(a,b,c,d,e,f){return this.beginPath().star(a,b,c,d,e,f).fill()},strokeStar:function(a,b,c,d,e,f){return this.beginPath().star(a,b,c,d,e,f).stroke()},heart:function(a,b,c,d){var e=.5*c,f=void 0===d?Math.PI/4:Math.degToRad(d),g=Math.cos(f)*e,h=Math.sin(f)*e,i=-e,j=(e*e-g*i)/h,k=j+e,l=e-k/2;return this.moveTo(0+a,j+b+l),this.arc(-e+a,0+b+l,e,Math.PI-f,2*Math.PI),this.arc(e+a,0+b+l,e,Math.PI,f),this.closePath(),this},fillHeart:function(a,b,c,d){return this.beginPath().heart(a,b,c,d).fill()},strokeHeart:function(a,b,c,d){return this.beginPath().heart(a,b,c,d).stroke()},circle:function(a,b,c){return this.context.arc(a,b,c,0,2*Math.PI,!1),this},fillCircle:function(a,b,c){var d=this.context;return d.beginPath(),d.arc(a,b,c,0,2*Math.PI,!1),d.closePath(),d.fill(),this},strokeCircle:function(a,b,c){return this.beginPath().circle(a,b,c).stroke()},arc:function(a,b,c,d,e,f){return this.context.arc(a,b,c,d,e,f),this},fillArc:function(a,b,c,d,e,f){return this.beginPath().arc(a,b,c,d,e,f).fill()},strokeArc:function(a,b,c,d,e,f){return this.beginPath().arc(a,b,c,d,e,f).stroke()},triangle:function(a,b,c,d,e,f){return this.moveTo(a,b).lineTo(c,d).lineTo(e,f),this.closePath(),this},fillTriangle:function(a,b,c,d,e,f){return this.beginPath().triangle(a,b,c,d,e,f).fill()},strokeTriangle:function(a,b,c,d,e,f){return this.beginPath().triangle(a,b,c,d,e,f).stroke()},fillText:function(a,b,c){return this.context.fillText.apply(this.context,arguments)},strokeText:function(a,b,c){return this.context.strokeText.apply(this.context,arguments)},fillVerticalText:function(a,b,c){this._drawVerticalText("fillText",a,b,c)},strokeVerticalText:function(a,b,c){this._drawVerticalText("strokeText",a,b,c)},_drawVerticalText:function(a,b,c,d){var e=this.context,f=(b.split("\n"),this.context.measureText("あ").width);e.save(),e.textAlign="right",e.textBaseline="top",Array.prototype.forEach.call(b,function(b,g){e[a](b,c,d+f*g)}),e.restore()},_drawLabelArea:function(a,b){var c=this.context,d=b.text,e=this.context.measureText("あ").width,f=d.split("\n"),g=(b.lineSpace||1)*e;if(c.save(),b.mode&&"horizon"!=b.mode){var h=Math.max(b.height/e|0,1),i=b.x+b.width,j=[];f.each(function(a){for(var b=0,c=a.length;c>b;b+=h){var d=a.substr(b,h);j.push(d)}});var k=a+"VerticalText";j.each(function(a,c){this[k](a,i-c*g,b.y+15)}.bind(this))}else{var h=Math.max(b.width/e|0,1),j=[];c.textAlign="left",c.textBaseline="top",f.each(function(a){for(var b=0,c=a.length;c>b;b+=h){var d=a.substr(b,h);j.push(d)}});var k=a+"Text";j.each(function(a,d){c[k](a,b.x,b.y+d*g+4)})}c.restore()},fillLabelArea:function(a){this._drawLabelArea("fill",a)},strokeLabelArea:function(a){this._drawLabelArea("stroke",a)},drawImage:function(a,b,c){this.context.drawImage.apply(this.context,arguments)},drawTexture:function(a,b,c){return arguments[0]=a.element,this.context.drawImage.apply(this.context,arguments),this},drawBitmap:function(a,b,c){return arguments[0]=a.imageData,this.context.putImageData.apply(this.context,arguments),this},drawScale9Image:function(a,b,c){var d=c.x,e=c.width,f=a.width-(d+e),g=b.width-(d+f),h=c.y;return this.drawImage(a,0,0,d,h,b.x,b.y,d,h),this.drawImage(a,d,0,e,h,b.x+d,b.y,g,h),this.drawImage(a,d+e,0,f,h,b.x+d+g,b.y,f,h),this},setTransform:function(a,b,c,d,e,f){return this.context.setTransform(a,b,c,d,e,f),this},resetTransform:function(){return this.setTransform(1,0,0,1,0,0),this},setTransformCenter:function(){return this.context.setTransform(1,0,0,1,this.width/2,this.height/2),this},transform:function(a,b,c,d,e,f){return this.context.transform(a,b,c,d,e,f),this},save:function(){return this.context.save(),this},restore:function(){return this.context.restore(),this},translate:function(a,b){return this.context.translate(a,b),this},rotate:function(a){return this.context.rotate(a),this},scale:function(a,b){return this.context.scale(a,b),this},saveAsImage:function(a){a=a||tm.graphics.Canvas.MIME_TYPE_PNG;var b=this.canvas.toDataURL(a);window.open(b,"save")},setCompositing:function(a,b){},setFillStyle:function(a){return this.context.fillStyle=a,this},setStrokeStyle:function(a){return this.context.strokeStyle=a,this},setColorStyle:function(a,b){return b=b||a,this.context.strokeStyle=a,this.context.fillStyle=b,this},setText:function(a,b,c){var d=this.context;d.font=a,d.textAlign=b,d.textBaseline=c},setLineStyle:function(width,cap,join,miter){with(this.context)lineWidth=width||1,lineCap=cap||"round",lineJoin=join||"round",miterLimit=miter||10;return this},setShadow:function(a,b,c,d){var e=this.context;return e.shadowColor=a||"black",e.shadowOffsetX=b||0,e.shadowOffsetY=c||0,e.shadowBlur=d||0,this},getElement:function(){return this.element}}),tm.graphics.Canvas.MIME_TYPE_PNG="image/png",tm.graphics.Canvas.MIME_TYPE_JPG="image/jpeg",tm.graphics.Canvas.MIME_TYPE_SVG="image/svg+xml",tm.graphics.Canvas.prototype.accessor("width",{get:function(){return this.canvas.width},set:function(a){this.canvas.width=a}}),tm.graphics.Canvas.prototype.accessor("height",{get:function(){return this.canvas.height},set:function(a){this.canvas.height=a}}),tm.graphics.Canvas.prototype.accessor("fillStyle",{get:function(){return this.context.fillStyle},set:function(a){this.context.fillStyle=a}}),tm.graphics.Canvas.prototype.accessor("strokeStyle",{get:function(){return this.context.strokeStyle},set:function(a){this.context.strokeStyle=a}}),tm.graphics.Canvas.prototype.accessor("globalAlpha",{get:function(){return this.context.globalAlpha},set:function(a){this.context.globalAlpha=a}}),tm.graphics.Canvas.prototype.accessor("globalCompositeOperation",{get:function(){return this.context.globalCompositeOperation},set:function(a){this.context.globalCompositeOperation=a}}),tm.graphics.Canvas.prototype.accessor("shadowBlur",{get:function(){return this.context.shadowBlur},set:function(a){this.context.shadowBlur=a}}),tm.graphics.Canvas.prototype.accessor("shadowColor",{get:function(){return this.context.shadowColor},set:function(a){this.context.shadowColor=a}}),tm.graphics.Canvas.prototype.accessor("shadowOffsetX",{get:function(){return this.context.shadowOffsetX},set:function(a){this.context.shadowOffsetX=a}}),tm.graphics.Canvas.prototype.accessor("shadowOffsetY",{get:function(){return this.context.shadowOffsetY},set:function(a){this.context.shadowOffsetY=a}}),tm.graphics.Canvas.prototype.accessor("lineCap",{get:function(){return this.context.lineCap},set:function(a){this.context.lineCap=a}}),tm.graphics.Canvas.prototype.accessor("lineJoin",{get:function(){return this.context.lineJoin},set:function(a){this.context.lineJoin=a}}),tm.graphics.Canvas.prototype.accessor("miterLimit",{get:function(){return this.context.miterLimit},set:function(a){this.context.miterLimit=a}}),tm.graphics.Canvas.prototype.accessor("lineWidth",{get:function(){return this.context.lineWidth},set:function(a){this.context.lineWidth=a}}),tm.graphics.Canvas.prototype.accessor("font",{get:function(){return this.context.font},set:function(a){this.context.font=a}}),tm.graphics.Canvas.prototype.accessor("textAlign",{get:function(){return this.context.textAlign},set:function(a){this.context.textAlign=a}}),tm.graphics.Canvas.prototype.accessor("textBaseline",{get:function(){return this.context.textBaseline},set:function(a){this.context.textBaseline=a}}),tm.graphics.Canvas.prototype.getter("centerX",function(){return this.canvas.width/2}),tm.graphics.Canvas.prototype.getter("centerY",function(){return this.canvas.height/2}),tm.graphics.Canvas.prototype.accessor("imageSmoothingEnabled",{get:function(){return this.context.imageSmoothingEnabled},set:function(a){this.context.imageSmoothingEnabled=a,
-this.context.webkitImageSmoothingEnabled=a,this.context.mozImageSmoothingEnabled=a}})}(),tm.graphics=tm.graphics||{},function(){tm.graphics.Bitmap=tm.createClass({imageData:null,init:function(c){a||(a=document.createElement("canvas"),b=a.getContext("2d")),this._init.apply(this,arguments),this.init=this._init},_init:function(a){if(1==arguments.length)this.imageData=a,this.data=a.data;else if(2==arguments.length){var c=arguments[0],d=arguments[1];this.imageData=b.createImageData(c,d),this.data=this.imageData.data}},getPixelIndex:function(a){var b=4*a;return[this.data[b+0],this.data[b+1],this.data[b+2],this.data[b+3]]},getPixelXY:function(a,b){return this.getPixelIndex(this.posToIndex(a,b))},getPixel:function(a,b){return this.getPixelIndex(this.posToIndex(a,b))},getPixelAsNumber:function(a){var b=4*a;return this.data[b+3]<<24|this.data[b+0]<<16|this.data[b+1]<<8|this.data[b+2]},getPixelAsObject:function(a){var b=4*a;return{r:this.data[b+0],g:this.data[b+1],b:this.data[b+2],a:this.data[b+3]}},getPixelAsArray:function(a){var b=4*a;return[this.data[b+0],this.data[b+1],this.data[b+2],this.data[b+3]]},getPixelAverage:function(a,b,c,d){var e=[0,0,0,0],f=a,g=a+c,h=b,i=b+d;0>f&&(f=0),g>this.width&&(g=this.width),0>h&&(h=0),i>this.height&&(i=this.height);for(var j=[],k=this.width,l=h;i>l;++l)for(var m=f;g>m;++m){var n=k*l+m;j.push(this.getPixelIndex(n))}for(var o=o=j.length,l=0;o>l;++l)e[0]+=j[l][0],e[1]+=j[l][1],e[2]+=j[l][2],e[3]+=j[l][3];return e[0]/=o,e[1]/=o,e[2]/=o,e[3]/=o,e},setPixelIndex:function(a,b,c,d){var e=4*a;return this.data[e+0]=b,this.data[e+1]=c,this.data[e+2]=d,this},setPixelXY:function(a,b,c,d,e){return this.setPixelIndex(b*this.imageData.width+a,c,d,e)},setPixel:function(a,b,c,d){return this.setPixelIndex(y*this.imageData.width+x,b,c,d)},setPixel32Index:function(a,b,c,d,e){var f=4*a;return this.data[f+0]=b,this.data[f+1]=c,this.data[f+2]=d,this.data[f+3]=e,this},setPixel32:function(a,b,c,d,e,f){return this.setPixel32Index(b*this.width+a,c,d,e,f)},setPixel32XY:function(a,b,c,d,e,f){return this.setPixel32Index(b*this.width+a,c,d,e,f)},setPixelFromArray:function(a,b){return this.setPixel(a,b[0],b[1],b[2])},setPixel32FromArray:function(a,b){return this.setPixel32(a,b[0],b[1],b[2],b[3])},setPixelFromNumber:function(a,b){return this.setPixel(a,(16711680&b)>>>16,(65280&b)>>>8,(255&b)>>>0)},setPixel32FromNumber:function(a,b){return this.setPixel32(a,(16711680&b)>>>16,(65280&b)>>>8,(255&b)>>>0,(4278190080&b)>>>24)},setPixelFromObject:function(a,b){return this.setPixel(b.r,b.g,b.b)},setPixel32FromObject:function(a,b){return this.setPixel32(b.r,b.g,b.b,b.a)},setPixelFromString:function(a,b){},posToIndex:function(a,b){return b*this.imageData.width+a},filter:function(a){for(var b=0;b<this.height;++b)for(var c=0;c<this.width;++c){var d=this.posToIndex(c,b),e=this.getPixel(c,b);a.calc(e,d,c,b,this)}return this},noise:function(a,b){a=a||0,b=b||255,range=b-a;for(var c=0,d=this.length;d>c;++c){var e=this.getPixelIndex(c);e[0]=Math.random()*range+a,e[1]=Math.random()*range+a,e[2]=Math.random()*range+a,e[3]=255,this.setPixel32Index(c,e[0],e[1],e[2],e[3])}},applyFilter:function(a){}}),tm.graphics.Bitmap.prototype.accessor("width",{get:function(){return this.imageData.width},set:function(a){this.imageData.width=a}}),tm.graphics.Bitmap.prototype.accessor("height",{get:function(){return this.imageData.height},set:function(a){this.imageData.height=a}}),tm.graphics.Bitmap.prototype.getter("length",function(){return this.imageData.width*this.imageData.height}),tm.graphics.Canvas.prototype.getBitmap=function(a,b,c,d){return tm.graphics.Bitmap(this.context.getImageData(a||0,b||0,c||this.width,d||this.height))},tm.graphics.Canvas.prototype.createBitmap=function(a,b){return tm.graphics.Bitmap(this.context.createImageData(a||this.width,b||this.height))},tm.asset.Texture.prototype.getBitmap=function(a,b,c,d){var e=tm.graphics.Canvas();return e.resize(this.width,this.height),e.drawTexture(this,0,0,this.width,this.height),e.getBitmap(a,b,c,d)};var a=null,b=null}(),tm.graphics=tm.graphics||{},function(){tm.graphics.MonochromeFilter=tm.createClass({init:function(){},apply:function(a,b){for(var c=a.length,d=0;c>d;++d){var e=a.getPixelIndex(d),f=.3*e[0]+.59*e[1]+.11*e[2];b.setPixel32Index(d,f,f,f,e[3])}return b}})}(),function(){tm.graphics.ReverseFilter=tm.createClass({init:function(){},apply:function(a,b){for(var c=0,d=a.width*a.height;d>c;++c){var e=a.getPixelIndex(c);e[0]=255-e[0],e[1]=255-e[1],e[2]=255-e[2],b.setPixel32Index(c,e[0],e[1],e[2],255)}return b}})}(),function(){tm.graphics.BlurFilter=tm.createClass({init:function(a,b,c){this.blurX=a||4,this.blurY=b||4,this.quality=c||1},apply:function(a,b){for(var c=Math.floor(this.blurX/2),d=Math.floor(this.blurY/2),e=this.blurX,f=this.blurY,g=a.width,h=a.height,i=a.length,j=function(a,b){for(var h=0;i>h;++h){var j=h%g,k=Math.floor(h/g),l=a.getPixelAverage(j-c,k-d,e,f);b.setPixel32Index(h,l[0],l[1],l[2],255)}},k=a,l=0;l<this.quality;++l)a=k,k=tm.graphics.Bitmap(g,h),j(a,k);return b.imageData=k.imageData,b}})}(),function(){for(var a=[],b=0;255>b;++b){var c=0;c=100>b?60:150>b?150:180>b?180:220,a[b]=c}tm.graphics.ToonFilter=tm.createClass({toonTable:null,init:function(b){this.toonTable=b||a},apply:function(a,b){for(var c=0,d=a.width*a.height;d>c;++c){var e=a.getPixelIndex(c),f=this.toonTable[e[0]],g=this.toonTable[e[1]],h=this.toonTable[e[2]];b.setPixel32Index(c,f,g,h,255)}return b}})}(),function(){tm.graphics.ColorMatrixFilter=tm.createClass({init:function(a){this.colorMatrix=a},apply:function(a,b){for(var c=this.colorMatrix,d=0,e=a.length;e>d;++d){var f=a.getPixelIndex(d),g=f[0]*c[0]+f[1]*c[1]+f[2]*c[2]+f[3]*c[3]+c[4],h=f[0]*c[5]+f[1]*c[6]+f[2]*c[7]+f[3]*c[8]+c[9],i=f[0]*c[10]+f[1]*c[11]+f[2]*c[12]+f[3]*c[13]+c[14],j=f[0]*c[15]+f[1]*c[16]+f[2]*c[17]+f[3]*c[18]+c[19];b.setPixel32Index(d,g,h,i,j)}return b}})}(),tm.graphics=tm.graphics||{},function(){tm.graphics.Canvas.prototype.setGradient=function(a){this.context.fillStyle=a.gradient}}(),function(){tm.graphics.LinearGradient=tm.createClass({init:function(c,d,e,f){a||(a=document.createElement("canvas"),b=a.getContext("2d")),this._init(c,d,e,f),this.init=this._init},_init:function(a,c,d,e){this.gradient=b.createLinearGradient(a,c,d,e)},addColorStop:function(a,b){return this.gradient.addColorStop(a,b),this},addColorStopList:function(a){for(var b=0,c=a.length;c>b;++b){var d=a[b].offset,e=a[b].color;this.addColorStop(d,e)}return this},toStyle:function(){return this.gradient}}),tm.graphics.RadialGradient=tm.createClass({init:function(c,d,e,f,g,h){a||(a=document.createElement("canvas"),b=a.getContext("2d")),this._init(c,d,e,f,g,h),this.init=this._init},_init:function(a,c,d,e,f,g){this.gradient=b.createRadialGradient(a,c,d,e,f,g)},addColorStop:function(a,b){return this.gradient.addColorStop(a,b),this},addColorStopList:function(a){for(var b=0,c=a.length;c>b;++b){var d=a[b].offset,e=a[b].color;this.addColorStop(d,e)}return this},toStyle:function(){return this.gradient}});var a=null,b=null}(),tm.anim=tm.anim||{},function(){tm.anim.Tween=tm.createClass({superClass:tm.event.EventDispatcher,target:null,time:null,prop:null,nowProps:null,now:null,begin:null,finish:null,duration:null,isLooping:null,isPlaying:null,func:Math.linear,fps:30,init:function(a,b,c,d){this.superInit(),this.time=0,this.nowProps={},this.isPlaying=!1,arguments.length>0&&this.to.apply(this,arguments)},to:function(a,b,c,d){var e={};for(var f in b)e[f]=a[f];return this.fromTo(a,e,b,c,d),this},by:function(a,b,c,d){var e={},f={};for(var g in b)e[g]=a[g],f[g]=a[g]+b[g];return this.fromTo(a,e,f,c,d),this},fromTo:function(a,b,c,d,e){this.target=a,this.beginProps=b,this.finishProps=c,this.duration=d,this.changeProps={};for(var f in b)this.changeProps[f]=c[f]-b[f];return this.setTransition(e),this},from:function(a,b,c,d){var e={};for(var f in b)e[f]=a[f];return this.fromTo(a,b,e,c,d),this},setTransition:function(a){return"function"==typeof a?this.func=a:"string"==typeof a?this.func=tm.anim.easing[a]:this.func=tm.anim.easing["default"],this},resume:function(){this.isPlaying=!0,this._resumeTime(),this._updateTime(),this.dispatchEvent(tm.event.TweenEvent("resume",this.time,this.nowProps))},start:function(){this.isPlaying=!0,this._startTime(),this._updateTime(),this.dispatchEvent(tm.event.TweenEvent("start",this.time,this.nowProps))},stop:function(){this.isPlaying=!1,this.dispatchEvent(tm.event.TweenEvent("stop",this.time,this.nowProps))},rewind:function(){this.time=0,this.update()},fforward:function(){this.time=this.duration,this.update()},yoyo:function(){var a=this.finishProps;this.finishProps=this.beginProps,this.beginProps=a;for(var b in this.beginProps)this.changeProps[b]=this.finishProps[b]-this.beginProps[b];this.start()},update:function(){for(var a in this.changeProps)this.nowProps[a]=this.func(this.time,this.beginProps[a],this.changeProps[a],this.duration),this.target[a]=this.nowProps[a];this.dispatchEvent(tm.event.TweenEvent("change",this.time,this.nowProps))},_resumeTime:function(){this.startTime=(new Date).getTime()-this.time},_startTime:function(){this.startTime=(new Date).getTime()},_updateTime:function(){this.isPlaying&&(this._setTime((new Date).getTime()-this.startTime),setTimeout(arguments.callee.bind(this),1e3/this.fps))},_setTime:function(a){var b=a;b>this.duration?this.isLooping?(this.rewind(),this.update(),this.dispatchEvent(tm.event.TweenEvent("loop",this.time,this.nowProps))):(this.time=this.duration,this.update(),this.stop(),this.dispatchEvent(tm.event.TweenEvent("finish",this.time,this.nowProps))):(this.time=b,this.update())}})}(),function(){tm.anim.easing={"default":function(a,b,c,d){return c*a/d+b},linear:function(a,b,c,d){return c*a/d+b},swing:function(a,b,c,d){return-c*(a/=d)*(a-2)+b},easeInQuad:function(a,b,c,d){return c*(a/=d)*a+b},easeOutQuad:function(a,b,c,d){return-c*(a/=d)*(a-2)+b},easeInOutQuad:function(a,b,c,d){return(a/=d/2)<1?c/2*a*a+b:-c/2*(--a*(a-2)-1)+b},easeInCubic:function(a,b,c,d){return c*(a/=d)*a*a+b},easeOutCubic:function(a,b,c,d){return c*((a=a/d-1)*a*a+1)+b},easeInOutCubic:function(a,b,c,d){return(a/=d/2)<1?c/2*a*a*a+b:c/2*((a-=2)*a*a+2)+b},easeOutInCubic:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutCubic(2*a,b,c/2,d):tm.anim.easing.easeInCubic(2*a-d,b+c/2,c/2,d)},easeInQuart:function(a,b,c,d){return c*(a/=d)*a*a*a+b},easeOutQuart:function(a,b,c,d){return-c*((a=a/d-1)*a*a*a-1)+b},easeInOutQuart:function(a,b,c,d){return(a/=d/2)<1?c/2*a*a*a*a+b:-c/2*((a-=2)*a*a*a-2)+b},easeOutInQuart:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutQuart(2*a,b,c/2,d):tm.anim.easing.easeInQuart(2*a-d,b+c/2,c/2,d)},easeInQuint:function(a,b,c,d){return c*(a/=d)*a*a*a*a+b},easeOutQuint:function(a,b,c,d){return c*((a=a/d-1)*a*a*a*a+1)+b},easeInOutQuint:function(a,b,c,d){return(a/=d/2)<1?c/2*a*a*a*a*a+b:c/2*((a-=2)*a*a*a*a+2)+b},easeOutInQuint:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutQuint(2*a,b,c/2,d):tm.anim.easing.easeInQuint(2*a-d,b+c/2,c/2,d)},easeInSine:function(a,b,c,d){return-c*Math.cos(a/d*(Math.PI/2))+c+b},easeOutSine:function(a,b,c,d){return c*Math.sin(a/d*(Math.PI/2))+b},easeInOutSine:function(a,b,c,d){return-c/2*(Math.cos(Math.PI*a/d)-1)+b},easeOutInSine:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutSine(2*a,b,c/2,d):tm.anim.easing.easeInSine(2*a-d,b+c/2,c/2,d)},easeInExpo:function(a,b,c,d){return 0==a?b:c*Math.pow(2,10*(a/d-1))+b-.001*c},easeOutExpo:function(a,b,c,d){return a==d?b+c:1.001*c*(-Math.pow(2,-10*a/d)+1)+b},easeInOutExpo:function(a,b,c,d){return 0==a?b:a==d?b+c:(a/=d/2)<1?c/2*Math.pow(2,10*(a-1))+b-5e-4*c:c/2*1.0005*(-Math.pow(2,-10*--a)+2)+b},easeOutInExpo:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutExpo(2*a,b,c/2,d):tm.anim.easing.easeInExpo(2*a-d,b+c/2,c/2,d)},easeInCirc:function(a,b,c,d){return-c*(Math.sqrt(1-(a/=d)*a)-1)+b},easeOutCirc:function(a,b,c,d){return c*Math.sqrt(1-(a=a/d-1)*a)+b},easeInOutCirc:function(a,b,c,d){return(a/=d/2)<1?-c/2*(Math.sqrt(1-a*a)-1)+b:c/2*(Math.sqrt(1-(a-=2)*a)+1)+b},easeOutInCirc:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutCirc(2*a,b,c/2,d):tm.anim.easing.easeInCirc(2*a-d,b+c/2,c/2,d)},easeInElastic:function(a,b,c,d,e,f){var g;return 0==a?b:1==(a/=d)?b+c:(f||(f=.3*d),!e||e<Math.abs(c)?(e=c,g=f/4):g=f/(2*Math.PI)*Math.asin(c/e),-(e*Math.pow(2,10*(a-=1))*Math.sin((a*d-g)*(2*Math.PI)/f))+b)},easeOutElastic:function(a,b,c,d,e,f){var g;return 0==a?b:1==(a/=d)?b+c:(f||(f=.3*d),!e||e<Math.abs(c)?(e=c,g=f/4):g=f/(2*Math.PI)*Math.asin(c/e),e*Math.pow(2,-10*a)*Math.sin((a*d-g)*(2*Math.PI)/f)+c+b)},easeInOutElastic:function(a,b,c,d,e,f){var g;return 0==a?b:2==(a/=d/2)?b+c:(f||(f=d*(.3*1.5)),!e||e<Math.abs(c)?(e=c,g=f/4):g=f/(2*Math.PI)*Math.asin(c/e),1>a?-.5*(e*Math.pow(2,10*(a-=1))*Math.sin((a*d-g)*(2*Math.PI)/f))+b:e*Math.pow(2,-10*(a-=1))*Math.sin((a*d-g)*(2*Math.PI)/f)*.5+c+b)},easeOutInElastic:function(a,b,c,d,e,f){return d/2>a?tm.anim.easing.easeOutElastic(2*a,b,c/2,d,e,f):tm.anim.easing.easeInElastic(2*a-d,b+c/2,c/2,d,e,f)},easeInBack:function(a,b,c,d,e){return void 0==e&&(e=1.70158),c*(a/=d)*a*((e+1)*a-e)+b},easeOutBack:function(a,b,c,d,e){return void 0==e&&(e=1.70158),c*((a=a/d-1)*a*((e+1)*a+e)+1)+b},easeInOutBack:function(a,b,c,d,e){return void 0==e&&(e=1.70158),(a/=d/2)<1?c/2*(a*a*(((e*=1.525)+1)*a-e))+b:c/2*((a-=2)*a*(((e*=1.525)+1)*a+e)+2)+b},easeOutInBack:function(a,b,c,d,e){return d/2>a?tm.anim.easing.easeOutBack(2*a,b,c/2,d,e):tm.anim.easing.easeInBack(2*a-d,b+c/2,c/2,d,e)},easeInBounce:function(a,b,c,d){return c-tm.anim.easing.easeOutBounce(d-a,0,c,d)+b},easeOutBounce:function(a,b,c,d){return(a/=d)<1/2.75?c*(7.5625*a*a)+b:2/2.75>a?c*(7.5625*(a-=1.5/2.75)*a+.75)+b:2.5/2.75>a?c*(7.5625*(a-=2.25/2.75)*a+.9375)+b:c*(7.5625*(a-=2.625/2.75)*a+.984375)+b},easeInOutBounce:function(a,b,c,d){return d/2>a?.5*tm.anim.easing.easeInBounce(2*a,0,c,d)+b:.5*tm.anim.easing.easeOutBounce(2*a-d,0,c,d)+.5*c+b},easeOutInBounce:function(a,b,c,d){return d/2>a?tm.anim.easing.easeOutBounce(2*a,b,c/2,d):tm.anim.easing.easeInBounce(2*a-d,b+c/2,c/2,d)}}}(),function(){tm.define("tm.app.Timer",{frame:0,fps:30,frameTime:1e3/30,init:function(){this.frame=0,this.fps=tm.app.Timer["default"].fps},reset:function(){return this.frame=0,this},update:function(){return this.frame=this.frame+1,this},getFrame:function(){return this.frame},getSeconds:function(){return this._seconds},getMilliseconds:function(){return this._milliseconds},checkIntervalEnd:function(a){var b=a/this.fps|0;return this.frame%b==0?!0:!1},checkBetween:function(a,b){1==arguments.length&&(b=Math.max(a,0),a=b-this.frameTime);var c=this.frame/this.fps*1e3;return b>(c>=a)},_update:function(){var a=this.frame/this.fps;this._seconds=0|a,this._milliseconds=1e3*a|0}}),tm.app.Timer.prototype.accessor("frame",{get:function(){return this._frame},set:function(a){this._frame=a,this._update()}}),tm.app.Timer.prototype.accessor("fps",{get:function(){return this._fps},set:function(a){a!==this._fps&&(this.frameTime=1e3/a),this._fps=a,this._update()}}),tm.app.Timer["default"]={fps:30}}(),function(){tm.define("tm.app.Updater",{app:null,init:function(a){this.app=a},update:function(a){this._updateElement(a)},_updateElement:function(a){var b=this.app;if(0!=a.awake){if(a.update&&a.update(b),a.hasEventListener("enterframe")){var c=tm.event.Event("enterframe");c.app=b,a.fire(c)}a.interactive&&a._checkPointing(b);var d=a.children.length;if(d>0)for(var e=a.children.slice(),f=0;d>f;++f)this._updateElement(e[f])}}})}(),tm.app=tm.app||{},function(){tm.app.BaseApp=tm.createClass({superClass:tm.event.EventDispatcher,element:null,mouse:null,touch:null,pointing:null,keyboard:null,accelerometer:null,updater:null,stats:null,timer:null,awake:null,_scenes:null,_sceneIndex:0,init:function(a){this.superInit(),this.element=a,this.timer=tm.app.Timer(),this.mouse=tm.input.Mouse(this.element),this.touch=tm.input.Touch(this.element,0),this.keyboard=tm.input.Keyboard(),this.pointing=tm.isMobile?this.touch:this.mouse,this.element.addEventListener("touchstart",function(){this.pointing=this.touch}.bind(this)),this.element.addEventListener("mousedown",function(){this.pointing=this.mouse}.bind(this)),this.accelerometer=tm.input.Accelerometer(),this.updater=tm.app.Updater(this),this.awake=!0,this._scenes=[tm.app.Scene()],this._sceneIndex=0,this.element.addEventListener("touchstart",function(a){a.stop()}),this.element.addEventListener("touchmove",function(a){a.stop()}),window.addEventListener("focus",function(){this.fire(tm.event.Event("focus")),this.currentScene.dispatchEvent(tm.event.Event("focus"))}.bind(this)),window.addEventListener("blur",function(){this.fire(tm.event.Event("blur")),this.currentScene.dispatchEvent(tm.event.Event("blur"))}.bind(this)),this.element.addEventListener(tm.isMobile?"touchend":"mouseup",this._onclick.bind(this))},run:function(){var a=this;this.startedTime=new Date,this.prevTime=new Date,this.deltaTime=0;var b=function(){var c=(new Date).getTime();a._loop();var d=(new Date).getTime()-c,e=a.timer.frameTime-d;setTimeout(b,e)};return b(),this},_loop:function(){this.update&&this.update(),this._update(),this.draw&&this.draw(),this._draw();var a=new Date;this.deltaTime=a-this.prevTime,this.prevTime=a,this.stats&&this.stats.update()},replaceScene:function(a){var b=null;return this.currentScene&&(b=tm.event.Event("exit"),b.app=this,this.currentScene.dispatchEvent(b),this.currentScene.app=null),b=tm.event.Event("enter"),b.app=this,this.currentScene=a,this.currentScene.app=this,this.currentScene.dispatchEvent(b),this},pushScene:function(a){this.fire(tm.event.Event("push"));var b=tm.event.Event("pause");b.app=this,this.currentScene.dispatchEvent(b),this._scenes.push(a),++this._sceneIndex,this.fire(tm.event.Event("pushed"));var b=tm.event.Event("enter");return b.app=this,a.app=this,a.dispatchEvent(b),this},popScene:function(){this.fire(tm.event.Event("pop"));var a=this._scenes.pop();--this._sceneIndex;var b=tm.event.Event("exit");b.app=this,a.dispatchEvent(b),a.app=null,this.fire(tm.event.Event("poped"));var b=tm.event.Event("resume");return b.app=this,b.prevScene=a,this.currentScene.dispatchEvent(b),a},enableStats:function(){return window.Stats?(this.stats=new Stats,this.stats.domElement.style.position="fixed",this.stats.domElement.style.left="5px",this.stats.domElement.style.top="20px",document.body.appendChild(this.stats.domElement)):console.warn("not defined stats."),this},enableDatGUI:function(){if(window.dat){var a=new dat.GUI;return a}},start:function(){return this.awake=!0,this},stop:function(){return this.awake=!1,this},_update:function(){this.mouse.update(),this.keyboard._update(),this.touch.update(),this.awake&&(this.updater.update(this.currentScene),this.timer.update())},_draw:function(){},getElement:function(){return this.element},_onclick:function(a){var b=function(a){a.children.length>0&&a.children.each(function(a){b(a)}),a._clickFlag&&a.hasEventListener("click")&&a.dispatchEvent(tm.event.Event("click")),a._clickFlag=!1};b(this.currentScene)}}),tm.app.BaseApp.prototype.accessor("currentScene",{get:function(){return this._scenes[this._sceneIndex]},set:function(a){this._scenes[this._sceneIndex]=a}}),tm.app.BaseApp.prototype.accessor("frame",{get:function(){return this.timer.frame},set:function(a){this.timer.frame=a}}),tm.app.BaseApp.prototype.accessor("fps",{get:function(){return this.timer.fps},set:function(a){this.timer.fps=a}})}(),tm.app=tm.app||{},function(){tm.app.Element=tm.createClass({superClass:tm.event.EventDispatcher,parent:null,children:null,init:function(){this.superInit(),this.children=[]},remove:function(){return console.assert(this.parent),this.parent.removeChild(this),this.parent=null,this},addChild:function(a){a.parent&&a.remove(),a.parent=this,this.children.push(a);var b=tm.event.Event("added");return a.dispatchEvent(b),a},addChildTo:function(a){return a.addChild(this),this},addChildren:function(a){for(var b=a.slice(),c=beginIndex,d=b.length;d>c;++c)this.addChild(b[c])},addChildAt:function(a,b){a.parent&&a.remove(),a.parent=this,this.children.splice(b,0,a);var c=tm.event.Event("added");return a.dispatchEvent(c),a},getChildAt:function(a){return this.children.at(a)},getChildIndex:function(a){return this.children.indexOf(a)},removeChild:function(a){var b=this.children.indexOf(a);if(-1!=b){this.children.splice(b,1);var c=tm.event.Event("removed");a.dispatchEvent(c)}},removeChildren:function(a){a=a||0;for(var b=this.children.slice(),c=a,d=b.length;d>c;++c)b[c].remove();this.children=[]},getChildByName:function(a){for(var b=0,c=this.children.length;c>b;++b)if(this.children[b].name==a)return this.children[b];return null},execChildren:function(a,b){b=b&&b.length?b:[b];for(var c=this.children.slice(),d=0,e=c.length;e>d;++d)a.apply(c[d],b)},getParent:function(){return this.parent},getRoot:function(){if(!this.parent)return null;var a=null;for(a=this.parent;null!=a.parent;a=a.parent);return a},fromJSON:function(b){var c=function(b,c){var d=c.init,e=d instanceof Array?d:[d],f=a[c.type]?a[c.type]:c.type,g=tm.using(f);console.assert(0!==Object.keys(g).length,g+" is not defined.");var h=g.apply(null,e);h.fromJSON(c),this[b]=h,h.addChildTo(this)}.bind(this);for(var d in b){var e=b[d];if("children"==d)if(e instanceof Array)for(var f=0,g=e.length;g>f;++f){var h=e[f];c(h.name,h)}else for(var d in e){var h=e[d];c(d,h)}else"type"==d&&(d="__key"),this[d]=e}return this},toJSON:function(){}});var a={Sprite:"tm.display.Sprite",Label:"tm.display.Label",Shape:"tm.display.Shape",CircleShape:"tm.display.CircleShape",TriangleShape:"tm.display.TriangleShape",RectangleShape:"tm.display.RectangleShape",RoundRectangleShape:"tm.display.RoundRectangleShape",TextShape:"tm.display.TextShape",StarShape:"tm.display.StarShape",PolygonShape:"tm.display.PolygonShape",HeartShape:"tm.display.HeartShape",AnimationSprite:"tm.display.AnimationSprite",LabelButton:"tm.ui.LabelButton",IconButton:"tm.ui.IconButton",GlossyButton:"tm.ui.GlossyButton",FlatButton:"tm.ui.FlatButton"}}(),function(){tm.define("tm.app.Object2D",{superClass:"tm.app.Element",position:null,scale:null,rotation:0,awake:!0,_width:64,_height:64,init:function(){this.superInit(),this.position=tm.geom.Vector2(0,0),this.scale=tm.geom.Vector2(1,1),this.pointing=tm.geom.Vector2(0,0),this.origin=tm.geom.Vector2(.5,.5),this._matrix=tm.geom.Matrix33(),this._matrix.identity(),this.boundingType="circle",this.checkHierarchy=!0,this.interactive=!1,this.hitFlags=[],this.downFlags=[],this._clickFlag=!1,this._worldMatrix=tm.geom.Matrix33().identity(),this._worldAlpha=1},getFinalMatrix:function(){var a=tm.geom.Matrix33();return this.parent&&a.multiply(this.parent.getFinalMatrix()),a.translate(this.x,this.y),a.rotateZ(this.rotation*Math.DEG_TO_RAD),a.scale(this.scaleX,this.scaleY),a},isHitPoint:function(a,b){var c=this.globalToLocal(tm.geom.Vector2(a,b));return this.pointing.x=c.x,this.pointing.y=c.y,c.x*c.x+c.y*c.y<this.radius*this.radius?!0:!1},isHitPointCircle:function(a,b){var c=this.x-a,d=this.y-b;return c*c+d*d<this.radius*this.radius?!0:!1},isHitPointRect:function(a,b){var c=this.x-this.width*this.originX,d=this.x+this.width*(1-this.originX),e=this.y-this.height*this.originY,f=this.y+this.height*(1-this.originY);return a>c&&d>a&&b>e&&f>b?!0:!1},isHitPointCircleHierarchy:function(a,b){var c=this.globalToLocal(tm.geom.Vector2(a,b));return this.pointing.x=c.x,this.pointing.y=c.y,c.x*c.x+c.y*c.y<this.radius*this.radius?!0:!1},isHitPointRectHierarchy:function(a,b){var c=this.globalToLocal(tm.geom.Vector2(a,b));this.pointing.x=c.x,this.pointing.y=c.y;var d=-this.width*this.originX,e=+this.width*(1-this.originX),f=-this.height*this.originY,g=+this.height*(1-this.originY);return d<c.x&&c.x<e&&f<c.y&&c.y<g?!0:!1},isHitElement:function(a){this.parent.localToGlobal(this);return(this.x-a.x)*(this.x-a.x)+(this.y-a.y)*(this.y-a.y)<(this.radius+a.radius)*(this.radius+a.radius)?!0:!1},isHitElementCircle:function(a){return tm.collision.testCircleCircle(this.getBoundingCircle(),a.getBoundingCircle())},isHitElementRect:function(a){return tm.collision.testRectRect(this.getBoundingRect(),a.getBoundingRect())},getBoundingCircle:function(){return tm.geom.Circle(this.centerX,this.centerY,this.radius)},getBoundingRect:function(){return tm.geom.Rect(this.left,this.top,this.width,this.height)},localToGlobal:function(a){return this.getFinalMatrix().multiplyVector2(a)},globalToLocal:function(a){var b=this._worldMatrix.clone();return b.invert(),b.transpose(),b.multiplyVector2(a)},setX:function(a){return this.position.x=a,this},setY:function(a){return this.position.y=a,this},setPosition:function(a,b){return this.position.x=a,this.position.y=b,this},setRotation:function(a){return this.rotation=a,this},setScale:function(a,b){return this.scale.x=a,arguments.length<=1?this.scale.y=a:this.scale.y=b,this},setOrigin:function(a,b){return this.origin.x=a,this.origin.y=b,this},setWidth:function(a){return this.width=a,this},setHeight:function(a){return this.height=a,this},setSize:function(a,b){return this.width=a,this.height=b,this},wakeUp:function(){return this.awake=!0,this},sleep:function(){return this.awake=!1,this},setInteractive:function(a,b){return this.interactive=a,b&&(this.boundingType=b),this},setBoundingType:function(a){return this.boundingType=a,this},_checkPointing:function(a){console.assert(!1)},_checkMouse:function(a){this.__checkPointing(a,a.pointing,0)},_checkTouch:function(a){this.__checkPointing(a,a.pointing,0)},__checkPointing:function(a,b,c){var d=(this.element,this.hitFlags[c]);this.hitFlags[c]=this.isHitPoint(b.x,b.y),!d&&this.hitFlags[c]&&this._dispatchPointingEvent("mouseover","touchover","pointingover",a,b),d&&!this.hitFlags[c]&&this._dispatchPointingEvent("mouseout","touchout","pointingout",a,b),this.hitFlags[c]&&b.getPointingStart()&&(this._dispatchPointingEvent("mousedown","touchstart","pointingstart",a,b),this.downFlags[c]=!0,this._clickFlag=!0),this.downFlags[c]&&this._dispatchPointingEvent("mousemove","touchmove","pointingmove",a,b),1==this.downFlags[c]&&b.getPointingEnd()&&(this._dispatchPointingEvent("mouseup","touchend","pointingend",a,b),this.downFlags[c]=!1)},_dispatchPointingEvent:function(a,b,c,d,e){this.dispatchEvent(tm.event.MouseEvent(a,d,e)),this.dispatchEvent(tm.event.TouchEvent(b,d,e)),this.dispatchEvent(tm.event.PointingEvent(c,d,e))},_calcWorldMatrix:function(){if(this.parent){if(this.rotation!=this.rotationCache){this.rotationCache=this.rotation;var a=this.rotation*Math.DEG_TO_RAD;this._sr=Math.sin(a),this._cr=Math.cos(a)}var b=this._matrix.m,c=this.parent._worldMatrix.m,d=this._worldMatrix.m;b[0]=this._cr*this.scale.x,b[1]=-this._sr*this.scale.y,b[3]=this._sr*this.scale.x,b[4]=this._cr*this.scale.y,b[2]=this.position.x,b[5]=this.position.y;var e=b[0],f=b[1],g=b[2],h=b[3],i=b[4],j=b[5],k=c[0],l=c[1],m=c[2],n=c[3],o=c[4],p=c[5];d[0]=k*e+l*h,d[1]=k*f+l*i,d[2]=k*g+l*j+m,d[3]=n*e+o*h,d[4]=n*f+o*i,d[5]=n*g+o*j+p}},_dirtyCalc:function(){this._calcWorldMatrix()}}),tm.app.Object2D.prototype.accessor("x",{get:function(){return this.position.x},set:function(a){this.position.x=a}}),tm.app.Object2D.prototype.accessor("y",{get:function(){return this.position.y},set:function(a){this.position.y=a}}),tm.app.Object2D.prototype.accessor("originX",{get:function(){return this.origin.x},set:function(a){this.origin.x=a}}),tm.app.Object2D.prototype.accessor("originY",{get:function(){return this.origin.y},set:function(a){this.origin.y=a}}),tm.app.Object2D.prototype.accessor("scaleX",{get:function(){return this.scale.x},set:function(a){this.scale.x=a}}),tm.app.Object2D.prototype.accessor("scaleY",{get:function(){return this.scale.y},set:function(a){this.scale.y=a}}),tm.app.Object2D.prototype.accessor("width",{get:function(){return this._width},set:function(a){this._width=a}}),tm.app.Object2D.prototype.accessor("height",{get:function(){return this._height},set:function(a){this._height=a}}),tm.app.Object2D.prototype.accessor("radius",{get:function(){return void 0!==this._radius?this._radius:(this.width+this.height)/4},set:function(a){this._radius=a}}),tm.app.Object2D.prototype.accessor("top",{get:function(){return this.y-this.height*this.originY},set:function(a){this.y=a+this.height*this.originY}}),tm.app.Object2D.prototype.accessor("right",{get:function(){return this.x+this.width*(1-this.originX)},set:function(a){this.x=a-this.width*(1-this.originX)}}),tm.app.Object2D.prototype.accessor("bottom",{get:function(){return this.y+this.height*(1-this.originY)},set:function(a){this.y=a-this.height*(1-this.originY)}}),tm.app.Object2D.prototype.accessor("left",{get:function(){return this.x-this.width*this.originX},set:function(a){this.x=a+this.width*this.originX}}),tm.app.Object2D.prototype.accessor("centerX",{get:function(){return this.x+this.width/2-this.width*this.originX},set:function(a){}}),tm.app.Object2D.prototype.accessor("centerY",{get:function(){return this.y+this.height/2-this.height*this.originY},set:function(a){}}),tm.app.Object2D.prototype.accessor("boundingType",{get:function(){return this._boundingType},set:function(a){this._boundingType=a,this._setIsHitFunc()}}),tm.app.Object2D.prototype.accessor("checkHierarchy",{get:function(){return this._checkHierarchy},set:function(a){this._checkHierarchy=a,this._setIsHitFunc()}});var a={rect:tm.app.Object2D.prototype.isHitPointRect,circle:tm.app.Object2D.prototype.isHitPointCircle,"true":function(){return!0},"false":function(){return!1}},b={rect:tm.app.Object2D.prototype.isHitPointRectHierarchy,circle:tm.app.Object2D.prototype.isHitPointCircleHierarchy,"true":function(){return!0},"false":function(){return!1}},c={rect:tm.app.Object2D.prototype.isHitElementRect,circle:tm.app.Object2D.prototype.isHitElementCircle,"true":function(){return!0},"false":function(){return!1}};tm.app.Object2D.prototype._setIsHitFunc=function(){var d=this.checkHierarchy?b:a,e=this.boundingType;d[e]?d[e]:d["true"];this.isHitPoint=d[e]?d[e]:d["true"],this.isHitElement=c[e]?c[e]:c["true"]},tm.app.Object2D.prototype._checkPointing=tm.isMobile?tm.app.Object2D.prototype._checkTouch:tm.app.Object2D.prototype._checkMouse}(),function(){tm.define("tm.app.Grid",{superClass:"tm.app.Object2D",cellWidth:64,cellHeight:64,maxPerLine:8,arrangement:"horizontal",init:function(a){this.superInit()},reposition:function(){var a=this.children;"horizontal"==this.arrangement?a.each(function(a,b){var c=b%this.maxPerLine,d=b/this.maxPerLine|0,e=this.cellWidth*c,f=this.cellHeight*d;a.setPosition(e,f)},this):a.each(function(a,b){var c=b/this.maxPerLine|0,d=b%this.maxPerLine,e=this.cellWidth*c,f=this.cellHeight*d;a.setPosition(e,f)},this)}})}(),tm.app=tm.app||{},function(){tm.app.Scene=tm.createClass({superClass:tm.app.Object2D,app:null,nextLabel:"",nextArguments:null,init:function(){this.superInit(),this.boundingType="none",this.setInteractive(!0)},exit:function(a){if(this.app){if("object"!=typeof a){var b={};b.nextLabel=arguments[0],b.nextArguments=arguments[1],a=b}return a.nextLabel&&(this.nextLabel=a.nextLabel),a.nextArguments&&(this.nextArguments=a.nextArguments),this.app.popScene(),this}}})}(),tm.app=tm.app||{},function(){tm.app.Collision=tm.createClass({element:null,collideList:null,init:function(a){this.element=a,this.collideList=[]},update:function(a){for(var b=this.collideList.clone(),c=this.element,d=0,e=b.length;e>d;++d){var f=b[d];if(c.isHitElement(f.element)){if(f.collide===!1){var g=tm.event.Event("collisionenter");g.other=f.element,c.dispatchEvent(g)}var g=tm.event.Event("collisionstay");g.other=f.element,c.dispatchEvent(g),f.collide=!0}else{if(1==f.collide){var g=tm.event.Event("collisionexit");g.other=f.element,c.dispatchEvent(g)}f.collide=!1}}},add:function(a){this.collideList.push({element:a,collide:!1})},remove:function(a){this.collideList.eraseIf(function(b){return b.element==a})}}),tm.app.Element.prototype.getter("collision",function(){return this._collision||(this._collision=tm.app.Collision(this),this.addEventListener("enterframe",function(a){this._collision.update(a.app)})),this._collision})}(),function(){tm.define("tm.app.Tweener",{superClass:"tm.app.Element",init:function(a){this.superInit(),this.setTarget(a||{}),this.loop=!1,this._init()},_init:function(){this._index=0,this._tasks=[],this._func=this._updateTask,
-this.isPlaying=!0},setTarget:function(a){return this.element=a,this},update:function(a){return void this._func(a)},_updateTask:function(a){if(this.isPlaying){var b=this._tasks[this._index];if(!b)return this.loop===!0?(this._index=0,this._updateTask(a)):void(this.isPlaying=!1);if(this._index++,"tween"==b.type){var c=(b.data,b.data.type),d=b.data.args;this._tween=tm.anim.Tween(),this._tween[c].apply(this._tween,d),this._func=this._updateTween,this._func(a)}else"wait"==b.type?(this._wait=b.data,this._wait.time=0,this._func=this._updateWait,this._func(a)):"call"==b.type?(b.data.func.apply(b.data.self,b.data.args),this._updateTask(a)):"set"==b.type&&(this.element.$extend(b.data.values),this._updateTask(a))}},_updateTween:function(a){var b=this._tween,c=b.time+1e3/a.fps;b._setTime(c),b.time>=b.duration?(delete this._tween,this._tween=null,this._func=this._updateTask):b.update()},_updateWait:function(a){var b=this._wait;b.time+=1e3/a.fps,b.time>=b.limit&&(delete this._wait,this._wait=null,this._func=this._updateTask)},add:function(a){if(a.target||(a.target=this.element),this._tasks.push({type:"tween",data:a}),0==this.isAnimation){this.isAnimation=!0;var b=tm.event.Event("animationstart");this.element.dispatchEvent(b)}return this},by:function(a,b,c){return this._addTweenTask({props:a,duration:b,fn:c,type:"by"}),this},to:function(a,b,c){return this._addTweenTask({props:a,duration:b,fn:c,type:"to"}),this},from:function(a,b,c){return this._addTweenTask({props:a,duration:b,fn:c,type:"from"}),this},move:function(a,b,c,d){return this.to({x:a,y:b},c,d)},moveBy:function(a,b,c,d){return this.by({x:a,y:b},c,d)},rotate:function(a,b,c){return this.to({rotation:a},b,c)},scale:function(a,b,c){return this.to({scaleX:a,scaleY:a},b,c)},fade:function(a,b){return this.to({alpha:a},b),this},fadeIn:function(a){return this.fade(1,a),this},fadeOut:function(a){return this.fade(0,a),this},_addTweenTask:function(a){if(a.target=void 0!==a.target?a.target:this.element,a.duration=void 0!==a.duration?a.duration:1e3,this._tasks.push({type:"tween",data:{args:[a.target,a.props,a.duration,a.fn],type:a.type}}),0==this.isAnimation){this.isAnimation=!0;var b=tm.event.Event("animationstart");this.element.dispatchEvent(b)}return this},wait:function(a){return this._tasks.push({type:"wait",data:{limit:a}}),this},call:function(a,b,c){return this._tasks.push({type:"call",data:{func:a,self:b||this,args:c}}),this},set:function(a,b){var c=null;return 2==arguments.length?(c={},c[a]=b):c=a,this._tasks.push({type:"set",data:{values:c}}),this},play:function(){return this.isPlaying=!0,this},pause:function(){return this.isPlaying=!1,this},rewind:function(){return this._func=this._updateTask,this._index=0,this.play(),this},setLoop:function(a){return this.loop=a,this},clear:function(){return this._init(),this}}),tm.app.Element.prototype.getter("tweener",function(){return this._tweener||(this._tweener=tm.app.Tweener(this),this.on("enterframe",function(a){this._tweener.update(a.app)})),this._tweener})}(),tm.namespace("tm.app",function(){tm.define("tm.app.Timeline",{superClass:"tm.app.Element",init:function(a){this.superInit(),this.setTarget(a||{}),this.currentFrame=0,this.currentTime=0,this.prevTime=0,this.duration=0,this.isPlay=!0,this._tweens=[],this._actions=[]},update:function(a){this.isPlay&&(this.prevTime<=this.duration&&(this._updateTween(),this._updateAction()),this.currentFrame++,this.prevTime=this.currentTime,this.currentTime=this.currentFrame/a.fps*1e3|0)},_updateTween:function(){for(var a=this._tweens,b=0,c=a.length;c>b;++b){var d=a[b];if(!(d.delay>this.currentTime)){var e=this.currentTime-d.delay;d._setTime(e),d.time>=d.duration||d.update()}}},_updateAction:function(){for(var a=this._actions,b=0,c=a.length;c>b;++b){var d=a[b];if(this.prevTime<=d.delay&&d.delay<this.currentTime)if("call"==d.type)d.func.call(d.self);else if("set"==d.type){var e=d.props;for(var f in e)this.element[f]=e[f]}}},to:function(a,b,c,d){return console.assert("number"==typeof a,"to の第一引数はdelayに変わりました"),this._addTween({props:b,duration:c,fn:d,delay:a}),this},by:function(a,b,c,d){console.assert("number"==typeof a,"by の第一引数はdelayに変わりました");for(var e in b)b[e]+=this.element[e]||0;return this._addTween({props:b,duration:c,fn:d,delay:a}),this},call:function(a,b,c){return console.assert("number"==typeof a,"call の第一引数はdelayに変わりました"),this._addAction({type:"call",func:b,self:c||this,delay:a}),this},set:function(a,b){return console.assert("number"==typeof a,"set の第一引数はdelayに変わりました"),this._addAction({type:"set",props:b,delay:a}),this},setTarget:function(a){return this.element=a,this},getTarget:function(){return this.element},gotoAndPlay:function(a){this.isPlay=!0,this.currentFrame=a,this._updateTween()},gotoAndStop:function(a){this.currentFrame=a,this.isPlay=!1,this._updateTween()},_addTween:function(a){a.duration=a.duration||1e3,a.duration=this._dirty(a.duration),a.delay=a.delay||0,a.delay=this._dirty(a.delay);var b=tm.anim.Tween();b.to(this.element,a.props,a.duration,a.fn),b.delay=a.delay,this._tweens.push(b),this._updateDuration(b)},_addAction:function(a){a.delay=a.delay||0,a.delay=this._dirty(a.delay),this._actions.push(a),this._updateDuration(a)},_updateDuration:function(a){var b=a.delay+(a.duration?a.duration:0);return this.duration<b&&(this.duration=b),this},_dirty:function(a){return a},load:function(a){for(var b in a.timeline)var c=a.timeline[b];return this},clear:function(){return this.currentFrame=0,this.prevTime=0,this.currentTime=0,this.duration=0,this.isPlay=!0,this._tweens=[],this._actions=[],this}}),tm.app.Element.prototype.getter("timeline",function(){return this._timeline||(this._timeline=tm.app.Timeline(this),this.on("enterframe",function(a){this._timeline.update(a.app)})),this._timeline})}),tm.display=tm.display||{},function(){tm.display.CanvasApp=tm.createClass({superClass:tm.app.BaseApp,init:function(a){a instanceof HTMLCanvasElement?this.element=a:"string"==typeof a?this.element=document.querySelector(a):this.element=document.createElement("canvas"),this.superInit(this.element),this.canvas=tm.graphics.Canvas(this.element),this.renderer=tm.display.CanvasRenderer(this.canvas),this.background="black",this._scenes=[tm.app.Scene()],this._canvasCache=[],this._canvasCacheCache=[],this.on("push",function(){this._draw();var a=this._canvasCacheCache.pop();if(!a){var b=this.canvas.element.cloneNode();a=tm.graphics.Canvas(b)}a.clear(),a.drawTexture(this.canvas,0,0),this._canvasCache.push(a)}),this.on("poped",function(){var a=this._canvasCache.pop();this._draw(),this._canvasCacheCache.push(a)})},resize:function(a,b){return this.width=a,this.height=b,this},resizeWindow:function(){return this.width=innerWidth,this.height=innerHeight,this},fitWindow:function(a){return this.canvas.fitWindow(a),this.mouse._mousemove=this.mouse._mousemoveScale,this.touch._touchmove=this.touch._touchmoveScale,this},_draw:function(){this.canvas.clear(),this.canvas.fillStyle="white",this.canvas.strokeStyle="white",this.canvas.context.lineJoin="round",this.canvas.context.lineCap="round",this._canvasCache.last&&this.canvas.drawTexture(this._canvasCache.last,0,0),this.canvas.save(),this.renderer.render(this.currentScene),this.canvas.restore()}}),tm.display.CanvasApp.prototype.accessor("width",{get:function(){return this.canvas.width},set:function(a){this.canvas.width=a}}),tm.display.CanvasApp.prototype.accessor("height",{get:function(){return this.canvas.height},set:function(a){this.canvas.height=a}}),tm.display.CanvasApp.prototype.accessor("background",{get:function(){return this._background},set:function(a){this._background=a,this.element.style.background=a}})}(),tm.display=tm.display||{},function(){tm.display.CanvasElement=tm.createClass({superClass:tm.app.Object2D,visible:!0,clipping:!1,fillStyle:"white",strokeStyle:"white",alpha:1,blendMode:"source-over",shadowColor:"black",shadowOffsetX:0,shadowOffsetY:0,shadowBlur:0,init:function(){this.superInit()},setAlpha:function(a){return this.alpha=a,this},setShadowColor:function(a){return this.shadowColor=a,this},setShadowBlur:function(a){return this.shadowBlur=a,this},setShadowOffset:function(a,b){return this.shadowOffsetX=a,this.shadowOffsetY=b,this},drawBoundingCircle:function(a){a.save(),a.lineWidth=2,a.strokeCircle(0,0,this.radius),a.restore()},drawBoundingRect:function(a){a.save(),a.lineWidth=2,a.strokeRect(-this.width*this.originX,-this.height*this.originY,this.width,this.height),a.restore()},drawFillRect:function(a){return a.fillRect(-this.width/2,-this.height/2,this.width,this.height),this},drawStrokeRect:function(a){return a.strokeRect(-this.width/2,-this.height/2,this.width,this.height),this},drawFillArc:function(a){return a.beginPath(),a.arc(0,0,this.radius,0,2*Math.PI,!1),a.fill(),a.closePath(),this},drawStrokeArc:function(a){return a.beginPath(),a.arc(0,0,this.radius,0,2*Math.PI,!1),a.stroke(),a.closePath(),this},setVisible:function(a){return this.visible=a,this},show:function(){return this.visible=!0,this},hide:function(){return this.visible=!1,this},setFillStyle:function(a){return this.fillStyle=a,this},setStrokeStyle:function(a){return this.strokeStyle=a,this},setBlendMode:function(a){return this.blendMode=a,this},load:function(a){var b=this;a.layers.forEach(function(a){if("objectgroup"==a.type){var c=tm.display.CanvasElement().addChildTo(b);c.width=a.width,c.height=a.height,a.objects.forEach(function(a){var b=tm.using(a.type);0===Object.keys(b).length&&(b=tm.display[a.type]);var d=null;a.properties.init&&(d=JSON.parse(a.properties.init));var e=b.apply(null,d).addChildTo(c),f=a.properties;for(var g in f)if("init"!=g){var h=f[g];e[g]=h}e.x=a.x,e.y=a.y,e.width=a.width,e.height=a.height}),b[a.name]=c}})},_calcAlpha:function(){return this.parent?void(this._worldAlpha=this.parent._worldAlpha*this.alpha):void(this._worldAlpha=this.alpha)},_dirtyCalc:function(){this._calcAlpha(),this._calcWorldMatrix()}})}(),tm.display=tm.display||{},function(){tm.display.Sprite=tm.createClass({superClass:tm.display.CanvasElement,init:function(a,b,c){this.superInit(),console.assert("number"!=typeof a,"Sprite の第一引数はテクスチャもしくはテクスチャ名に変わりました"),this._frameIndex=0,this.srcRect=tm.geom.Rect(0,0,64,64),arguments.length>=1&&(this.setImage(a).fitImage(),void 0!==b&&(this.width=b),void 0!==c&&(this.height=c))},setImage:function(a,b,c){if("string"==typeof a){var d=a;a=tm.asset.Manager.get(d),console.assert(null!=a,"don't find '"+d+"' as image.")}return this._image=a,this.srcRect.x=0,this.srcRect.y=0,this.srcRect.width=a.element.width,this.srcRect.height=a.element.height,void 0!==b&&(this.width=b),void 0!==c&&(this.height=c),this},getImage:function(){return this._image},fitImage:function(){return this.width=this.image.width,this.height=this.image.height,this},setFrameIndex:function(a,b,c){var d=b||this.width,e=c||this.height,f=~~(this.image.width/d),g=~~(this.image.height/e),h=f*g;a%=h;var i=a%f,j=~~(a/f);return this.srcRect.x=i*d,this.srcRect.y=j*e,this.srcRect.width=d,this.srcRect.height=e,this._frameIndex=a,this},_refreshSize:function(){}}),tm.display.Sprite.prototype.accessor("image",{get:function(){return this._image},set:function(a){this.setImage(a)}}),tm.display.Sprite.prototype.accessor("frameIndex",{get:function(){return this._frameIndex},set:function(a){this.setFrameIndex(a)}})}(),tm.display=tm.display||{},function(){tm.display.Shape=tm.createClass({superClass:tm.display.CanvasElement,init:function(a){a=this._dirtyCheckParam.apply(this,arguments);var a={}.$safe(a,{width:64,height:64,bgColor:"transparent",fillStyle:"red",strokeStyle:"white",lineWidth:"2",shadowBlur:0,shadowColor:"red"});this.superInit(),this.canvas=tm.graphics.Canvas(),this.$extend(a),this.render(),this.autoRender=!0},_prerender:function(){var a=this.canvas;return a.resize(this.width,this.height),a.clearColor(this.bgColor),a.save(),a.fillStyle=this.fillStyle,a.strokeStyle=this.strokeStyle,a.lineWidth=this.lineWidth,a.shadowBlur=this.shadowBlur,a.shadowColor=this.shadowColor,this},_postrender:function(){var a=this.canvas;return a.restore(),this},render:function(){this._prerender(),this._render(),this._postrender()},_render:function(){},renderText:function(a){var b=this.canvas;a={}.$extend(tm.display.Shape.DEFAULT_SHAPE_PARAM_TEXT,a),b.save(),b.fillStyle=a.fillStyle,b.strokeStyle=a.strokeStyle,b.lineWidth=a.lineWidth,b.font=a.font,b.textAlign=a.textAlign,b.textBaseline=a.textBaseline,b.strokeText(a.text,this.width/2,this.height/2),b.fillText(a.text,this.width/2,this.height/2),b.restore()},_dirtyCheckParam:function(a){var a=a;if(arguments.length>=2){var b=arguments[0],c=arguments[1],a=arguments[2]||{};a.width=b,a.height=c,console.warn("tmlib.js warn: arguments of shape init is only param from version 0.4")}return a}}),["width","height","bgColor","strokeStyle","fillStyle","lineWidth","shadowBlur","shadowColor"].each(function(a){var b="_"+a;tm.display.Shape.prototype.accessor(a,{get:function(){return this[b]},set:function(a){this[b]=a,this.autoRender===!0&&this.render()}})})}(),function(){tm.define("tm.display.CircleShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=Math.min(this.width,this.height)/2;a.fillCircle(this.width/2,this.height/2,b),a.strokeCircle(this.width/2,this.height/2,b-Number(a.lineWidth)/2)}})}(),function(){tm.define("tm.display.TriangleShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),a={}.$safe(a,{fillStyle:"green"}),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=this.width/2,c=this.height/2,d=Math.min(this.width,this.height)/2,e=1*Number(a.lineWidth);a.fillPolygon(b,c,d,3),a.strokePolygon(b,c,d-e,3)}})}(),function(){tm.define("tm.display.RectangleShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),a={}.$safe(a,{fillStyle:"blue"}),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=this.lineWidth,c=b/2;a.fillRect(0,0,this.width,this.height),a.strokeRect(c,c,this.width-b,this.height-b)}})}(),function(){tm.define("tm.display.RoundRectangleShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),a={}.$safe(a,{fillStyle:"blue",cornerRadius:8}),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=this.lineWidth,c=b/2;a.fillRoundRect(c,c,this.width-b,this.height-b,this.cornerRadius),a.strokeRoundRect(c,c,this.width-b,this.height-b,this.cornerRadius)}}),["cornerRadius"].each(function(a){var b="_"+a;tm.display.RoundRectangleShape.prototype.accessor(a,{get:function(){return this[b]},set:function(a){this[b]=a,this.autoRender===!0&&this.render()}})})}(),function(){tm.define("tm.display.StarShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),a={}.$safe(a,{fillStyle:"yellow",sides:5,sideIndent:.38,offsetAngle:-90}),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=this.sides,c=this.sideIndent,d=this.offsetAngle,e=this.width/2,f=this.height/2,g=Math.min(this.width,this.height)/2,h=1.5*Number(a.lineWidth);a.fillStar(e,f,g,b,c,d),a.strokeStar(e,f,g-h,b,c,d)}}),["sides","sideIndent","offsetAngle"].each(function(a){var b="_"+a;tm.display.StarShape.prototype.accessor(a,{get:function(){return this[b]},set:function(a){this[b]=a,this.autoRender===!0&&this.render()}})})}(),function(){tm.define("tm.display.PolygonShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),a={}.$safe(a,{fillStyle:"cyan",sides:5,sideIndent:.38,offsetAngle:-90}),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=this.sides,c=this.offsetAngle,d=this.width/2,e=this.height/2,f=Math.min(this.width,this.height)/2,g=.6*Number(a.lineWidth);a.fillPolygon(d,e,f,b,c),a.strokePolygon(d,e,f-g,b,c)}}),["sides","offsetAngle"].each(function(a){var b="_"+a;tm.display.PolygonShape.prototype.accessor(a,{get:function(){return this[b]},set:function(a){this[b]=a,this.autoRender===!0&&this.render()}})})}(),function(){tm.define("tm.display.HeartShape",{superClass:tm.display.Shape,init:function(a){a=this._dirtyCheckParam.apply(this,arguments),a={}.$safe(a,{fillStyle:"pink",cornerAngle:45}),this.superInit(a),this.render()},_render:function(){var a=this.canvas,b=this.width/2,c=this.height/2,d=Math.min(this.width,this.height)/2;a.fillHeart(b,c,d,this.cornerAngle),a.strokeHeart(b,c,d-Number(a.lineWidth)/2,this.cornerAngle)}}),["cornerAngle"].each(function(a){var b="_"+a;tm.display.HeartShape.prototype.accessor(a,{get:function(){return this[b]},set:function(a){this[b]=a,this.autoRender===!0&&this.render()}})})}(),function(){var a=null;tm.define("tm.display.TextShape",{superClass:"tm.display.Shape",init:function(a,b,c){c=this._dirtyCheckParam.apply(this,arguments),c={}.$safe(c,{fillStyle:"black",lineWidth:4,text:"hello, world!",fontSize:64,fontWeight:"",fontFamily:"'HiraKakuProN-W3'"}),this.superInit(c),this.fit(),this.render()},fit:function(){a||(a=tm.graphics.Canvas()),a.font="{fontWeight} {fontSize}px {fontFamily}".format(this);var b=a.context.measureText(this.text).width+10,c=1.5*a.context.measureText("あ").width;this.width=b,this.height=c},_render:function(){var a=this.canvas;a.fillStyle=this.fillStyle,a.strokeStyle=this.strokeStyle,a.font="{fontWeight} {fontSize}px {fontFamily}".format(this),a.textAlign="center",a.textBaseline="middle";var b=(a.context.measureText(this.text).width,this.width/2),c=this.height/2;a.strokeText(this.text,b,c),a.fillText(this.text,b,c)}}),["text","fontWeight","fontSize","fontFamily"].each(function(a){var b="_"+a;tm.display.TextShape.prototype.accessor(a,{get:function(){return this[b]},set:function(a){this[b]=a,this.autoRender===!0&&this.render()}})})}(),tm.display=tm.display||{},function(){var a=document.createElement("canvas"),b=a.getContext("2d");tm.display.Label=tm.createClass({superClass:tm.display.CanvasElement,fill:!0,stroke:!1,debugBox:!1,_cache:null,init:function(a,b){this.superInit(),this.text=a,this._fontSize=b||24,this._fontFamily=tm.display.Label["default"].fontFamily,this._fontWeight="",this._lineHeight=1.2,this._updateFont(),this.align=tm.display.Label["default"].align,this.baseline=tm.display.Label["default"].baseline,this.maxWidth=null},setAlign:function(a){return this.align=a,this},setBaseline:function(a){return this.baseline=a,this},setFontSize:function(a){return this.fontSize=a,this},setFontFamily:function(a){return this.fontFamily=a,this},setFontWeight:function(a){return this.fontWeight=a,this},_updateFont:function(){this.fontStyle="{fontWeight} {fontSize}px {fontFamily}".format(this),this._cache=tm.display.Label._cache[this.fontStyle],this.textSize=this.measure("あ")*this.lineHeight},_updateLines:function(){var a=this._lines=(this._text+"").split("\n");if(this._rowWidth)for(var c=this._rowWidth,d=c/this.measure("あ")|0,e=this._cache||(this._cache=tm.display.Label._cache[this.fontStyle]={}),f=a.length;f--;)for(var g,h,i,j,k=a[f],l=0;;){if(c>(e[k]||(e[k]=b.measureText(k).width)))break;if(g=g||d,h=k.length,g>=h&&(g=h-1),c<(i=e[j=k.substring(0,g)]||(e[j]=b.measureText(j).width)))for(;c<(i-=e[j=k[--g]]||(e[j]=b.measureText(j).width)););else{for(;c>=(i+=e[j=k[g++]]||(e[j]=b.measureText(j).width)););--g}0===g&&(g=1),a.splice(f+l++,1,k.substring(0,g),k=k.substring(g,h))}},measure:function(a,c){if(b.font=this.fontStyle,a=null==a?"":a+"",c){a=a.split("\n");var d=0;return a.forEach(function(a){var c=b.measureText(a).width;c>d&&(d=c)}),d}return b.measureText(a).width},setRowWidth:function(a){return this.rowWidth=a,this},setText:function(a){return this.text=a,this}}),tm.display.Label.prototype.accessor("text",{get:function(){return this._text},set:function(a){this._text!==a&&(this._text=null!=a?a:"",this._updateLines())}}),tm.display.Label.prototype.accessor("fontSize",{get:function(){return this._fontSize},set:function(a){this._fontSize=a,this._updateFont()}}),tm.display.Label.prototype.accessor("fontFamily",{get:function(){return this._fontFamily},set:function(a){this._fontFamily=a,this._updateFont()}}),tm.display.Label.prototype.accessor("fontWeight",{get:function(){return this._fontWeight},set:function(a){this._fontWeight=a,this._updateFont()}}),tm.display.Label.prototype.accessor("lineHeight",{get:function(){return this._lineHeight},set:function(a){this._lineHeight=a,this._updateFont()}}),tm.display.Label.prototype.accessor("rowWidth",{get:function(){return this._rowWidth},set:function(a){this._rowWidth=a,this._updateLines()}}),tm.display.Label["default"]={align:"center",baseline:"middle",fontFamily:"'HiraKakuProN-W3'"},tm.display.Label._cache={}}(),tm.display=tm.display||{},function(){tm.display.AnimationSprite=tm.createClass({superClass:tm.display.CanvasElement,init:function(a,b,c){if(this.superInit(),"string"==typeof a){var a=tm.asset.Manager.get(a);console.assert(a,"not found "+a)}console.assert("object"==typeof a,"AnimationSprite の第一引数はスプライトシートもしくはスプライトシート名に変わりました"),this.ss=a,this.width=b||a.frame.width,this.height=c||a.frame.height,this.currentFrame=0,this.currentFrameIndex=0,this.paused=!0,this.currentAnimation=null,this.addEventListener("enterframe",function(a){this.paused||a.app.frame%this.currentAnimation.frequency!==0||this._updateFrame()})},draw:function(a){var b=this.ss.getFrame(this.currentFrame),c=this.ss.image.element;a.drawImage(c,b.x,b.y,b.width,b.height,-this.width*this.originX,-this.height*this.originY,this.width,this.height)},gotoAndPlay:function(a){return a=void 0!==a?a:"default",this.paused=!1,this.currentAnimation=this.ss.animations[a],this.currentFrame=0,this.currentFrameIndex=0,this._normalizeFrame(),this},gotoAndStop:function(a){return a=void 0!==a?a:"default",this.paused=!0,this.currentAnimation=this.ss.animations[a],this.currentFrame=0,this.currentFrameIndex=0,this._normalizeFrame(),this},_updateFrame:function(){this.currentFrameIndex+=1,this._normalizeFrame()},_normalizeFrame:function(){var a=this.currentAnimation;if(a)if(this.currentFrameIndex<a.frames.length)this.currentFrame=a.frames[this.currentFrameIndex];else{a.next?this.gotoAndPlay(a.next):(this.currentFrameIndex=a.frames.length-1,this.currentFrame=a.frames[this.currentFrameIndex],this.paused=!0);var b=tm.event.Event("animationend");this.dispatchEvent(b)}}})}(),function(){tm.define("tm.display.MapSprite",{superClass:"tm.display.CanvasElement",init:function(a,b,c){this.superInit(),"string"==typeof a?this.mapSheet=tm.asset.Manager.get(a):this.mapSheet=a,this.chipWidth=b||32,this.chipHeight=c||32,this.originX=this.originY=0,this.width=b*this.mapSheet.width,this.height=b*this.mapSheet.height,this.tileset=[],this.tilesetInfo={},this._build()},_build:function(){var a=this;this.mapSheet.tilesets.each(function(b,c){a._buildTileset(b,c)}),this.mapSheet.layers.each(function(b,c){"objectgroup"==b.type?a._buildObject(b):"imagelayer"==b.type?a._buildImageLayer(b):a._buildLayer(b)})},_buildTileset:function(a,b){var c=this,d=this.mapSheet,e=tm.asset.Manager.get(a.image),f=e.width/d.tilewidth|0,g=e.height/d.tileheight|0,h={begin:c.tileset.length,end:c.tileset.length+f*g};c.tilesetInfo[b]=h,void 0!==a.name&&(c.tilesetInfo[a.name]=h),g.times(function(b){f.times(function(e){var f=tm.geom.Rect(e*d.tilewidth,b*d.tileheight,d.tilewidth,d.tileheight);c.tileset.push({image:a.image,rect:f})})})},_buildLayer:function(a){var b=this,c=this.mapSheet,d=tm.display.Shape({width:this.width,height:this.height}).addChildTo(this),e=1===a.visible||void 0===a.visible,f=void 0===a.opacity?1:a.opacity,g=[];if(d.origin.set(0,0),void 0!==a.tilesets){var h=null;h=Array.isArray(a.tilesets)?a.tilesets:[a.tilesets],h.each(function(a){var c=b.tilesetInfo[a];g=g.concat(b.tileset.slice(c.begin,c.end))})}else g=b.tileset;e&&a.data.each(function(a,e){var h=a;if(-1!=h&&(h=Math.abs(h),void 0!==g[h])){var i=e%c.width,j=e/c.width|0,k=i*b.chipWidth,l=j*b.chipHeight,m=g[h],n=tm.asset.Manager.get(m.image),o=m.rect;d.canvas.globalAlpha=f,d.canvas.drawTexture(n,o.x,o.y,o.width,o.height,k,l,b.chipWidth,b.chipHeight)}}.bind(this))},_buildObject:function(a){var b=this,c=tm.display.CanvasElement().addChildTo(b);c.width=b.width,c.height=b.height,a.objects.forEach(function(a){var b=tm.using(a.type);0===Object.keys(b).length&&(b=tm.display[a.type]);var d=null;a.properties.init&&(d=JSON.parse(a.properties.init));var e=b.apply(null,d).addChildTo(c),f=a.properties;for(var g in f)if("init"!=g){var h=f[g];e[g]=h}e.x=a.x,e.y=a.y,e.width=a.width,e.height=a.height,c[a.name]=e}),b[a.name]=c},_buildImageLayer:function(a){var b=tm.display.Sprite(a.image.source).setOrigin(0,0).addChildTo(this);b.x=a.x,b.y=a.y,b.alpha=a.alpha,b.visible=a.visible,this[a.name]=b}})}(),function(){tm.define("tm.display.CanvasRenderer",{canvas:null,init:function(a){this.canvas=a,this._context=this.canvas.context},render:function(a){this.canvas.save(),this.renderObject(a),this.canvas.restore()},renderObject:function(a){if(a.visible!==!1){var c=this._context;if(a._dirtyCalc&&a._dirtyCalc(),this._checkRenderable(a)){"Mesh"===a.name&&console.log("Mesh"),a.draw||this._setRenderFunction(a),a.fillStyle&&(c.fillStyle=a.fillStyle),a.strokeStyle&&(c.strokeStyle=a.strokeStyle),c.globalAlpha=a._worldAlpha,c.globalCompositeOperation=a.blendMode,a.shadowBlur?(c.shadowColor=a.shadowColor,c.shadowOffsetX=a.shadowOffsetX,c.shadowOffsetY=a.shadowOffsetY,c.shadowBlur=a.shadowBlur):(c.shadowOffsetX=0,c.shadowOffsetY=0,c.shadowColor="rgba(0, 0, 0, 0)");var d=a._worldMatrix.m;if(c.setTransform(d[0],d[3],d[1],d[4],d[2],d[5]),a.clipping){if(c.save(),a.clip?a.clip():b.call(a,this.canvas),c.clip(),a.draw(this.canvas),a.children.length>0)for(var e=a.children.slice(),f=0,g=e.length;g>f;++f)this.renderObject(e[f]);c.restore()}else if(a.draw(this.canvas),a.children.length>0)for(var e=a.children.slice(),f=0,g=e.length;g>f;++f)this.renderObject(e[f])}else if(a.children.length>0)for(var e=a.children.slice(),f=0,g=e.length;g>f;++f)this.renderObject(e[f])}},_checkRenderable:function(a){return void 0===a._renderable&&(a._renderable=a instanceof tm.display.CanvasElement),a._renderable},_setRenderFunction:function(b){b instanceof tm.display.Sprite?b.draw=a.sprite:b instanceof tm.display.MapSprite?b.draw=function(){}:b instanceof tm.display.Label?b.draw=a.label:b instanceof tm.display.Shape?b.draw=a.shape:b.draw=function(){}}});var a={sprite:function(a){var b=this.srcRect,c=this._image.element;a.context.drawImage(c,b.x,b.y,b.width,b.height,-this.width*this.origin.x,-this.height*this.origin.y,this.width,this.height)},shape:function(a){this.srcRect;a.drawImage(this.canvas.canvas,0,0,this.canvas.width,this.canvas.height,-this.width*this.origin.x,-this.height*this.origin.y,this.width,this.height)},label:function(a){a.setText(this.fontStyle,this.align,this.baseline),this.lineWidth&&(a.lineWidth=this.lineWidth),this.stroke&&(this.maxWidth?this._lines.each(function(b,c){a.strokeText(b,0,this.textSize*c,this.maxWidth)}.bind(this)):this._lines.each(function(b,c){a.strokeText(b,0,this.textSize*c)}.bind(this))),this.fill&&(this.maxWidth?this._lines.each(function(b,c){a.fillText(b,0,this.textSize*c,this.maxWidth)}.bind(this)):this._lines.each(function(b,c){a.fillText(b,0,this.textSize*c)}.bind(this))),this.debugBox&&a.strokeRect(0,0,this.width,-this.size)}},b=function(a){a.beginPath(),a.rect(-this.width*this.origin.x,-this.height*this.origin.y,this.width,this.height)}}(),function(){tm.define("tm.display.BoundingRectRenderer",{superClass:"tm.display.CanvasRenderer",init:function(a){this.superInit(a)},_setRenderFunction:function(b){b.draw=a}});var a=function(a){a.save(),a.lineWidth=2,a.strokeRect(-this.width*this.originX,-this.height*this.originY,this.width,this.height),a.restore()}}(),tm.ui=tm.ui||{},function(){tm.ui.Pad=tm.createClass({superClass:tm.display.Shape,isTouching:!1,circle:null,init:function(){this.superInit(120,120);var a=this.canvas;a.fillStyle="#fff",a.fillCircle(60,60,60),a.fillStyle="#eee",this._createCircle(),this.setInteractive(!0),this.alpha=.75},_createCircle:function(){var a=this.circle=tm.display.Shape(80,80);this.addChild(a);var b=a.canvas;b.fillStyle="#222",b.setShadow("black",2,2,2),b.fillCircle(40,40,35)},onpointingstart:function(){this.isTouching=!0},onpointingend:function(){this.isTouching=!1,this.circle.position.set(0,0)},onpointingmove:function(a){if(0!=this.isTouching){var b=a.pointing,c=tm.geom.Vector2(b.x-this.x,b.y-this.y),d=c.length();c.div(d),d>40&&(d=40),this.angle=Math.radToDeg(c.toAngle()),this.circle.position.set(c.x*d,c.y*d),this.distance=d/40,this.direction=c.mul(this.distance)}}})}(),tm.ui=tm.ui||{},function(){tm.define("tm.ui.BaseButton",{superClass:"tm.display.CanvasElement",init:function(a){this.superInit(),a=a||{},this.width=a.width||64,this.height=a.height||64,this.setInteractive(!0),this.boundingType="rect",this.on("pointingend",function(){this.flare("push")})}})}(),function(){tm.define("tm.ui.SpriteButton",{superClass:"tm.ui.BaseButton",init:function(a){this.superInit(),this.sprite=tm.display.Sprite(a).addChildTo(this),this.width=this.sprite.width,this.height=this.sprite.height}})}(),function(){tm.ui.LabelButton=tm.createClass({superClass:tm.display.Label,init:function(a){this.superInit(a),this.alpha=tm.ui.LabelButton.DEFAULT_ALPHA,this.setAlign("center").setBaseline("middle"),this.setInteractive(!0),this.boundingType="rect",this.addEventListener("pointingover",function(){this.tweener.clear(),this.tweener.fadeIn(250)}.bind(this)),this.addEventListener("pointingout",function(){this.tweener.clear(),this.tweener.fade(tm.ui.LabelButton.DEFAULT_ALPHA,250)}.bind(this))}}),tm.ui.LabelButton.DEFAULT_ALPHA=.5}(),function(){tm.ui.IconButton=tm.createClass({superClass:tm.display.Sprite,init:function(){this.superInit.apply(this,arguments),this.setInteractive(!0),this.boundingType="rect",this.on("pointingend",function(){this.flare("push")})}}),tm.ui.IconButton.DEFAULT_ALPHA=.5}(),function(){tm.ui.GlossyButton=tm.createClass({superClass:tm.display.Shape,init:function(a,b,c,d){this.superInit(a,b),d=d||"Button",this.backgroundColor=c||"black",this.alpha=tm.ui.GlossyButton.DEFAULT_ALPHA,this.setInteractive(!0),this.boundingType="rect",this.addEventListener("pointingover",function(){this.tweener.clear(),this.tweener.fade(1,250)}),this.addEventListener("pointingout",function(){this.tweener.clear(),this.tweener.fade(tm.ui.GlossyButton.DEFAULT_ALPHA,250)}),this.label=tm.display.Label(d||"").addChildTo(this),this.label.setAlign("center").setBaseline("middle"),this._refresh()},setBackgroundColor:function(a){return this.backgroundColor=a,this._refresh(),this},_refresh:function(){var a=this.canvas;a.resize(this.width,this.height),a.fillStyle=this.backgroundColor,a.fillRoundRect(2,2,this.width-4,this.height-4,10),a.strokeStyle="rgba(100,100,100,0.75)",a.lineWidth=2,a.strokeRoundRect(2,2,this.width-4,this.height-4,10),a.roundRect(2,2,this.width-4,this.height-4,10),a.clip();var b=tm.graphics.LinearGradient(0,0,0,this.height);b.addColorStop(0,"rgba(255,255,255,0.9)"),b.addColorStop(.5,"rgba(255,255,255,0.5)"),b.addColorStop(.51,"rgba(255,255,255,0.2)"),b.addColorStop(1,"rgba(255,255,255,0.0)"),a.setGradient(b),a.fillRect(2,2,this.width-4,this.height-4,10),this.label.setSize(this.width,this.height)}}),tm.ui.GlossyButton.DEFAULT_ALPHA=.5}(),function(){tm.define("tm.ui.FlatButton",{superClass:"tm.ui.BaseButton",init:function(a){a=(a||{}).$safe(tm.ui.FlatButton.defaults),this.superInit(a),this.shape=tm.display.RoundRectangleShape(a).addChildTo(this),this.label=tm.display.Label(a.text).addChildTo(this),this.label.setFontSize(a.fontSize).setFontFamily(a.fontFamily).setAlign("center").setBaseline("middle")}}),tm.ui.FlatButton.defaults={width:300,height:100,fillStyle:"hsl(180, 60%, 50%)",strokeStyle:"transparent",text:"START",fontSize:50,cornerRadius:8,fontFamily:"'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif"}}(),function(){tm.define("tm.ui.MenuDialog",{superClass:tm.app.Scene,titleText:null,menu:null,descriptions:null,showExit:!1,title:null,selections:[],description:null,box:null,cursor:null,_selected:0,_opened:!1,_finished:!1,_screenWidth:0,_screenHeight:0,
-init:function(a){this.superInit(),this._screenWidth=a.screenWidth,this._screenHeight=a.screenHeight,this.titleText=a.title,this.menu=[].concat(a.menu),this._selected=~~a.defaultSelected,this.showExit=!!a.showExit,a.menuDescriptions?this.descriptions=a.menuDescriptions:this.descriptions=[].concat(a.menu),this.showExit&&(this.menu.push("exit"),this.descriptions.push("前の画面へ戻ります"));var b=Math.max(50*(1+this.menu.length),50)+40;this.box=tm.display.RectangleShape(.8*this._screenWidth,b,{strokeStyle:"rgba(0,0,0,0)",fillStyle:"rgba(43,156,255, 0.8)"}).setPosition(.5*this._screenWidth,.5*this._screenHeight),this.box.width=1,this.box.height=1,this.box.setBoundingType("rect"),this.box.tweener.to({width:.8*this._screenWidth,height:b},200,"easeOutExpo").call(this._onOpen.bind(this)),this.box.addChildTo(this),this.description=tm.display.Label("",14).setAlign("center").setBaseline("middle").setPosition(.5*this._screenWidth,this._screenHeight-10).addChildTo(this)},_onOpen:function(){var a=this,b=.5*this._screenHeight-25*this.menu.length;this.title=tm.display.Label(this.titleText,30).setAlign("center").setBaseline("middle").setPosition(.5*this._screenWidth,b).addChildTo(this),this.cursor=this._createCursor(),this.selections=this.menu.map(function(a,c){var d=this;b+=50;var e=tm.ui.LabelButton(a).setPosition(.5*this._screenWidth,b).addChildTo(this);return e.interactive=!0,e.addEventListener("click",function(){if(d._selected===c)d.closeDialog(d._selected);else{d._selected=c;var a=tm.event.Event("menuselect");a.selectValue=d.menu[d._selected],a.selectIndex=c,d.dispatchEvent(a)}}),e.width=.7*this._screenWidth,e}.bind(this)),this.cursor.y=this.selections[this._selected].y,this._opened=!0,this.addEventListener("pointingend",function(b){var c=b.app.pointing;a.box.isHitPoint(c.x,c.y)||a.closeDialog(a._selected)});var c=tm.event.Event("menuopened");this.dispatchEvent(c)},_createCursor:function(){var a=tm.display.RectangleShape(.7*this._screenWidth,30,{strokeStyle:"rgba(0,0,0,0)",fillStyle:"rgba(12,79,138,1)"}).addChildTo(this);return a.x=.5*this._screenWidth,a.target=this._selected,a.update=function(){this.target!==this.parent._selected&&(this.target=this.parent._selected,this.tweener.clear(),this.tweener.to({y:this.parent.selections[this.parent._selected].y},200,"easeOutExpo"))},a},update:function(a){this.description.text=this.descriptions[this._selected]},closeDialog:function(a){this._finished=!0;var b=tm.event.Event("menuselected");b.selectIndex=a,this.dispatchEvent(b),this.tweener.clear().wait(200).call(function(){this.cursor.remove(),this.title.remove(),this.selections.each(function(a){a.remove()}),this.box.tweener.clear(),this.box.tweener.to({width:1,height:1},200,"easeInExpo").call(function(){this.app.popScene();var b=tm.event.Event("menuclosed");b.selectIndex=a,this.dispatchEvent(b)}.bind(this))}.bind(this)),this.cursor.tweener.clear().call(function(){this.visible=!this.visible}.bind(this.cursor)).setLoop(!0)},draw:function(a){a.fillStyle="rgba(0,0,0,0.8)",a.fillRect(0,0,this._screenWidth,this._screenHeight)}})}(),function(){var a={bgColor:"rgba(255, 255, 255, 1.0)",penColor:"rgba(0, 0, 0, 1.0)",lineWidth:16};tm.define("tm.ui.Sketch",{superClass:"tm.display.Shape",init:function(b){b=this._dirtyCheckParam.apply(this,arguments),b.$safe(a),this.superInit(b),this.autoRender=!1,this._setup(b)},_setup:function(a){var b=this;this.boundingType="rect",this.setInteractive(!0);var c=this.canvas.context;c.lineCap="round",c.lineJoin="round",c.miterLimit=10,this.bgColor=a.bgColor,this.penColor=a.penColor,this.lineWidth=a.lineWidth,this.on("pointingstart",function(a){var c=a.app.pointing;b._drawPoint(c.position)}),this.on("pointingmove",function(a){var c=a.app.pointing;b._drawLine(c.prevPosition,c.position),b.points.push({x:c.x-this.left,y:c.y-this.top})}),this.on("pointingend",function(a){b.pointsList.push(b.points),b.points=[]}),this.pointsList=[],this.points=[]},clear:function(){return this.canvas.clear(),this.canvas.clearColor(this.bgColor),this.pointsList=[],this.points=[],this},_drawPoint:function(a){this.canvas.drawPoint(a.x-this.left,a.y-this.top)},_drawLine:function(a,b){this.canvas.drawLine(a.x-this.left,a.y-this.top,b.x-this.left,b.y-this.top)}}),tm.ui.Sketch.prototype.accessor("penColor",{get:function(){return this._penColor},set:function(a){this._penColor=a,this.canvas.strokeStyle=a}}),tm.ui.Sketch.prototype.accessor("bgColor",{get:function(){return this._bgColor},set:function(a){this._bgColor=a,this.clear()}}),tm.ui.Sketch.prototype.accessor("lineWidth",{get:function(){return this._lineWidth},set:function(a){this._lineWidth=a,this.canvas.lineWidth=a}})}(),function(){tm.ui.Gauge=tm.createClass({superClass:tm.display.CanvasElement,animationFlag:!0,animationTime:1e4,init:function(a){this.superInit(),a=a||{},a.$safe({width:300,height:25,color:"hsl(220, 100%, 50%)",bgColor:"#444",borderColor:"white",borderWidth:4}),this.$extend(a),this._reset()},isFull:function(){return this._value===this._maxValue},isEmpty:function(){return 0===this._value},_reset:function(a){this.originX=0,this._realValue=this._value=this._maxValue=100},setValue:function(a){if(a=Math.clamp(a,0,this._maxValue),this._realValue=a,this._value!==a){if(this.fire(tm.event.Event("change")),this.isAnimation()){this.tweener.clear();var b=Math.abs(this._value-a)/100*this.animationTime;this.tweener.clear().to({_value:a},b).call(function(){this.fire(tm.event.Event("changed")),this.isEmpty()?this.fire(tm.event.Event("empty")):this.isFull()&&this.fire(tm.event.Event("full"))}.bind(this))}else this._value=a,this.fire(tm.event.Event("changed")),this.isEmpty()?this.fire(tm.event.Event("empty")):this.isFull()&&this.fire(tm.event.Event("full"));return this}},getValue:function(){return this.value},getRealValue:function(){return this._realValue},setPercent:function(a){return this.setValue(this._maxValue*a*.01)},getPercent:function(){return this._value/this._maxValue*100},getRealPercent:function(){return this._realValue/this._maxValue*100},setRatio:function(a){return this.setValue(this._maxValue*a)},getRatio:function(){return this._value/this._maxValue},getRealRatio:function(){return this._realValue/this._maxValue},isAnimation:function(){return this.animationFlag},draw:function(a){a.save(),a.fillStyle=this.bgColor,a.fillRect(0,0,this.width,this.height),a.fillStyle=this.color,a.fillRect(0,0,this.width*this.getRatio(),this.height),a.strokeStyle=this.borderColor,a.lineWidth=this.borderWidth,a.strokeRect(0,0,this.width,this.height),a.restore()}}),tm.ui.Gauge.prototype.accessor("value",{get:function(){return this._value},set:function(a){this.setValue(a)}}),tm.ui.Gauge.prototype.accessor("realValue",{get:function(){return this._realValue},set:function(a){this.setValue(a)}}),tm.ui.Gauge.prototype.accessor("percent",{get:function(){return this.getPercent()},set:function(a){this.setPercent(a)}}),tm.ui.Gauge.prototype.accessor("realPercent",{get:function(){return this.getRealPercent()},set:function(a){this.setRealPercent(a)}}),tm.ui.Gauge.prototype.accessor("ratio",{get:function(){return this.getRatio()},set:function(a){this.setRatio(a)}}),tm.ui.Gauge.prototype.accessor("realRatio",{get:function(){return this.getRealRatio()},set:function(a){this.setRatio(a)}})}(),function(){tm.define("tm.ui.FlatGauge",{superClass:"tm.ui.Gauge",init:function(a){this.superInit(a)},draw:function(a){a.save(),a.save(),a.roundRect(0,0,this.width,this.height,this.height/2),a.clip(),a.fillStyle=this.bgColor,a.fillRect(0,0,this.width,this.height),a.fillStyle=this.color,a.fillRect(0,0,this.width*this.getRatio(),this.height),a.restore(),a.strokeStyle=this.borderColor,a.lineWidth=this.borderWidth,a.strokeRoundRect(0,0,this.width,this.height,this.height/2),a.restore()}})}(),function(){tm.define("tm.ui.GlossyGauge",{superClass:"tm.ui.Gauge",init:function(a){a=a||{},a.borderWidth=a.borderWidth||2,this.superInit(a)},draw:function(a){a.save(),a.roundRect(0,0,this.width,this.height,this.height/2),a.clip(),a.fillStyle=this.bgColor,a.fillRect(0,0,this.width,this.height),a.fillStyle=this.color,a.fillRect(0,0,this.width*this.getRatio(),this.height);var b=tm.graphics.LinearGradient(0,0,0,this.height);b.addColorStop(0,"rgba(255,255,255,0.9)"),b.addColorStop(.5,"rgba(255,255,255,0.5)"),b.addColorStop(.51,"rgba(255,255,255,0.2)"),b.addColorStop(1,"rgba(255,255,255,0.0)"),a.setGradient(b),a.fillRect(0,0,this.width*this.getRatio(),this.height),a.restore(),a.lineWidth=this.borderWidth,a.strokeStyle=this.borderColor,a.strokeRoundRect(0,0,this.width,this.height,this.height/2)}})}(),function(){tm.define("tm.ui.LabelArea",{superClass:"tm.display.Shape",init:function(a){a=a||{},this.superInit(a.width||150,a.height||60),this.canvas.clearColor("red"),this.$extend({mode:a.mode||"horizon",_fillStyle:a.fillStyle||"#aaa",_bgColor:a.bgColor||"transparent",_fontSize:a.fontSize||24,_fontFamily:a.fontFamily||"'Consolas', 'Monaco', 'ＭＳ ゴシック'",_fontWeight:a.fontWeight||"",lineSpace:a.lineSpace||1}),this._updateFont(),this.setText(a.text||"こんにちは,世界!")},setText:function(a){this._text!==a&&(this._text=a,this._renderText())},_renderText:function(){this.canvas.width=this.width,this.canvas.height=this.height,this.canvas.clearColor(this.bgColor),this.canvas.font=this.fontStyle,this.canvas.fillStyle=this.fillStyle,this.canvas.fillLabelArea({text:this._text,x:0,y:0,width:this.width,height:this.height,mode:this.mode,lineSpace:this.lineSpace})},_updateFont:function(){this.fontStyle="{fontWeight} {fontSize}px {fontFamily}".format(this),this.text&&this._renderText()}}),tm.ui.LabelArea.prototype.accessor("text",{get:function(){return this._text},set:function(a){this.setText(a)}}),tm.ui.LabelArea.prototype.accessor("fontSize",{get:function(){return this._fontSize},set:function(a){this._fontSize=a,this._updateFont()}}),tm.ui.LabelArea.prototype.accessor("fontFamily",{get:function(){return this._fontFamily},set:function(a){this._fontFamily=a,this._updateFont()}}),tm.ui.LabelArea.prototype.accessor("fontWeight",{get:function(){return this._fontWeight},set:function(a){this._fontWeight=a,this._updateFont()}}),tm.ui.LabelArea.prototype.accessor("fillStyle",{get:function(){return this._fillStyle},set:function(a){this._fillStyle=a,this._updateFont()}}),tm.ui.LabelArea.prototype.accessor("bgColor",{get:function(){return this._bgColor},set:function(a){this._bgColor=a,this._updateFont()}}),tm.ui.LabelArea.prototype.accessor("width",{get:function(){return this._width},set:function(a){this._width=a,this.text&&this._renderText()}}),tm.ui.LabelArea.prototype.accessor("height",{get:function(){return this._height},set:function(a){this._height=a,this.text&&this._renderText()}})}(),function(){tm.game=tm.game||{},tm.game.setup=function(a){a.$safe({query:"#world",title:"Title",background:"rgba(250, 250, 250, 1.0)",width:640,height:960,startLabel:"title",fitting:!0,fps:30,assets:window.ASSETS||null}),tm.globalize(),this.expand(a);var b=[{className:"SplashScene",arguments:{width:a.width,height:a.height},label:"splash",nextLabel:"title"},{className:"TitleScene",arguments:{title:a.title,width:a.width,height:a.height},label:"title"},{className:"GameScene",label:"game",nextLabel:"result"},{className:"ResultScene",arguments:{message:a.title,width:a.width,height:a.height},label:"result",nextLabel:"title"},{className:"PauseScene",label:"pause"}];tm.main(function(){var c=tm.app.CanvasApp(a.query);if(c.resize(SCREEN_WIDTH,SCREEN_HEIGHT),a.fitting&&c.fitWindow(),c.background=a.background,c.fps=a.fps,tm.game.app=c,a.assets){var d=tm.game.LoadingScene({assets:a.assets,width:SCREEN_WIDTH,height:SCREEN_HEIGHT});d.onload=function(){c.replaceScene(tm.game.ManagerScene({startLabel:a.startLabel,scenes:b}))},c.replaceScene(d)}else c.replaceScene(tm.game.ManagerScene({startLabel:a.startLabel,scenes:b}));c.run()})},tm.game.expand=function(a){tm.global.$extend({SCREEN_WIDTH:a.width,SCREEN_HEIGHT:a.height,SCREEN_CENTER_X:a.width/2,SCREEN_CENTER_Y:a.height/2,SCREEN_GRID_X:GridSystem(a.width,16),SCREEN_GRID_Y:GridSystem(a.height,16),QUERY:tm.util.QueryString.parse(location.search.substr(1))})}}(),function(){tm.define("tm.game.TitleScene",{superClass:"tm.app.Scene",init:function(a){this.superInit(),a={}.$extend(tm.game.TitleScene["default"],a),this.param=a,this.fromJSON({children:{bg:{type:"tm.display.RectangleShape",init:{width:a.width,height:a.height,fillStyle:a.bgColor,strokeStyle:"transparent"},originX:0,originY:0}}}),a.bgImage&&this.fromJSON({children:{bgImage:{type:"tm.display.Sprite",init:[a.bgImage],originX:0,originY:0}}}),this.fromJSON({children:{titleLabel:{type:"Label",name:"titleLabel",text:a.title,x:this._toGridX(6),y:this._toGridY(3),fillStyle:a.fontColor,fontSize:a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif",align:"center",baseline:"middle"},messageLabel:{type:"Label",name:"nextLabel",text:a.message||"",x:this._toGridX(6),y:this._toGridY(6),fillStyle:a.fontColor,fontSize:.36*a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif",align:"center",baseline:"middle"},touchLabel:{type:"Label",name:"nextLabel",text:"TOUCH START",x:this._toGridX(6),y:this._toGridY(9),fillStyle:a.fontColor,fontSize:.4*a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif",align:"center",baseline:"middle"}}}),this.touchLabel.tweener.fadeOut(500).fadeIn(1e3).setLoop(!0),this.autopop=a.autopop},_toGridX:function(a){return this.param.width/12*a},_toGridY:function(a){return this.param.height/12*a},onpointingstart:function(){this.flare("finish"),this.autopop&&this.app.popScene()}}),tm.game.TitleScene["default"]={title:"Time is money",message:"",fontSize:72,fontColor:"#444",width:640,height:960,bgColor:"rgb(240,240,240)",bgImage:null,autopop:!0}}(),function(){tm.define("tm.game.ResultScene",{superClass:"tm.app.Scene",init:function(a){this.superInit(),a={}.$extend(tm.game.ResultScene["default"],a),this.param=a;var b=this._getUserData(),c=b.bestScore?b.bestScore:0,d=a.score>c;a.record&&d&&(b.bestScore=a.score,this._record(b)),this.fromJSON({children:{bg:{type:"tm.display.RectangleShape",init:{width:a.width,height:a.height,fillStyle:a.bgColor,strokeStyle:"transparent"},originX:0,originY:0}}}),a.bgImage&&this.fromJSON({children:{bgImage:{type:"tm.display.Sprite",init:[a.bgImage],originX:0,originY:0}}});var e={type:"Label",fillStyle:a.fontColor,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif"};this.fromJSON({children:{scoreText:e.$extend({text:"score",x:this._toGridX(4),y:this._toGridY(3),fontSize:.5*a.fontSize}),scoreLabel:{type:"Label",text:a.score,x:this._toGridX(4),y:this._toGridY(4),fillStyle:a.fontColor,fontSize:a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif"},bestText:{type:"Label",text:"best",x:this._toGridX(8),y:this._toGridY(3),fillStyle:a.fontColor,fontSize:.5*a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif"},bestLabel:{type:"Label",text:c,x:this._toGridX(8),y:this._toGridY(4),fillStyle:a.fontColor,fontSize:a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif"},newRecordText:{type:"Label",text:"new record!",x:this._toGridX(6),y:this._toGridY(6),fillStyle:a.fontColor,fontSize:.5*a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif",visible:!1},messageText:{type:"Label",text:a.message,x:this._toGridX(6),y:this._toGridY(7),fillStyle:a.fontColor,fontSize:.5*a.fontSize,fontFamily:"'Helvetica-Light' 'Meiryo' sans-serif"},shareButton:{type:"FlatButton",init:{text:"Share",width:200,fillStyle:"hsl(240, 100%, 64%)"},x:this._toGridX(4),y:this._toGridY(9)},backButton:{type:"FlatButton",init:{text:"Back",width:200,fillStyle:"hsl(240, 80%, 0%)"},x:this._toGridX(8),y:this._toGridY(9)}}});var f="SCORE: {score}, {message}".format(a),g=tm.social.Twitter.createURL({type:"tweet",text:f,hashtags:a.hashtags,url:a.url});this.shareButton.onclick=function(){window.open(g,"share window","width=400, height=300")},this.backButton.onpointingstart=this._back.bind(this),this.autopop=a.autopop,d&&(this.newRecordText.show(),this.newRecordText.tweener.set({alpha:0}).fadeIn(2e3).setLoop(!0))},_getUserData:function(){var a=location.pathname.toCRC32(),b=localStorage.getItem(a);return b?JSON.parse(b):{}},_record:function(a){var b=location.pathname.toCRC32(),c=JSON.stringify(a);return localStorage.setItem(b,c),this},_toGridX:function(a){return this.param.width/12*a},_toGridY:function(a){return this.param.height/12*a},_back:function(){this.flare("finish"),this.autopop&&this.app.popScene()}}),tm.game.ResultScene["default"]={score:0,message:"this is tmlib.js project.",hashtags:"tmlibjs,game",related:"tmlib.js tmlife javascript",url:"http://phi-jp.github.io/tmlib.js/",width:640,height:960,fontColor:"#444",fontSize:90,bgColor:"rgba(255,255,255, 0.9)",bgImage:null,record:!0,autopop:!0}}(),function(){var a={width:465,height:465,bgColor:"transparent"};tm.define("tm.game.LoadingScene",{superClass:"tm.app.Scene",init:function(b){this.superInit(),this.param=b={}.$extend(a,b),this.fromJSON({children:{stage:{type:"tm.display.CanvasElement"}}}),this.stage.fromJSON({children:{bg:{type:"tm.display.Shape",init:{width:b.width,height:b.height},originX:0,originY:0},piyoLayer:{type:"tm.display.CanvasElement"},label:{type:"tm.display.Label",text:"LOADING",x:b.width/2,y:b.height/2-20,align:"center",baseline:"middle",fontSize:46,shadowBlur:4,shadowColor:"hsl(190, 100%, 50%)"},bar:{type:"tm.ui.Gauge",init:[{width:b.width,height:10,color:"hsl(200, 100%, 80%)",bgColor:"transparent",borderColor:"transparent",borderWidth:0}],x:0,y:0}}});var c=this.stage.bg;c.canvas.clearColor(b.bgColor);var d=this.stage.label;d.tweener.to({alpha:1},1e3).to({alpha:.5},1e3).setLoop(!0);var e=this.stage.bar;e.animationFlag=!1,e.value=0,e.animationFlag=!0,e.animationTime=100,this._createHiyoko(b).addChildTo(this.stage.piyoLayer);var f=this.stage;f.alpha=0,f.tweener.clear().fadeIn(100).call(function(){if(b.assets){var a=tm.asset.Loader();a.onload=function(){f.tweener.clear().wait(200).fadeOut(200).call(function(){b.nextScene&&this.app.replaceScene(b.nextScene());var a=tm.event.Event("load");this.fire(a),1==b.autopop&&this.app.popScene()}.bind(this))}.bind(this),a.onprogress=function(a){e.value=100*a.progress;var b=tm.event.Event("progress");b.progress=a.progress,this.fire(b)}.bind(this),a.load(b.assets)}}.bind(this))},onpointingstart:function(a){var b=a.pointing,c=this._createHiyoko(this.param).addChildTo(this.stage.piyoLayer);c.x=b.x,c.y=b.y},_createHiyoko:function(a){var b=tm.display.Shape({width:84,height:84});b.x=tm.util.Random.randint(0,a.width),b.y=tm.util.Random.randint(0,a.height),b.canvas.setColorStyle("white","yellow").fillCircle(42,42,32),b.canvas.setColorStyle("white","black").fillCircle(27,27,2),b.canvas.setColorStyle("white","brown").fillRect(40,70,4,15).fillTriangle(0,40,11,35,11,45),b.dir=tm.geom.Vector2.random(0,360,4);var c=tm.geom.Rect(0,0,a.width,a.height);return c.padding(42),b.update=function(a){this.position.add(this.dir),this.x<c.left?(this.x=c.left,this.dir.x*=-1):this.x>c.right&&(this.x=c.right,this.dir.x*=-1),this.y<c.top?(this.y=c.top,this.dir.y*=-1):this.y>c.bottom&&(this.y=c.bottom,this.dir.y*=-1),this.dir.x<0?(this.rotation-=7,this.scaleX=1):(this.rotation+=7,this.scaleX=-1)},b}})}(),function(){var a="https://files.gitter.im/phi-jp/tmlib.js/t5F7/splash.png";tm.define("SplashScene",{superClass:"tm.app.Scene",init:function(b){this.superInit(),this.param=b,this.splashImage=tm.asset.Texture(b.path||a),this.splashImage.onload=this._init.bind(this)},_init:function(){var a=this.param.width,b=this.param.height;tm.display.Shape({width:a,height:b,bgColor:"white"}).setOrigin(0,0).addChildTo(this),tm.display.Sprite(this.splashImage,a,b).setOrigin(0,0).setAlpha(0).addChildTo(this).tweener.clear().wait(250).fadeIn(500).wait(1e3).fadeOut(500).wait(250).call(function(){this.app.popScene()}.bind(this))}})}(),function(){tm.define("tm.game.ManagerScene",{superClass:"tm.app.Scene",init:function(a){this.superInit(),this.setScenes(a.scenes),this.on("enter",function(){this.gotoScene(a.startLabel||0)}.bind(this)),this.on("resume",this.onnext.bind(this)),this.commonArguments={}},setScenes:function(a){return this.scenes=a,this.sceneIndex=0,this},gotoScene:function(a,b){a="string"==typeof a?this.labelToIndex(a):a||0;var c=tm.event.Event("prepare");this.fire(c);var d=this.scenes[a],e=tm.using(d.className),f=d.arguments,f={}.$extend(f,b),g=e.call(null,f);g.nextLabel||(g.nextLabel=d.nextLabel),g.nextArguments||(g.nextArguments=d.nextArguments),this.app.pushScene(g),this.sceneIndex=a,this.currentScene=g;var c=tm.event.Event("goto");return c.scene=g,this.fire(c),this},gotoNext:function(a){var b=this.scenes[this.sceneIndex],c=null;return b.nextLabel?c=this.labelToIndex(b.nextLabel):this.sceneIndex+1<this.scenes.length&&(c=this.sceneIndex+1),null!==c?this.gotoScene(c,a):this.fire(tm.event.Event("finish")),this},getCurrentIndex:function(){return this.sceneIndex},getCurrentLabel:function(){return this.scenes[this.sceneIndex].label},labelToIndex:function(a){var b=this.scenes.filter(function(b){return b.label==a})[0];return this.scenes.indexOf(b)},indexToLabel:function(a){return this.scenes[a].label},onnext:function(a){var b=a.prevScene.nextLabel,c=a.prevScene.nextArguments;b?this.gotoScene(b,c):this.gotoNext(c)}})}(),function(){tm.define("tm.game.NumericalInputScene",{superClass:"tm.app.Scene",init:function(a){this.superInit(),this.fromJSON({children:{inputLabel:{type:"tm.display.Label",fillStyle:"white",text:"",fontSize:64,x:320,y:120},buttonGroup:{type:"tm.display.CanvasElement"}}}),[1,2,3,4,5,6,7,8,9,"C",0,"OK"].each(function(a,b){var c=this._createButton(a.toString()).addChildTo(this.buttonGroup),d=b%3,e=b/3|0;c.x=190*d+130,c.y=177*e+280},this);var b=this,c=this.buttonGroup.children;c.each(function(a){a.setInteractive(!0).setBoundingType("circle"),a.radius=72.5,a.onpointingstart=function(){if("OK"==this.label.text){var a=tm.event.Event("decided");a.value=Number(b.inputLabel.text),b.fire(a)}else if("C"==this.label.text){var a=tm.event.Event("push");b.inputLabel.text="",b.flare("clear")}else b.inputLabel.text+=this.label.text,b.flare("push",{select:this.label.text})}})},_createButton:function(a){var b=tm.display.CanvasElement();return b.fromJSON({children:{bg:{type:"tm.display.CircleShape",init:[145,145,{fillStyle:"transparent",strokeStyle:"white"}]},label:{type:"tm.display.Label",text:a,fontSize:64,fillStyle:"white"}}}),b}})}(),function(){tm.define("tm.game.CountScene",{superClass:"tm.app.Scene",init:function(a){this.superInit(),a=a.$safe({width:640,height:960,bgColor:"#444",count:3,autopop:!0,fontSize:180}),a=a||{},this.fromJSON({children:{bg:{type:"tm.display.Shape",width:a.width,height:a.height,bgColor:a.bgColor,originX:0,originY:0},label:{type:"tm.display.Label",fillStyle:"white",fontSize:a.fontSize,x:SCREEN_CENTER_X,y:SCREEN_CENTER_Y}}}),a.count instanceof Array?this.countList=a.count.reverse():this.countList=Array.range(1,a.count+1),this.counter=this.countList.length,this.autopop=a.autopop,this._updateCount()},_updateCount:function(){var a=(this.counter<=0,--this.counter);this.label.text=this.countList[a],this.label.scale.set(1,1),this.label.tweener.clear().to({scaleX:1,scaleY:1,alpha:1},250).wait(500).to({scaleX:1.5,scaleY:1.5,alpha:0},250).call(function(){this.counter<=0?(this.flare("finish"),this.autopop&&this.app.popScene()):this._updateCount()},this)}})}(),tm.three=tm.three||{},function(){tm.global.THREE&&(tm.three.ThreeApp=tm.createClass({superClass:tm.app.BaseApp,canvas:null,background:null,_scenes:null,_sceneIndex:0,init:function(a){a instanceof HTMLCanvasElement?this.element=a:"string"==typeof a?this.element=document.querySelector(a):(this.element=document.createElement("canvas"),document.body.appendChild(this.element)),this.superInit(this.element),this.renderer=new THREE.WebGLRenderer({canvas:this.element,clearColor:2236962,clearAlpha:1}),this.renderer.setSize(this.element.width,this.element.height),this._scenes=[tm.three.Scene()]},resize:function(a,b){return this.width=a,this.height=b,this.renderer.setSize(this.width,this.height),this},resizeWindow:function(){return this.width=innerWidth,this.height=innerHeight,this.renderer.setSize(this.width,this.height),this},fitWindow:function(a){var b=function(){a=void 0===a?!0:a;var b=this.element,c=b.style;c.position="absolute",c.left="0px",c.top="0px";var d=b.width/window.innerWidth,e=b.height/window.innerHeight,f=b.height/b.width;d>e?(c.width=innerWidth+"px",c.height=innerWidth*f+"px"):(c.width=innerHeight/f+"px",c.height=innerHeight+"px")}.bind(this);b(),a&&window.addEventListener("resize",b,!1),this.mouse._mousemove=this.mouse._mousemoveScale,this.touch._touchmove=this.touch._touchmoveScale},_draw:function(){for(var a=0,b=this._scenes.length;b>a;++a)this.renderer.render(this.currentScene,this.currentScene.camera)}}),tm.three.ThreeApp.prototype.accessor("width",{get:function(){return this.element.width},set:function(a){this.element.width=a}}),tm.three.ThreeApp.prototype.accessor("height",{get:function(){return this.element.height},set:function(a){this.element.height=a}}))}(),function(){tm.global.THREE&&(tm.three.Element=tm.createClass({superClass:THREE.Object3D,init:function(){THREE.Object3D.call(this),tm.event.EventDispatcher.prototype.init.call(this)},update:function(){},_update:function(a){if(0!=this.awake){this.update(a);var b=tm.event.Event("enterframe");if(b.app=a,this.dispatchEvent(b),this.children.length>0)for(var c=this.children.slice(),d=0,e=c.length;e>d;++d){var f=c[d];f._update&&f._update(a)}}}}),tm.three.Element.prototype.$safe(tm.event.EventDispatcher.prototype))}(),function(){tm.global.THREE&&(tm.three.MeshElement=tm.createClass({superClass:THREE.Mesh,init:function(a,b){b=b||new THREE.MeshNormalMaterial,THREE.Mesh.call(this,a,b),tm.three.Element.prototype.init.call(this)}}),tm.three.MeshElement.prototype.$safe(tm.three.Element.prototype),tm.three.CubeElement=tm.createClass({superClass:tm.three.MeshElement,init:function(a,b,c){a=a||100,b=b||100,c=c||100;var d=new THREE.CubeGeometry(a,b,c),e=new THREE.MeshNormalMaterial;this.superInit(d,e)}}),tm.three.SphereElement=tm.createClass({superClass:tm.three.MeshElement,init:function(a,b,c){a=a||45,b=b||16,c=c||12;var d=new THREE.SphereGeometry(a,b,c),e=new THREE.MeshNormalMaterial;this.superInit(d,e)}}),tm.three.PlaneElement=tm.createClass({superClass:tm.three.MeshElement,init:function(a,b){var c=new THREE.PlaneGeometry(a,b),d=new THREE.MeshNormalMaterial;this.superInit(c,d)}}),tm.three.FloorElement=tm.createClass({superClass:tm.three.MeshElement,init:function(a,b){a=a||1e3,b=b||1e3;var c=new THREE.PlaneGeometry(a,b),d=new THREE.MeshBasicMaterial;this.superInit(c,d),this.rotation.x=-Math.PI/2,this._render()},_render:function(){var a=tm.graphics.Canvas();a.resize(128,128),a.clearColor("#444"),a.setFillStyle("white"),a.fillRect(0,0,64,64),a.fillRect(64,64,64,64);var b=new THREE.Texture(a.element);b.wrapS=b.wrapT=THREE.RepeatWrapping,b.repeat.set(10,10),b.needsUpdate=!0,this.material.map=b}}),tm.three.TextElement=tm.createClass({superClass:tm.three.MeshElement,init:function(a,b){var c=new THREE.TextGeometry(a,b),d=new THREE.MeshNormalMaterial;this.superInit(c,d)}}),tm.three.CanvasTexture=tm.createClass({superClass:THREE.Texture,canvas:null,init:function(){this.canvas=tm.graphics.Canvas(),THREE.Texture.call(this,this.canvas.element),this.needsUpdate=!0}}))}(),function(){tm.global.THREE&&(tm.three.Scene=tm.createClass({superClass:THREE.Scene,init:function(a,b){a=a||60,b=b||640/480,THREE.Scene.call(this),tm.three.Element.prototype.init.call(this),this.camera=new THREE.PerspectiveCamera(a,b,1,1e4),this.camera.position.y=100,this.camera.position.z=500,this.projector=new THREE.Projector},intersect:function(a){a=a||this.children;var b=this.app.pointing.x,c=this.app.pointing.y;b=b/this.app.width*2-1,c=2*-(c/this.app.height)+1;var d=new THREE.Vector3(b,c,.5);this.projector.unprojectVector(d,this.camera);var e=new THREE.Raycaster(this.camera.position,d.sub(this.camera.position).normalize());return e.intersectObjects(a)}}),tm.three.Scene.prototype.$safe(tm.three.Element.prototype))}(),tm.sound=tm.sound||{},function(){tm.sound.globalVolume=1}(),function(){if(tm.sound.Sound=tm.createClass({superClass:tm.event.EventDispatcher,element:null,loaded:!1,isPlay:!1,init:function(a){this.superInit(),this.element=new Audio,this.element.src=a,this.element.load(),this.element.setAttribute("preload","auto");var b=this;this.element.addEventListener("canplaythrough",function(){b.loaded=!0,b.fire(tm.event.Event("load"))}),this.element.addEventListener("ended",function(){b.isPlay=!1}),this.element.addEventListener("error",function(){console.warn(this.src+"の読み込みに失敗しました")}),this.element.volume=1,tm.isMobile&&(this.loaded=!0)},play:function(){return this.element.play(),this.isPlay=!0,this},stop:function(){return this.element.pause(),tm.isMobile||(this.element.currentTime=0),this.isPlay=!1,this},pause:function(){return this.element.pause(),this},clone:function(){return tm.sound.Sound(this.element.src)}}),tm.sound.Sound.prototype.accessor("volume",{get:function(){return this.element.volume},set:function(a){this.element.volume=a}}),void 0!==(new Audio).loop)tm.sound.Sound.prototype.accessor("loop",{get:function(){return this.element.loop},set:function(a){this.element.loop=a}});else{var a=function(){this.play()};tm.sound.Sound.prototype.accessor("loop",{get:function(){return this.element.loop},set:function(b){1!=this.element.loop&&1==b?this.element.addEventListener("ended",a,!1):1==this.element.loop&&0==b&&this.element.removeEventListener("ended",a,!1),this.element.loop=b}})}tm.sound.Sound.SUPPORT_EXT=function(){var a="",b=new Audio;return"maybe"==b.canPlayType("audio/wav")?a="wav":"maybe"==b.canPlayType("audio/mp3")?a="mp3":"maybe"==b.canPlayType("audio/ogg")&&(a="ogg"),a}()}(),tm.sound=tm.sound||{},function(){var a=null;tm.sound.WebAudio=tm.createClass({superClass:tm.event.EventDispatcher,loaded:!1,context:null,panner:null,volume:.8,playing:!1,_pannerEnabled:!0,init:function(b){this.superInit(),this.context=a;var c=typeof b;"string"===c?(this.loaded=!1,this._load(b)):"object"===c?(this._setup(),this.buffer=b,this.loaded=!0,this.dispatchEvent(tm.event.Event("load"))):(this._setup(),this.loaded=!1)},play:function(a){if(1!=this.playing){this.playing=!0,void 0===a&&(a=0),this.source.start(this.context.currentTime+a);var b=this,a=this.source.buffer.duration/this.source.playbackRate.value*1e3;return window.setTimeout(function(){var a=tm.event.Event("ended");b.fire(a)},a),this}},stop:function(a){if(0!=this.playing&&(this.playing=!1,void 0===a&&(a=0),0!=this.source.playbackState)){this.source.stop(this.context.currentTime+a);var b=this.buffer,c=this.volume,d=this.loop;return this.source=this.context.createBufferSource(),this.source.connect(this.gainNode),this.buffer=b,this.volume=c,this.loop=d,this}},pause:function(){return this.source.disconnect(),this},resume:function(){return this.source.connect(this.gainNode),this},clone:function(){var a=tm.sound.WebAudio(this.buffer);return a.volume=this.volume,a},setPosition:function(a,b,c){return this.panner.setPosition(a,b||0,c||0),this},setVelocity:function(a,b,c){return this.panner.setVelocity(a,b||0,c||0),this},setOrientation:function(a,b,c){return this.panner.setOrientation(a,b||0,c||0),this},setBuffer:function(a){return this.buffer=a,this},setLoop:function(a){return this.loop=a,this},setVolume:function(a){return this.volume=a,this},setPlaybackRate:function(a){return this.playbackRate=a,this},_load:function(b){if(!this.context)return void console.warn("本環境はWebAudio未対応です。("+b+")");var c=this;tm.util.Ajax.load({type:"GET",url:b,responseType:"arraybuffer",success:function(d){c.context.decodeAudioData(d,function(a){c._setup(),c.buffer=a,c.loaded=!0,c.dispatchEvent(tm.event.Event("load"))},function(){console.warn("音声ファイルのデコードに失敗しました。("+b+")"),c._setup(),c.buffer=a.createBuffer(1,1,22050),c.loaded=!0,c.dispatchEvent(tm.event.Event("load"))})}})},_setup:function(){this.source=this.context.createBufferSource(),this.gainNode=this.context.createGain(),this.analyser=this.context.createAnalyser(),this.source.connect(this.gainNode),this.gainNode.connect(this.analyser),this.analyser.connect(this.context.destination),"Firefox"===tm.BROWSER&&(this.pannerEnabled=!1);
-},tone:function(a,b){a=void 0!==a?a:200,b=void 0!==b?b:1;for(var c=1,d=44100,e=2,f=this.context.createBuffer(c,b*d,d),g=f.getChannelData(0),h=0;h<g.length;h++){var i=h/f.sampleRate,j=a*i*Math.PI;g[h]=Math.sin(j)*e}return this.buffer=f,this}}),tm.sound.WebAudio.prototype.accessor("buffer",{get:function(){return this.source.buffer},set:function(a){this.source.buffer=a}}),tm.sound.WebAudio.prototype.accessor("loop",{get:function(){return this.source.loop},set:function(a){this.source.loop=a}}),tm.sound.WebAudio.prototype.accessor("volume",{get:function(){return this.gainNode.gain.value},set:function(a){this.gainNode.gain.value=a}}),tm.sound.WebAudio.prototype.accessor("playbackRate",{get:function(){return this.source.playbackRate.value},set:function(a){this.source.playbackRate.value=a}}),tm.sound.WebAudio.prototype.accessor("pannerEnabled",{get:function(){return this._pannerEnabled},set:function(a){this.gainNode.disconnect(),this.panner.disconnect(),a?(this.gainNode.connect(this.panner),this.panner.connect(this.analyser)):this.gainNode.connect(this.analyser),this._pannerEnabled=a}}),tm.sound.WebAudio.prototype.accessor("loopStart",{get:function(){return this.source.loopStart},set:function(a){this.source.loopStart=a}}),tm.sound.WebAudio.prototype.accessor("loopEnd",{get:function(){return this.source.loopEnd},set:function(a){this.source.loopEnd=a}}),tm.sound.WebAudio.isAvailable=tm.global.AudioContext||tm.global.webkitAudioContext||tm.global.mozAudioContext?!0:!1,tm.sound.WebAudio.createContext=function(){tm.global.AudioContext?a=new AudioContext:tm.global.webkitAudioContext?a=new webkitAudioContext:tm.global.mozAudioContext&&(a=new mozAudioContext),tm.sound.WebAudio.context=a},tm.sound.WebAudio.unlock=function(){var b=a.createBuffer(1,1,22050),c=a.createBufferSource();c.buffer=b,c.connect(a.destination),c.start(0)},tm.sound.WebAudio.createContext()}(),function(){tm.sound.SoundManager={volume:.8,musicVolume:.8,muteFlag:!1,currentMusic:null,play:function(a,b,c,d){var e=tm.asset.Manager.get(a);if(null==e)return void console.warn("not found "+a);var f=e.clone();return f.volume=this.getVolume(),f.play(),f},stop:function(){},pause:function(){},fade:function(){},setVolume:function(a){this.volume=a},getVolume:function(){return this.isMute()?0:this.volume},mute:function(){return this.muteFlag=this.muteFlag===!0?!1:!0,this.currentMusic&&(this.currentMusic.volume=this.getVolumeMusic()),this},isMute:function(){return this.muteFlag},playMusic:function(a,b,c){this.currentMusic&&this.stopMusic(b);var d=tm.asset.Manager.get(a);if(null==d)return void console.warn("not found "+a);var e=d.clone();if(e.setLoop(!0),e.volume=this.getVolumeMusic(),e.play(),b>0){var f=32,g=0,h=b/f,i=this.getVolumeMusic();e.volume=0;var j=setInterval(function(){g+=1;var a=g/f;return e.volume=a*i,a>=1?(clearInterval(j),!1):!0},h)}else e.volume=this.getVolumeMusic();return this.currentMusic=e,this.currentMusic},stopMusic:function(a){if(this.currentMusic){var b=this.currentMusic;if(a>0){var c=32,d=0,e=a/c,f=this.getVolumeMusic();b.volume=0;var g=setInterval(function(){d+=1;var a=d/c;return b.volume=f*(1-a),a>=1?(b.stop(),clearInterval(g),!1):!0},e)}else this.currentMusic.stop()}},pauseMusic:function(){this.currentMusic&&this.currentMusic.pause()},resumeMusic:function(){this.currentMusic&&this.currentMusic.resume()},setVolumeMusic:function(a){return this.musicVolume=a,this.currentMusic&&(this.currentMusic.volume=a),this},getVolumeMusic:function(a){return this.isMute()?0:this.musicVolume}}}(),tm.social=tm.social||{},function(){tm.social.Twitter=tm.social.Twitter||{},tm.social.Twitter.API_URL="http://api.twitter.com/1";var a="http://twitter.com/intent";tm.social.Twitter.createURL=function(b){var c=[];for(var d in b)if("type"!=d){var e=encodeURIComponent(b[d]),f=d+"="+e;c.push(f)}var g="{baseURL}/{type}?{param}".format({baseURL:a,type:b.type,param:c.join("&")});return g}}(),function(){var a="http://api.twitter.com/1/{type}/{kind}.json";tm.social.Twitter.api=function(b,c,d,e){var f=a.format({type:b,kind:c}),g=tm.util.QueryString.stringify(d);tm.util.Ajax.loadJSONP(f+"?"+g,e)}}(),function(){var a="http://search.twitter.com/search.json";tm.social.Twitter.search=function(b,c){var d=a,e=tm.util.QueryString.stringify(b);tm.util.Ajax.loadJSONP(d+"?"+e,c)}}(),function(){tm.social.Twitter.getFollowers=function(a,b){tm.social.Twitter.api("statuses","followers",a,b)}}(),tm.social=tm.social||{},function(){tm.social.Nineleap=tm.social.Nineleap||{};var a="http://9leap.net/games/{id}/result?score={score}&result={result}";tm.social.Nineleap.DEBUG_GAME_ID="0",tm.social.Nineleap.createURL=function(b,c,d){return a.format({id:b,score:c,result:d})},tm.social.Nineleap.postRanking=function(a,b){if("r.jsgames.jp"==location.hostname){var c=location.pathname.match(/^\/games\/(\d+)/)[1];location.replace(this.createURL(c,a,b))}else console.warn("9leap に投稿されていません!")},tm.social.Nineleap.gotoLogin=function(){window.location.replace("http://9leap.net/api/login")},tm.social.Nineleap.isOn9leap=function(){return"r.jsgames.jp"===window.location.hostname},tm.social.Nineleap.getGameId=function(){return tm.social.Nineleap.isOn9leap()?window.location.pathname.match(/^\/games\/(\d+)/)[1]:tm.social.Nineleap.DEBUG_GAME_ID},tm.social.Nineleap.getMyData=function(a){tm.util.Ajax.loadJSONP(tm.social.Nineleap.createMyDataURL(),a)},tm.social.Nineleap.postMyData=function(a,b){tm.util.Ajax.load({type:"POST",url:tm.social.Nineleap.createMemoryURL("user_memory.json"),dataType:"json",data:"json="+JSON.stringify(a),contentType:"application/x-www-form-urlencoded;charset=UTF-8",async:!1,beforeSend:function(a){a.withCredentials=!0},success:b,error:function(a){console.error(a)}})},tm.social.Nineleap.createMemoryURL=function(){for(var a=["http://9leap.net/api/memory/",tm.social.Nineleap.getGameId()+"/"],b=0,c=arguments.length;c>b;b++)a.push(arguments[b]);return a.join("")},tm.social.Nineleap.createMyDataURL=function(){return tm.social.Nineleap.createMemoryURL("user_memory.json")},tm.social.Nineleap.createUserDataURL=function(a){return tm.social.Nineleap.createMemoryURL("u/",a+".json")},tm.social.Nineleap.createRecentDataURL=function(a){return a=a||30,tm.social.Nineleap.createMemoryURL("recent_memories.json","?max="+a)},tm.social.Nineleap.createFriendDataURL=function(a){return a=a||30,tm.social.Nineleap.createMemoryURL("friends_memories.json","?max="+a)},tm.social.Nineleap.createRankingDataURL=function(a){return a=a||30,tm.social.Nineleap.createMemoryURL("ranking_memories.json","?max="+a)}}(),tm.google=tm.google||{},function(){tm.google.Chart=tm.google.Chart||{};var a="https://chart.googleapis.com/chart?chst={type}&chld={data}",b="https://chart.googleapis.com/chart?chs={size}&cht={type}&chl={text}&chco={color}";tm.google.Chart.createDynamicIcons=function(b,c){return a.format({type:b,data:c})},tm.google.Chart.createQRCode=function(a,c,d){return c=encodeURIComponent(c),b.format({type:"qr",size:a,text:c})},tm.google.Chart.createTeX=function(){}}(),function(){tm.app.Element.prototype.getter("interaction",function(){console.assert(!1,"interaction は Object2d に統合されました. obj.setInteractive(true); とすればタッチ判定が有効になります.")});var a={display:["Sprite","Shape","CircleShape","TriangleShape","RectangleShape","RoundRectangleShape","StarShape","PolygonShape","HeartShape","TextShape","CanvasRenderer","BoundingRectRenderer","Label","MapSprite","CanvasElement","CanvasApp","AnimationSprite","SpriteSheet"],ui:["LabelButton","IconButton","GlossyButton","FlatButton","LoadingScene"]};for(var b in a){var c=a[b];c.each(function(a){tm.app[a]=tm[b][a]})}tm.asset.AssetManager=tm.asset.Manager,tm.util.getter("Script",function(){console.warn("`tm.util.Script` は `tm.asset.Script` になりました!")}),tm.ui.LoadingScene=function(a){return console.warn("`tm.ui.LoadingScene` は `tm.game.LoadingScene` になりました!"),tm.game.LoadingScene(a)},tm.scene=tm.scene||{},tm.scene.ManagerScene=tm.game.ManagerScene,tm.scene.LoadingScene=tm.game.LoadingScene,tm.scene.TitleScene=tm.game.TitleScene,tm.scene.ResultScene=tm.game.ResultScene,tm.scene.NumericalInputScene=tm.game.NumericalInputScene,tm.getter("scene",function(){return console.warn("tm.scene は tm.game に変更されました"),tm.game})}();var glb={},SCREEN_WIDTH=640,SCREEN_HEIGHT=960,GL_QUALITY=.5,ASSETS={bullets:"./asset/bullets.png",test:"./asset/test.png"};tm.main(function(){var a=tm.display.CanvasApp("#c2");a.fps=60,a.resize(SCREEN_WIDTH,SCREEN_HEIGHT).fitWindow().run(),a.glContext=glb.GLContext("#c3").resize(SCREEN_WIDTH*GL_QUALITY,SCREEN_HEIGHT*GL_QUALITY).fitWindow(),a.replaceScene(tm.game.LoadingScene({width:SCREEN_WIDTH,height:SCREEN_HEIGHT,assets:ASSETS,nextScene:glb.GameScene})),tm.asset.Script.loadStats().onload=function(){a.enableStats()}}),function(){tm.define("glb.Bullets",{superClass:"glb.Object3D",geometry:null,material:null,bullets:null,init:function(a){this.superInit(),this.geometry=glb.BulletsGeometry(),this.material=glb.BulletsMaterial(a),this.bullets=[]},initialize:function(a){this.geometry.initialize(a),this.material.initialize(a)},update:function(a){this.geometry.update();var b=this;this.bullets=this.bullets.filter(function(a){return a.position.add(a.velocity),a.position.x<SCREEN_WIDTH*-.2||.2*SCREEN_WIDTH<a.position.x||a.position.y<SCREEN_HEIGHT*-.2||.2*SCREEN_HEIGHT<a.position.y?(b.despawn(a.index),!1):!0})},render:function(a,b){var c=a.gl;this.geometry.vboNeedUpdate&&(this.geometry.rebind(c),this.geometry.vboNeedUpdate=!1),this.material.setProgram(a),this.material.setAttributes(a,this.geometry),this.material.setUniforms(a,this),this.material.setUniform(a,"time",this.geometry.time),this.material.setUniform(a,"vpMatrix",b),this.material.draw(a,this.geometry.COUNT)},spawn:function(a,b,c){var d=this.geometry.spawn(a,b,c);if(!(0>d))return this.bullets.push({position:a,velocity:b,index:d}),d},despawn:function(a){this.geometry.despawn(a)}})}(),function(){tm.define("glb.BulletsGeometry",{superClass:"glb.Geometry",COUNT:8192,bufferUsage:1,initialPositionData:null,velocityData:null,spawnTimeData:null,activeData:null,typeData:null,initialPosition:null,velocity:null,spawnTime:null,active:null,type:null,time:0,vboNeedUpdate:!1,init:function(){this.superInit(),this.initialPositionData=new Float32Array(Array.range(0,this.COUNT).map(function(){return[0,0]}).flatten()),this.velocityData=new Float32Array(Array.range(0,this.COUNT).map(function(){return[0,0]}).flatten()),this.spawnTimeData=new Float32Array(Array.range(0,this.COUNT).map(function(){return 0})),this.activeData=new Float32Array(Array.range(0,this.COUNT).map(function(){return 0})),this.typeData=new Float32Array(Array.range(0,this.COUNT).map(function(){return 0}))},initialize:function(a){var b=a.gl;this.initialPosition=this.createVbo(b,this.initialPositionData),this.velocity=this.createVbo(b,this.velocityData),this.spawnTime=this.createVbo(b,this.spawnTimeData),this.active=this.createVbo(b,this.activeData),this.type=this.createVbo(b,this.typeData)},rebind:function(a){this.transfarVbo(a,this.initialPosition,this.initialPositionData),this.transfarVbo(a,this.velocity,this.velocityData),this.transfarVbo(a,this.spawnTime,this.spawnTimeData),this.transfarVbo(a,this.active,this.activeData),this.transfarVbo(a,this.type,this.typeData)},spawn:function(b,c,d){var e=a(this.activeData,0);return 0>e?(console.warn("弾が足りない"),-1):(this.initialPositionData[2*e+0]=b.x,this.initialPositionData[2*e+1]=b.y,this.velocityData[2*e+0]=c.x,this.velocityData[2*e+1]=c.y,this.spawnTimeData[e]=this.time,this.activeData[e]=1,this.typeData[e]=d,this.vboNeedUpdate=!0,e)},despawn:function(a){a<this.activeData.length&&(this.activeData[a]=0,this.vboNeedUpdate=!0)},update:function(){this.time+=1e-4}});var a=function(a,b){return Array.prototype.indexOf.call(a,b)}}(),function(){tm.define("glb.BulletsMaterial",{superClass:"glb.Material",image:null,_texture:null,init:function(a){this.superInit(),this.image=a},initialize:function(a){this._createProgram(a),this.image&&this._createTexture(a)},_getVertexShaderSource:function(){return c},_getFragmentShaderSource:function(){return d},_getAttributeMetaData:function(){return a},_getUniformMetaData:function(){return b},_createTexture:function(a){this._texture=a.createTexture(this.image)},setAttributes:function(a,b){this.superSetAttributes(a,b);var c=a.gl;this.image?c.bindTexture(c.TEXTURE_2D,this._texture):c.bindTexture(c.TEXTURE_2D,null)},setUniforms:function(a,b){this.superSetUniforms(a,b),this.setUniform(a,"useTexture",this.image?1:0)},draw:function(a,b){var c=a.gl;c.drawArrays(c.POINTS,0,b)}});var a=[{name:"initialPosition",size:2},{name:"velocity",size:2},{name:"spawnTime",size:1},{name:"active",size:1},{name:"type",size:1}],b=[{name:"vpMatrix",type:"mat4"},{name:"time",type:"float"}],c=["attribute vec2 initialPosition;","attribute vec2 velocity;","attribute float spawnTime;","attribute float active;","attribute float type;","uniform mat4 vpMatrix;","uniform float time;","varying float vAge;","varying float vActive;","varying float vType;","varying float vAngle;","varying mat3 vUvMat;","mat3 translate(float x, float y) {","    return mat3(","        1.0, 0.0, 0.0,","        0.0, 1.0, 0.0,","          x,   y, 1.0","    );","}","mat3 rotate(float rad) {","    float s = sin(rad);","    float c = cos(rad);","    return mat3(","        c, s, 0,","       -s, c, 0,","        0, 0, 1","    );","}","void main(void) {","    vActive = active;","    vType = type;","    if (active < 0.5) {","        vAngle = 0.0;","        gl_Position = vec4(0.0);","        gl_PointSize = 0.0;","    } else {","        if (type < 8.0) {","            vAngle = atan(velocity.y, velocity.x);","        } else {","            vAngle = time * 3000.0;","        }","        vAge = time - spawnTime;","        vUvMat = translate(0.5, 0.5) * rotate(vAngle) * translate(-0.5, -0.5);","        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);","        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);","        float c = sin(vAge * 5500.0) * 4.0 - 2.0;","        gl_PointSize = (80.0 + c) * {0};".format(GL_QUALITY),"    }","}"].join("\n"),d=["precision mediump float;","uniform sampler2D texture;","varying float vAge;","varying float vActive;","varying float vType;","varying float vAngle;","varying mat3 vUvMat;","void main(void) {","    if (vActive < 0.5) discard;","    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);","    vec3 uv = vUvMat * buv;","    float c = sin(vAge * 6200.0) * 0.12;","    vec4 light = vec4(0.0, c, 0.0, 0.0);","    gl_FragColor = light + texture2D(texture, vec2((uv.x + vType) * 0.0625, uv.y));","}"].join("\n")}(),tm.define("glb.Hud",{superClass:"tm.display.CanvasElement",init:function(){this.superInit()}}),function(){tm.define("glb.Matrix3",{array:null,init:function(){this.array=mat3.create()},fromMat4:function(a){return mat3.fromMat4(this.array,a.array),this},clone:function(){var a=glb.Matrix3();return a.array=mat3.clone(this.array),a},identity:function(){return mat3.identity(this.array),this},transpose:function(){return mat3.transpose(this.array,this.array),this},invert:function(){return mat3.invert(this.array,this.array),this},adjoint:function(){return mat3.adjoint(this.array,this.array),this},determinant:function(){return mat3.determinant(this.array)},mul:function(a){return mat3.multiply(this.array,this.array,a.array),this},translate:function(a){return mat3.translate(this.array,this.array,a.array),this},scale:function(a){return mat3.scale(this.array,this.array,a.array),this},rotate:function(a,b){return mat3.rotate(this.array,this.array,a,b.array),this},fromTranslation:function(a){mat3.fromTranslation(this.array,a.array)},fromRotation:function(a){return mat3.fromRotation(this.array,a),this},fromScaling:function(a){return mat3.fromScaling(this.array,a.array),this},fromQuat:function(a){return mat3.fromQuat(this.array,a.array),this},normalFromMat4:function(a){return mat3.normalFromMat4(this.array,a.array),this}})}(),function(){tm.define("glb.Matrix4",{array:null,init:function(){this.array=mat4.create()},clone:function(){var a=glb.Matrix4();return a.array=mat4.clone(this.array),a},identity:function(){return mat4.identity(this.array),this},transpose:function(){return mat4.transpose(this.array,this.array),this},invert:function(){return mat4.invert(this.array,this.array),this},adjoint:function(){return mat4.adjoint(this.array,this.array),this},determinant:function(){return mat4.determinant(this.array)},mul:function(a){return mat4.multiply(this.array,this.array,a.array),this},translate:function(a){return mat4.translate(this.array,this.array,a.array),this},scale:function(a){return mat4.scale(this.array,this.array,a.array),this},rotate:function(a,b){return mat4.rotate(this.array,this.array,a,b.array),this},rotateX:function(a){return mat4.rotateX(this.array,this.array,a),this},rotateY:function(a){return mat4.rotateY(this.array,this.array,a),this},rotateZ:function(a){return mat4.rotateZ(this.array,this.array,a),this},fromTranslation:function(a){return mat4.fromTranslation(this.array,a.array),this},fromScaling:function(a){return mat4.fromScaling(this.array,a.array),this},fromRotation:function(a,b){return mat4.fromRotation(this.array,a,b.array),this},fromXRotation:function(a){return mat4.fromXRotation(this.array,a),this},fromYRotation:function(a){return mat4.fromYRotation(this.array,a),this},fromZRotation:function(a){return mat4.fromZRotation(this.array,a),this},fromRotationTranslation:function(a,b){return mat4.fromRotationTranslation(this.array,a.array,b.array),this},fromRotationTranslationScale:function(a,b,c){return mat4.fromRotationTranslationScale(this.array,a.array,b.array,c.array),this},fromRotationTranslationScaleOrigin:function(a,b,c,d){return mat4.fromRotationTranslationScaleOrigin(this.array,a.array,b.array,c.array,d.array),this},fromQuat:function(a){return mat4.fromQuat(this.array,a.array),this},frustum:function(a,b,c,d,e,f){return mat4.frustum(this.array,a,b,c,d,e,f),this},perspective:function(a,b,c,d){return mat4.perspective(this.array,a,b,c,d),this},perspectiveFromFieldOfView:function(a,b,c){return mat4.perspectiveFromFieldOfView(this.array,a,b,c),this},ortho:function(a,b,c,d,e,f){return mat4.ortho(this.array,a,b,c,d,e,f),this},lookAt:function(a,b,c){return mat4.lookAt(this.array,a.array,b.array,c.array),this}}),glb.Matrix4.mul=function(a,b){var c=glb.Matrix4();return mat4.mul(c.array,a.array,b.array),c}}(),function(){tm.define("glb.Quat",{array:null,init:function(a,b,c,d){this.array=quat.create(),this.set(a||0,b||0,c||0,d||1)},set:function(a,b,c,d){return quat.set(this.array,a,b,c,d),this},rotationTo:function(a,b){return quat.rotationTo(this.array,a.array,b.array),this},setAxes:function(a,b,c){return quat.setAxes(this.array,a.array,b.array,c.array),this},clone:function(){var a=glb.Quat();return quat.clone(a.array,this.array),a},identity:function(){return quat.identity(this.array),this},setAxisAngle:function(a,b){return quat.setAxisAngle(this.array,a.array,b),this},add:function(a){return quat.add(this.array,this.array,a.array),this},mul:function(a){return quat.multiply(this.array,this.array,a.array),this},rotateX:function(a){return quat.rotateX(this.array,this.array,a),this},rotateY:function(a){return quat.rotateY(this.array,this.array,a),this},rotateZ:function(a){return quat.rotateZ(this.array,this.array,a),this},calculateW:function(){return quat.calculateW(this.array,this.array),this},dot:function(a){return quat.dot(this.array,a.array)},slerp:function(a,b){return quat.slerp(this.array,this.array,a.array,b),this},invert:function(){return quat.invert(this.array,this.array),this},conjugate:function(){return quat.conjugate(this.array,this.array),this},length:function(){return quat.length(this.array)},squaredLength:function(){return quat.squaredLength(this.array)},normalize:function(){return quat.normalize(this.array,this.array),this},fromMat3:function(a){return quat.fromMat3(this.array,a.array),this}}),glb.Quat.slerp=function(a,b,c){var d=glb.Quat();return quat.slerp(d.array,a.array,b.array,c),d}}(),function(){tm.define("glb.Vector2",{init:function(a,b){this.array=vec2.create(),this.set(a||0,b||0)},clone:function(){return glb.Vector2(this.x,this.y)},set:function(a,b){return vec2.set(this.array,a,b),this},add:function(a){return vec2.add(this.array,this.array,a.array),this},sub:function(a){return vec2.sub(this.array,this.array,a.array),this},mul:function(a){return vec2.scale(this.array,this.array,a),this},length:function(){return vec2.length(this.array)},squaredLength:function(){return vec2.squaredLength(this.array)},negate:function(){return vec2.negate(this.array,this.array),this},inverse:function(){return vec2.inverse(this.array,this.array),this},normalize:function(){return vec2.normalize(this.array,this.array),this},dot:function(a){return vec2.dot(this.array,a.array)},cross:function(a){var b=glb.Vector3();return vec2.cross(b.array,this.array,a.array),b},fromAngleLength:function(a,b){return this.set(Math.cos(a)*b,Math.sin(a)*b)}}),glb.Vector2.prototype.accessor("x",{set:function(a){this.array[0]=a},get:function(){return this.array[0]}}),glb.Vector2.prototype.accessor("y",{set:function(a){this.array[1]=a},get:function(){return this.array[1]}}),glb.Vector2.distance=function(a,b){return vec2.distance(a.array,b.array)},glb.Vector2.squaredDistance=function(a,b){return vec2.squaredDistance(a.array,b.array)}}(),function(){tm.define("glb.Vector3",{array:null,init:function(a,b,c){this.array=vec3.create(),this.set(a||0,b||0,c||0)},set:function(a,b,c){return vec3.set(this.array,a,b,c),this},clone:function(){return glb.Vector3(this.x,this.y,this.z)},add:function(a){return vec3.add(this.array,this.array,a.array),this},sub:function(a){return vec3.sub(this.array,this.array,a.array),this},mul:function(a){return vec3.scale(this.array,a),this},length:function(){return vec3.length(this.array)},squaredLength:function(){return vec3.squaredLength(this.array)},negate:function(){return vec3.negate(this.array,this.array),this},inverse:function(){return vec3.inverse(this.array,this.array),this},normalize:function(){return vec3.normalize(this.array,this.array),this},dot:function(a){return vec3.dot(this.array,a.array)},cross:function(a){var b=glb.Vector3();return vec3.create(b.array,this.array,a.array),b},transformMat4:function(a){return vec3.transformMat4(this.array,this.array,a.array),this},transformMat3:function(a){return vec3.transformMat3(this.array,this.array,a.array),this},transformQuat:function(a){return vec3.transformQuat(this.array,this.array,a.array),this}}),glb.Vector3.prototype.accessor("x",{set:function(a){this.array[0]=a},get:function(){return this.array[0]}}),glb.Vector3.prototype.accessor("y",{set:function(a){this.array[1]=a},get:function(){return this.array[1]}}),glb.Vector3.prototype.accessor("z",{set:function(a){this.array[2]=a},get:function(){return this.array[2]}}),glb.Vector3.distance=function(a,b){return vec3.distance(a.array,b.array)},glb.Vector3.squaredDistance=function(a,b){return vec3.squaredDistance(a.array,b.array)},glb.Vector3.angle=function(a,b){return vec3.angle(a.array,b.array)},glb.Vector3.X=glb.Vector3(1,0,0),glb.Vector3.Y=glb.Vector3(0,1,0),glb.Vector3.Z=glb.Vector3(0,0,1)}(),function(){tm.define("glb.Camera",{position:null,target:null,up:null,vMatrix:null,pMatrix:null,vpMatrix:null,init:function(){this.position=glb.Vector3(0,0,.5*SCREEN_WIDTH),this.target=glb.Vector3(),this.up=glb.Vector3(0,1,0),this.vMatrix=glb.Matrix4(),this.pMatrix=this._setupProjectionMatrix(),this.vpMatrix=glb.Matrix4(),this.updateMatrix(),this._defineAccessors()},_setupProjectionMatrix:function(){return glb.Matrix4().perspective(45,SCREEN_WIDTH/SCREEN_HEIGHT,.1,1e3)},_defineAccessors:function(){this.accessor("x",{set:function(a){this.position.x=a},get:function(){return this.position.x}}),this.accessor("y",{set:function(a){this.position.y=a},get:function(){return this.position.y}}),this.accessor("z",{set:function(a){this.position.z=a},get:function(){return this.position.z}})},setPosition:function(a,b,c){this.position.set(a,b,c),this.updateMatrix()},calcVpMatrix:function(){return this.vpMatrix=glb.Matrix4.mul(this.pMatrix,this.vMatrix),this.vpMatrix},updateMatrix:function(){this.vMatrix.lookAt(this.position,this.target,this.up)}})}(),tm.define("glb.DirectionalLight",{superClass:"tm.app.Element",position:null,init:function(){this.superInit()}}),tm.define("glb.BoxGeometry",{superClass:"glb.Geometry",vertex:null,uv:null,index:null,init:function(a,b,c){this.superInit(),a=a||1,b=b||a,c=c||a,a*=.5,b*=.5,c*=.5,this.vertexData=new Float32Array([-a,b,-c,a,b,-c,-a,b,c,a,b,c,-a,-b,-c,a,-b,-c,-a,-b,c,a,-b,c]),this.uvData=new Float32Array([0,1,1,1,0,0,1,0,0,0,1,0,0,1,1,1]),this.indexData=new Int16Array([0,4,6,0,6,2,0,2,3,0,3,1,3,7,5,3,5,1,2,6,7,2,7,3,6,4,5,6,5,7,1,5,4,1,4,0])},initialize:function(a){var b=a.gl;this.vertex=this.createVbo(b,this.vertexData),this.uv=this.createVbo(b,this.uvData),this.index=this.createIbo(b,this.indexData)}}),tm.define("glb.Geometry",{init:function(){},initialize:function(a){},bufferUsage:0,createVbo:function(a,b){var c=([a.STATIC_DRAW,a.DYNAMIC_DRAW][this.bufferUsage],a.createBuffer());return a.bindBuffer(a.ARRAY_BUFFER,c),a.bufferData(a.ARRAY_BUFFER,b,a.STATIC_DRAW),a.bindBuffer(a.ARRAY_BUFFER,null),c},transfarVbo:function(a,b,c){[a.STATIC_DRAW,a.DYNAMIC_DRAW][this.bufferUsage];return a.bindBuffer(a.ARRAY_BUFFER,b),a.bufferData(a.ARRAY_BUFFER,c,a.STATIC_DRAW),a.bindBuffer(a.ARRAY_BUFFER,null),b},createIbo:function(a,b){var c=([a.STATIC_DRAW,a.DYNAMIC_DRAW][this.bufferUsage],a.createBuffer());return a.bindBuffer(a.ELEMENT_ARRAY_BUFFER,c),a.bufferData(a.ELEMENT_ARRAY_BUFFER,b,a.STATIC_DRAW),a.bindBuffer(a.ELEMENT_ARRAY_BUFFER,null),c}}),tm.define("glb.PlaneGeometry",{superClass:"glb.Geometry",vertex:null,uv:null,index:null,init:function(a,b,c){this.superInit(),a=a||32,b=b||1,c=c||1,this.vertexData=new Float32Array([.5*-a,.5*-a,0,.5*a,.5*-a,0,.5*-a,.5*a,0,.5*a,.5*a,0]),this.uvData=new Float32Array([0,1/c,1/b,1/c,0,0,1/b,0]),this.indexData=new Int16Array([0,1,2,1,3,2])},initialize:function(a){var b=a.gl;this.vertex=this.createVbo(b,this.vertexData),this.uv=this.createVbo(b,this.uvData),this.index=this.createIbo(b,this.indexData)}}),tm.define("glb.GLContext",{element:null,gl:null,init:function(a){this.element=window.document.querySelector(a),this.gl=this.element.getContext("webgl");var b=this.gl;b.clearColor(0,0,0,1),b.clearDepth(1),b.enable(b.DEPTH_TEST),b.depthFunc(b.LEQUAL),b.enable(b.CULL_FACE),b.enable(b.BLEND),b.blendFunc(b.SRC_ALPHA,b.ONE_MINUS_SRC_ALPHA),b.activeTexture(b.TEXTURE0)},resize:function(a,b){return this.element.width=a,this.element.height=b,this.gl.viewport(0,0,a,b),this},fitWindow:function(a){var b=function(){a=void 0===a?!0:a;var b=this.element,c=b.style;c.position="absolute",c.margin="auto",c.left="0px",c.top="0px",c.bottom="0px",c.right="0px";var d=b.width/window.innerWidth,e=b.height/window.innerHeight,f=b.height/b.width;d>e?(c.width=innerWidth.floor()+"px",c.height=(innerWidth*f).floor()+"px"):(c.width=(innerHeight/f).floor()+"px",c.height=innerHeight.floor()+"px")}.bind(this);return b(),a&&window.addEventListener("resize",b,!1),this},createTexture:function(a){var b=this.gl,c=b.createTexture();return b.bindTexture(b.TEXTURE_2D,c),b.texImage2D(b.TEXTURE_2D,0,b.RGBA,b.RGBA,b.UNSIGNED_BYTE,a),b.generateMipmap(b.TEXTURE_2D),b.bindTexture(b.TEXTURE_2D,null),c},attachScreen:function(a){var b=this.gl;return a?b.bindFramebuffer(b.FRAMEBUFFER,a.frameBuffer):b.bindFramebuffer(b.FRAMEBUFFER,null),this},render:function(a,b){var c=this.gl;c.clear(c.COLOR_BUFFER_BIT|c.DEPTH_BUFFER_BIT),this.renderObj(a,b.calcVpMatrix()),c.flush()},renderObj:function(a,b){a.isInitialized||(a.initialize&&a.initialize(this),a.isInitialized=!0),a.render&&a.render(this,b),a.children.forEach(function(a){this.renderObj(a,b)}.bind(this))}}),function(){tm.define("glb.BasicMaterial",{superClass:"glb.Material",color:null,image:null,_texture:null,init:function(a){this.superInit(),this.color=vec4.set(vec4.create(),1,1,1,1),this.image=a},initialize:function(a){this._createProgram(a),this.image&&this._createTexture(a)},_getVertexShaderSource:function(){return c},_getFragmentShaderSource:function(){return d},_getAttributeMetaData:function(){return a},_getUniformMetaData:function(){return b},_createTexture:function(a){this._texture=a.createTexture(this.image)},setAttributes:function(a,b){this.superSetAttributes(a,b);var c=a.gl;this.image?c.bindTexture(c.TEXTURE_2D,this._texture):c.bindTexture(c.TEXTURE_2D,null)},setUniforms:function(a,b){this.superSetUniforms(a,b),this.setUniform(a,"color",this.color),this.setUniform(a,"useTexture",this.image?1:0)},setRGBA:function(a,b,c,d){return this.color[0]=a,this.color[1]=b,this.color[2]=c,this.color[3]=d,this},setColor:function(a){return vec4.copy(this.color,a),this},draw:function(a,b){var c=a.gl;c.drawElements(c.TRIANGLES,b,c.UNSIGNED_SHORT,0)}});var a=[{name:"vertex",size:3},{name:"uv",size:2}],b=[{name:"mMatrix",type:"mat4"},{name:"vpMatrix",type:"mat4"},{name:"texture",type:"texture"},{name:"uvTranslate",type:"vec2"},{name:"color",type:"vec4"},{name:"useTexture",type:"int"}],c=["attribute vec3 vertex;","attribute vec2 uv;","uniform mat4 mMatrix;","uniform mat4 vpMatrix;","uniform vec4 color;","varying vec2 vUv;","varying vec4 vColor;","void main(void) {","    vUv = uv;","    vColor = color;","    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);","}"].join("\n"),d=["precision mediump float;","uniform sampler2D texture;","uniform vec2 uvTranslate;","uniform int useTexture;","varying vec2 vUv;","varying vec4 vColor;","void main(void) {","    if (bool(useTexture)) {","        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);","    } else {","        gl_FragColor = vColor;","    }","}"].join("\n")}(),function(){tm.define("glb.Material",{program:null,attributes:null,uniforms:null,init:function(){},initialize:function(a){this._createProgram(a)},_getVertexShaderSource:function(){return c},_getFragmentShaderSource:function(){return d},_getAttributeMetaData:function(){return a},_getUniformMetaData:function(){return b},_createProgram:function(a){var b=a.gl,c=this._createShader(b,b.VERTEX_SHADER,this._getVertexShaderSource()),d=this._createShader(b,b.FRAGMENT_SHADER,this._getFragmentShaderSource());if(this.program=b.createProgram(),b.attachShader(this.program,c),b.attachShader(this.program,d),b.linkProgram(this.program),!b.getProgramParameter(this.program,b.LINK_STATUS))throw new Error(b.getProgramInfoLog(this.program));return this.attributes=this._getAttributeMetaData().reduce(function(a,c){return a[c.name]={name:c.name,size:c.size,location:b.getAttribLocation(this.program,c.name)},a}.bind(this),{}),this.uniforms=this._getUniformMetaData().reduce(function(a,c){return a[c.name]={name:c.name,type:c.type,location:b.getUniformLocation(this.program,c.name)},a}.bind(this),{}),this},_createShader:function(a,b,c){var d=a.createShader(b);return a.shaderSource(d,c),a.compileShader(d),a.getShaderParameter(d,a.COMPILE_STATUS)?d:void console.error(a.getShaderInfoLog(d))},setProgram:function(a){var b=a.gl;b.useProgram(this.program)},setAttributes:function(a,b){var c=a.gl,d=this.attributes;Object.keys(this.attributes).forEach(function(a){var e=d[a];b[a]&&(c.bindBuffer(c.ARRAY_BUFFER,b[a]),c.enableVertexAttribArray(e.location),c.vertexAttribPointer(e.location,e.size,c.FLOAT,!1,0,0))})},setUniforms:function(a,b){var c=(a.gl,this),d=this.uniforms;Object.keys(this.uniforms).forEach(function(e){d[e];b[e]&&c.setUniform(a,e,b[e])})},setUniform:function(a,b,c){var d=a.gl,e=this.uniforms[b];if(c.array&&(c=c.array),e)switch(e.type){case"float":d.uniform1f(e.location,c);break;case"int":d.uniform1i(e.location,c);break;case"vec2":d.uniform2fv(e.location,c);break;case"vec3":d.uniform3fv(e.location,c);break;case"vec4":d.uniform4fv(e.location,c);break;case"mat3":d.uniformMatrix3fv(e.location,!1,c);break;case"mat4":d.uniformMatrix4fv(e.location,!1,c)}},draw:function(a,b){}}),glb.Material.prototype.superSetAttributes=glb.Material.prototype.setAttributes,glb.Material.prototype.superSetUniforms=glb.Material.prototype.setUniforms;var a=[],b=[],c=["void main(void) {","    gl_Position = vec4(1.0);","}"].join("\n"),d=["precision mediump float;","void main(void) {","    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);","}"].join("\n");
-}(),function(){tm.define("glb.Mesh",{superClass:"glb.Object3D",mMatrix:null,vpMatrix:null,uvTranslate:null,position:null,rotation:null,scale:null,geometry:null,material:null,init:function(a,b){this.superInit(),this.mMatrix=glb.Matrix4(),this.uvTranslate=glb.Vector2(),this.position=glb.Vector3(),this.rotation=glb.Quat(),this.scale=glb.Vector3(1,1,1),this.geometry=a,this.material=b,this.updateMatrix(),this._defineAccessors()},setGeometry:function(a){return this.geometry=a,this},getMaterial:function(a){return this.material=a,this},_defineAccessors:function(){this.accessor("x",{set:function(a){this.position.x=a},get:function(){return this.position.x}}),this.accessor("y",{set:function(a){this.position.y=a},get:function(){return this.position.y}}),this.accessor("z",{set:function(a){this.position.z=a},get:function(){return this.position.z}}),this.accessor("scaleX",{set:function(a){this.scale.x=a},get:function(){return this.scale.x}}),this.accessor("scaleY",{set:function(a){this.scale.y=a},get:function(){return this.scale.y}}),this.accessor("scaleZ",{set:function(a){this.scale.z=a},get:function(){return this.scale.z}})},initialize:function(a){this.geometry.initialize(a),this.material.initialize(a)},updateMatrix:function(){return this.mMatrix.fromRotationTranslationScale(this.rotation,this.position,this.scale),this},render:function(a,b){var c=a.gl;this.updateMatrix(),this.material.setProgram(a),this.material.setAttributes(a,this.geometry),c.bindBuffer(c.ELEMENT_ARRAY_BUFFER,this.geometry.index),this.material.setUniforms(a,this),this.material.setUniform(a,"vpMatrix",b),this.material.draw(a,this.geometry.indexData.length)},setPosition:function(a,b,c){return this.position.set(a,b,c),this},setScale:function(a,b,c){return 1===arguments.length&&(b=a,c=a),this.scale.set(a,b,c),this},setRotationX:function(a){return this.rotation.setAxisAngle(glb.Vector3.X,a),this},setRotationY:function(a){return this.rotation.setAxisAngle(glb.Vector3.Y,a),this},setRotationZ:function(a){return this.rotation.setAxisAngle(glb.Vector3.Z,a),this},translate:function(a,b,c){return this.position[0]+=a,this.position[1]+=b,this.position[2]+=c,this},scale:function(a,b,c){return 1===arguments.length&&(b=a,c=a),this.scale[0]*=a,this.scale[1]*=b,this.scale[2]*=c,this},rotateX:function(a){return this.rotation.rotateX(a),this},rotateY:function(a){return this.rotation.rotateY(a),this},rotateZ:function(a){return this.rotation.rotateZ(a),this}})}(),tm.define("glb.Object3D",{superClass:"tm.app.Element",init:function(){this.superInit()},initialize:function(a){},update:function(a){},draw:function(a,b){}}),tm.define("glb.OrthoCamera",{superClass:"glb.Camera",init:function(){this.superInit()},_setupProjectionMatrix:function(){return glb.Matrix4().ortho(SCREEN_WIDTH*-.5,.5*SCREEN_WIDTH,SCREEN_HEIGHT*-.5,.5*SCREEN_HEIGHT,.1,1e3)}}),tm.define("glb.Scene",{superClass:"glb.Object3D",init:function(){this.superInit()}}),tm.define("glb.Screen",{depthRenderBuffer:null,frameBuffer:null,texture:null,init:function(a,b){this.width=a||512,this.height=b||512},initialize:function(a){var b=a.gl;return this.frameBuffer=b.createFramebuffer(),b.bindFramebuffer(b.FRAMEBUFFER,this.frameBuffer),this.depthRenderBuffer=b.createRenderbuffer(),b.bindRenderbuffer(b.RENDERBUFFER,this.depthRenderBuffer),b.renderbufferStorage(b.RENDERBUFFER,b.DEPTH_COMPONENT16,this.width,this.height),b.framebufferRenderbuffer(b.FRAMEBUFFER,b.DEPTH_ATTACHMENT,b.RENDERBUFFER,this.depthRenderBuffer),this.texture=b.createTexture(),b.bindTexture(b.TEXTURE_2D,this.texture),b.texImage2D(b.TEXTURE_2D,0,b.RGBA,this.width,this.height,0,b.RGBA,b.UNSIGNED_BYTE,null),b.texParameter(b.TEXTURE_2D,b.TEXTURE_MAG_FILTER,b.LINEAR),b.texParameter(b.TEXTURE_2D,b.TEXTURE_MIN_FILTER,b.LINEAR),b.frameBufferTexture2D(b.FRAMEBUFFER,b.COLOR_ATTACHMENT0,b.TEXTURE_2D,this.texture,0),b.bindTexture(b.TEXTURE_2D,null),b.bindRenderbuffer(b.RENDERBUFFER,null),b.bindFramebuffer(b.FRAMEBUFFER,null),this}}),tm.define("glb.GameScene",{superClass:"tm.app.Scene",init:function(){this.superInit(),this.fromJSON({children:{hud:{type:"glb.Hud",x:0,y:0}}}),this._renderable=!0,this.glContext=null,this.camera=glb.Camera(),this.on("enter",function(a){a.app.background="transparent",this.glContext=a.app.glContext});var a=glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);this.on("enterframe",function(b){var c=b.app.frame;if(c%1===0){var d=2;Array.range(0,d).forEach(function(e){var f=2*Math.PI*e/d+.1*b.app.frame,g=1.5;a.spawn(glb.Vector2().fromAngleLength(.02*c,60),glb.Vector2().fromAngleLength(f,g),0),a.spawn(glb.Vector2().fromAngleLength(.02*c+Math.PI,60),glb.Vector2().fromAngleLength(f,g),4),f=2*Math.PI*e/d-.1*b.app.frame,g=1.2,a.spawn(glb.Vector2().fromAngleLength(c*-.02+.5*Math.PI,40),glb.Vector2().fromAngleLength(f,g),8),a.spawn(glb.Vector2().fromAngleLength(c*-.02+1.5*Math.PI,40),glb.Vector2().fromAngleLength(f,g),10)})}}),tm.display.Label("bullet count = 0",40).setFillStyle("darkgreen").setPosition(200,30).addChildTo(this).on("enterframe",function(){this.text="bullet count = "+a.bullets.length})},draw:function(){this.glContext.render(this,this.camera)}});
+/**
+ * @fileoverview gl-matrix - High performance matrix and vector operations
+ * @author Brandon Jones
+ * @author Colin MacKenzie IV
+ * @version 2.3.0
+ */
+
+/* Copyright (c) 2015, Brandon Jones, Colin MacKenzie IV.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE. */
+
+!function(t,n){if("object"==typeof exports&&"object"==typeof module)module.exports=n();else if("function"==typeof define&&define.amd)define(n);else{var r=n();for(var a in r)("object"==typeof exports?exports:t)[a]=r[a]}}(this,function(){return function(t){function n(a){if(r[a])return r[a].exports;var e=r[a]={exports:{},id:a,loaded:!1};return t[a].call(e.exports,e,e.exports,n),e.loaded=!0,e.exports}var r={};return n.m=t,n.c=r,n.p="",n(0)}([function(t,n,r){n.glMatrix=r(1),n.mat2=r(2),n.mat2d=r(3),n.mat3=r(4),n.mat4=r(5),n.quat=r(6),n.vec2=r(9),n.vec3=r(7),n.vec4=r(8)},function(t,n){var r={};r.EPSILON=1e-6,r.ARRAY_TYPE="undefined"!=typeof Float32Array?Float32Array:Array,r.RANDOM=Math.random,r.setMatrixArrayType=function(t){GLMAT_ARRAY_TYPE=t};var a=Math.PI/180;r.toRadian=function(t){return t*a},t.exports=r},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(4);return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t},e.clone=function(t){var n=new a.ARRAY_TYPE(4);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n[3]=t[3],n},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t},e.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t},e.transpose=function(t,n){if(t===n){var r=n[1];t[1]=n[2],t[2]=r}else t[0]=n[0],t[1]=n[2],t[2]=n[1],t[3]=n[3];return t},e.invert=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=r*u-e*a;return o?(o=1/o,t[0]=u*o,t[1]=-a*o,t[2]=-e*o,t[3]=r*o,t):null},e.adjoint=function(t,n){var r=n[0];return t[0]=n[3],t[1]=-n[1],t[2]=-n[2],t[3]=r,t},e.determinant=function(t){return t[0]*t[3]-t[2]*t[1]},e.multiply=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=r[0],c=r[1],f=r[2],s=r[3];return t[0]=a*i+u*c,t[1]=e*i+o*c,t[2]=a*f+u*s,t[3]=e*f+o*s,t},e.mul=e.multiply,e.rotate=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=Math.sin(r),c=Math.cos(r);return t[0]=a*c+u*i,t[1]=e*c+o*i,t[2]=a*-i+u*c,t[3]=e*-i+o*c,t},e.scale=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=r[0],c=r[1];return t[0]=a*i,t[1]=e*i,t[2]=u*c,t[3]=o*c,t},e.fromRotation=function(t,n){var r=Math.sin(n),a=Math.cos(n);return t[0]=a,t[1]=r,t[2]=-r,t[3]=a,t},e.fromScaling=function(t,n){return t[0]=n[0],t[1]=0,t[2]=0,t[3]=n[1],t},e.str=function(t){return"mat2("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"},e.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2))},e.LDU=function(t,n,r,a){return t[2]=a[2]/a[0],r[0]=a[0],r[1]=a[1],r[3]=a[3]-t[2]*r[1],[t,n,r]},t.exports=e},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(6);return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=0,t[5]=0,t},e.clone=function(t){var n=new a.ARRAY_TYPE(6);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n[3]=t[3],n[4]=t[4],n[5]=t[5],n},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t[4]=n[4],t[5]=n[5],t},e.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=0,t[5]=0,t},e.invert=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=n[4],i=n[5],c=r*u-a*e;return c?(c=1/c,t[0]=u*c,t[1]=-a*c,t[2]=-e*c,t[3]=r*c,t[4]=(e*i-u*o)*c,t[5]=(a*o-r*i)*c,t):null},e.determinant=function(t){return t[0]*t[3]-t[1]*t[2]},e.multiply=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=r[0],s=r[1],h=r[2],M=r[3],l=r[4],v=r[5];return t[0]=a*f+u*s,t[1]=e*f+o*s,t[2]=a*h+u*M,t[3]=e*h+o*M,t[4]=a*l+u*v+i,t[5]=e*l+o*v+c,t},e.mul=e.multiply,e.rotate=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=Math.sin(r),s=Math.cos(r);return t[0]=a*s+u*f,t[1]=e*s+o*f,t[2]=a*-f+u*s,t[3]=e*-f+o*s,t[4]=i,t[5]=c,t},e.scale=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=r[0],s=r[1];return t[0]=a*f,t[1]=e*f,t[2]=u*s,t[3]=o*s,t[4]=i,t[5]=c,t},e.translate=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=r[0],s=r[1];return t[0]=a,t[1]=e,t[2]=u,t[3]=o,t[4]=a*f+u*s+i,t[5]=e*f+o*s+c,t},e.fromRotation=function(t,n){var r=Math.sin(n),a=Math.cos(n);return t[0]=a,t[1]=r,t[2]=-r,t[3]=a,t[4]=0,t[5]=0,t},e.fromScaling=function(t,n){return t[0]=n[0],t[1]=0,t[2]=0,t[3]=n[1],t[4]=0,t[5]=0,t},e.fromTranslation=function(t,n){return t[0]=1,t[1]=0,t[2]=0,t[3]=1,t[4]=n[0],t[5]=n[1],t},e.str=function(t){return"mat2d("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+")"},e.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+1)},t.exports=e},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(9);return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=1,t[5]=0,t[6]=0,t[7]=0,t[8]=1,t},e.fromMat4=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[4],t[4]=n[5],t[5]=n[6],t[6]=n[8],t[7]=n[9],t[8]=n[10],t},e.clone=function(t){var n=new a.ARRAY_TYPE(9);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n[3]=t[3],n[4]=t[4],n[5]=t[5],n[6]=t[6],n[7]=t[7],n[8]=t[8],n},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t[4]=n[4],t[5]=n[5],t[6]=n[6],t[7]=n[7],t[8]=n[8],t},e.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=1,t[5]=0,t[6]=0,t[7]=0,t[8]=1,t},e.transpose=function(t,n){if(t===n){var r=n[1],a=n[2],e=n[5];t[1]=n[3],t[2]=n[6],t[3]=r,t[5]=n[7],t[6]=a,t[7]=e}else t[0]=n[0],t[1]=n[3],t[2]=n[6],t[3]=n[1],t[4]=n[4],t[5]=n[7],t[6]=n[2],t[7]=n[5],t[8]=n[8];return t},e.invert=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=n[4],i=n[5],c=n[6],f=n[7],s=n[8],h=s*o-i*f,M=-s*u+i*c,l=f*u-o*c,v=r*h+a*M+e*l;return v?(v=1/v,t[0]=h*v,t[1]=(-s*a+e*f)*v,t[2]=(i*a-e*o)*v,t[3]=M*v,t[4]=(s*r-e*c)*v,t[5]=(-i*r+e*u)*v,t[6]=l*v,t[7]=(-f*r+a*c)*v,t[8]=(o*r-a*u)*v,t):null},e.adjoint=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=n[4],i=n[5],c=n[6],f=n[7],s=n[8];return t[0]=o*s-i*f,t[1]=e*f-a*s,t[2]=a*i-e*o,t[3]=i*c-u*s,t[4]=r*s-e*c,t[5]=e*u-r*i,t[6]=u*f-o*c,t[7]=a*c-r*f,t[8]=r*o-a*u,t},e.determinant=function(t){var n=t[0],r=t[1],a=t[2],e=t[3],u=t[4],o=t[5],i=t[6],c=t[7],f=t[8];return n*(f*u-o*c)+r*(-f*e+o*i)+a*(c*e-u*i)},e.multiply=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=n[6],s=n[7],h=n[8],M=r[0],l=r[1],v=r[2],m=r[3],p=r[4],d=r[5],A=r[6],R=r[7],w=r[8];return t[0]=M*a+l*o+v*f,t[1]=M*e+l*i+v*s,t[2]=M*u+l*c+v*h,t[3]=m*a+p*o+d*f,t[4]=m*e+p*i+d*s,t[5]=m*u+p*c+d*h,t[6]=A*a+R*o+w*f,t[7]=A*e+R*i+w*s,t[8]=A*u+R*c+w*h,t},e.mul=e.multiply,e.translate=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=n[6],s=n[7],h=n[8],M=r[0],l=r[1];return t[0]=a,t[1]=e,t[2]=u,t[3]=o,t[4]=i,t[5]=c,t[6]=M*a+l*o+f,t[7]=M*e+l*i+s,t[8]=M*u+l*c+h,t},e.rotate=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=n[6],s=n[7],h=n[8],M=Math.sin(r),l=Math.cos(r);return t[0]=l*a+M*o,t[1]=l*e+M*i,t[2]=l*u+M*c,t[3]=l*o-M*a,t[4]=l*i-M*e,t[5]=l*c-M*u,t[6]=f,t[7]=s,t[8]=h,t},e.scale=function(t,n,r){var a=r[0],e=r[1];return t[0]=a*n[0],t[1]=a*n[1],t[2]=a*n[2],t[3]=e*n[3],t[4]=e*n[4],t[5]=e*n[5],t[6]=n[6],t[7]=n[7],t[8]=n[8],t},e.fromTranslation=function(t,n){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=1,t[5]=0,t[6]=n[0],t[7]=n[1],t[8]=1,t},e.fromRotation=function(t,n){var r=Math.sin(n),a=Math.cos(n);return t[0]=a,t[1]=r,t[2]=0,t[3]=-r,t[4]=a,t[5]=0,t[6]=0,t[7]=0,t[8]=1,t},e.fromScaling=function(t,n){return t[0]=n[0],t[1]=0,t[2]=0,t[3]=0,t[4]=n[1],t[5]=0,t[6]=0,t[7]=0,t[8]=1,t},e.fromMat2d=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=0,t[3]=n[2],t[4]=n[3],t[5]=0,t[6]=n[4],t[7]=n[5],t[8]=1,t},e.fromQuat=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=r+r,i=a+a,c=e+e,f=r*o,s=a*o,h=a*i,M=e*o,l=e*i,v=e*c,m=u*o,p=u*i,d=u*c;return t[0]=1-h-v,t[3]=s-d,t[6]=M+p,t[1]=s+d,t[4]=1-f-v,t[7]=l-m,t[2]=M-p,t[5]=l+m,t[8]=1-f-h,t},e.normalFromMat4=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=n[4],i=n[5],c=n[6],f=n[7],s=n[8],h=n[9],M=n[10],l=n[11],v=n[12],m=n[13],p=n[14],d=n[15],A=r*i-a*o,R=r*c-e*o,w=r*f-u*o,q=a*c-e*i,Y=a*f-u*i,g=e*f-u*c,y=s*m-h*v,x=s*p-M*v,P=s*d-l*v,E=h*p-M*m,T=h*d-l*m,b=M*d-l*p,D=A*b-R*T+w*E+q*P-Y*x+g*y;return D?(D=1/D,t[0]=(i*b-c*T+f*E)*D,t[1]=(c*P-o*b-f*x)*D,t[2]=(o*T-i*P+f*y)*D,t[3]=(e*T-a*b-u*E)*D,t[4]=(r*b-e*P+u*x)*D,t[5]=(a*P-r*T-u*y)*D,t[6]=(m*g-p*Y+d*q)*D,t[7]=(p*w-v*g-d*R)*D,t[8]=(v*Y-m*w+d*A)*D,t):null},e.str=function(t){return"mat3("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+", "+t[6]+", "+t[7]+", "+t[8]+")"},e.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+Math.pow(t[6],2)+Math.pow(t[7],2)+Math.pow(t[8],2))},t.exports=e},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(16);return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.clone=function(t){var n=new a.ARRAY_TYPE(16);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n[3]=t[3],n[4]=t[4],n[5]=t[5],n[6]=t[6],n[7]=t[7],n[8]=t[8],n[9]=t[9],n[10]=t[10],n[11]=t[11],n[12]=t[12],n[13]=t[13],n[14]=t[14],n[15]=t[15],n},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t[4]=n[4],t[5]=n[5],t[6]=n[6],t[7]=n[7],t[8]=n[8],t[9]=n[9],t[10]=n[10],t[11]=n[11],t[12]=n[12],t[13]=n[13],t[14]=n[14],t[15]=n[15],t},e.identity=function(t){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.transpose=function(t,n){if(t===n){var r=n[1],a=n[2],e=n[3],u=n[6],o=n[7],i=n[11];t[1]=n[4],t[2]=n[8],t[3]=n[12],t[4]=r,t[6]=n[9],t[7]=n[13],t[8]=a,t[9]=u,t[11]=n[14],t[12]=e,t[13]=o,t[14]=i}else t[0]=n[0],t[1]=n[4],t[2]=n[8],t[3]=n[12],t[4]=n[1],t[5]=n[5],t[6]=n[9],t[7]=n[13],t[8]=n[2],t[9]=n[6],t[10]=n[10],t[11]=n[14],t[12]=n[3],t[13]=n[7],t[14]=n[11],t[15]=n[15];return t},e.invert=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=n[4],i=n[5],c=n[6],f=n[7],s=n[8],h=n[9],M=n[10],l=n[11],v=n[12],m=n[13],p=n[14],d=n[15],A=r*i-a*o,R=r*c-e*o,w=r*f-u*o,q=a*c-e*i,Y=a*f-u*i,g=e*f-u*c,y=s*m-h*v,x=s*p-M*v,P=s*d-l*v,E=h*p-M*m,T=h*d-l*m,b=M*d-l*p,D=A*b-R*T+w*E+q*P-Y*x+g*y;return D?(D=1/D,t[0]=(i*b-c*T+f*E)*D,t[1]=(e*T-a*b-u*E)*D,t[2]=(m*g-p*Y+d*q)*D,t[3]=(M*Y-h*g-l*q)*D,t[4]=(c*P-o*b-f*x)*D,t[5]=(r*b-e*P+u*x)*D,t[6]=(p*w-v*g-d*R)*D,t[7]=(s*g-M*w+l*R)*D,t[8]=(o*T-i*P+f*y)*D,t[9]=(a*P-r*T-u*y)*D,t[10]=(v*Y-m*w+d*A)*D,t[11]=(h*w-s*Y-l*A)*D,t[12]=(i*x-o*E-c*y)*D,t[13]=(r*E-a*x+e*y)*D,t[14]=(m*R-v*q-p*A)*D,t[15]=(s*q-h*R+M*A)*D,t):null},e.adjoint=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=n[4],i=n[5],c=n[6],f=n[7],s=n[8],h=n[9],M=n[10],l=n[11],v=n[12],m=n[13],p=n[14],d=n[15];return t[0]=i*(M*d-l*p)-h*(c*d-f*p)+m*(c*l-f*M),t[1]=-(a*(M*d-l*p)-h*(e*d-u*p)+m*(e*l-u*M)),t[2]=a*(c*d-f*p)-i*(e*d-u*p)+m*(e*f-u*c),t[3]=-(a*(c*l-f*M)-i*(e*l-u*M)+h*(e*f-u*c)),t[4]=-(o*(M*d-l*p)-s*(c*d-f*p)+v*(c*l-f*M)),t[5]=r*(M*d-l*p)-s*(e*d-u*p)+v*(e*l-u*M),t[6]=-(r*(c*d-f*p)-o*(e*d-u*p)+v*(e*f-u*c)),t[7]=r*(c*l-f*M)-o*(e*l-u*M)+s*(e*f-u*c),t[8]=o*(h*d-l*m)-s*(i*d-f*m)+v*(i*l-f*h),t[9]=-(r*(h*d-l*m)-s*(a*d-u*m)+v*(a*l-u*h)),t[10]=r*(i*d-f*m)-o*(a*d-u*m)+v*(a*f-u*i),t[11]=-(r*(i*l-f*h)-o*(a*l-u*h)+s*(a*f-u*i)),t[12]=-(o*(h*p-M*m)-s*(i*p-c*m)+v*(i*M-c*h)),t[13]=r*(h*p-M*m)-s*(a*p-e*m)+v*(a*M-e*h),t[14]=-(r*(i*p-c*m)-o*(a*p-e*m)+v*(a*c-e*i)),t[15]=r*(i*M-c*h)-o*(a*M-e*h)+s*(a*c-e*i),t},e.determinant=function(t){var n=t[0],r=t[1],a=t[2],e=t[3],u=t[4],o=t[5],i=t[6],c=t[7],f=t[8],s=t[9],h=t[10],M=t[11],l=t[12],v=t[13],m=t[14],p=t[15],d=n*o-r*u,A=n*i-a*u,R=n*c-e*u,w=r*i-a*o,q=r*c-e*o,Y=a*c-e*i,g=f*v-s*l,y=f*m-h*l,x=f*p-M*l,P=s*m-h*v,E=s*p-M*v,T=h*p-M*m;return d*T-A*E+R*P+w*x-q*y+Y*g},e.multiply=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=n[6],s=n[7],h=n[8],M=n[9],l=n[10],v=n[11],m=n[12],p=n[13],d=n[14],A=n[15],R=r[0],w=r[1],q=r[2],Y=r[3];return t[0]=R*a+w*i+q*h+Y*m,t[1]=R*e+w*c+q*M+Y*p,t[2]=R*u+w*f+q*l+Y*d,t[3]=R*o+w*s+q*v+Y*A,R=r[4],w=r[5],q=r[6],Y=r[7],t[4]=R*a+w*i+q*h+Y*m,t[5]=R*e+w*c+q*M+Y*p,t[6]=R*u+w*f+q*l+Y*d,t[7]=R*o+w*s+q*v+Y*A,R=r[8],w=r[9],q=r[10],Y=r[11],t[8]=R*a+w*i+q*h+Y*m,t[9]=R*e+w*c+q*M+Y*p,t[10]=R*u+w*f+q*l+Y*d,t[11]=R*o+w*s+q*v+Y*A,R=r[12],w=r[13],q=r[14],Y=r[15],t[12]=R*a+w*i+q*h+Y*m,t[13]=R*e+w*c+q*M+Y*p,t[14]=R*u+w*f+q*l+Y*d,t[15]=R*o+w*s+q*v+Y*A,t},e.mul=e.multiply,e.translate=function(t,n,r){var a,e,u,o,i,c,f,s,h,M,l,v,m=r[0],p=r[1],d=r[2];return n===t?(t[12]=n[0]*m+n[4]*p+n[8]*d+n[12],t[13]=n[1]*m+n[5]*p+n[9]*d+n[13],t[14]=n[2]*m+n[6]*p+n[10]*d+n[14],t[15]=n[3]*m+n[7]*p+n[11]*d+n[15]):(a=n[0],e=n[1],u=n[2],o=n[3],i=n[4],c=n[5],f=n[6],s=n[7],h=n[8],M=n[9],l=n[10],v=n[11],t[0]=a,t[1]=e,t[2]=u,t[3]=o,t[4]=i,t[5]=c,t[6]=f,t[7]=s,t[8]=h,t[9]=M,t[10]=l,t[11]=v,t[12]=a*m+i*p+h*d+n[12],t[13]=e*m+c*p+M*d+n[13],t[14]=u*m+f*p+l*d+n[14],t[15]=o*m+s*p+v*d+n[15]),t},e.scale=function(t,n,r){var a=r[0],e=r[1],u=r[2];return t[0]=n[0]*a,t[1]=n[1]*a,t[2]=n[2]*a,t[3]=n[3]*a,t[4]=n[4]*e,t[5]=n[5]*e,t[6]=n[6]*e,t[7]=n[7]*e,t[8]=n[8]*u,t[9]=n[9]*u,t[10]=n[10]*u,t[11]=n[11]*u,t[12]=n[12],t[13]=n[13],t[14]=n[14],t[15]=n[15],t},e.rotate=function(t,n,r,e){var u,o,i,c,f,s,h,M,l,v,m,p,d,A,R,w,q,Y,g,y,x,P,E,T,b=e[0],D=e[1],L=e[2],_=Math.sqrt(b*b+D*D+L*L);return Math.abs(_)<a.EPSILON?null:(_=1/_,b*=_,D*=_,L*=_,u=Math.sin(r),o=Math.cos(r),i=1-o,c=n[0],f=n[1],s=n[2],h=n[3],M=n[4],l=n[5],v=n[6],m=n[7],p=n[8],d=n[9],A=n[10],R=n[11],w=b*b*i+o,q=D*b*i+L*u,Y=L*b*i-D*u,g=b*D*i-L*u,y=D*D*i+o,x=L*D*i+b*u,P=b*L*i+D*u,E=D*L*i-b*u,T=L*L*i+o,t[0]=c*w+M*q+p*Y,t[1]=f*w+l*q+d*Y,t[2]=s*w+v*q+A*Y,t[3]=h*w+m*q+R*Y,t[4]=c*g+M*y+p*x,t[5]=f*g+l*y+d*x,t[6]=s*g+v*y+A*x,t[7]=h*g+m*y+R*x,t[8]=c*P+M*E+p*T,t[9]=f*P+l*E+d*T,t[10]=s*P+v*E+A*T,t[11]=h*P+m*E+R*T,n!==t&&(t[12]=n[12],t[13]=n[13],t[14]=n[14],t[15]=n[15]),t)},e.rotateX=function(t,n,r){var a=Math.sin(r),e=Math.cos(r),u=n[4],o=n[5],i=n[6],c=n[7],f=n[8],s=n[9],h=n[10],M=n[11];return n!==t&&(t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t[12]=n[12],t[13]=n[13],t[14]=n[14],t[15]=n[15]),t[4]=u*e+f*a,t[5]=o*e+s*a,t[6]=i*e+h*a,t[7]=c*e+M*a,t[8]=f*e-u*a,t[9]=s*e-o*a,t[10]=h*e-i*a,t[11]=M*e-c*a,t},e.rotateY=function(t,n,r){var a=Math.sin(r),e=Math.cos(r),u=n[0],o=n[1],i=n[2],c=n[3],f=n[8],s=n[9],h=n[10],M=n[11];return n!==t&&(t[4]=n[4],t[5]=n[5],t[6]=n[6],t[7]=n[7],t[12]=n[12],t[13]=n[13],t[14]=n[14],t[15]=n[15]),t[0]=u*e-f*a,t[1]=o*e-s*a,t[2]=i*e-h*a,t[3]=c*e-M*a,t[8]=u*a+f*e,t[9]=o*a+s*e,t[10]=i*a+h*e,t[11]=c*a+M*e,t},e.rotateZ=function(t,n,r){var a=Math.sin(r),e=Math.cos(r),u=n[0],o=n[1],i=n[2],c=n[3],f=n[4],s=n[5],h=n[6],M=n[7];return n!==t&&(t[8]=n[8],t[9]=n[9],t[10]=n[10],t[11]=n[11],t[12]=n[12],t[13]=n[13],t[14]=n[14],t[15]=n[15]),t[0]=u*e+f*a,t[1]=o*e+s*a,t[2]=i*e+h*a,t[3]=c*e+M*a,t[4]=f*e-u*a,t[5]=s*e-o*a,t[6]=h*e-i*a,t[7]=M*e-c*a,t},e.fromTranslation=function(t,n){return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=n[0],t[13]=n[1],t[14]=n[2],t[15]=1,t},e.fromScaling=function(t,n){return t[0]=n[0],t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=n[1],t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=n[2],t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.fromRotation=function(t,n,r){var e,u,o,i=r[0],c=r[1],f=r[2],s=Math.sqrt(i*i+c*c+f*f);return Math.abs(s)<a.EPSILON?null:(s=1/s,i*=s,c*=s,f*=s,e=Math.sin(n),u=Math.cos(n),o=1-u,t[0]=i*i*o+u,t[1]=c*i*o+f*e,t[2]=f*i*o-c*e,t[3]=0,t[4]=i*c*o-f*e,t[5]=c*c*o+u,t[6]=f*c*o+i*e,t[7]=0,t[8]=i*f*o+c*e,t[9]=c*f*o-i*e,t[10]=f*f*o+u,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t)},e.fromXRotation=function(t,n){var r=Math.sin(n),a=Math.cos(n);return t[0]=1,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=a,t[6]=r,t[7]=0,t[8]=0,t[9]=-r,t[10]=a,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.fromYRotation=function(t,n){var r=Math.sin(n),a=Math.cos(n);return t[0]=a,t[1]=0,t[2]=-r,t[3]=0,t[4]=0,t[5]=1,t[6]=0,t[7]=0,t[8]=r,t[9]=0,t[10]=a,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.fromZRotation=function(t,n){var r=Math.sin(n),a=Math.cos(n);return t[0]=a,t[1]=r,t[2]=0,t[3]=0,t[4]=-r,t[5]=a,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=1,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.fromRotationTranslation=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=a+a,c=e+e,f=u+u,s=a*i,h=a*c,M=a*f,l=e*c,v=e*f,m=u*f,p=o*i,d=o*c,A=o*f;return t[0]=1-(l+m),t[1]=h+A,t[2]=M-d,t[3]=0,t[4]=h-A,t[5]=1-(s+m),t[6]=v+p,t[7]=0,t[8]=M+d,t[9]=v-p,t[10]=1-(s+l),t[11]=0,t[12]=r[0],t[13]=r[1],t[14]=r[2],t[15]=1,t},e.fromRotationTranslationScale=function(t,n,r,a){var e=n[0],u=n[1],o=n[2],i=n[3],c=e+e,f=u+u,s=o+o,h=e*c,M=e*f,l=e*s,v=u*f,m=u*s,p=o*s,d=i*c,A=i*f,R=i*s,w=a[0],q=a[1],Y=a[2];return t[0]=(1-(v+p))*w,t[1]=(M+R)*w,t[2]=(l-A)*w,t[3]=0,t[4]=(M-R)*q,t[5]=(1-(h+p))*q,t[6]=(m+d)*q,t[7]=0,t[8]=(l+A)*Y,t[9]=(m-d)*Y,t[10]=(1-(h+v))*Y,t[11]=0,t[12]=r[0],t[13]=r[1],t[14]=r[2],t[15]=1,t},e.fromRotationTranslationScaleOrigin=function(t,n,r,a,e){var u=n[0],o=n[1],i=n[2],c=n[3],f=u+u,s=o+o,h=i+i,M=u*f,l=u*s,v=u*h,m=o*s,p=o*h,d=i*h,A=c*f,R=c*s,w=c*h,q=a[0],Y=a[1],g=a[2],y=e[0],x=e[1],P=e[2];return t[0]=(1-(m+d))*q,t[1]=(l+w)*q,t[2]=(v-R)*q,t[3]=0,t[4]=(l-w)*Y,t[5]=(1-(M+d))*Y,t[6]=(p+A)*Y,t[7]=0,t[8]=(v+R)*g,t[9]=(p-A)*g,t[10]=(1-(M+m))*g,t[11]=0,t[12]=r[0]+y-(t[0]*y+t[4]*x+t[8]*P),t[13]=r[1]+x-(t[1]*y+t[5]*x+t[9]*P),t[14]=r[2]+P-(t[2]*y+t[6]*x+t[10]*P),t[15]=1,t},e.fromQuat=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=r+r,i=a+a,c=e+e,f=r*o,s=a*o,h=a*i,M=e*o,l=e*i,v=e*c,m=u*o,p=u*i,d=u*c;return t[0]=1-h-v,t[1]=s+d,t[2]=M-p,t[3]=0,t[4]=s-d,t[5]=1-f-v,t[6]=l+m,t[7]=0,t[8]=M+p,t[9]=l-m,t[10]=1-f-h,t[11]=0,t[12]=0,t[13]=0,t[14]=0,t[15]=1,t},e.frustum=function(t,n,r,a,e,u,o){var i=1/(r-n),c=1/(e-a),f=1/(u-o);return t[0]=2*u*i,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=2*u*c,t[6]=0,t[7]=0,t[8]=(r+n)*i,t[9]=(e+a)*c,t[10]=(o+u)*f,t[11]=-1,t[12]=0,t[13]=0,t[14]=o*u*2*f,t[15]=0,t},e.perspective=function(t,n,r,a,e){var u=1/Math.tan(n/2),o=1/(a-e);return t[0]=u/r,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=u,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=(e+a)*o,t[11]=-1,t[12]=0,t[13]=0,t[14]=2*e*a*o,t[15]=0,t},e.perspectiveFromFieldOfView=function(t,n,r,a){var e=Math.tan(n.upDegrees*Math.PI/180),u=Math.tan(n.downDegrees*Math.PI/180),o=Math.tan(n.leftDegrees*Math.PI/180),i=Math.tan(n.rightDegrees*Math.PI/180),c=2/(o+i),f=2/(e+u);return t[0]=c,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=f,t[6]=0,t[7]=0,t[8]=-((o-i)*c*.5),t[9]=(e-u)*f*.5,t[10]=a/(r-a),t[11]=-1,t[12]=0,t[13]=0,t[14]=a*r/(r-a),t[15]=0,t},e.ortho=function(t,n,r,a,e,u,o){var i=1/(n-r),c=1/(a-e),f=1/(u-o);return t[0]=-2*i,t[1]=0,t[2]=0,t[3]=0,t[4]=0,t[5]=-2*c,t[6]=0,t[7]=0,t[8]=0,t[9]=0,t[10]=2*f,t[11]=0,t[12]=(n+r)*i,t[13]=(e+a)*c,t[14]=(o+u)*f,t[15]=1,t},e.lookAt=function(t,n,r,u){var o,i,c,f,s,h,M,l,v,m,p=n[0],d=n[1],A=n[2],R=u[0],w=u[1],q=u[2],Y=r[0],g=r[1],y=r[2];return Math.abs(p-Y)<a.EPSILON&&Math.abs(d-g)<a.EPSILON&&Math.abs(A-y)<a.EPSILON?e.identity(t):(M=p-Y,l=d-g,v=A-y,m=1/Math.sqrt(M*M+l*l+v*v),M*=m,l*=m,v*=m,o=w*v-q*l,i=q*M-R*v,c=R*l-w*M,m=Math.sqrt(o*o+i*i+c*c),m?(m=1/m,o*=m,i*=m,c*=m):(o=0,i=0,c=0),f=l*c-v*i,s=v*o-M*c,h=M*i-l*o,m=Math.sqrt(f*f+s*s+h*h),m?(m=1/m,f*=m,s*=m,h*=m):(f=0,s=0,h=0),t[0]=o,t[1]=f,t[2]=M,t[3]=0,t[4]=i,t[5]=s,t[6]=l,t[7]=0,t[8]=c,t[9]=h,t[10]=v,t[11]=0,t[12]=-(o*p+i*d+c*A),t[13]=-(f*p+s*d+h*A),t[14]=-(M*p+l*d+v*A),t[15]=1,t)},e.str=function(t){return"mat4("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+", "+t[4]+", "+t[5]+", "+t[6]+", "+t[7]+", "+t[8]+", "+t[9]+", "+t[10]+", "+t[11]+", "+t[12]+", "+t[13]+", "+t[14]+", "+t[15]+")"},e.frob=function(t){return Math.sqrt(Math.pow(t[0],2)+Math.pow(t[1],2)+Math.pow(t[2],2)+Math.pow(t[3],2)+Math.pow(t[4],2)+Math.pow(t[5],2)+Math.pow(t[6],2)+Math.pow(t[7],2)+Math.pow(t[8],2)+Math.pow(t[9],2)+Math.pow(t[10],2)+Math.pow(t[11],2)+Math.pow(t[12],2)+Math.pow(t[13],2)+Math.pow(t[14],2)+Math.pow(t[15],2))},t.exports=e},function(t,n,r){var a=r(1),e=r(4),u=r(7),o=r(8),i={};i.create=function(){var t=new a.ARRAY_TYPE(4);return t[0]=0,t[1]=0,t[2]=0,t[3]=1,t},i.rotationTo=function(){var t=u.create(),n=u.fromValues(1,0,0),r=u.fromValues(0,1,0);return function(a,e,o){var c=u.dot(e,o);return-.999999>c?(u.cross(t,n,e),u.length(t)<1e-6&&u.cross(t,r,e),u.normalize(t,t),i.setAxisAngle(a,t,Math.PI),a):c>.999999?(a[0]=0,a[1]=0,a[2]=0,a[3]=1,a):(u.cross(t,e,o),a[0]=t[0],a[1]=t[1],a[2]=t[2],a[3]=1+c,i.normalize(a,a))}}(),i.setAxes=function(){var t=e.create();return function(n,r,a,e){return t[0]=a[0],t[3]=a[1],t[6]=a[2],t[1]=e[0],t[4]=e[1],t[7]=e[2],t[2]=-r[0],t[5]=-r[1],t[8]=-r[2],i.normalize(n,i.fromMat3(n,t))}}(),i.clone=o.clone,i.fromValues=o.fromValues,i.copy=o.copy,i.set=o.set,i.identity=function(t){return t[0]=0,t[1]=0,t[2]=0,t[3]=1,t},i.setAxisAngle=function(t,n,r){r=.5*r;var a=Math.sin(r);return t[0]=a*n[0],t[1]=a*n[1],t[2]=a*n[2],t[3]=Math.cos(r),t},i.add=o.add,i.multiply=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3],i=r[0],c=r[1],f=r[2],s=r[3];return t[0]=a*s+o*i+e*f-u*c,t[1]=e*s+o*c+u*i-a*f,t[2]=u*s+o*f+a*c-e*i,t[3]=o*s-a*i-e*c-u*f,t},i.mul=i.multiply,i.scale=o.scale,i.rotateX=function(t,n,r){r*=.5;var a=n[0],e=n[1],u=n[2],o=n[3],i=Math.sin(r),c=Math.cos(r);return t[0]=a*c+o*i,t[1]=e*c+u*i,t[2]=u*c-e*i,t[3]=o*c-a*i,t},i.rotateY=function(t,n,r){r*=.5;var a=n[0],e=n[1],u=n[2],o=n[3],i=Math.sin(r),c=Math.cos(r);return t[0]=a*c-u*i,t[1]=e*c+o*i,t[2]=u*c+a*i,t[3]=o*c-e*i,t},i.rotateZ=function(t,n,r){r*=.5;var a=n[0],e=n[1],u=n[2],o=n[3],i=Math.sin(r),c=Math.cos(r);return t[0]=a*c+e*i,t[1]=e*c-a*i,t[2]=u*c+o*i,t[3]=o*c-u*i,t},i.calculateW=function(t,n){var r=n[0],a=n[1],e=n[2];return t[0]=r,t[1]=a,t[2]=e,t[3]=Math.sqrt(Math.abs(1-r*r-a*a-e*e)),t},i.dot=o.dot,i.lerp=o.lerp,i.slerp=function(t,n,r,a){var e,u,o,i,c,f=n[0],s=n[1],h=n[2],M=n[3],l=r[0],v=r[1],m=r[2],p=r[3];return u=f*l+s*v+h*m+M*p,0>u&&(u=-u,l=-l,v=-v,m=-m,p=-p),1-u>1e-6?(e=Math.acos(u),o=Math.sin(e),i=Math.sin((1-a)*e)/o,c=Math.sin(a*e)/o):(i=1-a,c=a),t[0]=i*f+c*l,t[1]=i*s+c*v,t[2]=i*h+c*m,t[3]=i*M+c*p,t},i.sqlerp=function(){var t=i.create(),n=i.create();return function(r,a,e,u,o,c){return i.slerp(t,a,o,c),i.slerp(n,e,u,c),i.slerp(r,t,n,2*c*(1-c)),r}}(),i.invert=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=r*r+a*a+e*e+u*u,i=o?1/o:0;return t[0]=-r*i,t[1]=-a*i,t[2]=-e*i,t[3]=u*i,t},i.conjugate=function(t,n){return t[0]=-n[0],t[1]=-n[1],t[2]=-n[2],t[3]=n[3],t},i.length=o.length,i.len=i.length,i.squaredLength=o.squaredLength,i.sqrLen=i.squaredLength,i.normalize=o.normalize,i.fromMat3=function(t,n){var r,a=n[0]+n[4]+n[8];if(a>0)r=Math.sqrt(a+1),t[3]=.5*r,r=.5/r,t[0]=(n[5]-n[7])*r,t[1]=(n[6]-n[2])*r,t[2]=(n[1]-n[3])*r;else{var e=0;n[4]>n[0]&&(e=1),n[8]>n[3*e+e]&&(e=2);var u=(e+1)%3,o=(e+2)%3;r=Math.sqrt(n[3*e+e]-n[3*u+u]-n[3*o+o]+1),t[e]=.5*r,r=.5/r,t[3]=(n[3*u+o]-n[3*o+u])*r,t[u]=(n[3*u+e]+n[3*e+u])*r,t[o]=(n[3*o+e]+n[3*e+o])*r}return t},i.str=function(t){return"quat("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"},t.exports=i},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(3);return t[0]=0,t[1]=0,t[2]=0,t},e.clone=function(t){var n=new a.ARRAY_TYPE(3);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n},e.fromValues=function(t,n,r){var e=new a.ARRAY_TYPE(3);return e[0]=t,e[1]=n,e[2]=r,e},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t},e.set=function(t,n,r,a){return t[0]=n,t[1]=r,t[2]=a,t},e.add=function(t,n,r){return t[0]=n[0]+r[0],t[1]=n[1]+r[1],t[2]=n[2]+r[2],t},e.subtract=function(t,n,r){return t[0]=n[0]-r[0],t[1]=n[1]-r[1],t[2]=n[2]-r[2],t},e.sub=e.subtract,e.multiply=function(t,n,r){return t[0]=n[0]*r[0],t[1]=n[1]*r[1],t[2]=n[2]*r[2],t},e.mul=e.multiply,e.divide=function(t,n,r){return t[0]=n[0]/r[0],t[1]=n[1]/r[1],t[2]=n[2]/r[2],t},e.div=e.divide,e.min=function(t,n,r){return t[0]=Math.min(n[0],r[0]),t[1]=Math.min(n[1],r[1]),t[2]=Math.min(n[2],r[2]),t},e.max=function(t,n,r){return t[0]=Math.max(n[0],r[0]),t[1]=Math.max(n[1],r[1]),t[2]=Math.max(n[2],r[2]),t},e.scale=function(t,n,r){return t[0]=n[0]*r,t[1]=n[1]*r,t[2]=n[2]*r,t},e.scaleAndAdd=function(t,n,r,a){return t[0]=n[0]+r[0]*a,t[1]=n[1]+r[1]*a,t[2]=n[2]+r[2]*a,t},e.distance=function(t,n){var r=n[0]-t[0],a=n[1]-t[1],e=n[2]-t[2];return Math.sqrt(r*r+a*a+e*e)},e.dist=e.distance,e.squaredDistance=function(t,n){var r=n[0]-t[0],a=n[1]-t[1],e=n[2]-t[2];return r*r+a*a+e*e},e.sqrDist=e.squaredDistance,e.length=function(t){var n=t[0],r=t[1],a=t[2];return Math.sqrt(n*n+r*r+a*a)},e.len=e.length,e.squaredLength=function(t){var n=t[0],r=t[1],a=t[2];return n*n+r*r+a*a},e.sqrLen=e.squaredLength,e.negate=function(t,n){return t[0]=-n[0],t[1]=-n[1],t[2]=-n[2],t},e.inverse=function(t,n){return t[0]=1/n[0],t[1]=1/n[1],t[2]=1/n[2],t},e.normalize=function(t,n){var r=n[0],a=n[1],e=n[2],u=r*r+a*a+e*e;return u>0&&(u=1/Math.sqrt(u),t[0]=n[0]*u,t[1]=n[1]*u,t[2]=n[2]*u),t},e.dot=function(t,n){return t[0]*n[0]+t[1]*n[1]+t[2]*n[2]},e.cross=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=r[0],i=r[1],c=r[2];return t[0]=e*c-u*i,t[1]=u*o-a*c,t[2]=a*i-e*o,t},e.lerp=function(t,n,r,a){var e=n[0],u=n[1],o=n[2];return t[0]=e+a*(r[0]-e),t[1]=u+a*(r[1]-u),t[2]=o+a*(r[2]-o),t},e.hermite=function(t,n,r,a,e,u){var o=u*u,i=o*(2*u-3)+1,c=o*(u-2)+u,f=o*(u-1),s=o*(3-2*u);return t[0]=n[0]*i+r[0]*c+a[0]*f+e[0]*s,t[1]=n[1]*i+r[1]*c+a[1]*f+e[1]*s,t[2]=n[2]*i+r[2]*c+a[2]*f+e[2]*s,t},e.bezier=function(t,n,r,a,e,u){var o=1-u,i=o*o,c=u*u,f=i*o,s=3*u*i,h=3*c*o,M=c*u;return t[0]=n[0]*f+r[0]*s+a[0]*h+e[0]*M,t[1]=n[1]*f+r[1]*s+a[1]*h+e[1]*M,t[2]=n[2]*f+r[2]*s+a[2]*h+e[2]*M,t},e.random=function(t,n){n=n||1;var r=2*a.RANDOM()*Math.PI,e=2*a.RANDOM()-1,u=Math.sqrt(1-e*e)*n;return t[0]=Math.cos(r)*u,t[1]=Math.sin(r)*u,t[2]=e*n,t},e.transformMat4=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=r[3]*a+r[7]*e+r[11]*u+r[15];return o=o||1,t[0]=(r[0]*a+r[4]*e+r[8]*u+r[12])/o,t[1]=(r[1]*a+r[5]*e+r[9]*u+r[13])/o,t[2]=(r[2]*a+r[6]*e+r[10]*u+r[14])/o,t},e.transformMat3=function(t,n,r){var a=n[0],e=n[1],u=n[2];return t[0]=a*r[0]+e*r[3]+u*r[6],t[1]=a*r[1]+e*r[4]+u*r[7],t[2]=a*r[2]+e*r[5]+u*r[8],t},e.transformQuat=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=r[0],i=r[1],c=r[2],f=r[3],s=f*a+i*u-c*e,h=f*e+c*a-o*u,M=f*u+o*e-i*a,l=-o*a-i*e-c*u;return t[0]=s*f+l*-o+h*-c-M*-i,t[1]=h*f+l*-i+M*-o-s*-c,t[2]=M*f+l*-c+s*-i-h*-o,t},e.rotateX=function(t,n,r,a){var e=[],u=[];return e[0]=n[0]-r[0],e[1]=n[1]-r[1],e[2]=n[2]-r[2],u[0]=e[0],u[1]=e[1]*Math.cos(a)-e[2]*Math.sin(a),u[2]=e[1]*Math.sin(a)+e[2]*Math.cos(a),t[0]=u[0]+r[0],t[1]=u[1]+r[1],t[2]=u[2]+r[2],t},e.rotateY=function(t,n,r,a){var e=[],u=[];return e[0]=n[0]-r[0],e[1]=n[1]-r[1],e[2]=n[2]-r[2],u[0]=e[2]*Math.sin(a)+e[0]*Math.cos(a),u[1]=e[1],u[2]=e[2]*Math.cos(a)-e[0]*Math.sin(a),t[0]=u[0]+r[0],t[1]=u[1]+r[1],t[2]=u[2]+r[2],t},e.rotateZ=function(t,n,r,a){var e=[],u=[];return e[0]=n[0]-r[0],e[1]=n[1]-r[1],e[2]=n[2]-r[2],u[0]=e[0]*Math.cos(a)-e[1]*Math.sin(a),u[1]=e[0]*Math.sin(a)+e[1]*Math.cos(a),u[2]=e[2],t[0]=u[0]+r[0],t[1]=u[1]+r[1],t[2]=u[2]+r[2],t},e.forEach=function(){var t=e.create();return function(n,r,a,e,u,o){var i,c;for(r||(r=3),a||(a=0),c=e?Math.min(e*r+a,n.length):n.length,i=a;c>i;i+=r)t[0]=n[i],t[1]=n[i+1],t[2]=n[i+2],u(t,t,o),n[i]=t[0],n[i+1]=t[1],n[i+2]=t[2];return n}}(),e.angle=function(t,n){var r=e.fromValues(t[0],t[1],t[2]),a=e.fromValues(n[0],n[1],n[2]);e.normalize(r,r),e.normalize(a,a);var u=e.dot(r,a);return u>1?0:Math.acos(u)},e.str=function(t){return"vec3("+t[0]+", "+t[1]+", "+t[2]+")"},t.exports=e},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(4);return t[0]=0,t[1]=0,t[2]=0,t[3]=0,t},e.clone=function(t){var n=new a.ARRAY_TYPE(4);return n[0]=t[0],n[1]=t[1],n[2]=t[2],n[3]=t[3],n},e.fromValues=function(t,n,r,e){var u=new a.ARRAY_TYPE(4);return u[0]=t,u[1]=n,u[2]=r,u[3]=e,u},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t[2]=n[2],t[3]=n[3],t},e.set=function(t,n,r,a,e){return t[0]=n,t[1]=r,t[2]=a,t[3]=e,t},e.add=function(t,n,r){return t[0]=n[0]+r[0],t[1]=n[1]+r[1],t[2]=n[2]+r[2],t[3]=n[3]+r[3],t},e.subtract=function(t,n,r){return t[0]=n[0]-r[0],t[1]=n[1]-r[1],t[2]=n[2]-r[2],t[3]=n[3]-r[3],t},e.sub=e.subtract,e.multiply=function(t,n,r){return t[0]=n[0]*r[0],t[1]=n[1]*r[1],t[2]=n[2]*r[2],t[3]=n[3]*r[3],t},e.mul=e.multiply,e.divide=function(t,n,r){return t[0]=n[0]/r[0],t[1]=n[1]/r[1],t[2]=n[2]/r[2],t[3]=n[3]/r[3],t},e.div=e.divide,e.min=function(t,n,r){return t[0]=Math.min(n[0],r[0]),t[1]=Math.min(n[1],r[1]),t[2]=Math.min(n[2],r[2]),t[3]=Math.min(n[3],r[3]),t},e.max=function(t,n,r){return t[0]=Math.max(n[0],r[0]),t[1]=Math.max(n[1],r[1]),t[2]=Math.max(n[2],r[2]),t[3]=Math.max(n[3],r[3]),t},e.scale=function(t,n,r){return t[0]=n[0]*r,t[1]=n[1]*r,t[2]=n[2]*r,t[3]=n[3]*r,t},e.scaleAndAdd=function(t,n,r,a){return t[0]=n[0]+r[0]*a,t[1]=n[1]+r[1]*a,t[2]=n[2]+r[2]*a,t[3]=n[3]+r[3]*a,t},e.distance=function(t,n){var r=n[0]-t[0],a=n[1]-t[1],e=n[2]-t[2],u=n[3]-t[3];return Math.sqrt(r*r+a*a+e*e+u*u)},e.dist=e.distance,e.squaredDistance=function(t,n){var r=n[0]-t[0],a=n[1]-t[1],e=n[2]-t[2],u=n[3]-t[3];return r*r+a*a+e*e+u*u},e.sqrDist=e.squaredDistance,e.length=function(t){var n=t[0],r=t[1],a=t[2],e=t[3];return Math.sqrt(n*n+r*r+a*a+e*e)},e.len=e.length,e.squaredLength=function(t){var n=t[0],r=t[1],a=t[2],e=t[3];return n*n+r*r+a*a+e*e},e.sqrLen=e.squaredLength,e.negate=function(t,n){return t[0]=-n[0],t[1]=-n[1],t[2]=-n[2],t[3]=-n[3],t},e.inverse=function(t,n){return t[0]=1/n[0],t[1]=1/n[1],t[2]=1/n[2],t[3]=1/n[3],t},e.normalize=function(t,n){var r=n[0],a=n[1],e=n[2],u=n[3],o=r*r+a*a+e*e+u*u;return o>0&&(o=1/Math.sqrt(o),t[0]=r*o,t[1]=a*o,t[2]=e*o,t[3]=u*o),t},e.dot=function(t,n){return t[0]*n[0]+t[1]*n[1]+t[2]*n[2]+t[3]*n[3]},e.lerp=function(t,n,r,a){var e=n[0],u=n[1],o=n[2],i=n[3];return t[0]=e+a*(r[0]-e),t[1]=u+a*(r[1]-u),t[2]=o+a*(r[2]-o),t[3]=i+a*(r[3]-i),t},e.random=function(t,n){return n=n||1,t[0]=a.RANDOM(),t[1]=a.RANDOM(),t[2]=a.RANDOM(),t[3]=a.RANDOM(),e.normalize(t,t),e.scale(t,t,n),t},e.transformMat4=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=n[3];return t[0]=r[0]*a+r[4]*e+r[8]*u+r[12]*o,t[1]=r[1]*a+r[5]*e+r[9]*u+r[13]*o,t[2]=r[2]*a+r[6]*e+r[10]*u+r[14]*o,t[3]=r[3]*a+r[7]*e+r[11]*u+r[15]*o,t},e.transformQuat=function(t,n,r){var a=n[0],e=n[1],u=n[2],o=r[0],i=r[1],c=r[2],f=r[3],s=f*a+i*u-c*e,h=f*e+c*a-o*u,M=f*u+o*e-i*a,l=-o*a-i*e-c*u;return t[0]=s*f+l*-o+h*-c-M*-i,t[1]=h*f+l*-i+M*-o-s*-c,t[2]=M*f+l*-c+s*-i-h*-o,t[3]=n[3],t},e.forEach=function(){var t=e.create();return function(n,r,a,e,u,o){var i,c;for(r||(r=4),a||(a=0),c=e?Math.min(e*r+a,n.length):n.length,i=a;c>i;i+=r)t[0]=n[i],t[1]=n[i+1],t[2]=n[i+2],t[3]=n[i+3],u(t,t,o),n[i]=t[0],n[i+1]=t[1],n[i+2]=t[2],n[i+3]=t[3];return n}}(),e.str=function(t){return"vec4("+t[0]+", "+t[1]+", "+t[2]+", "+t[3]+")"},t.exports=e},function(t,n,r){var a=r(1),e={};e.create=function(){var t=new a.ARRAY_TYPE(2);return t[0]=0,t[1]=0,t},e.clone=function(t){var n=new a.ARRAY_TYPE(2);return n[0]=t[0],n[1]=t[1],n},e.fromValues=function(t,n){var r=new a.ARRAY_TYPE(2);return r[0]=t,r[1]=n,r},e.copy=function(t,n){return t[0]=n[0],t[1]=n[1],t},e.set=function(t,n,r){return t[0]=n,t[1]=r,t},e.add=function(t,n,r){return t[0]=n[0]+r[0],t[1]=n[1]+r[1],t},e.subtract=function(t,n,r){return t[0]=n[0]-r[0],t[1]=n[1]-r[1],t},e.sub=e.subtract,e.multiply=function(t,n,r){return t[0]=n[0]*r[0],t[1]=n[1]*r[1],t},e.mul=e.multiply,e.divide=function(t,n,r){return t[0]=n[0]/r[0],t[1]=n[1]/r[1],t},e.div=e.divide,e.min=function(t,n,r){return t[0]=Math.min(n[0],r[0]),t[1]=Math.min(n[1],r[1]),t},e.max=function(t,n,r){return t[0]=Math.max(n[0],r[0]),t[1]=Math.max(n[1],r[1]),t},e.scale=function(t,n,r){return t[0]=n[0]*r,t[1]=n[1]*r,t},e.scaleAndAdd=function(t,n,r,a){return t[0]=n[0]+r[0]*a,t[1]=n[1]+r[1]*a,t},e.distance=function(t,n){var r=n[0]-t[0],a=n[1]-t[1];return Math.sqrt(r*r+a*a)},e.dist=e.distance,e.squaredDistance=function(t,n){var r=n[0]-t[0],a=n[1]-t[1];return r*r+a*a},e.sqrDist=e.squaredDistance,e.length=function(t){var n=t[0],r=t[1];return Math.sqrt(n*n+r*r)},e.len=e.length,e.squaredLength=function(t){var n=t[0],r=t[1];return n*n+r*r},e.sqrLen=e.squaredLength,e.negate=function(t,n){return t[0]=-n[0],t[1]=-n[1],t},e.inverse=function(t,n){return t[0]=1/n[0],t[1]=1/n[1],t},e.normalize=function(t,n){var r=n[0],a=n[1],e=r*r+a*a;return e>0&&(e=1/Math.sqrt(e),t[0]=n[0]*e,t[1]=n[1]*e),t},e.dot=function(t,n){return t[0]*n[0]+t[1]*n[1]},e.cross=function(t,n,r){var a=n[0]*r[1]-n[1]*r[0];return t[0]=t[1]=0,t[2]=a,t},e.lerp=function(t,n,r,a){var e=n[0],u=n[1];return t[0]=e+a*(r[0]-e),t[1]=u+a*(r[1]-u),t},e.random=function(t,n){n=n||1;var r=2*a.RANDOM()*Math.PI;return t[0]=Math.cos(r)*n,t[1]=Math.sin(r)*n,t},e.transformMat2=function(t,n,r){var a=n[0],e=n[1];return t[0]=r[0]*a+r[2]*e,t[1]=r[1]*a+r[3]*e,t},e.transformMat2d=function(t,n,r){var a=n[0],e=n[1];return t[0]=r[0]*a+r[2]*e+r[4],t[1]=r[1]*a+r[3]*e+r[5],t},e.transformMat3=function(t,n,r){
+var a=n[0],e=n[1];return t[0]=r[0]*a+r[3]*e+r[6],t[1]=r[1]*a+r[4]*e+r[7],t},e.transformMat4=function(t,n,r){var a=n[0],e=n[1];return t[0]=r[0]*a+r[4]*e+r[12],t[1]=r[1]*a+r[5]*e+r[13],t},e.forEach=function(){var t=e.create();return function(n,r,a,e,u,o){var i,c;for(r||(r=2),a||(a=0),c=e?Math.min(e*r+a,n.length):n.length,i=a;c>i;i+=r)t[0]=n[i],t[1]=n[i+1],u(t,t,o),n[i]=t[0],n[i+1]=t[1];return n}}(),e.str=function(t){return"vec2("+t[0]+", "+t[1]+")"},t.exports=e}])});
+/*
+ * tmlib.js 0.5.0
+ * http://github.com/phi-jp/tmlib.js
+ * MIT Licensed
+ * 
+ * Copyright (C) 2010 phi, http://tmlife.net
+ */
+
+(function() { "use strict"; })();
+
+/*
+ * tm namespace
+ */
+var tm = tm || {};
+tm.global = window || global || this;
+if (tm.global.Meteor != null) {
+  tm.global.tm = tm;
+}
+
+// node.js
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = tm;
+}
+
+
+(function() {
+
+    /**
+     * バージョン
+     */
+    tm.VERSION = '0.5.0';
+
+    /**
+     * tmlib.js のルートパス
+     */
+    tm.LIB_ROOT = (function(){
+        if (!window.document) return ;
+
+        var scripts = document.getElementsByTagName("script");
+        for (var i=0, len=scripts.length; i<len; ++i) {
+
+        }
+    })();
+
+    /**
+     * ブラウザ
+     */
+    tm.BROWSER = (function() {
+        if (!window.navigator) return ;
+
+        if      (/chrome/i.test(navigator.userAgent))   { return "Chrome";  }
+        else if (/safari/i.test(navigator.userAgent))   { return "Safari";  }
+        else if (/firefox/i.test(navigator.userAgent))  { return "Firefox"; }
+        else if (/opera/i.test(navigator.userAgent))    { return "Opera";   }
+        else if (/getcko/i.test(navigator.userAgent))   { return "Getcko";  }
+        else if (/msie/i.test(navigator.userAgent))     { return "IE";      }
+        else { return ''; }
+    })();
+
+    /**
+     * ベンダープレフィックス
+     */
+    tm.VENDER_PREFIX = (function() {
+        if (!window) return ;
+
+        var map = {
+            "Chrome"    : "webkit",
+            "Safari"    : "webkit",
+            "Firefox"   : "moz",
+            "Opera"     : "o",
+            "IE"        : "ms"
+        };
+
+        return map[tm.BROWSER] || "";
+    })();
+
+
+    /**
+     * モバイルかどうかの判定フラグ
+     */
+    tm.isMobile = (function() {
+        if (!window.navigator) return ;
+
+        var ua = navigator.userAgent;
+        return (ua.indexOf("iPhone") > 0 || ua.indexOf("iPad") > 0 || ua.indexOf("Android") > 0);
+    })();
+    
+    tm.isLocal = (function() {
+        var flag = (location.protocol == "file:");
+        return function() { return flag; };
+    })();
+    
+    /**
+     * クラス定義
+     */
+    tm.createClass = function(prop) {
+        // デフォルト値
+        prop.init = prop.init || function() {};
+        prop.superClass = prop.superClass || null;
+
+        // クラス作成
+        var tm_class = function() {
+            var temp = new tm_class.prototype.creator();
+            tm_class.prototype.init.apply(temp, arguments);
+            return temp
+        };
+
+        // 継承
+        if (prop.superClass) {
+            prop.init.owner = tm_class;
+            tm_class.prototype = Object.create(prop.superClass.prototype);
+            tm_class.prototype.superInit = function() {
+                var caller    = this.superInit.caller; // 呼び出しもと
+                var subclass  = caller.owner; // 呼び出しもとを持っているクラス
+                var superclass= subclass.prototype.superClass; // 呼び出しもとクラスの親クラス
+                var superInit = superclass.prototype.init; // 呼び出しもとクラスの親クラスの init
+//                var superMethod = this.superInit.caller.owner.prototype.superClass.prototype.init;
+
+                superInit.apply(this, arguments);
+            };
+            tm_class.prototype.constructor = tm_class;
+        }
+
+        tm_class.prototype.selfClass = tm_class;
+
+        // プロパティを追加
+        for (var key in prop) {
+            tm_class.prototype[key] = prop[key];
+        }
+
+        // クリエイタの生成
+        tm_class.prototype.creator = function() { return this; };
+        // クリエイタの継承
+        tm_class.prototype.creator.prototype = tm_class.prototype;
+
+        tm_class._class = true;
+
+        return tm_class;
+    };
+
+    tm.classes = {};
+    var _calssDefinedCallback = {};
+
+    /**
+     * クラス定義
+     * phi クラス定義 <http://jsdo.it/phi/eEmj>
+     * new と apply を同時に使う <http://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible>
+     */
+    tm.define = function(path, prop) {
+        var index       = path.lastIndexOf(".");
+        var nsName      = path.substring(0, index);
+        var ns          = (nsName) ? tm.using(nsName) : tm.global;
+        var className   = (nsName) ? path.substring(index+1) : path;
+        var bind        = Function.prototype.bind;
+        var unshift     = Array.prototype.unshift;
+
+        prop._path      = path;
+        prop._className = className;
+
+        var _class = null;
+        var superClass = prop.superClass;
+
+        if (superClass && typeof superClass == "string") {
+            var superClassName = superClass;
+            superClass = tm.using(superClass);
+
+            if (superClass._class) {
+                prop.superClass = superClass;
+                _class = tm.createClass(prop);
+            }
+            else {
+                // 親クラスが呼ばれた際に再度実行する
+                if (!_calssDefinedCallback[superClassName]) {
+                    _calssDefinedCallback[superClassName] = [];
+                }
+
+                _calssDefinedCallback[superClassName].push(function() {
+                    tm.define(path, prop);
+                });
+
+                return ;
+            }
+        }
+        else {
+            _class = tm.createClass(prop);
+        }
+
+        // キャッシュしておく
+        ns[className] = tm.classes[path] = _class;
+
+        if (_calssDefinedCallback[path]) {
+            var list = _calssDefinedCallback[path];
+            for (var i=0,len=list.length; i<len; ++i) {
+                list[i]();
+            }
+            delete _calssDefinedCallback[path];
+        }
+
+        return _class;
+    };
+
+
+    /**
+     * 名前空間
+     * typescript の mudle 機能を参考
+     * https://sites.google.com/site/jun1sboardgames/programming/typescript
+     */
+    tm.namespace = function(ns, fn) {
+        var ns = tm.using(ns);
+
+        fn.call(ns, ns);
+    };
+
+    /**
+     * 使用
+     */
+    tm.using = function(ns) {
+        if (tm.classes[ns]) return tm.classes[ns];
+
+        var path = ns.split(/[,.\/ ]|::/);
+        var current = tm.global;
+
+        for (var i=0,len=path.length; i<len; ++i) {
+            var dir = path[i];
+            current = current[dir] || (current[dir]={});
+        }
+
+        // キャッシュ
+        tm.classes[ns] = current;
+
+        return current;
+    };
+    
+    tm.globalize = function(obj) {
+        tm.$forIn(function(key, value) {
+            if (typeof value !== 'object') {
+                return ;
+            }
+            else if (key === "classes") {
+                return ;
+            }
+            else if (key === "global") {
+                return ;
+            }
+            else if (key === "event") {
+                return ;
+            }
+            else if (key === "dom") {
+                return ;
+            }
+
+            // console.log("#### " + key + " ###########");
+            value.$forIn(function(key, value) {
+                if (!window[key]) {
+                    // console.log(key);
+                    window[key] = value;
+                }
+                else {
+                    // TODO: 名前を考えなおす
+                    // console.log(key);
+                }
+            });
+        });
+
+        return this;
+    };
+    
+    tm.import = function(namespace) {
+        var target = tm[namespace];
+        tm.global.$strict(target);
+        
+        return this;
+    };
+
+    /**
+     * ループ
+     */
+    tm.setLoop = function(fn, delay) {
+        var temp = function() {
+            // 開始時間
+            var start = (new Date()).getTime();
+
+            // 実行
+            fn();
+
+            // 経過時間
+            var progress = (new Date()).getTime() - start;
+            // 次回までの待ち時間を計算
+            var newDelay = delay-progress;
+            newDelay = (newDelay > 0) ? newDelay : 0;
+
+            // 次回呼び出し登録
+            setTimeout(arguments.callee, newDelay);
+        };
+        setTimeout(temp, delay);
+    };
+
+    tm.inform = function(parent){
+        parent = parent || document.body;
+
+        var eInfo = document.createElement("div");
+        eInfo.setAttribute("class", "tm-info");
+        eInfo.addEventListener("mouseover", function(){
+            this.style.opacity = 0.9;
+        }, false);
+        eInfo.addEventListener("mouseout", function(){
+            this.style.opacity = 0.25;
+        }, false);
+
+        with(eInfo.style) {
+            position    = "absolute";
+            width       = "100%";
+            // top         = "0px";
+            bottom      = "0px";
+            left        = "0px";
+            right       = "0px";
+            margin      = "0px";
+            padding     = "10px 0px";
+            zIndex      = "0";
+            textAlign   = "center";
+            fontFamily  = '"Meiryo", "メイリオ", "ヒラギノ角ゴ Pro W3", sans-serif';
+            fontSize    = "13px";
+            opacity     = "0.25";
+            backgroundColor = "rgb(230,230,255)";
+            background  = "-webkit-linear-gradient(top, hsla(0, 100%, 100%, 0.8) 0%, hsla(0, 100%, 100%, 0.3) 50%, hsla(0, 100%, 100%, 0.1) 51%, hsla(0, 100%, 100%, 0.2) 100%), rgb(190,190,210)";
+            background  = "-moz-linear-gradient(top, hsla(0, 100%, 100%, 0.8) 0%, hsla(0, 100%, 100%, 0.3) 50%, hsla(0, 100%, 100%, 0.1) 51%, hsla(0, 100%, 100%, 0.2) 100%), rgb(190,190,210)";
+            WebkitTransition = "1s";
+            MozTransition = "1s";
+        }
+
+        /*
+        eInfo.innerHTML = "このプログラムで利用している JavaScript ライブラリ 『tmlib.js』 は<a href='{tmlibLink}'>こちら</a>からダウンロードできます. 詳しくは<a href='{blogLink}'>Blog</a>に書いています.".format({
+            "tmlibLink": "http://code.google.com/p/tmlib-js/downloads/list",
+            "blogLink" : "http://tmlife.net/tmlib"
+        });
+        */
+        eInfo.innerHTML = "このプログラムで利用している JavaScript ライブラリ 『tmlib.js』 については<a href='{projectLink}'>こちら</a>.".format({
+            "projectLink" : "https://github.com/phi1618/tmlib.js"
+        });
+        parent.appendChild(eInfo);
+    };
+
+})();
+
+
+(function() {
+
+    if (!window) return ;
+
+    if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window[tm.VENDER_PREFIX + "RequestAnimationFrame"] || function(callback) {
+            window.setTimeout(callback, 1000/60);
+        };
+    }
+
+    if (!window.cancelRequestAnimationFrame) {
+        window.cancelRequestAnimationFrame = window[tm.VENDER_PREFIX + "CancelRequestAnimationFrame"] || window.clearTimeout;
+    }
+
+})();
+
+
+
+(function() {
+    if (!window.document) return ;
+
+    var _mainListeners = [];
+
+    tm.main    = function(fn) {
+        if (fn) {
+            _mainListeners.push(fn);
+        }
+        else {
+            _main();
+        }
+    };
+
+    var _main = function() {
+        for (var i=0,len=_mainListeners.length; i<len; ++i) {
+            _mainListeners[i]();
+        }
+
+        _mainListeners = [];
+    };
+
+    window.addEventListener("load", function() {
+        _main();
+    }, false);
+
+})();
+/*
+ * object.js
+ */
+
+(function() {
+    
+    /**
+     * @class global.Object
+     * Objectの拡張
+     */
+    
+    /**
+     * @method defineVariable
+     * 変数を追加
+     * @param   {String} key name
+     * @param   {Object} param
+     */
+    Object.defineProperty(Object.prototype, "defineVariable", {
+        value: function(name, val) {
+            Object.defineProperty(this, name, {
+                value: val,
+                enumerable: true,
+                writable: true
+            });
+        }
+    });
+    
+    /**
+     * @method defineFunction
+     * 関数を追加
+     * @param   {String} key name
+     * @param   {Function} function
+     */
+    Object.defineProperty(Object.prototype, "defineFunction", {
+        value: function(name, fn) {
+            Object.defineProperty(this, name, {
+                value: fn,
+                enumerable: false,
+                writable: true
+            });
+        }
+    });
+    
+    /**
+     * @method defineInstanceVariable
+     * インスタンス変数を定義する
+     */
+    Object.prototype.defineFunction("defineInstanceVariable", function(name, val){
+        Object.defineProperty(this.prototype, name, {
+            value: val,
+            enumerable: true,
+            writable: true
+        });
+    });
+    
+    /**
+     * @method defineInstanceMethod
+     * インスタンスメソッドを定義する
+     */
+    Object.prototype.defineFunction("defineInstanceMethod", function(name, fn){
+        Object.defineProperty(this.prototype, name, {
+            value: fn,
+            enumerable: false,
+            writable: true
+        });
+    });
+    
+    /**
+     * @method setter
+     * セッターを定義する
+     */
+    Object.defineInstanceMethod("setter", function(name, fn){
+        Object.defineProperty(this, name, {
+            set: fn,
+            enumerable: false,
+            configurable: true
+        });
+    });
+    
+    /**
+     * @method getter
+     * ゲッターを定義する
+     */
+    Object.defineInstanceMethod("getter", function(name, fn){
+        Object.defineProperty(this, name, {
+            get: fn,
+            enumerable: false,
+            configurable: true
+        });
+    });
+    
+    /**
+     * @method accessor
+     * アクセッサ(セッター/ゲッター)を定義する
+     */
+    Object.defineInstanceMethod("accessor", function(name, param) {
+        Object.defineProperty(this, name, {
+            set: param["set"],
+            get: param["get"],
+            enumerable: false,
+            configurable: true
+        });
+    });
+    
+    /**
+     * @method $forIn
+     * オブジェクト用ループ処理
+     */
+    Object.defineInstanceMethod("$forIn", function(fn, self) {
+        self = self || this;
+
+        Object.keys(this).forEach(function(key, index) {
+            var value = this[key];
+
+            fn.call(self, key, value, index);
+        }, this);
+
+        return this;
+    });
+
+    /**
+     * @method  $has
+     * そのプロパティを持っているかを判定する
+     */
+    Object.defineInstanceMethod("$has", function(key) {
+        return this.hasOwnProperty(key);
+    });
+
+    /**
+     * @method  $extend
+     * 他のライブラリと競合しちゃうので extend -> $extend としました
+     */
+    Object.defineInstanceMethod("$extend", function() {
+        Array.prototype.forEach.call(arguments, function(source) {
+            for (var property in source) {
+                this[property] = source[property];
+            }
+        }, this);
+        return this;
+    });
+    
+    /**
+     * @method  $safe
+     * 安全拡張
+     * 上書きしない
+     */
+    Object.defineInstanceMethod("$safe", function(source) {
+        Array.prototype.forEach.call(arguments, function(source) {
+            for (var property in source) {
+                if (this[property] === undefined) this[property] = source[property];
+            }
+        }, this);
+        return this;
+    });
+    
+    
+    /**
+     * @method  $strict
+     * 厳格拡張
+     * すでにあった場合は警告
+     */
+    Object.defineInstanceMethod("$strict", function(source) {
+        Array.prototype.forEach.call(arguments, function(source) {
+            for (var property in source) {
+                console.assert(!this[property], "tm error: {0} is Already".format(property));
+                this[property] = source[property];
+            }
+        }, this);
+        return this;
+    });
+
+    /**
+     * @method  $pick
+     * ピック
+     */
+    Object.defineInstanceMethod("$pick", function() {
+        var temp = {};
+
+        Array.prototype.forEach.call(arguments, function(key) {
+            if (key in this) temp[key] = this[key];
+        }, this);
+
+        return temp;
+    });
+
+    /**
+     * @method  $omit
+     * オミット
+     */
+    Object.defineInstanceMethod("$omit", function() {
+        var temp = {};
+
+        for (var key in this) {
+            if (Array.prototype.indexOf.call(arguments, key) == -1) {
+                temp[key] = this[key];
+            }
+        }
+
+        return temp;
+    });
+    
+})();
+
+
+/*
+ * array.js
+ */
+
+(function() {
+    
+    /**
+     * @class   global.Array
+     * Arrayの拡張
+     * 
+     *      @example display
+     *      [1, 2, 3].first;
+     */
+    
+    /**
+     * @property    first
+     * 最初の要素
+     */
+    Array.prototype.accessor("first", {
+        "get": function()   { return this[0]; },
+        "set": function(v)  { this[0] = v; }
+    });
+    
+    /**
+     * @property    last
+     * 最後の要素
+     */
+    Array.prototype.accessor("last", {
+        "get": function()   { return this[this.length-1]; },
+        "set": function(v)  { this[this.length-1] = v; }
+    });
+
+    /**
+     * @method  equals
+     * 渡された配列と等しいかどうかをチェック
+     */
+    Array.defineInstanceMethod("equals", function(arr) {
+        // 長さチェック
+        if (this.length !== arr.length) return false;
+        
+        for (var i=0,len=this.length; i<len; ++i) {
+            if (this[i] !== arr[i]) {
+                return false;
+            }
+        }
+        return true;
+    });
+    
+    /**
+     * @method  deepEquals
+     * ネストされている配列含め渡された配列と等しいかどうかをチェック
+     * equalsDeep にするか検討. (Java では deepEquals なのでとりあえず合わせとく)
+     */
+    Array.defineInstanceMethod("deepEquals", function(arr) {
+        // 長さチェック
+        if (this.length !== arr.length) return false;
+        
+        for (var i=0,len=this.length; i<len; ++i) {
+            var result = (this[i].deepEquals) ? this[i].deepEquals(arr[i]) : (this[i] === arr[i]);
+            if (result === false) {
+                return false;
+            }
+        }
+        return true;
+    });
+
+    /**
+     * @property    contains
+     * 要素が含まれいるかをチェック
+     */
+    Array.defineInstanceMethod("contains", function(item, fromIndex) {
+        return this.indexOf(item, fromIndex) != -1;
+    });
+    
+    /**
+     * @method  at
+     * ループ添字アクセス(Ruby っぽいやつ)
+     */
+    Array.defineInstanceMethod("at", function(i) {
+        i%=this.length;
+        i+=this.length;
+        i%=this.length;
+        return this[i];
+    });
+    
+    
+    /**
+     * @method  swap
+     * a番目 と b番目 を入れ替える
+     */
+    Array.defineInstanceMethod("swap", function(a, b) {
+        var temp = this[a];
+        this[a] = this[b];
+        this[b] = temp;
+        
+        return this;
+    });
+    
+    
+    /**
+     * @method  erase
+     * elm と一致する要素を削除
+     */
+    Array.defineInstanceMethod("erase", function(elm) {
+        var index  = this.indexOf(elm);
+        if (index >= 0) {
+            this.splice(index, 1);
+        }
+        return this;
+    });
+    
+    /**
+     * @method  eraseAll
+     * elm と一致する要素を全て削除
+     */
+    Array.defineInstanceMethod("eraseAll", function(elm) {
+        for (var i=0,len=this.length; i<len; ++i) {
+            if (this[i] == elm) {
+                this.splice(i--, 1);
+            }
+        }
+        return this;
+    });
+    
+    /**
+     * @method  eraseIf
+     * 条件にマッチした要素を削除
+     */
+    Array.defineInstanceMethod("eraseIf", function(fn) {
+        for (var i=0,len=this.length; i<len; ++i) {
+            if ( fn(this[i], i, this) ) {
+                this.splice(i, 1);
+                break;
+            }
+            // if ( fn(this[i], i, this) ) { this.splice(i--, 1); }
+        }
+        return this;
+    });
+    
+    /**
+     * @method  eraseIfAll
+     * 条件にマッチした要素を削除
+     */
+    Array.defineInstanceMethod("eraseIfAll", function(fn) {
+        for (var i=0,len=this.length; i<len; ++i) {
+            if ( fn(this[i], i, this) ) {
+                this.splice(i, 1);
+            }
+        }
+        return this;
+    });
+    
+    /**
+     * @method  random
+     * 要素の中からランダムで取り出す
+     */
+    Array.defineInstanceMethod("random", function(min, max) {
+        min = min || 0;
+        max = max || this.length-1;
+        return this[ Math.rand(min, max) ];
+    });
+    
+    /**
+     * @method  pickup
+     * 要素の中からランダムで取り出す
+     */
+    Array.defineInstanceMethod("pickup", function(min, max) {
+        min = min || 0;
+        max = max || this.length-1;
+        return this[ Math.rand(min, max) ];
+    });
+    
+    /**
+     * @method  uniq
+     * 重複削除
+     */
+    Array.defineInstanceMethod("uniq", function(deep) {
+        return this.filter(function(value, index, self) {
+            return self.indexOf(value) === index;
+        });
+    });
+    
+
+    /**
+     * @method  flatten
+     * フラット.
+     * Ruby のやつ.
+     */
+    Array.defineInstanceMethod("flatten", function(level) {
+        var arr = null;
+
+        if (level) {
+            arr = this;
+            for (var i=0; i<level; ++i) {
+                arr = Array.prototype.concat.apply([], arr);
+            }
+        }
+        else {
+            // 完全フラット
+            arr = this.reduce(function (previousValue, curentValue) {
+                return Array.isArray(curentValue) ?
+                    previousValue.concat(curentValue.flatten()) : previousValue.concat(curentValue);
+            }, []);
+        }
+
+        return arr;
+    });
+    
+    /**
+     * @method  clone
+     * 配列をクローン
+     */
+    Array.defineInstanceMethod("clone", function(deep) {
+        if (deep == true) {
+            var a = Array(this.length);
+            for (var i=0,len=this.length; i<len; ++i) {
+                a[i] = (this[i].clone) ? this[i].clone(deep) : this[i];
+            }
+            return a;
+        };
+        
+        return Array.prototype.slice.apply(this);
+    });
+    
+    /**
+     * @method  clear
+     * クリア
+     */
+    Array.defineInstanceMethod("clear", function() {
+        this.length = 0;
+        return this;
+    });
+    
+    /**
+     * @method  fill
+     * 特定の値で満たす
+     */
+    Array.defineInstanceMethod("fill", function(value, start, end) {
+        start = start || 0;
+        end   = end   || (this.length);
+        
+        for (var i=start; i<end; ++i) {
+            this[i] = value;
+        }
+        
+        return this;
+    });
+    
+
+    /**
+     * @method  range
+     * python のやつ
+     */
+    Array.defineInstanceMethod("range", function(start, end, step) {
+        if (arguments.length == 1) {
+            this.clear();
+            for (var i=0; i<start; ++i) this[i] = i;
+        }
+        else if (start < end){
+            step  = step || 1;
+            this.clear();
+            for (var i=start, index=0; i<end; i+=step, ++index) {
+                this[index] = i;
+            }
+        }
+        else {
+            step  = step || -1;
+            this.clear();
+            for (var i=start, index=0; i>end; i+=step, ++index) {
+                this[index] = i;
+            }
+        }
+        
+        return this;
+    });
+    
+    /**
+     * @method  shuffle
+     * シャッフル
+     */
+    Array.defineInstanceMethod("shuffle", function() {
+        for (var i=0,len=this.length; i<len; ++i) {
+            var j = Math.rand(0, len-1);
+            
+            if (i != j) {
+                this.swap(i, j);
+            }
+        }
+        
+        return this;
+    });
+
+    /**
+     * @method  sum
+     * 合計
+     */
+    Array.defineInstanceMethod("sum", function() {
+        var sum = 0;
+        for (var i=0,len=this.length; i<len; ++i) {
+            sum += this[i];
+        }
+        return sum;
+    });
+
+    /**
+     * @method  average
+     * 平均
+     */
+    Array.defineInstanceMethod("average", function() {
+        var sum = 0;
+        var len = this.length;
+        for (var i=0; i<len; ++i) {
+            sum += this[i];
+        }
+        return sum/len;
+    });
+
+    /**
+     * @method  each
+     * 繰り返し
+     * チェーンメソッド対応
+     */
+    Array.defineInstanceMethod("each", function() {
+        this.forEach.apply(this, arguments);
+        return this;
+    });
+
+    
+    /**
+     * @method  toULElement
+     * ULElement に変換
+     */
+    Array.defineInstanceMethod("toULElement", function(){
+        // TODO: 
+    });
+
+    /**
+     * @method  toOLElement
+     * OLElement に変換
+     */
+    Array.defineInstanceMethod("toOLElement", function(){
+        // TODO:
+    });
+
+    
+    /**
+     * @static
+     * @method  range
+     * range
+     */
+    Array.defineFunction("range", function(start, end, step) {
+        return Array.prototype.range.apply([], arguments);
+    });
+    
+})();
+
+
+/*
+ * date.js
+ */
+
+(function() {
+    
+    /**
+     * @class   global.Date
+     * Date(日付)の拡張
+     */
+    
+    var MONTH = [
+        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ];
+    
+    var WEEK = [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+    ];
+    
+    /**
+     * @method  format
+     * 日付フォーマットに合わせた文字列を返す
+     */
+    Date.defineInstanceMethod("format", function(pattern) {
+        /*
+        var str = "{y}/{m}/{d}".format({
+            y: this.getYear()+1900,
+            m: this.getMonth()+1,
+            d: this.getDate(),
+        });
+        
+        return str;
+        */
+        
+        var year    = this.getFullYear();
+        var month   = this.getMonth();
+        var date    = this.getDate();
+        var day     = this.getDay();
+        var hours   = this.getHours();
+        var minutes = this.getMinutes();
+        var seconds = this.getSeconds();
+        var millseconds = this.getMilliseconds();
+        var str = "";
+        
+        for (var i=0,len=pattern.length; i<len; ++i) {
+            var ch = pattern.charAt(i);
+            var temp = "";
+            switch(ch) {
+                // 日
+                case "d": temp = date.padding(2, '0'); break;
+                case "D": temp = WEEK[day].substr(0, 3); break;
+                case "j": temp = date; break;
+                case "l": temp = WEEK[day]; break;
+                // case "N": temp = ; break;
+                // case "S": temp = ; break;
+                // case "w": temp = ; break;
+                // case "z": temp = ; break;
+                
+                // 月
+                case "F": temp = MONTH[month]; break;
+                case "m": temp = (month+1).padding(2, '0'); break;
+                case "M": temp = MONTH[month].substr(0, 3); break;
+                case "n": temp = (month+1); break;
+                // case "t": temp = (month+1); break;
+                
+                // 年
+                // case "L": temp = ; break;
+                // case "o": temp = ; break;
+                case "Y": temp = year; break;
+                case "y": temp = year.toString().substr(2, 2); break;
+                
+                
+                // 時間
+                // case "a": temp = ; break;
+                // case "A": temp = ; break;
+                // case "B": temp = ; break;
+                // case "g": temp = ; break;
+                case "G": temp = hours; break;
+                // case "h": temp = ; break;
+                case "H": temp = hours.padding(2, '0'); break;
+                case "i": temp = minutes.padding(2, '0'); break;
+                case "s": temp = seconds.padding(2, '0'); break;
+                case "S": temp = millseconds.padding(3, '0'); break;
+                
+                default : temp = ch; break;
+            }
+            str += temp;
+        }
+        return str;
+    });
+    
+})();
+
+
+/*
+ * function.js
+ */
+
+(function() {
+    
+    /**
+     * @class   global.Function
+     * Functionの拡張
+     */
+    if (!Function.prototype.bind) {
+        /**
+         * @member  global.Function
+         * @method  bind
+         * バインド
+         */
+        Function.defineInstanceMethod("bind", function(obj) {
+            var self = this;
+            
+            return function() {
+                self.apply(obj, arguments);
+            };
+        });
+    }
+
+
+    // 関数名（無名関数は空文字列）を取得 (IE用パッチ)
+    if (!Function.prototype.$has("name")) {
+        Function.prototype.getter("name", function() {
+            return (''+this).replace(/^\s*function\s*([^\(]*)[\S\s]+$/im, '$1');
+        });
+    }
+    
+
+    /**
+     * @method  toArrayFunction
+     * 関数を配列対応関数に変換.
+     * forEach の逆アプローチ的な感じ.
+     * 配列を継承したクラスなどに使用する.
+     * ## Example
+     *      var hoge = function(n) { console.log(this*n); return this*n; };
+     *      var arr = [5, 10, 15];
+     *      arr.hogeArray = hoge.toArrayFunction();
+     *      var result = arr.hogeArray(100);
+     *      console.log(result);
+     */
+    Function.defineInstanceMethod("toArrayFunction", function() {
+        var self = this;
+        return function() {
+            var resultList = [];
+            for (var i=0,len=this.length; i<len; ++i) {
+                resultList.push( self.apply(this[i], arguments) );
+            }
+            return resultList;
+        }
+    });
+    
+    // forEach や map はもう標準化されてきてるので実装しないよん♪
+    
+})();
+
+
+/*
+ * math.js
+ */
+
+(function() {
+    
+    /**
+     * @class global.Math
+     * Mathの拡張
+     */
+
+    
+    /**
+     * @property    DEG_TO_RAD
+     * Degree to Radian.
+     */
+    Math.DEG_TO_RAD = Math.PI/180;
+    
+    /**
+     * @property    RAD_TO_DEG
+     * Radian to Degree.
+     */
+    Math.RAD_TO_DEG = 180/Math.PI;
+    
+    /**
+     * @method
+     * Degree を Radian に変換
+     */
+    Math.degToRad = function(deg) {
+        return deg * Math.DEG_TO_RAD;
+    };
+    
+    /**
+     * @method
+     * Radian を Degree に変換
+     */
+    Math.radToDeg = function(rad) {
+        return rad * Math.RAD_TO_DEG;
+    };
+    
+
+    
+    /**
+     * @method
+     * クランプ
+     */
+    Math.defineFunction("clamp", function(value, min, max) {
+        return (value < min) ? min : ( (value > max) ? max : value );
+    });
+    
+    /**
+     * @method
+     * min <= value <= max のとき true を返す
+     */
+    Math.defineFunction("inside", function(value, min, max) {
+        return (value >= min) && (value) <= max;
+    });
+    
+    /**
+     * @method
+     * ランダムな値を指定された範囲内で生成
+     */
+    Math.defineFunction("rand", function(min, max) {
+        return window.Math.floor( Math.random()*(max-min+1) ) + min;
+    });
+    
+    /**
+     * @method
+     * ランダムな値を指定された範囲内で生成
+     */
+    Math.defineFunction("randf", function(min, max) {
+        return window.Math.random()*(max-min)+min;
+    });
+    
+})();
+
+
+/*
+ * number.js
+ */
+
+(function() {
+    
+    /**
+     * @class global.Number
+     * Numberの拡張
+     */
+    
+    /**
+     * @method  round
+     * 四捨五入
+     * 桁数指定版
+     */
+    Number.defineInstanceMethod("round", function(figure) {
+        figure = figure || 0;
+        var base = Math.pow(10, figure);
+        var temp = this * base;
+        temp = Math.round(temp);
+        return temp/base;
+    });
+    
+    /**
+     * @method  ceil
+     * 切り上げ.
+     * 桁数指定版
+     */
+    Number.defineInstanceMethod("ceil",  function(figure) {
+        figure = figure || 0;
+        var base = Math.pow(10, figure);
+        var temp = this * base;
+        temp = Math.ceil(temp);
+        return temp/base;
+    });
+    /**
+     * @method  floor
+     * 切り捨て
+     * 桁数指定版
+     */
+    Number.defineInstanceMethod("floor",  function(figure) {
+        figure = figure || 0;
+        var base = Math.pow(10, figure);
+        var temp = this * base;
+        temp = Math.floor(temp);
+        
+        // ~~this
+        // this|0
+        
+        return temp/base;
+    });
+    
+    /**
+     * @method  toInt
+     * integer 型に変換する
+     */
+    Number.defineInstanceMethod("toInt",  function() {
+        return (this | 0);
+    });
+    
+    /**
+     * @method  toHex
+     * 16進数化
+     */
+    Number.defineInstanceMethod("toHex",  function() {
+        return this.toString(16);
+    });
+    
+    /**
+     * @method  toBin
+     * 2進数化
+     */
+    Number.defineInstanceMethod("toBin",  function() {
+        return this.toString(2);
+    });
+    
+    
+    /**
+     * @method  toUnsigned
+     * unsigned 型に変換する
+     */
+    Number.defineInstanceMethod("toUnsigned",  function() {
+        return this >>> 0;
+    });
+    
+    /**
+     * @method  padding
+     * 文字埋め
+     */
+    Number.defineInstanceMethod("padding",  function(n, ch) {
+        var str = this+'';
+        n  = n-str.length;
+        ch = ch || '0';
+        
+        while(n-- > 0) { str = ch + str; }
+        
+        return str;
+    });
+    
+    /**
+     * @method  times
+     * 数値分繰り返す
+     */
+    Number.defineInstanceMethod("times",  function(fn, self) {
+        self = self || this;
+        for (var i=0; i<this; ++i) {
+            fn.call(self, i);
+        }
+        return this;
+    });
+    
+    /**
+     * @method  upto
+     * インクリメント繰り返し
+     */
+    Number.defineInstanceMethod("upto",  function(t, fn, self) {
+        self = self || this;
+        for (var i=+this; i<=t; ++i) {
+            fn.call(self, i);
+        }
+        return this;
+    });
+    
+    /**
+     * @method  upto
+     * デクリメント繰り返し
+     */
+    Number.defineInstanceMethod("downto",  function(t, fn, self) {
+        self = self || this;
+        for (var i=+this; i>=t; --i) {
+            fn.call(self, i);
+        }
+        return this;
+    });
+
+    /**
+     * @method step
+     * ステップ繰り返し(float対応)
+     */
+    Number.defineInstanceMethod("step",  function(limit, step, fn, self) {
+        self = self || this;
+        for (var i=+this; i<=limit; i+=step) {
+            fn.call(self, i);
+        }
+        return this;
+    });
+
+    
+})();
+
+
+/*
+ * string.js
+ */
+
+(function() {
+    
+    /**
+     * @class global.String
+     * Stringの拡張
+     * `String` is a global object that may be used to construct String instances.
+     */
+    
+    
+    /**
+     * @method  format
+     * 
+     * フォーマット
+     * 
+     * ## example
+     * 
+     *      document.write("{0} + {1} = {2}".format(5, 10, 5+10));   // "5 + 10 = 15"
+     *      document.write("rgb({r}, {g}, {b})".format({             // "rgb(128, 0, 255)"
+     *          r: 128,
+     *          g: 0,
+     *          b: 255
+     *      }));
+     */
+    String.defineInstanceMethod("format", function(arg) {
+        // 置換ファンク
+        var rep_fn = undefined;
+        
+        // オブジェクトの場合
+        if (typeof arg == "object") {
+            /** @ignore */
+            rep_fn = function(m, k) {
+                if (arg[k] === undefined) {
+                    return '';
+                }
+                else {
+                    return arg[k];
+                }
+            }
+        }
+        // 複数引数だった場合
+        else {
+            var args = arguments;
+            /** @ignore */
+            rep_fn = function(m, k) { return args[ parseInt(k) ]; }
+        }
+        
+        return this.replace( /\{(\w+)\}/g, rep_fn );
+    });
+    
+    /**
+     * @method  trim
+     * トリム
+     * 
+     * <a href="http://jamesroberts.name/blog/2010/02/22/string-functions-for-javascript-trim-to-camel-case-to-dashed-and-to-underscore/">Reference</a>
+     * 
+     */
+    String.defineInstanceMethod("trim", function() {
+        return this.replace(/^\s+|\s+$/g, "");
+    });
+    
+    /**
+     * @method  capitalize
+     * キャピタライズ
+     * 
+     * ## Reference
+     * 
+     * - [キャピタライズ(単語の先頭の大文字化)を行う - oct inaodu](http://d.hatena.ne.jp/brazil/20051212/1134369083)
+     * - [デザインとプログラムの狭間で: javascriptでキャピタライズ（一文字目を大文字にする）](http://design-program.blogspot.com/2011/02/javascript.html)
+     * 
+     */
+    String.defineInstanceMethod("capitalize", function() {
+        return this.replace(/\w+/g, function(word){
+            return word.capitalizeFirstLetter();
+        });
+    });
+    
+    /**
+     * @method  capitalizeFirstLetter
+     * 先頭文字のみキャピタライズ
+     */
+    String.defineInstanceMethod("capitalizeFirstLetter", function() {
+        return this.charAt(0).toUpperCase() + this.substr(1).toLowerCase();
+    });
+    
+    /**
+     * @method  toDash
+     * ダッシュ
+     */
+    String.defineInstanceMethod("toDash", function() {
+        return this.replace(/([A-Z])/g, function(m){ return '-'+m.toLowerCase(); });
+    });
+    
+    
+    /**
+     * @method toHash
+     * ハッシュ値に変換
+     */
+    String.defineInstanceMethod("toHash", function() {
+        return this.toCRC32();
+    });
+    
+    /**
+     * @method  padding
+     * 左側に指定された文字を詰めて右寄せにする
+     */
+    String.defineInstanceMethod("padding", function(n, ch) {
+        var str = this.toString();
+        n  = n-str.length;
+        ch = ch || ' ';
+        
+        while(n-- > 0) { str = ch + str; }
+        
+        return str;
+    });
+    
+    /**
+     * @method  paddingLeft
+     * 左側に指定された文字を詰めて右寄せにする
+     */
+    String.defineInstanceMethod("paddingLeft", function(n, ch) {
+        var str = this.toString();
+        n  = n-str.length;
+        ch = ch || ' ';
+        
+        while(n-- > 0) { str = ch + str; }
+        
+        return str;
+    });
+    
+    /**
+     * @method  paddingRight
+     * 右側に指定された文字を詰めて左寄せにする
+     */
+    String.defineInstanceMethod("paddingRight", function(n, ch) {
+        var str = this.toString();
+        n  = n-str.length;
+        ch = ch || ' ';
+        
+        while(n-- > 0) { str = str + ch; }
+        
+        return str;
+    });
+    
+    /**
+     * @method  quotemeta
+     * メタ文字をクォート
+     */
+    String.defineInstanceMethod("quotemeta", function(n) {
+        return this.replace(/([^0-9A-Za-z_])/g, '\\$1');
+    });
+    
+    /**
+     * @method  repeat
+     * リピート
+     */
+    String.defineInstanceMethod("repeat", function(n) {
+        // TODO: 確認する
+        var arr = Array(n);
+        for (var i=0; i<n; ++i) arr[i] = this;
+        return arr.join('');
+    });
+    
+    /**
+     * @method  count
+     * リピート
+     */
+    String.defineInstanceMethod("count", function(str) {
+        var re = new RegExp(str, 'gm');
+        return this.match(re).length;
+    });
+    
+    /**
+     * @method  toString
+     * 配列に変換
+     */
+    String.defineInstanceMethod("toArray", function() {
+        var arr = [];
+        for (var i=0,len=this.length; i<len; ++i) {
+            arr.push(this[i]);
+        }
+        return arr;
+    });
+    
+    
+    var table = "00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D".split(' ');
+    
+    /**
+     * @method  toCRC32
+     * CRC32 変換
+     */
+    String.defineInstanceMethod("toCRC32", function() {
+        var crc = 0, x=0, y=0;
+        
+        crc = crc ^ (-1);
+        for (var i=0, iTop=this.length; i<iTop; ++i) {
+            y = (crc ^ this.charCodeAt(i)) & 0xff;
+            x = "0x" + table[y];
+            crc = (crc >>> 8) ^ x;
+        }
+        
+        return (crc ^ (-1)) >>> 0;
+    });
+    
+    
+})();
+
+/*
+ * event/event.js
+ */
+
+tm.event = tm.event || {};
+
+(function() {
+    
+    /**
+     * @class tm.event.Event
+     * イベントクラス
+     */
+    tm.event.Event = tm.createClass({
+        
+        /** タイプ */
+        type: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(type) {
+            this.type = type;
+        },
+        
+    });
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.event.TweenEvent
+     * Tween Event
+     * @extends tm.event.Event
+     */
+    tm.event.TweenEvent = tm.createClass({
+        
+        superClass: tm.event.Event,
+
+        /** time */
+        time: null,
+        /** now */
+        now: null,
+
+        /**
+         * @constructor
+         */
+        init: function(type, time, now) {
+            this.superInit(type);
+            
+            this.time = time;
+            this.now  = now;
+        }
+        
+    });
+    
+    /**
+     * @static
+     * チェンジ
+     */
+    tm.event.TweenEvent.CHANGE    = "change";
+    /**
+     * @static
+     * フィニッシュ
+     */
+    tm.event.TweenEvent.FINISH    = "finish";
+    /**
+     * @static
+     * ループ
+     */
+    tm.event.TweenEvent.LOOP      = "loop";
+    /**
+     * @static
+     * レジューム
+     */
+    tm.event.TweenEvent.RESUME    = "resume";
+    /**
+     * @static
+     * スタート
+     */
+    tm.event.TweenEvent.START     = "start";
+    /**
+     * @static
+     * ストップ
+     */
+    tm.event.TweenEvent.STOP      = "stop";
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.event.MouseEvent
+     * Pointing Event
+     * @extends tm.event.Event
+     */
+    tm.event.MouseEvent = tm.createClass({
+        
+        superClass: tm.event.Event,
+
+        /**
+         * app
+         */
+        app: null,
+
+        /**
+         * pointing
+         */
+        pointing: null,
+
+        /**
+         * @constructor
+         */
+        init: function(type, app, pointing) {
+            this.superInit(type);
+            
+            this.app = app;
+            this.pointing = pointing;
+        }
+        
+    });
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.event.TouchEvent
+     * Pointing Event
+     * @extends tm.event.Event
+     */
+    tm.event.TouchEvent = tm.createClass({
+        
+        superClass: tm.event.Event,
+
+        /**
+         * app
+         */
+        app: null,
+
+        /**
+         * pointing
+         */
+        pointing: null,
+
+        /**
+         * @constructor
+         */
+        init: function(type, app, pointing) {
+            this.superInit(type);
+            
+            this.app = app;
+            this.pointing = pointing;
+        }
+        
+    });
+    
+})();
+
+
+
+(function() {
+    
+    /**
+     * @class tm.event.PointingEvent
+     * Pointing Event
+     * @extends tm.event.Event
+     */
+    tm.event.PointingEvent = tm.createClass({
+        
+        superClass: tm.event.Event,
+
+        /**
+         * app
+         */
+        app: null,
+        
+        /**
+         * pointing
+         */
+        pointing: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(type, app, pointing) {
+            this.superInit(type);
+            
+            this.app = app;
+            this.pointing = pointing;
+        }
+        
+    });
+    
+    // tm.event.PointingEvent.CHANGE    = "change";
+    // tm.event.PointingEvent.FINISH    = "finish";
+    // tm.event.PointingEvent.LOOP      = "loop";
+    // tm.event.PointingEvent.RESUME    = "resume";
+    // tm.event.PointingEvent.START     = "start";
+    // tm.event.PointingEvent.STOP      = "stop";
+    
+})();
+
+
+
+/*
+ * eventdispatcher.js
+ */
+
+tm.event = tm.event || {};
+
+(function() {
+    
+    /**
+     * @class tm.event.EventDispatcher
+     * Event Dispatcher
+     * ### Reference
+     * -(EventDispatcher - ActionScript 3.0 コンポーネントリファレンスガイド)[http://livedocs.adobe.com/flash/9.0_jp/ActionScriptLangRefV3/flash/events/EventDispatcher.html]
+     */
+    tm.define("tm.event.EventDispatcher", {
+
+        /** @private @property _listeners */
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            this._listeners = {};
+        },
+
+        /**
+         * イベントリスナー追加
+         */
+        on: function(type, listener) {
+            if (this._listeners[type] === undefined) {
+                this._listeners[type] = [];
+            }
+            
+            this._listeners[type].push(listener);
+            return this;
+        },
+        
+        /**
+         * リスナーを削除
+         */
+        off: function(type, listener) {
+            var listeners = this._listeners[type];
+            var index = listeners.indexOf(listener);
+            if (index != -1) {
+                listeners.splice(index,1);
+            }
+            return this;
+        },
+        
+        /**
+         * イベント発火
+         */
+        fire: function(e) {
+            e.target = this;
+            var oldEventName = 'on' + e.type;
+            if (this[oldEventName]) this[oldEventName](e);
+            
+            var listeners = this._listeners[e.type];
+            if (listeners) {
+                var temp = listeners.clone();
+                for (var i=0,len=temp.length; i<len; ++i) {
+                    temp[i].call(this, e);
+                }
+            }
+            
+            return this;
+        },
+
+        /*
+         * イベント名でイベント発火
+         */
+        flare: function(eventName, param) {
+            var e = tm.event.Event(eventName);
+            if (param) {
+                e.$extend(param);
+            }
+            this.fire(e);
+
+            return this;
+        },
+        
+        one: function(type, listener) {
+            var self = this;
+            
+            var func = function() {
+                var result = listener.apply(self, arguments);
+                self.off(type, func);
+                return result;
+            };
+            
+            this.on(type, func);
+            
+            return this;
+        },
+
+        /**
+         * type に登録されたイベントがあるかをチェック
+         */
+        hasEventListener: function(type) {
+            if (this._listeners[type] === undefined && !this["on" + type]) return false;
+            return true;
+        },
+        
+        /**
+         * type に登録されているリスナーを全てクリア
+         */
+        clearEventListener: function(type) {
+            var oldEventName = 'on' + type;
+            if (this[oldEventName]) delete this[oldEventName];
+
+            this._listeners[type] = [];
+            return this;
+        },
+    });
+
+    var proto = tm.event.EventDispatcher.prototype;
+    
+    /**
+     * @member  tm.event.EventDispatcher
+     * @method  addEventListener
+     * on と同じ
+     */
+    proto.addEventListener      = proto.on;
+    
+    /**
+     * @member  tm.event.EventDispatcher
+     * @method  removeEventListener
+     * off と同じ
+     */
+    proto.removeEventListener   = proto.off;
+    
+    /**
+     * @member  tm.event.EventDispatcher
+     * @method  dispatchEvent
+     * fire と同じ
+     */
+    proto.dispatchEvent         = proto.fire;
+    
+    /**
+     * @member  tm.event.EventDispatcher
+     * @method  trigger
+     * fire と同じ
+     */
+    proto.trigger = proto.fire;
+    
+})();
+
+/*
+ * random.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.util.Random
+     * ランダムクラス
+     * 
+     * ## Reference
+     * - <http://www.python.jp/doc/2.5/lib/module-random.html>
+     * - <http://www.yukun.info/blog/2008/06/python-random.html>
+     * - <http://www.python-izm.com/contents/application/random.shtml>
+     * - <http://libcinder.org/docs/v0.8.3/classcinder_1_1_rand.html>
+     * - <http://libcinder.org/docs/v0.8.3/_rand_8h_source.html>
+     */
+    tm.util.Random = {
+        
+        /**
+         * Dummy
+         */
+        randint: function(min, max) {
+            return window.Math.floor( Math.random()*(max-min+1) ) + min;
+        },
+        
+        /**
+         * Dummy
+         */
+        randfloat: function(min, max) {
+            return window.Math.random()*(max-min)+min;
+        },
+        
+        /**
+         * Dummy
+         */
+        randbool: function() {
+            return this.randint(0, 1) === 1;
+        },
+    };
+    
+})();
+
+/*
+ * ajax.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+
+    /*
+     * @enum
+     * @private
+     */
+    var AJAX_DEFAULT_SETTINGS = {
+        /* @property type */
+        type :"GET",
+        /* @property async */
+        async: true,
+        /* @property data */
+        data: null,
+        /* @property contentType */
+        contentType: 'application/x-www-form-urlencoded',
+        /* @property dataType */
+        dataType: 'text',
+        /* @property dataType */
+        responseType: '', // or 'arraybuffer'
+        /* @property username */
+        username: null,
+        /* @property password */
+        password: null,
+        /* @property success */
+        success : function(data){ alert("success!!\n"+data); },
+        /* @property error */
+        error   : function(data){ alert("error!!"); },
+        /* @property beforeSend */
+        beforeSend: null,
+    };
+
+    /**
+     * @class tm.util.Ajax
+     * Ajax クラス
+     */
+    tm.util.Ajax = {
+        /**
+         * load
+         */
+        load: function(params) {
+            for (var key in AJAX_DEFAULT_SETTINGS) {
+                params[key] = params[key] || AJAX_DEFAULT_SETTINGS[key];
+            }
+
+            var httpRequest = new XMLHttpRequest();
+            var ajax_params = "";
+            var conv_func = tm.util.Ajax.DATA_CONVERTE_TABLE[params.dataType];
+
+            var url = params.url;
+            if (params.data) {
+                var query = "";
+                if (typeof params.data == 'string') {
+                    query = params.data;
+                    // query = encodeURIComponent(params.data);
+                }
+                else {
+                    query = tm.util.QueryString.stringify(params.data);
+                }
+
+                if (params.type == 'GET') {
+                    params.url += '?' + query;
+                    params.data = null;
+                }
+                else if (params.type == 'POST') {
+                    params.data = query;
+                }
+            }
+
+            // httpRequest.withCredentials = true;
+
+            // コールバック
+            httpRequest.onreadystatechange = function() {
+                if (httpRequest.readyState == 4) {
+                    // 成功(status === 0 はローカルファイル用)
+                    if (httpRequest.status === 200 || httpRequest.status === 201 || httpRequest.status === 0) {
+                        if (params.responseType !== "arraybuffer") {
+                            // タイプ別に変換をかける
+                            var data = conv_func(httpRequest.responseText);
+                            params.success(data);
+                        }
+                        else {
+                            // バイナリデータ
+                            params.success(this.response);
+                        }
+                    }
+                    else {
+                        params.error(httpRequest.responseText);
+                    }
+                }
+                else {
+                    //console.log("通信中");
+                }
+            };
+
+
+            httpRequest.open(params.type, params.url, params.async, params.username, params.password);   // オープン
+            if (params.type === "POST") {
+                httpRequest.setRequestHeader('Content-Type', params.contentType);        // ヘッダをセット
+            }
+
+            if (params.responseType) {
+                httpRequest.responseType = params.responseType;
+            }
+
+            if (params.beforeSend) {
+                params.beforeSend(httpRequest);
+            }
+
+            if (params.password) {
+                httpRequest.withCredentials = true;
+            }
+
+            httpRequest.send(params.data);
+        },
+
+        /**
+         * loadJSONP
+         */
+        loadJSONP: function(url, callback) {
+            var g = tm.global;
+            g.tmlib_js_dummy_func_count = tm.global.tmlib_js_dummy_func || 0;
+            var dummy_func_name = "tmlib_js_dummy_func" + (g.tmlib_js_dummy_func_count++);
+            g[dummy_func_name]  = callback;
+
+            var elm = document.createElement("script");
+            elm.type = "text/javascript";
+            elm.charset = "UTF-8";
+            elm.src = url + (url.indexOf("?") < 0 ? "?" : "&") + "callback=" + dummy_func_name;
+            elm.setAttribute("defer", true);
+            document.getElementsByTagName("head")[0].appendChild(elm);
+        }
+    };
+
+    /*
+     * @enum tm.util.Ajax.DATA_CONVERTE_TABLE
+     * データコンバータテーブル
+     */
+    tm.util.Ajax.DATA_CONVERTE_TABLE = {
+        /* @method */
+        undefined: function(data) {
+            return data;
+        },
+
+        /* @method */
+        text: function(data) {
+            return data;
+        },
+
+        /* @method */
+        xml: function(data) {
+            var parser = new DOMParser();
+            var xml = parser.parseFromString(data, 'text/xml');
+
+            return xml;
+        },
+
+        /* @method */
+        dom: function(data) {
+            var div = document.createElement("div");
+            div.innerHTML = data;
+            return tm.dom.Element(div);
+        },
+
+        /* @method */
+        json: function(data) {
+            try {
+                return JSON.parse(data);
+            }
+            catch(e) {
+                console.dir(e);
+                console.dir(data);
+            }
+        },
+
+        /* @method */
+        script: function(data) {
+            eval(data);
+            return data;
+        },
+
+        /*
+         * @method
+         * ### Reference
+         * - <http://efcl.info/adiary/Javascript/treat-binary>
+         * @param {Object} data
+         */
+        bin: function(data) {
+            var bytearray = [];
+            for (var i=0, len=data.length; i<len; ++i) {
+                bytearray[i] = data.charCodeAt(i) & 0xff;
+            }
+            return bytearray;
+        },
+
+    };
+
+
+    tm.util.Ajax.DEFAULT_SETTINGS = AJAX_DEFAULT_SETTINGS;
+
+})();
+
+/*
+ * file.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.util.File
+     * ファイルクラス
+     */
+    tm.define("tm.util.File", {
+        superClass: "tm.event.EventDispatcher",
+
+        /** deta */
+        data: null,
+        /** deta */
+        loaded: false,
+
+        /**
+         * @constructor
+         */
+        init: function(params) {
+            this.superInit();
+
+            this.loaded = false;
+            if (arguments.length == 1) {
+                this.load(params);
+            }
+        },
+        
+        /**
+         * ロード
+         */
+        load: function(params) {
+            if (typeof params == "string") {
+                var url = params;
+                params = { url: url, };
+            }
+            
+            var self = this;
+            params.success = function(data) {
+                self.setData(data);
+                var e = tm.event.Event("load");
+                self.dispatchEvent( e );
+            };
+            tm.util.Ajax.load(params);
+        },
+
+        /**
+         * setData
+         */
+        setData: function(data) {
+            this.data = data;
+            this.loaded = true;
+        },
+        
+        /**
+         * ローカルストレージからロード
+         */
+        loadLocalStorage: function() {
+            
+        },
+        
+
+    });
+    
+    
+})();
+
+
+
+/*
+ * tmline.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.util.Timeline
+     * タイムラインクラス
+     */
+    tm.util.Timeline = tm.createClass({
+        
+        /** target */
+        target  : null,
+        /** tasks */
+        tasks   : null,
+        /** fps */
+        fps     : 30,
+        
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.tasks = [];
+            this.time = 0;
+        },
+        
+        /**
+         * アット
+         */
+        at: function(time, action) {
+            this.tasks.push({
+                time: time,
+                action: action,
+            });
+            return this;
+        },
+
+        /**
+         * アフター
+         */
+        after: function(time, action) {
+            this.at(this.time + time, action);
+            return this;
+        },
+
+        /**
+         * クリア
+         */
+        clear: function() {
+            this.tasks = [];
+            return this;
+        },
+
+        /**
+         * リムーブタイム
+         */
+        removeTime: function(time) {
+            // TODO: 
+        },
+
+        /**
+         * リムーブアクション
+         */
+        removeAction: function(action) {
+            // TODO: 
+        },
+        
+        /**
+         * スタート
+         */
+        start: function() {
+            this.isPlaying = true;
+            this._startTime();
+            this._updateTime();
+        },
+
+        /**
+         * レジューム
+         */
+        resume: function() {
+            this.isPlaying = true;
+            this._resumeTime();
+            this._updateTime();
+        },
+
+        /**
+         * ストップ
+         */
+        stop: function() {
+            this.isPlaying = false;
+        },
+
+        /**
+         * レウィンド
+         */
+        rewind: function() {
+            this.time = 0;
+        },
+
+        /**
+         * 更新
+         */
+        update: function() {
+            // タスク更新
+            if (this.tasks.length > 0) {
+                for (var i=0,len=this.tasks.length; i<len; ++i) {
+                    var task = this.tasks[i];
+                    if (this.prev <= task.time && task.time < this.time) {
+                        task.action();
+                        // this.tasks.erase(task);
+                        // break;
+                    }
+                }
+            }
+        },
+        
+        /**
+         * @private
+         */
+        _startTime: function() {
+            this.startTime = (new Date()).getTime();
+        },
+
+        /**
+         * @private
+         */
+        _resumeTime: function() {
+            this.startTime = (new Date()).getTime() - this.time;
+        },
+
+        /**
+         * @private
+         */
+        _updateTime: function() {
+            if (this.isPlaying) {
+                this._nextTime();
+                setTimeout(arguments.callee.bind(this), 1000/this.fps);
+            }
+        },
+        
+        /**
+         * @private
+         */
+        _nextTime: function() {
+            // 前回の時間
+            this.prev = this.time;
+            // 今回の時間
+            this.time = (new Date()).getTime() - this.startTime;
+            // 更新
+            this.update();
+        },
+        
+    });
+    
+})();
+
+
+/*
+ * util/data.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.util.DataManager
+     * データマネージャ
+     */
+    tm.util.DataManager = {
+        data: {}
+    };
+
+    /**
+     * @static
+     * @method
+     * セーブ
+     */
+    tm.util.DataManager.save = function() {
+        // TODO: ローカルストレージ?
+        for (var key in this.data) {
+            var data = this.data[key];
+            localStorage[key] = JSON.stringify( data );
+        }
+    };
+
+    /**
+     * @static
+     * @method
+     * ロード
+     */
+    tm.util.DataManager.load = function(key) {
+        // TODO: ローカルストレージ?
+        for (var key in localStorage) {
+            this.data[key] = JSON.parse(localStorage[key]);
+        }
+    };
+
+    /**
+     * @static
+     * @method
+     * セット
+     */
+    tm.util.DataManager.set = function(key, value) {
+        this.data[key] = value;
+        return this;
+    };
+
+    /**
+     * @static
+     * @method
+     * ゲット
+     */
+    tm.util.DataManager.get = function(key) {
+        return this.data[key];
+    };
+    
+    
+    // tm.addLoadCheckList(tm.util.DataManager);
+    
+})();
+/*
+ * querystring.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.util.QueryString
+     * クエリ文字列クラス
+     */
+    tm.util.QueryString = {
+        /**
+         * パース
+         */
+        parse: function(str, sep, eq) {
+            sep = sep || '&';
+            eq  = eq  || '=';
+            
+            var obj = {};
+            var params = str.split(sep);
+            for (var i=0,len=params.length; i<len; ++i) {
+                var param = params[i];
+                var pos = param.indexOf(eq);
+                if (pos>0) {
+                    var key = param.substring(0, pos);
+                    var val = param.substring(pos+1);
+                    obj[key] = val;
+                }
+            }
+            
+            return obj;
+        },
+        
+        /**
+         * ストリングファイ
+         */
+        stringify: function(obj, sep, eq) {
+            sep = sep || '&';
+            eq  = eq  || '=';
+            
+            
+            var strList = [];
+            for (var key in obj) {
+                var value = encodeURIComponent(obj[key]);
+                strList.push(key + eq + value);
+            }
+            
+            return strList.join(sep);
+        },
+    };
+    
+})();
+
+
+
+
+/*
+ * type.js
+ */
+
+/**
+ * @class tm.util.Type
+ * 型チェック
+ */
+tm.namespace("tm.util.Type", function() {
+    var self = this;
+    var toString = Object.prototype.toString;
+
+    /**
+     * @static
+     * @method  isObject
+     * is object
+     */
+    this.defineFunction("isObject", function(obj) {
+        return obj === Object(obj);
+    });
+
+    /**
+     * @static
+     * @method  isArray
+     * is array
+     */
+    this.defineFunction("isArray", function(obj) {
+        return toString.call(obj) == '[object Array]';
+    });
+
+    /**
+     * @static
+     * @method  isArguments
+     * is arguments
+     */
+    this.defineFunction("isArguments", function(obj) {
+        return toString.call(obj) == '[object Arguments]';
+    });
+
+    /**
+     * @static
+     * @method  isFunction
+     * is function
+     */
+    this.defineFunction("isFunction", function(obj) {
+        return toString.call(obj) == '[object Function]';
+    });
+
+    /**
+     * @static
+     * @method  isString
+     * is string
+     */
+    this.defineFunction("isString", function(obj) {
+        return toString.call(obj) == '[object String]';
+    });
+
+    /**
+     * @static
+     * @method  isNumber
+     * is number
+     */
+    this.defineFunction("isNumber", function(obj) {
+        return toString.call(obj) == '[object Number]';
+    });
+
+    /**
+     * @static
+     * @method  isDate
+     * is date
+     */
+    this.defineFunction("isDate", function(obj) {
+        return toString.call(obj) == '[object Date]';
+    });
+
+    /**
+     * @static
+     * @method  isRegExp
+     * is RegExp
+     */
+    this.defineFunction("isRegExp", function(obj) {
+        return toString.call(obj) == '[object RegExp]';
+    });
+
+    /**
+     * @static
+     * @method  isEmpty
+     * is empty
+     */
+    this.defineFunction("isEmpty", function(obj) {
+        if (!obj) return true;
+        if (self.isArray(obj) || self.isString(obj) || self.isArguments(obj)) return obj.length === 0;
+        for (var key in obj) {
+            if (key) return false;
+        }
+        return true;
+    });
+
+});
+
+/*
+ * flow.js
+ */
+
+    
+/**
+ * @class tm.util.Flow
+ * @extends tm.event.EventDispatcher
+ * it is inspire in made flow.js of `@uupaa`
+ */
+tm.define("tm.util.Flow", {
+    superClass: "tm.event.EventDispatcher",
+    
+    /** waits */
+    waits: 0,
+    /** counter */
+    counter: 0,
+    /** args */
+    args: null,
+    
+    /**
+     * @constructor
+     */
+    init: function(waits, callback) {
+        this.superInit();
+        
+        waits = waits || 0;
+        callback = callback || null;
+        
+        this.setup(waits, callback);
+    },
+    
+    /**
+     * セットアップ
+     */
+    setup: function(waits, callback) {
+        this.waits = waits;
+        this.callback = callback;
+        this.counter = 0;
+        this.args = {};
+
+        this._check();
+
+        return this;
+    },
+    
+    /**
+     * パス
+     */
+    pass: function(key, value) {
+        ++this.counter;
+        
+        if (arguments.length >= 2) {
+            this.args[key] = value;
+        }
+        
+        this._check();
+    },
+    
+    /**
+     * 終了チェック
+     */
+    isFinish: function() {
+        return (this.counter === this.waits);
+    },
+    
+    _check: function() {
+        if (this.isFinish()) {
+            var args = this.args;
+            
+            if (this.callback) {
+                this.callback(args);
+                
+                this.args = null;
+                this.callback = null;
+            }
+            
+            var e = tm.event.Event("flowfinish");
+            e.args = args;
+            this.fire(e);
+        }
+    }
+});
+
+
+/*
+ * グリッドシステム
+ */
+tm.define("tm.util.GridSystem", {
+    width: 640, // 幅
+    col: 12,    // 列数
+    
+    init: function(width, col) {
+        if (typeof arguments[0] === 'object') {
+            var param = arguments[0];
+            width = param.width;
+            col = param.col;
+        }
+        
+        this.width = width;
+        this.col = col;
+        this.unitWidth = this.width/this.col;
+    },
+    
+    // スパン指定で値を取得(負数もok)
+    span: function(index) {
+        index += this.col;
+        index %= this.col;
+
+        return this.unitWidth * index;
+    },
+    
+    // 真ん中
+    center: function() {
+        return this.unitWidth * (this.col/2);
+    },
+});
+
+/*
+ * vector2.js
+ */
+
+/*
+ * 幾何学
+ */
+tm.geom = tm.geom || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.geom.Vector2
+     * 2次元ベクトル
+     */
+    tm.geom.Vector2 = tm.createClass({
+        /** x座標 */
+        x: 0,
+        /** y座標 */
+        y: 0,
+        
+        /**
+         * @constructor
+         */
+        init: function(x, y) {
+            this.set(x, y);
+        },
+        
+        
+        /**
+         * 複製
+         */
+        clone: function() {
+            return tm.geom.Vector2(this.x, this.y);
+        },
+        
+        
+        /**
+         * 等しいかどうかをチェック
+         * @param   {tm.geom.Vector2}   v   比較対象となる２次元ベクトル
+         */
+        equals: function(v) {
+            return (this.x === v.x && this.y === v.y) ? true : false;
+        },
+        
+        /**
+         * 数値と等しいかどうかをチェック
+         * @param   {Number}   x    比較対象となる x 値
+         * @param   {Number}   y    比較対象となる y 値
+         */
+        equalsNumber: function(x, y) {
+            return (this.x === x && this.y === y) ? true : false;
+        },
+        
+        /**
+         * 配列と等しいかどうかをチェック
+         * @param   {Number}   arr  比較対象となる配列
+         */
+        equalsArray: function(arr) {
+            return (this.x === arr[0] && this.y === arr[1]) ? true : false;
+        },
+        
+        
+        /**
+         * セッター
+         */
+        set: function(x, y) {
+            this.x = x;
+            this.y = y;
+        },
+        
+        /**
+         * 数値からセット
+         */
+        setNumber: function(x, y) {
+            this.x = x;
+            this.y = y;
+            
+            return this;
+        },
+        
+        /**
+         * 配列からセット
+         */
+        setArray: function(arr) {
+            this.x = arr[0];
+            this.y = arr[1];
+            
+            return this;
+        },
+        
+        /**
+         * オブジェクトからセット
+         */
+        setObject: function(obj) {
+            this.x = obj.x;
+            this.y = obj.y;
+            
+            return this;
+        },
+        
+        /**
+         * 文字列からセット
+         */
+        setString: function(str) {
+            var m = str.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);
+            this.x = parseFloat(m[1]);
+            this.y = parseFloat(m[3]);
+            
+            return this;
+        },
+        
+        /**
+         * 賢いセット
+         */
+        setSmart: function(x, y) {
+            var v = arguments[0];
+            // xyz
+            if (arguments.length === 2) {
+                this.x = x;
+                this.y = y;
+            }
+            // Array
+            else if (v instanceof Array) {
+                this.x = v[0];
+                this.y = v[1];
+            }
+            // Object
+            else if (v instanceof Object) {
+                this.x = v.x;
+                this.y = v.y;
+            }
+            // String
+            else if (typeof(v) == "string") {
+                var m = v.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);
+                this.x = parseFloat(m[1]);
+                this.y = parseFloat(m[3]);
+            }
+            
+            return this;
+        },
+        
+        /**
+         * 角度と長さでベクトルをセット
+         * Angle は Degree 値で指定
+         */
+        setAngle: function(angle, len) {
+            var rad = angle*Math.DEG_TO_RAD;
+            
+            len = len || 1;
+            this.x = Math.cos(rad)*len;
+            this.y = Math.sin(rad)*len;
+            
+            return this;
+        },
+        
+        /**
+         * 角度(radian)と長さでベクトルをセット
+         */
+        setRadian: function(radian, len) {
+            len = len || 1;
+            this.x = Math.cos(radian)*len;
+            this.y = Math.sin(radian)*len;
+            
+            return this;
+        },
+        
+        /**
+         * 角度(degree)と長さでベクトルをセット
+         */
+        setDegree: function(degree, len) {
+            var rad = degree*Math.DEG_TO_RAD;
+            
+            len = len || 1;
+            this.x = Math.cos(rad)*len;
+            this.y = Math.sin(rad)*len;
+            
+            return this;
+        },
+        
+        /**
+         * ランダムベクトルをセット
+         */
+        setRandom: function(min, max, len) {
+            min = min || 0;
+            max = max || 360;
+            len = len || 1;
+            this.setDegree(Math.randf(min, max), len);
+            return this;
+        },
+        
+        /**
+         * 加算
+         */
+        add: function(v) {
+            this.x += v.x;
+            this.y += v.y;
+            
+            return this;
+        },
+        
+        /**
+         * 減算
+         */
+        sub: function(v) {
+            this.x -= v.x;
+            this.y -= v.y;
+            
+            return this;
+        },
+        
+        /**
+         * 乗算
+         */
+        mul: function(n) {
+            this.x *= n;
+            this.y *= n;
+            
+            return this;
+        },
+        
+        /**
+         * 除算
+         */
+        div: function(n) {
+            //console.assert(n != 0, "0 division!!");
+            n = n || 0.01;
+            this.x /= n;
+            this.y /= n;
+            
+            return this;
+        },
+        
+        /**
+         * 反転
+         */
+        negate: function() {
+            this.x = -this.x;
+            this.y = -this.y;
+            
+            return this;
+        },
+
+        /**
+         * @method
+         * 内積.
+         * 投影ベクトルを求めたり, 類似度に使ったり.
+         */
+        dot: function(v) {
+            return this.x * v.x + this.y * v.y;
+        },
+
+        /**
+         * @method
+         * 外積
+         */
+        cross: function(v) {
+            return (this.x*v.y) - (this.y*v.x);
+        },
+        
+        /**
+         * 長さを取得
+         * ### memo
+         * magnitude って名前の方が良いかも. 検討中.
+         */
+        length: function() {
+            return Math.sqrt(this.x*this.x + this.y*this.y);
+        },
+        
+        /**
+         * 2乗された長さを取得
+         * C# の名前を引用
+         * or lengthSquare or lengthSqrt
+         */
+        lengthSquared: function() {
+            return this.x*this.x + this.y*this.y;
+        },
+        
+        /**
+         * ２点間の距離を返す
+         */
+        distance: function(v) {
+            return Math.sqrt( Math.pow(this.x-v.x, 2) + Math.pow(this.y-v.y, 2) );
+        },
+        
+        /**
+         * ２点間の距離を返す
+         */
+        distanceSquared: function(v) {
+            return Math.pow(this.x-v.x, 2) + Math.pow(this.y-v.y, 2);
+        },
+        
+        /**
+         * 正規化
+         */
+        normalize: function() {
+            var length = this.length();
+            this.div(length);
+            
+            return this;
+        },
+        
+        /**
+         * 角度(radian)に変換
+         */
+        toAngle: function() {
+            return Math.atan2(this.y, this.x);
+        },
+
+        /**
+         * スタイル文字列に変換
+         */
+        toStyleString: function() {
+            return "{x:{x}, y:{y}}".format(this);
+        },
+
+        /**
+         * 文字列に変換
+         */
+        toString: function() {
+            return "{x:{x}, y:{y}}".format(this);
+        },
+        
+        /**
+         * X値をセット
+         * チェーンメソッド用セッター
+         */
+        setX: function(x) {
+            this.x = x;
+            return this;
+        },
+        
+        /**
+         * Y値をセット
+         * チェーンメソッド用セッター
+         */
+        setY: function(y) {
+            this.y = y;
+            return this;
+        },
+        
+    });
+    
+    
+    /**
+     * @method
+     * @static
+     * min
+     */
+    tm.geom.Vector2.min = function(lhs, rhs) {
+        return tm.geom.Vector2(
+            (lhs.x < rhs.x) ? lhs.x : rhs.x,
+            (lhs.y < rhs.y) ? lhs.y : rhs.y
+        );
+    };
+    
+    /**
+     * @method
+     * @static
+     * max
+     */
+    tm.geom.Vector2.max = function(lhs, rhs) {
+        return tm.geom.Vector2(
+            (lhs.x > rhs.x) ? lhs.x : rhs.x,
+            (lhs.y > rhs.y) ? lhs.y : rhs.y
+        );
+    };
+    
+    /**
+     * @method
+     * @static
+     * 加算
+     */
+    tm.geom.Vector2.add = function(lhs, rhs) {
+        return tm.geom.Vector2(lhs.x+rhs.x, lhs.y+rhs.y);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 減算
+     */
+    tm.geom.Vector2.sub = function(lhs, rhs) {
+        return tm.geom.Vector2(lhs.x-rhs.x, lhs.y-rhs.y);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 乗算
+     */
+    tm.geom.Vector2.mul = function(v, n) {
+        return tm.geom.Vector2(v.x*n, v.y*n);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 割算
+     */
+    tm.geom.Vector2.div = function(v, n) {
+        return tm.geom.Vector2(v.x/n, v.y/n);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 反転
+     */
+    tm.geom.Vector2.negate = function(v) {
+        return tm.geom.Vector2(-v.x, -v.y);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 内積.
+     * 投影ベクトルを求めたり, 類似度に使ったり.
+     */
+    tm.geom.Vector2.dot = function(lhs, rhs) {
+        return lhs.x * rhs.x + lhs.y * rhs.y;
+    };
+    
+
+    /**
+     * @method
+     * @static
+     * 外積
+     */
+    tm.geom.Vector2.cross = function(lhs, rhs) {
+        return (lhs.x*rhs.y) - (lhs.y*rhs.x);
+    };
+    
+    /**
+     * @method
+     * @static
+     * ２点間の距離を返す
+     */
+    tm.geom.Vector2.distance = function(lhs, rhs) {
+        return Math.sqrt( Math.pow(lhs.x-rhs.x, 2) + Math.pow(lhs.y-rhs.y, 2) );
+    };
+    
+    /**
+     * @method
+     * @static
+     * ２点間の距離を返す
+     */
+    tm.geom.Vector2.distanceSquared = function(lhs, rhs) {
+        return Math.pow(lhs.x-rhs.x, 2) + Math.pow(lhs.y-rhs.y, 2);
+    };
+
+    /**
+     * @method
+     * @static
+     * マンハッタン距離
+     */
+    tm.geom.Vector2.manhattanDistance = function(lhs, rhs) {
+        return Math.abs(lhs.x-rhs.x) + Math.abs(lhs.y-rhs.y);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 反射ベクトル
+     */
+    tm.geom.Vector2.reflect = function(v, normal) {
+        var len = Vector2.dot(v, normal);
+        var temp= Vector2.mul(normal, 2*len);
+        
+        return tm.geom.Vector2.sub(v, temp);
+    };
+
+    /**
+     * @method
+     * @static
+     * 補間.
+     * 0.5 で lhs と rhs の中間ベクトルを求めることができます.
+     */
+    tm.geom.Vector2.lerp = function(lhs, rhs, t) {
+        // TODO: 
+        return tm.geom.Vector2(
+            lhs.x + (rhs.x-lhs.x)*t,
+            lhs.y + (rhs.y-lhs.y)*t
+        );
+    };
+    
+    
+    /**
+     * @method
+     * @static
+     * 補間
+     */
+    tm.geom.Vector2.slerp = function(lhs, rhs, t) {
+        // TODO:
+        // cos...
+    };
+    
+
+    /**
+     * @method
+     * @static
+     * min ~ max の間でランダムな方向のベクトルを生成する. len で長さ指定.
+     */
+    tm.geom.Vector2.random = function(min, max, len) {
+        min = min || 0;
+        max = max || 360;
+        len = len || 1;
+        return tm.geom.Vector2().setDegree(Math.randf(min, max), len);
+    };
+    
+    
+    /**
+     * @property
+     * @static
+     * zero
+     */
+    tm.geom.Vector2.ZERO    = tm.geom.Vector2( 0, 0);
+    
+    /**
+     * @property
+     * @static
+     * left
+     */
+    tm.geom.Vector2.LEFT    = tm.geom.Vector2(-1, 0);
+    
+    
+    /**
+     * @property
+     * @static
+     * right
+     */
+    tm.geom.Vector2.RIGHT   = tm.geom.Vector2( 1, 0);
+    
+    /**
+     * @property
+     * @static
+     * up
+     */
+    tm.geom.Vector2.UP      = tm.geom.Vector2( 0, 1);
+    
+    /**
+     * @property
+     * @static
+     * down
+     */
+    tm.geom.Vector2.DOWN    = tm.geom.Vector2( 0,-1);
+    
+})();
+
+
+/*
+ * vector3.js
+ */
+
+/*
+ * 幾何学
+ */
+tm.geom = tm.geom || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.geom.Vector3
+     * 3次元ベクトル
+     */
+    tm.geom.Vector3 = tm.createClass({
+        /** x 座標 */
+        x: 0,
+        /** y 座標 */
+        y: 0,
+        /** z 座標 */
+        z: 0,
+        
+
+        /**
+         * @constructor
+         * - [Test Program](http://tmlib-js.googlecode.com/svn/trunk/test/geom/vector-test.html)
+         */
+        init: function(x, y, z) {
+            this.set(x, y, z);
+        },
+        
+        /**
+         * セット
+         */
+        set: function(x, y, z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            
+            return this;
+        },
+        
+        /**
+         * 数値からセット
+         */
+        setNumber: function(x, y, z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            
+            return this;
+        },
+        
+        /**
+         * 配列からセット
+         */
+        setArray: function(arr) {
+            this.x = arr[0];
+            this.y = arr[1];
+            this.z = arr[2];
+            
+            return this;
+        },
+        
+        /**
+         * オブジェクトからセット
+         */
+        setObject: function(obj) {
+            this.x = obj.x;
+            this.y = obj.y;
+            this.z = obj.z;
+            
+            return this;
+        },
+        
+        /**
+         * 文字列からセット
+         */
+        setString: function(str) {
+            var m = str.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);
+            this.x = parseFloat(m[1]);
+            this.y = parseFloat(m[3]);
+            this.z = parseFloat(m[5]);
+            
+            return this;
+        },
+        
+        /**
+         * 角度(radian)と長さでベクトルをセット
+         */
+        setAngle: function(thetaRad, phiRad, len) {
+            len = len || 1;
+            
+            this.x = len * Math.cos(thetaRad) * Math.sin(phiRad);
+            this.y = len * Math.sin(thetaRad);
+            this.z = len * Math.cos(thetaRad) * Math.cos(phiRad);
+            
+            return this;
+        },
+        
+        /**
+         * 角度(radian)と長さでベクトルをセット
+         */
+        setRadian: function(thetaRad, phiRad, len) {
+            return this.setAngle(thetaRad, phiRad, len);
+        },
+        
+        /**
+         * 角度(degree)と長さでベクトルをセット
+         */
+        setDegree: function(thetaDegree, phiDegree, len) {
+            return this.setAngle(thetaDegree*Math.DEG_TO_RAD, phiDegree*Math.DEG_TO_RAD, len);
+        },
+        
+        /**
+         * 賢いセット
+         */
+        setSmart: function(x, y, z) {
+            var v = arguments[0];
+            // xyz
+            if (arguments.length === 3) {
+                this.x = x;
+                this.y = y;
+                this.z = z;
+            }
+            // Array
+            else if (v instanceof Array) {
+                this.x = v[0];
+                this.y = v[1];
+                this.z = v[2];
+            }
+            // Object
+            else if (v instanceof Object) {
+                this.x = v.x;
+                this.y = v.y;
+                this.z = v.z;
+            }
+            // String
+            else if (typeof(v) == "string") {
+                var m = v.match(/(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?),\s*(-?\d+(\.{1}\d+)?)/);
+                this.x = parseFloat(m[1]);
+                this.y = parseFloat(m[3]);
+                this.z = parseFloat(m[5]);
+            }
+            
+            return this;
+        },
+        
+        /**
+         * 加算
+         */
+        add: function(v) {
+            this.x += v.x;
+            this.y += v.y;
+            this.z += v.z;
+            
+            return this;
+        },
+        
+        /**
+         * 減算
+         */
+        sub: function(v) {
+            this.x -= v.x;
+            this.y -= v.y;
+            this.z -= v.z;
+            
+            return this;
+        },
+        
+        /**
+         * 乗算
+         */
+        mul: function(n) {
+            this.x *= n;
+            this.y *= n;
+            this.z *= n;
+            
+            return this;
+        },
+        
+        /**
+         * 除算
+         */
+        div: function(n) {
+            console.assert(n != 0, "0 division!!");
+            this.x /= n;
+            this.y /= n;
+            this.z /= n;
+            
+            return this;
+        },
+        
+        /**
+         * 反転
+         */
+        negate: function() {
+            this.x = -this.x;
+            this.y = -this.y;
+            this.z = -this.z;
+            
+            return this;
+        },
+
+        /**
+         * 内積.
+         * 投影ベクトルを求めたり, 類似度に使ったり.
+         */
+        dot: function(v) {
+            return this.x * v.x + this.y * v.y + this.z * v.z;
+        },
+
+        /**
+         * 外積
+         */
+        cross: function(v) {
+            var x = this.y*v.z - this.z*v.y;
+            var y = this.z*v.x - this.x*v.z;
+            var z = this.x*v.y - this.y*v.x;
+
+            this.set(x, y, z);
+
+            return this;
+        },
+        
+        /**
+         * 長さを取得
+         * or magnitude
+         */
+        length: function() {
+            return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+        },
+        
+        /**
+         * 2乗された長さを取得
+         * C# の名前を引用
+         * or lengthSquare or lengthSqrt
+         */
+        lengthSquared: function() {
+            return this.x*this.x + this.y*this.y + this.z*this.z;
+        },
+        
+        /**
+         * 正規化
+         */
+        normalize: function() {
+            var length = this.length();
+            this.div(length);
+            
+            return this;
+        },
+        
+        /**
+         * ２次元ベクトルに変換
+         */
+        toVector2: function() {
+            // TODO:
+        },
+        
+
+        /**
+         * 角度(radian)に変換
+         */
+        toAngleXY: function() {
+            return Math.atan2(this.y, this.x);
+        },
+        
+        
+        /**
+         * 3D化する
+         */
+        to3D: function() {
+            // TODO: 3d化する
+        },
+        
+        /**
+         * 等しいか
+         */
+        equals: function(x, y, z) {
+            return ( (this.x === x) && (this.y === y) && (this.z === z) );
+        },
+        // equals: function(obj) {
+            // return this.equals(obj.x, obj.y, obj.z);
+        // },
+        
+        /**
+         * 配列と等しいか
+         */
+        equalsArray: function(arr) {
+            return this.equals(arr[0], arr[1], arr[2]);
+        },
+        
+        /**
+         * オブジェクトと等しいか
+         */
+        equalsObject: function(obj) {
+            return this.equals(obj.x, obj.y, obj.z);
+        },
+        
+        /**
+         * 賢い比較
+         */
+        equalsSmart: function() {
+            // TODO: 
+        },
+
+        /**
+         * スタイル文字列に変換
+         */
+        toStyleString: function() {
+            return "{x:{x}, y:{y}, z:{z}}".format(this);
+        },
+
+        /**
+         * 文字列に変換
+         */
+        toString: function() {
+            return "{x:{x}, y:{y}, z:{z}}".format(this);
+        },
+        
+        
+        /**
+         * X値をセット
+         * チェーンメソッド用セッター
+         */
+        setX: function(x) {
+            this.x = x;
+            return this;
+        },
+        
+        /**
+         * Y値をセット
+         * チェーンメソッド用セッター
+         */
+        setY: function(y) {
+            this.y = y;
+            return this;
+        },
+        
+        /**
+         * Z値をセット
+         * チェーンメソッド用セッター
+         */
+        setZ: function(z) {
+            this.z = z;
+            return this;
+        }
+    });
+    
+    
+    
+    /**
+     * @method
+     * @static
+     * min
+     */
+    tm.geom.Vector3.min = function(lhs, rhs) {
+        return Vector3(
+            (lhs.x < rhs.x) ? lhs.x : rhs.x,
+            (lhs.y < rhs.y) ? lhs.y : rhs.y,
+            (lhs.z < rhs.z) ? lhs.z : rhs.z
+        );
+    };
+    
+    /**
+     * @method
+     * @static
+     * max
+     */
+    tm.geom.Vector3.max = function(lhs, rhs) {
+        return Vector3(
+            (lhs.x > rhs.x) ? lhs.x : rhs.x,
+            (lhs.y > rhs.y) ? lhs.y : rhs.y,
+            (lhs.z > rhs.z) ? lhs.z : rhs.z
+        );
+    };
+    
+    /**
+     * @method
+     * @static
+     * 加算
+     */
+    tm.geom.Vector3.add = function(lhs, rhs) {
+        return tm.geom.Vector3(lhs.x+rhs.x, lhs.y+rhs.y, lhs.z+rhs.z);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 減算
+     */
+    tm.geom.Vector3.sub = function(lhs, rhs) {
+        return tm.geom.Vector3(lhs.x-rhs.x, lhs.y-rhs.y, lhs.z-rhs.z);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 乗算
+     */
+    tm.geom.Vector3.mul = function(v, n) {
+        return tm.geom.Vector3(v.x*n, v.y*n, v.z*n);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 割算
+     */
+    tm.geom.Vector3.div = function(v, n) {
+        return tm.geom.Vector3(v.x/n, v.y/n, v.z/n);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 内積.
+     * 投影ベクトルを求めたり, 類似度に使ったり.
+     */
+    tm.geom.Vector3.dot = function(lhs, rhs) {
+        return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+    };
+    
+
+    /**
+     * @method
+     * @static
+     * 外積
+     */
+    tm.geom.Vector3.cross = function(lhs, rhs) {
+        return tm.geom.Vector3(
+            lhs.y*rhs.z - lhs.z*rhs.y,
+            lhs.z*rhs.x - lhs.x*rhs.z,
+            lhs.x*rhs.y - lhs.y*rhs.x
+        );
+    };
+    
+    /**
+     * @method
+     * @static
+     * 反転
+     */
+    tm.geom.Vector3.negate = function(v) {
+        return tm.geom.Vector3(-v.x, -v.y, -v.z);
+    };
+    
+    /**
+     * @method
+     * @static
+     * ２点間の距離を返す
+     */
+    tm.geom.Vector3.distance = function(lhs, rhs) {
+        return Math.sqrt( Math.pow(lhs.x-rhs.x, 2) + Math.pow(lhs.y-rhs.y, 2) + Math.pow(lhs.z-rhs.z, 2) );
+    };
+    
+    /**
+     * @method
+     * @static
+     * ２点間の距離を返す
+     */
+    tm.geom.Vector3.distanceSquared = function(lhs, rhs) {
+        return Math.pow(lhs.x-rhs.x, 2) + Math.pow(lhs.y-rhs.y, 2) + Math.pow(lhs.z-rhs.z, 2);
+    };
+
+    /**
+     * @method
+     * @static
+     * マンハッタン距離
+     */
+    tm.geom.Vector3.manhattanDistance = function(lhs, rhs) {
+        return Math.abs(lhs.x-rhs.x) + Math.abs(lhs.y-rhs.y) + Math.abs(lhs.z-rhs.z);
+    };
+    
+    /**
+     * @method
+     * @static
+     * 反射ベクトル
+     */
+    tm.geom.Vector3.reflect = function(v, normal) {
+        var len = Vector3.dot(v, normal);
+        var temp= Vector3.mul(normal, 2*len);
+        
+        return Vector3.sub(v, temp);
+    };
+
+    /**
+     * @method
+     * @static
+     * 補間.
+     * 0.5 で lhs と rhs の中間ベクトルを求めることができます.
+     */
+    tm.geom.Vector3.lerp = function(lhs, rhs, t) {
+        return tm.geom.Vector3(
+            lhs.x + (rhs.x-lhs.x)*t,
+            lhs.y + (rhs.y-lhs.y)*t,
+            lhs.z + (rhs.z-lhs.z)*t
+        );
+    };
+    
+    
+    /**
+     * @method
+     * @static
+     * 補間
+     */
+    tm.geom.Vector3.slerp = function(lhs, rhs, t) {
+        // TODO:
+        // cos...
+    };
+    
+    /**
+     * @method
+     * @static
+     * min ~ max の間でランダムな方向のベクトルを生成する. len で長さ指定.
+     */
+    tm.geom.Vector3.random = function(thetaMin, thetaMax, phiMin, phiMax, len) {
+        thetaMin= thetaMin || 0;
+        thetaMax= thetaMax || 360;
+        phiMin  = phiMin || 0;
+        phiMax  = phiMax || 360;
+        len = len || 1;
+        return TM.Geom.Vector3().setFromDegree(TM.randomf(thetaMin, thetaMax), TM.randomf(phiMin, phiMax), len);
+    };
+    
+    
+    
+    /*
+    Vector3.prototype.accessor("length", {
+        "get": function()    { return this.length(); },
+        "set": function(len) { this.normalize().mul(len); }
+    });
+    */
+    
+    
+    /**
+     * @property
+     * @static
+     * zero
+     */
+    tm.geom.Vector3.ZERO    = tm.geom.Vector3( 0, 0, 0);
+    
+    /**
+     * @property
+     * @static
+     * left
+     */
+    tm.geom.Vector3.LEFT    = tm.geom.Vector3(-1, 0, 0);
+    
+    /**
+     * @property
+     * @static
+     * right
+     */
+    tm.geom.Vector3.RIGHT   = tm.geom.Vector3( 1, 0, 0);
+    
+    /**
+     * @property
+     * @static
+     * up
+     */
+    tm.geom.Vector3.UP      = tm.geom.Vector3( 0, 1, 0);
+    
+    /**
+     * @property
+     * @static
+     * down
+     */
+    tm.geom.Vector3.DOWN    = tm.geom.Vector3( 0,-1, 0);
+    
+    /**
+     * @property
+     * @static
+     * forward
+     */
+    tm.geom.Vector3.FORWARD = tm.geom.Vector3( 0, 0,-1);
+    
+    /**
+     * @property
+     * @static
+     * backward
+     */
+    tm.geom.Vector3.BACKWARD= tm.geom.Vector3( 0, 0, 1);
+    
+})();
+
+
+/*
+ * matrix33.js
+ */
+
+tm.geom = tm.geom || {};
+
+(function() {
+    
+    /**
+     * @class   tm.geom.Matrix33
+     * 3*3 マトリックスクラス
+     */
+    tm.define("tm.geom.Matrix33", {
+        /**
+         * 要素
+         */
+        m: null,
+        
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.m = [];
+            if (arguments.length >= 9) {
+                this.set.apply(this, arguments);
+            }
+            else {
+                this.identity();
+            }
+        },
+        
+        /**
+         * クローン
+         */
+        clone: function() {
+            var m = this.m;
+            return tm.geom.Matrix33(
+                m[0], m[3], m[6],
+                m[1], m[4], m[7],
+                m[2], m[5], m[8]
+            );
+        },
+        
+        /**
+         * セッター
+         */
+        set: function(m00, m01, m02, m10, m11, m12, m20, m21, m22) {
+            console.assert(arguments.length>=9, "");
+            
+            // |m00, m01, m02|
+            // |m10, m11, m12|
+            // |m20, m21, m22|
+            
+            // |m[0], m[3], m[6]|
+            // |m[1], m[4], m[7]|
+            // |m[2], m[5], m[8]|
+            
+            // |a, b, tx|
+            // |c, d, ty|
+            // |0, 0,  1|
+            
+            this.m00 = m00; this.m01 = m01; this.m02 = m02;
+            this.m10 = m10; this.m11 = m11; this.m12 = m12;
+            this.m20 = m20; this.m21 = m21; this.m22 = m22;
+            
+            return this;
+        },
+        
+        /**
+         * 配列からセット
+         */
+        setArray: function(arr) {
+            this.set(
+                arr[0], arr[3], arr[6],
+                arr[1], arr[4], arr[7],
+                arr[2], arr[5], arr[8]
+            );
+            
+            return this;
+        },
+        
+        /**
+         * オブジェクトからセット
+         */
+        setObject: function(obj) {
+            this.set(
+                obj.m00, obj.m01, obj.m02,
+                obj.m10, obj.m11, obj.m12,
+                obj.m20, obj.m21, obj.m22
+            );
+            
+            return this;
+        },
+        
+        /**
+         * 単位行列
+         */
+        identity: function() {
+            var m = this.m;
+            
+            m[0] = 1; m[3] = 0; m[6] = 0;
+            m[1] = 0; m[4] = 1; m[7] = 0;
+            m[2] = 0; m[5] = 0; m[8] = 1;
+            
+            return this;
+        },
+        
+        /**
+         * 転置
+         */
+        transpose: function() {
+            this.m.swap(1, 3);
+            this.m.swap(2, 6);
+            this.m.swap(5, 7);
+            
+            return this;
+        },
+        
+        /**
+         * 逆行列
+         */
+        invert: function() {
+            var m = this.m;
+            var m00 = m[0], m01 = m[3], m02 = m[6];
+            var m10 = m[1], m11 = m[4], m12 = m[7];
+            var m20 = m[2], m21 = m[5], m22 = m[8];
+            var det = this.determinant();
+            
+            // |m00, m01, m02|
+            // |m10, m11, m12|
+            // |m20, m21, m22|
+            
+            this.m00 = (m11*m22-m12*m21)/det;
+            this.m01 = (m10*m22-m12*m20)/det*-1;
+            this.m02 = (m10*m21-m11*m20)/det;
+            
+            this.m10 = (m01*m22-m02*m21)/det*-1;
+            this.m11 = (m00*m22-m02*m20)/det;
+            this.m12 = (m00*m21-m01*m20)/det*-1;
+            
+            this.m20 = (m01*m12-m02*m11)/det;
+            this.m21 = (m00*m12-m02*m10)/det*-1;
+            this.m22 = (m00*m11-m01*m10)/det;
+            
+            this.transpose();
+            
+            return this;
+        },
+
+        /**
+         * 行列式
+         */
+        determinant: function() {
+            var m = this.m;
+            
+            var m00 = m[0], m01 = m[3], m02 = m[6];
+            var m10 = m[1], m11 = m[4], m12 = m[7];
+            var m20 = m[2], m21 = m[5], m22 = m[8];
+            
+            return m00*m11*m22 + m10*m21*m02 + m01*m12*m20 - m02*m11*m20 - m01*m10*m22 - m12*m21*m00;
+        },
+        
+        /**
+         * ゼロクリア
+         */
+        zero: function() {
+            this.set(
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0
+            );
+            
+            return this;
+        },
+        
+        /**
+         * 移動
+         */
+        translate: function(x, y) {
+            var m = this.m;
+            
+            m[6] = m[0] * x + m[3] * y + m[6];
+            m[7] = m[1] * x + m[4] * y + m[7];
+            m[8] = m[2] * x + m[5] * y + m[8];
+            
+            return this;
+            
+            return this.multiply( tm.geom.Matrix33.translate(x, y) );
+        },
+        
+        /**
+         * X軸回転
+         */
+        rotateX: function(rad) {
+            return this.multiply( tm.geom.Matrix33.rotateX(rad) );
+        },
+        
+        /**
+         * Y軸回転
+         */
+        rotateY: function(rad) {
+            return this.multiply( tm.geom.Matrix33.rotateY(rad) );
+        },
+        
+        /**
+         * Z軸回転
+         */
+        rotateZ: function(rad) {
+            var s = Math.sin(rad);
+            var c = Math.cos(rad);
+            var m = this.m;
+            
+            var m00 = m[0];
+            var m10 = m[1];
+            var m20 = m[2];
+            var m01 = m[3];
+            var m11 = m[4];
+            var m21 = m[5];
+            
+            
+            return this.multiply( tm.geom.Matrix33.rotateZ(rad) );
+        },
+        
+        /**
+         * スケーリング
+         */
+        scale: function(x, y) {
+            var m = this.m;
+            
+            m[0] *= x; m[3] *= y;
+            m[1] *= x; m[4] *= y;
+            m[2] *= x; m[5] *= y;
+            
+            return this;
+            return this.multiply( tm.geom.Matrix33.scale(x, y) );
+        },
+        
+        /**
+         * 掛け算
+         */
+        multiply: function(mat) {
+            var tm = this.m;
+            var om = mat.m;
+            
+            var a00 = tm[0], a01 = tm[3], a02 = tm[6];
+            var a10 = tm[1], a11 = tm[4], a12 = tm[7];
+            var a20 = tm[2], a21 = tm[5], a22 = tm[8];
+            var b00 = om[0], b01 = om[3], b02 = om[6];
+            var b10 = om[1], b11 = om[4], b12 = om[7];
+            var b20 = om[2], b21 = om[5], b22 = om[8];
+            
+            
+            tm[0] = a00*b00 + a01*b10 + a02*b20;
+            tm[3] = a00*b01 + a01*b11 + a02*b21;
+            tm[6] = a00*b02 + a01*b12 + a02*b22;
+            
+            tm[1] = a10*b00 + a11*b10 + a12*b20;
+            tm[4] = a10*b01 + a11*b11 + a12*b21;
+            tm[7] = a10*b02 + a11*b12 + a12*b22;
+            
+            tm[2] = a20*b00 + a21*b10 + a22*b20;
+            tm[5] = a20*b01 + a21*b11 + a22*b21;
+            tm[8] = a20*b02 + a21*b12 + a22*b22;
+            
+            return this;
+        },
+        
+        /**
+         * ベクトルとの掛け算
+         */
+        multiplyVector2: function(v) {
+            var vx = this.m00*v.x + this.m01*v.y + this.m02;
+            var vy = this.m10*v.x + this.m11*v.y + this.m12;
+            
+            return tm.geom.Vector2(vx, vy);
+        },
+        
+        /**
+         * ベクトルとの掛け算
+         */
+        multiplyVector3: function(v) {
+            var vx = this.m00*v.x + this.m01*v.y + this.m02*v.z;
+            var vy = this.m10*v.x + this.m11*v.y + this.m12*v.z;
+            var vz = this.m20*v.x + this.m21*v.y + this.m22*v.z;
+            
+            return tm.geom.Vector3(vx, vy, vz);
+        },
+        
+        /**
+         * 配列に変換
+         */
+        toArray: function() {
+            return this.m.slice();
+        },
+        
+        /**
+         * 文字列化
+         */
+        toString: function() {
+            return "|{m00}, {m01}, {m02}|\n|{m10}, {m11}, {m12}|\n|{m20}, {m21}, {m22}|".format(this);
+        },
+        
+    });
+    
+    
+    
+    /**
+     * @property    m00
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m00", {
+        "get": function()   { return this.m[0]; },
+        "set": function(v)  { this.m[0] = v;    }
+    });
+    /**
+     * @property    m10
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m10", {
+        "get": function()   { return this.m[1]; },
+        "set": function(v)  { this.m[1] = v;    }
+    });
+    /**
+     * @property    m20
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m20", {
+        "get": function()   { return this.m[2]; },
+        "set": function(v)  { this.m[2] = v;    }
+    });
+    
+    /**
+     * @property    m01
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m01", {
+        "get": function()   { return this.m[3]; },
+        "set": function(v)  { this.m[3] = v;    }
+    });
+    /**
+     * @property    m11
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m11", {
+        "get": function()   { return this.m[4]; },
+        "set": function(v)  { this.m[4] = v;    }
+    });
+    /**
+     * @property    m21
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m21", {
+        "get": function()   { return this.m[5]; },
+        "set": function(v)  { this.m[5] = v;    }
+    });
+    
+    /**
+     * @property    m02
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m02", {
+        "get": function()   { return this.m[6]; },
+        "set": function(v)  { this.m[6] = v;    }
+    });
+    /**
+     * @property    m12
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m12", {
+        "get": function()   { return this.m[7]; },
+        "set": function(v)  { this.m[7] = v;    }
+    });
+    /**
+     * @property    m22
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("m22", {
+        "get": function()   { return this.m[8]; },
+        "set": function(v)  { this.m[8] = v;    }
+    });
+
+    /**
+     * @property    a
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("a", {
+        "get": function()   { return this.m[0]; },
+        "set": function(v)  { this.m[0] = v;    }
+    });
+    /**
+     * @property    b
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("b", {
+        "get": function()   { return this.m[3]; },
+        "set": function(v)  { this.m[3] = v;    }
+    });
+    /**
+     * @property    c
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("c", {
+        "get": function()   { return this.m[1]; },
+        "set": function(v)  { this.m[1] = v;    }
+    });
+    /**
+     * @property    d
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("d", {
+        "get": function()   { return this.m[4]; },
+        "set": function(v)  { this.m[4] = v;    }
+    });
+    /**
+     * @property    tx
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("tx", {
+        "get": function()   { return this.m[6]; },
+        "set": function(v)  { this.m[6] = v;    }
+    });
+    /**
+     * @property    ty
+     * 要素
+     */
+    tm.geom.Matrix33.prototype.accessor("ty", {
+        "get": function()   { return this.m[7]; },
+        "set": function(v)  { this.m[7] = v;    }
+    });
+    
+
+    /**
+     * @static
+     * @method
+     * 移動
+     */
+    tm.geom.Matrix33.translate = function(x, y) {
+        return tm.geom.Matrix33(
+            1, 0, x,
+            0, 1, y,
+            0, 0, 1
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * X軸回転
+     */
+    tm.geom.Matrix33.rotateX = function(rad) {
+        var c = Math.cos(rad);
+        var s = Math.sin(rad);
+        
+        return tm.geom.Matrix33(
+            1, 0, 0,
+            0, c,-s,
+            0, s, c
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * Y軸回転
+     */
+    tm.geom.Matrix33.rotateY = function(rad) {
+        var c = Math.cos(rad);
+        var s = Math.sin(rad);
+        
+        return tm.geom.Matrix33(
+             c, 0, s,
+             0, 1, 0,
+            -s, 0, c
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * Z軸回転
+     */
+    tm.geom.Matrix33.rotateZ = function(rad) {
+        var c = Math.cos(rad);
+        var s = Math.sin(rad);
+        
+        return tm.geom.Matrix33(
+            c,-s, 0,
+            s, c, 0,
+            0, 0, 1
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * スケーリング
+     */
+    tm.geom.Matrix33.scale = function(x, y) {
+        var mat = tm.geom.Matrix33();
+        
+        if (y == undefined) y = x;
+        
+        mat.set(
+            x, 0, 0,
+            0, y, 0,
+            0, 0, 1
+        );
+        
+        return mat;
+    };
+    
+})();
+
+
+
+
+
+
+
+
+
+
+/*
+ * matrix44.js
+ */
+
+tm.geom = tm.geom || {};
+
+(function() {
+    
+    /**
+     * @class
+     * 4*4 マトリックスクラス
+     */
+    tm.geom.Matrix44 = tm.createClass({
+        /** 要素 */
+        m: null,
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.m = [];
+            if (arguments.length >= 16) {
+                this.set.apply(this, arguments);
+            }
+            else {
+                this.identity();
+            }
+        },
+        
+        /**
+         * セット
+         */
+        set: function(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
+            console.assert(arguments.length>=16, "");
+            
+            // |m00, m01, m02, m03|
+            // |m10, m11, m12, m13|
+            // |m20, m21, m22, m23|
+            // |m30, m31, m32, m33|
+            
+            this.m00 = m00; this.m01 = m01; this.m02 = m02; this.m03 = m03;
+            this.m10 = m10; this.m11 = m11; this.m12 = m12; this.m13 = m13;
+            this.m20 = m20; this.m21 = m21; this.m22 = m22; this.m23 = m23;
+            this.m30 = m30; this.m31 = m31; this.m32 = m32; this.m33 = m33;
+            
+            return this;
+        },
+        
+        /**
+         * 配列からセット
+         */
+        setArray: function(arr) {
+            this.set(
+                arr[0], arr[4],  arr[8], arr[12],
+                arr[1], arr[5],  arr[9], arr[13],
+                arr[2], arr[6], arr[10], arr[14],
+                arr[3], arr[7], arr[11], arr[15]
+            );
+            
+            return this;
+        },
+        
+        /**
+         * オブジェクトからセット.
+         * Matrix44 もこいつでいける!!
+         */
+        setObject: function(obj) {
+            this.set(
+                obj.m00, obj.m01, obj.m02, obj.m03,
+                obj.m10, obj.m11, obj.m12, obj.m13,
+                obj.m20, obj.m21, obj.m22, obj.m23,
+                obj.m30, obj.m31, obj.m32, obj.m33
+            );
+            
+            return this;
+        },
+        
+        
+        /**
+         * 単位行列
+         */
+        identity: function() {
+            this.set(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
+            return this;
+        },
+        
+        /**
+         * 転置
+         */
+        transpose: function() {
+            this.m.swap(1, 4);
+            this.m.swap(2, 8);
+            this.m.swap(3, 12);
+            this.m.swap(6, 9);
+            this.m.swap(7, 13);
+            this.m.swap(11, 14);
+            
+            return this;
+        },
+        
+        /**
+         * 移動
+         */
+        translate: function(x, y, z) {
+            return this.multiply( tm.geom.Matrix44.translate(x, y, z) );
+        },
+        
+        /**
+         * 回転
+         */
+        rotate: function(angle) {
+            // TODO: いつか実装する
+            console.error("Unimplemented");
+        },
+        
+        /**
+         * X軸を基軸に回転する
+         */
+        rotateX: function(rad) {
+            return this.multiply( tm.geom.Matrix44.rotateX(rad) );
+        },
+        
+        /**
+         * Y軸を基軸に回転する
+         */
+        rotateY: function(rad) {
+            return this.multiply( tm.geom.Matrix44.rotateY(rad) );
+        },
+        
+        /**
+         * Z軸を基軸に回転する
+         */
+        rotateZ: function(rad) {
+            return this.multiply( tm.geom.Matrix44.rotateZ(rad) );
+        },
+        
+        /**
+         * スケーリング
+         */
+        scale: function(x, y, z) {
+            return this.multiply( tm.geom.Matrix44.scale(x, y, z) );
+        },
+        
+        /**
+         * ゼロ
+         */
+        zero: function() {
+            this.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return this;
+        },
+        
+        /**
+         * 乗算
+         * this * mat
+         */
+        multiply: function(mat) {
+            var m00 = this.m00*mat.m00 + this.m01*mat.m10 + this.m02*mat.m20 + this.m03*mat.m30;
+            var m01 = this.m00*mat.m01 + this.m01*mat.m11 + this.m02*mat.m21 + this.m03*mat.m31;
+            var m02 = this.m00*mat.m02 + this.m01*mat.m12 + this.m02*mat.m22 + this.m03*mat.m32;
+            var m03 = this.m00*mat.m03 + this.m01*mat.m13 + this.m02*mat.m23 + this.m03*mat.m33;
+            
+            var m10 = this.m10*mat.m00 + this.m11*mat.m10 + this.m12*mat.m20 + this.m13*mat.m30;
+            var m11 = this.m10*mat.m01 + this.m11*mat.m11 + this.m12*mat.m21 + this.m13*mat.m31;
+            var m12 = this.m10*mat.m02 + this.m11*mat.m12 + this.m12*mat.m22 + this.m13*mat.m32;
+            var m13 = this.m10*mat.m03 + this.m11*mat.m13 + this.m12*mat.m23 + this.m13*mat.m33;
+            
+            var m20 = this.m20*mat.m00 + this.m21*mat.m10 + this.m22*mat.m20 + this.m23*mat.m30;
+            var m21 = this.m20*mat.m01 + this.m21*mat.m11 + this.m22*mat.m21 + this.m23*mat.m31;
+            var m22 = this.m20*mat.m02 + this.m21*mat.m12 + this.m22*mat.m22 + this.m23*mat.m32;
+            var m23 = this.m20*mat.m03 + this.m21*mat.m13 + this.m22*mat.m23 + this.m23*mat.m33;
+            
+            var m30 = this.m30*mat.m00 + this.m31*mat.m10 + this.m32*mat.m20 + this.m33*mat.m30;
+            var m31 = this.m30*mat.m01 + this.m31*mat.m11 + this.m32*mat.m21 + this.m33*mat.m31;
+            var m32 = this.m30*mat.m02 + this.m31*mat.m12 + this.m32*mat.m22 + this.m33*mat.m32;
+            var m33 = this.m30*mat.m03 + this.m31*mat.m13 + this.m32*mat.m23 + this.m33*mat.m33;
+            
+            return this.set(
+                m00, m01, m02, m03,
+                m10, m11, m12, m13,
+                m20, m21, m22, m23,
+                m30, m31, m32, m33
+            );
+        },
+        
+        /*
+        getAxisX: function() { return TM.Geom.Vector3(this.m00, this.m10, this.m20); },
+        getAxisY: function() { return TM.Geom.Vector3(this.m01, this.m11, this.m21); },
+        getAxisZ: function() { return TM.Geom.Vector3(this.m02, this.m12, this.m22); },
+        */
+        
+        /**
+         * X軸ベクトルをゲット
+         */
+        getAxisX: function() { return TM.Geom.Vector3(this.m00, this.m01, this.m02); },
+        /**
+         * Y軸ベクトルをゲット
+         */
+        getAxisY: function() { return TM.Geom.Vector3(this.m10, this.m11, this.m12); },
+        /**
+         * Z軸ベクトルをゲット
+         */
+        getAxisZ: function() { return TM.Geom.Vector3(this.m20, this.m21, this.m22); },
+
+        /**
+         * X軸ベクトルをセット
+         */
+        setAxisX: function(v) { this.m00=v.x, this.m01=v.y, this.m02=v.z; },
+        /**
+         * Y軸ベクトルをセット
+         */
+        setAxisY: function(v) { this.m10=v.x, this.m11=v.y, this.m12=v.z; },
+        /**
+         * Z軸ベクトルをセット
+         */
+        setAxisZ: function(v) { this.m20=v.x, this.m21=v.y, this.m22=v.z; },
+        
+        /**
+         * Matrix33 に変換
+         */
+        toMatrix33: function() {
+            // TODO:
+        },
+        
+        /**
+         * 配列に変換
+         */
+        toArray: function() {
+            return this.m.slice();
+        },
+        
+        /**
+         * 文字列化
+         */
+        toString: function() {
+            return "|{m00}, {m01}, {m02}, {m03}|\n|{m10}, {m11}, {m12}, {m13}|\n|{m20}, {m21}, {m22}, {m23}|\n|{m30}, {m31}, {m32}, {m33}|".format(this);
+        }
+        
+    });
+    
+    
+    /**
+     * @property    m00
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m00", {
+        "get": function()   { return this.m[0]; },
+        "set": function(v)  { this.m[0] = v;    }
+    });
+    /**
+     * @property    m01
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m10", {
+        "get": function()   { return this.m[1]; },
+        "set": function(v)  { this.m[1] = v;    }
+    });
+    /**
+     * @property    m02
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m20", {
+        "get": function()   { return this.m[2]; },
+        "set": function(v)  { this.m[2] = v;    }
+    });
+    /**
+     * @property    m03
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m30", {
+        "get": function()   { return this.m[3]; },
+        "set": function(v)  { this.m[3] = v;    }
+    });
+    
+    /**
+     * @property    m10
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m01", {
+        "get": function()   { return this.m[4]; },
+        "set": function(v)  { this.m[4] = v;    }
+    });
+    /**
+     * @property    m11
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m11", {
+        "get": function()   { return this.m[5]; },
+        "set": function(v)  { this.m[5] = v;    }
+    });
+    /**
+     * @property    m12
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m21", {
+        "get": function()   { return this.m[6]; },
+        "set": function(v)  { this.m[6] = v;    }
+    });
+    /**
+     * @property    m13
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m31", {
+        "get": function()   { return this.m[7]; },
+        "set": function(v)  { this.m[7] = v;    }
+    });
+    
+    /**
+     * @property    m20
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m02", {
+        "get": function()   { return this.m[8]; },
+        "set": function(v)  { this.m[8] = v;    }
+    });
+    /**
+     * @property    m21
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m12", {
+        "get": function()   { return this.m[9]; },
+        "set": function(v)  { this.m[9] = v;    }
+    });
+    /**
+     * @property    m22
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m22", {
+        "get": function()   { return this.m[10]; },
+        "set": function(v)  { this.m[10] = v;    }
+    });
+    /**
+     * @property    m23
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m32", {
+        "get": function()   { return this.m[11]; },
+        "set": function(v)  { this.m[11] = v;    }
+    });
+        
+    /**
+     * @property    m30
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m03", {
+        "get": function()   { return this.m[12]; },
+        "set": function(v)  { this.m[12] = v;    }
+    });
+    /**
+     * @property    m31
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m13", {
+        "get": function()   { return this.m[13]; },
+        "set": function(v)  { this.m[13] = v;    }
+    });
+    /**
+     * @property    m32
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m23", {
+        "get": function()   { return this.m[14]; },
+        "set": function(v)  { this.m[14] = v;    }
+    });
+    /**
+     * @property    m33
+     * 要素
+     */
+    tm.geom.Matrix44.prototype.accessor("m33", {
+        "get": function()   { return this.m[15]; },
+        "set": function(v)  { this.m[15] = v;    }
+    });
+    
+    
+    
+    
+
+    /**
+     * @static
+     * @method
+     * 移動
+     */
+    tm.geom.Matrix44.translate = function(x, y, z) {
+        return tm.geom.Matrix44(
+            1, 0, 0, x,
+            0, 1, 0, y,
+            0, 0, 1, z,
+            0, 0, 0, 1
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * X軸回転
+     */
+    tm.geom.Matrix44.rotateX = function(rad) {
+        var c = Math.cos(rad);
+        var s = Math.sin(rad);
+        
+        return tm.geom.Matrix44(
+            1, 0, 0, 0,
+            0, c,-s, 0,
+            0, s, c, 0,
+            0, 0, 0, 1
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * Y軸回転
+     */
+    tm.geom.Matrix44.rotateY = function(rad) {
+        var c = Math.cos(rad);
+        var s = Math.sin(rad);
+        
+        return tm.geom.Matrix44(
+             c, 0, s, 0,
+             0, 1, 0, 0,
+            -s, 0, c, 0,
+             0, 0, 0, 1
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * Z軸回転
+     */
+    tm.geom.Matrix44.rotateZ = function(rad) {
+        var c = Math.cos(rad);
+        var s = Math.sin(rad);
+        
+        return tm.geom.Matrix44(
+            c,-s, 0, 0,
+            s, c, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * スケーリング
+     */
+    tm.geom.Matrix44.scale = function(x, y, z) {
+        var mat = tm.geom.Matrix44();
+        
+        if (y == undefined) y = x;
+        if (z == undefined) z = x;
+        
+        mat.set(
+            x, 0, 0, 0,
+            0, y, 0, 0,
+            0, 0, z, 0,
+            0, 0, 0, 1
+        );
+        
+        return mat;
+    };
+
+    /**
+     * @static
+     * @method
+     * perspective
+     */
+    tm.geom.Matrix44.perspective = function(fovy, aspect, znear, zfar) {
+        var yscale = 1.0 / Math.tan(0.5*fovy*Math.PI/180);
+        var xscale = yscale / aspect;
+
+        return tm.geom.Matrix44(
+            xscale, 0.0, 0.0, 0.0,
+            0.0, yscale, 0.0, 0.0,
+            0.0, 0.0, zfar/(zfar-znear), znear*zfar/(znear-zfar),
+            0.0, 0.0, 1.0, 0.0
+        );
+    };
+    
+    /**
+     * @static
+     * @method
+     * ortho
+     */
+    tm.geom.Matrix44.ortho = function(left, right, bottom, top, near, far) {
+        /*
+        var lr = 1 / (left - right),
+            bt = 1 / (bottom - top),
+            nf = 1 / (near - far);
+        
+        return tm.geom.Matrix44(
+            -2*lr, 0, 0, 0,
+            0, -2*bt, 0, 0,
+            0, 0, 2*nf, 0,
+            (left+right)*lr, (top+bottom)*bt, (far+near)*nf, 1
+        );
+        */
+        
+        var rl = (right - left),
+            tb = (top - bottom),
+            fn = (far - near);
+        return tm.geom.Matrix44(
+            2.0/rl,      0,     0, 0,
+               0.0, 2.0/tb,     0, 0,
+                 0,      0, -2.0/fn, 0,
+            -(left+right)/rl, -(top+bottom)/tb, -(far+near)/fn, 1
+        ).transpose();
+    };
+
+    
+    /**
+     * @static
+     * @method
+     * lookAt
+     */
+    tm.geom.Matrix44.lookAt = function(eye, target, up) {
+        var axis_z = tm.geom.Vector3.sub(eye, target).normalize();
+        var axis_x = tm.geom.Vector3.cross(up, axis_z).normalize();
+        var axis_y = tm.geom.Vector3.cross(axis_z, axis_x).normalize();
+        
+        /*
+        return tm.geom.Matrix44(
+            axis_x.x, axis_x.y, axis_x.z, -tm.geom.Vector3.dot(eye, axis_x),
+            axis_y.x, axis_y.y, axis_y.z, -tm.geom.Vector3.dot(eye, axis_y),
+            axis_z.x, axis_z.y, axis_z.z, -tm.geom.Vector3.dot(eye, axis_z),
+            0, 0, 0, 1
+        );
+        */
+        
+        /*
+        return tm.geom.Matrix44(
+            axis_x.x, axis_y.x, axis_z.x, 0,
+            axis_x.y, axis_y.y, axis_z.y, 0,
+            axis_x.z, axis_y.z, axis_z.z, 0,
+            -tm.geom.Vector3.dot(eye, axis_x), -tm.geom.Vector3.dot(eye, axis_y), -tm.geom.Vector3.dot(eye, axis_z), 1
+        );
+        */
+        
+        var orientation = tm.geom.Matrix44(
+            axis_x.x, axis_y.x, axis_z.x, 0,
+            axis_x.y, axis_y.y, axis_z.y, 0,
+            axis_x.z, axis_y.z, axis_z.z, 0,
+            0, 0, 0, 1
+        );
+        var translation = tm.geom.Matrix44(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            -eye.x, -eye.y, -eye.z, 1
+        );
+
+        return translation.multiply(orientation);
+    };
+    
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * rect.js
+ */
+
+tm.geom = tm.geom || {};
+
+(function() {
+    
+    /**
+     * @class tm.geom.Rect
+     * 四角形クラス
+     */
+    tm.geom.Rect = tm.createClass({
+        /** x */
+        x: 0,
+        /** y */
+        y: 0,
+        /** 幅 */
+        width: 0,
+        /** 高さ */
+        height: 0,
+        
+        /**
+         * @constructor
+         */
+        init: function(x, y, width, height) {
+            this.set(x, y, width, height);
+        },
+        
+        /**
+         * セッター
+         */
+        set: function(x, y, width, height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            
+            return this;
+        },
+        
+
+        /**
+         * 移動
+         */
+        move: function(x, y) {
+            this.x = x;
+            this.y = y;
+            return this;
+        },
+        
+        /**
+         * 現在位置を基準に移動
+         */
+        moveBy: function(x, y) {
+            this.x += x;
+            this.y += y;
+            return this;
+        },
+        
+        /**
+         * リサイズ
+         */
+        resize: function(w, h) {
+            this.width = w;
+            this.height= h;
+            return this;
+        },
+        
+        /**
+         * 現在のサイズを基準にリサイズ
+         */
+        resizeBy: function(w, h) {
+            this.width += w;
+            this.height+= h;
+            return this;
+        },
+        
+        /**
+         * パディング.
+         * 縮めたりなど. 画面ハミ出しチェック時などに便利
+         * ## example
+         *     var circle = TM.$Circle(10, 10, 10);
+         *     var windowRect = TM.$Rect(0, 0, window.innerWidth, window.innerHiehgt);
+         *     windowRect.padding(circle.radius);
+         *     if (circle.x < windowRect.left) {
+         *         // 左にはみ出した時の処理
+         *     }
+         */
+        padding: function(top, right, bottom, left) {
+            // css の padding に合わせて時計回りにパラメータ調整
+            switch (arguments.length) {
+                case 1:
+                    top = right = bottom = left = arguments[0];
+                    break;
+                case 2:
+                    top     = bottom = arguments[0];
+                    right   = left   = arguments[1];
+                    break;
+                case 3:
+                    top     = arguments[0];
+                    right   = left = arguments[1];
+                    bottom  = arguments[2];
+                    break;
+            }
+            
+            this.x += left;
+            this.y += top;
+            this.width -= left+right;
+            this.height-= top +bottom;
+            
+            return this;
+        },
+
+        contains: function(x, y) {
+            return this.left <= x && x <= this.right && this.top <= y && y <= this.bottom;
+        },
+
+        /**
+         * クローン
+         */
+        clone: function() {
+            return tm.geom.Rect(this.x, this.y, this.width, this.height);
+        },
+        
+        /**
+         * 円に変換
+         */
+        toCircle: function() {
+            return tm.geom.Circle(
+                this.centerX,
+                this.centerY,
+                ((this.width < this.height) ? this.width : this.height)/2
+                );
+        },
+
+        /**
+         * 配列に変換
+         */
+        toArray: function() {
+            return [this.x, this.y, this.width, this.height];
+        },
+        
+    });
+    
+    
+    /**
+     * @property    left
+     * left
+     */
+    tm.geom.Rect.prototype.accessor("left", {
+        "get": function()   { return this.x; },
+        "set": function(v)  { this.width -= v-this.x; this.x = v; }
+    });
+    
+    /**
+     * @property    top
+     * top
+     */
+    tm.geom.Rect.prototype.accessor("top", {
+        "get": function()   { return this.y; },
+        "set": function(v)  { this.height -= v-this.y; this.y = v; }
+    });
+    
+    /**
+     * @property    right
+     * right
+     */
+    tm.geom.Rect.prototype.accessor("right", {
+        "get": function()   { return this.x + this.width; },
+        "set": function(v)  { this.width += v-this.right; }
+    });
+    
+    /**
+     * @property    bottom
+     * bottom
+     */
+    tm.geom.Rect.prototype.accessor("bottom", {
+        "get": function()   { return this.y + this.height; },
+        "set": function(v)  { this.height += v-this.bottom; }
+    });
+    
+    /**
+     * @property    centerX
+     * centerX
+     */
+    tm.geom.Rect.prototype.accessor("centerX", {
+        "get": function()   { return this.x + this.width/2; },
+        "set": function(v)  {
+            // TODO: どうしようかな??
+        }
+    });
+    
+    /**
+     * @property    centerY
+     * centerY
+     */
+    tm.geom.Rect.prototype.accessor("centerY", {
+        "get": function()   { return this.y + this.height/2; },
+        "set": function(v)  {
+            // TODO: どうしようかな??
+        }
+    });
+    
+})();
+
+
+/*
+ * circle.js
+ */
+
+tm.geom = tm.geom || {};
+
+(function() {
+    
+    /**
+     * @class tm.geom.Circle
+     * 円クラス
+     */
+    tm.define("tm.geom.Circle", {
+        /** x */
+        x: 0,
+        /** y */
+        y: 0,
+        /** 半径 */
+        radius: 0,
+        
+        /**
+         * @constructor
+         */
+        init: function(x, y, radius) {
+            this.set(x, y, radius);
+        },
+        
+        /**
+         * セッター
+         */
+        set: function(x, y, radius) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            
+            return this;
+        },
+        
+        /**
+         * 移動
+         */
+        move: function(x, y) {
+            this.x = x;
+            this.y = y;
+            return this;
+        },
+        
+        /**
+         * 現在位置を基準に移動
+         */
+        moveBy: function(x, y) {
+            this.x += x;
+            this.y += y;
+            return this;
+        },
+        
+        /**
+         * リサイズ
+         */
+        resize: function(size) {
+            this.radius = size;
+            return this;
+        },
+        
+        /**
+         * 現在のサイズを基準にリサイズ
+         */
+        resizeBy: function(size) {
+            this.radius += size;
+            return this;
+        },
+
+        /**
+         * 
+         */
+        contains: function(x, y) {
+            var lenX = this.x-x;
+            var lenY = this.y-y;
+            var lenSquared = (lenX*lenX)+(lenY*lenY);
+
+            return lenSquared <= this.radius*this.radius;
+        },
+
+        /**
+         * クローン作成
+         */
+        clone: function() {
+            return tm.geom.Circle(this.x, this.y, this.radius);
+        },
+        
+        /**
+         * 四角形に変換
+         */
+        toRect: function() {
+            return tm.geom.Rect(
+                this.x - this.radius,
+                this.y - this.radius,
+                this.radius*2, this.radius*2
+                );
+        },
+        
+        /**
+         * 配列に変換
+         */
+        toArray: function() {
+            return [this.x, this.y, this.radius];
+        }
+    });
+    
+    /**
+     * @property    left
+     * left
+     */
+    tm.geom.Circle.prototype.getter("left", function() {
+        return this.x - this.radius;
+    });
+    
+    /**
+     * @property    top
+     * top
+     */
+    tm.geom.Circle.prototype.getter("top", function() {
+        return this.y - this.radius;
+    });
+    
+    /**
+     * @property    right
+     * right
+     */
+    tm.geom.Circle.prototype.getter("right", function() {
+        return this.x + this.radius;
+    });
+    
+    /**
+     * @property    bottom
+     * bottom
+     */
+    tm.geom.Circle.prototype.getter("bottom", function() {
+        return this.y + this.radius;
+    });
+    
+})();
+
+
+/*
+ * collision.js
+ */
+
+tm.collision = tm.collision || {};
+ 
+(function() {
+
+    /**
+     * @class tm.collision
+     * 衝突判定
+     */
+    tm.collision;
+    
+    /**
+     * @method testCircleCircle
+     * 円同士の衝突判定
+     */
+    tm.collision.testCircleCircle = function(circle0, circle1) {
+        var distanceSquared = tm.geom.Vector2.distanceSquared(circle0, circle1);
+        return distanceSquared <= Math.pow(circle0.radius + circle1.radius, 2);
+    };
+    
+    /**
+     * @method testRectRect
+     * 矩形同士の衝突判定
+     */
+    tm.collision.testRectRect = function(rect0, rect1) {
+        return (rect0.left < rect1.right) && (rect0.right > rect1.left) &&
+               (rect0.top < rect1.bottom) && (rect0.bottom > rect1.top);
+    };
+
+    tm.collision.testCircleRect = function(circle, rect) {
+        // まずは大きな矩形で判定(高速化)
+        var bigRect = tm.geom.Rect(rect.left-circle.radius, rect.top-circle.radius, rect.width+circle.radius*2, rect.height+circle.radius*2);
+        if (bigRect.contains(circle.x, circle.y) == false) {
+            return false;
+        }
+        
+        // 2種類の矩形と衝突判定
+        var r = tm.geom.Rect(rect.left-circle.radius, rect.top, rect.width+circle.radius*2, rect.height);
+        if (r.contains(circle.x, circle.y)) {
+            return true;
+        }
+        r.set(rect.left, rect.top-circle.radius, rect.width, rect.height+circle.radius*2);
+        if (r.contains(circle.x, circle.y)) {
+            return true;
+        }
+        
+        // 円と矩形の４点の判定
+        var c = tm.geom.Circle(circle.x, circle.y, circle.radius);
+        // left top
+        if (c.contains(rect.left, rect.top)) {
+            return true;
+        }
+        // right top
+        if (c.contains(rect.right, rect.top)) {
+            return true;
+        }
+        // right bottom
+        if (c.contains(rect.right, rect.bottom)) {
+            return true;
+        }
+        // left bottom
+        if (c.contains(rect.left, rect.bottom)) {
+            return true;
+        }
+        
+        return false;
+    };
+
+    tm.collision.testRectCircle = function(rect, circle) {
+        return this.testCircleRect(circle, rect);
+    };
+ 
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * element.js
+ */
+
+
+tm.dom = tm.dom || {};
+
+(function() {
+    
+    /**
+     * @class
+     * Element クラス
+     */
+    tm.dom.Element = tm.createClass({
+        
+        /** エレメント */
+        element: null,
+        
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.set.apply(this, arguments);
+        },
+        
+        /**
+         * セッター
+         */
+        set: function(q) {
+            if (typeof q === "string") {
+                this.element = document.querySelector(q);
+            }
+            else if (q != undefined) {
+                this.element = q;
+            }
+            else {
+                // デフォルトはドキュメント
+                this.element = document;
+            }
+        },
+        
+
+        /**
+         * 子供の最後尾に追加
+         */
+        append: function(child) {
+            this.element.appendChild(child.element);
+            return this;
+        },
+        
+        /**
+         * 子供の先頭に追加
+         */
+        prepend: function(child) {
+            this.element.insertBefore(child.element, this.element.firstChild);
+            return this;
+        },
+        
+        /**
+         * 自分の後に追加
+         */
+        after: function(child) {
+            this.element.parentNode.insertBefore(child.element, this.element.nextSibling);
+            return this;
+        },
+        
+        /**
+         * 自分の前に追加
+         */
+        before: function(child) {
+            this.element.parentNode.insertBefore(child.element, this.element);
+            return this;
+        },
+        
+        /**
+         * 引数に渡された要素に自分を append
+         */
+        appendTo: function(parent) {
+            parent.append(this);
+            return this;
+        },
+        
+        /**
+         * 引数に渡された要素に自分を prepend
+         */
+        prependTo: function(parent) {
+            parent.prepend(this);
+            return this;
+        },
+        
+        /**
+         * 複製
+         */
+        clone: function() {
+            return tm.dom.Element(this.element.cloneNode(true));
+        },
+        
+        /**
+         * 親から自分を引っぺがす
+         */
+        remove: function() {
+            this.element.parentNode.removeChild(this.element);
+            return this;
+        },
+        
+        /**
+         * 要素生成
+         */
+        create: function(tag, addFuncName) {
+            // 要素を生成
+            var element = tm.dom.Element(document.createElement(tag));
+            // デフォルトの追加方法は append
+            if (!addFuncName) { addFuncName="append"; }
+            // 自分の子供として追加
+            this[addFuncName](element);
+            
+            return element;
+        },
+        
+        /**
+         * query
+         */
+        query: function(query, index) {
+            var elm = (index) ?
+                this.element.querySelectorAll(query)[index] : 
+                this.element.querySelector(query);
+            
+            return tm.dom.Element(elm);
+        },
+        
+        /**
+         * queryAll
+         */
+        queryAll: function(query) {
+            var list = this.element.querySelectorAll(query);
+            return tm.dom.ElementList(list);
+        },
+        
+        /**
+         * 固定化
+         */
+        fixed: function(x, y, width, height) {
+            this.style.set("position", "fixed");
+            if (x) this.x = x;
+            if (y) this.y = y;
+            if (width) this.width = width;
+            if (height) this.height = height;
+            return this;
+        },
+        
+        /**
+         * absolute 化
+         */
+        absolute: function(x, y, width, height) {
+            this.style.set("position", "absolute");
+            if (x) this.x = x;
+            if (y) this.y = y;
+            if (width) this.width = width;
+            if (height) this.height = height;
+            return this;
+        },
+        
+        /**
+         * フルスクリーン化
+         */
+        fullScreen: function() {
+            this.element.webkitRequestFullScreen();
+        },
+
+        /**
+         * 表示
+         */
+        show: function() {
+            this.visible = true;
+        },
+
+        /**
+         * 非表示
+         */
+        hide: function() {
+            this.visible = false;
+        },
+        
+        /**
+         * 文字列に変換
+         */
+        toString: function() {
+            return "tm.dom.element";
+        },
+        
+        /**
+         * 要素を取得
+         */
+        getElement: function() {
+            return this.element;
+        },
+        
+    });
+    
+    
+    
+    /** @property html  html の値 */
+    tm.dom.Element.prototype.accessor("html", {
+        "get": function()       { return this.element.innerHTML; },
+        "set": function(html)   { this.element.innerHTML = html; }
+    });
+    /** @property value  value の値 */
+    tm.dom.Element.prototype.accessor("value", {
+        "get": function()       { return this.element.value; },
+        "set": function(value)   { this.element.value = value; }
+    });
+    /** @property x  x値 */
+    tm.dom.Element.prototype.accessor("x", {
+        "get": function()   { return Number( this.element.style.left.replace("px", '') ); },
+        "set": function(x)  { this.element.style.left = x+"px"; }
+    });
+    /** @property y  y値 */
+    tm.dom.Element.prototype.accessor("y", {
+        "get": function()   { return Number( this.element.style.top.replace("px", '') ); },
+        "set": function(y)  { this.element.style.top = y+"px"; }
+    });
+    /** @property width  幅 */
+    tm.dom.Element.prototype.accessor("width", {
+        "get": function()   { return Number( this.element.style.width.replace("px", '') ); },
+        "set": function(w)  { this.element.style.width = w+"px"; }
+    });
+    /** @property height  高さ */
+    tm.dom.Element.prototype.accessor("height", {
+        "get": function()   { return Number( this.element.style.height.replace("px", '') ); },
+        "set": function(h)  { this.element.style.height = h+"px"; }
+    });
+    /** @property color  色 */
+    tm.dom.Element.prototype.accessor("color", {
+        "get": function()       { return this.element.style.color; },
+        "set": function(color)  { this.element.style.color = color; }
+    });
+    /** @property backgroundColor  背景色 */
+    tm.dom.Element.prototype.accessor("backgroundColor", {
+        "get": function()       { return this.element.style.backgroundColor; },
+        "set": function(color)  { this.element.style.backgroundColor = color; }
+    });
+    /** @property visible  表示/非表示 */
+    tm.dom.Element.prototype.accessor("visible", {
+        "get": function()   { return this.element.style.visibility != "hidden"; },
+        "set": function(v)  { this.element.style.visibility = (v==true) ? "visible" : "hidden"; }
+    });
+    /** @property text  テキスト */
+    tm.dom.Element.prototype.accessor("text", {
+        "get": function()   { return this.element.innerText || this.element.textContent; },
+        "set": function(v)  {
+            if (this.element.innerText) {
+                this.element.innerText = v;
+            } else {
+                this.element.textContent = v;
+            }
+        }
+    });
+    /** @property classList  クラスリスト */
+    tm.dom.Element.prototype.getter("classList", function()   { return this.element.classList; });
+    /** @property parent */
+    tm.dom.Element.prototype.getter("parent", function(){
+        return (this.element.parentNode != undefined) ? tm.dom.Element(this.element.parentNode) : null;
+    });
+    /** @property prev */
+    tm.dom.Element.prototype.getter("prev", function(){
+        return (this.element.previousSibling != undefined) ? tm.dom.Element(this.element.previousSibling) : null;
+    });
+    /** @property next */
+    tm.dom.Element.prototype.getter("next", function(){
+        return (this.element.nextSibling != undefined) ? tm.dom.Element(this.element.nextSibling) : null;
+    });
+    /** @property children */
+    tm.dom.Element.prototype.getter("children", function(){
+        return tm.dom.ElementList(this.element.children);
+    });
+    
+    
+})();
+
+
+
+
+
+(function(){
+    
+    /**
+     * @class tm.dom.ElementList
+     * エレメントリスト
+     * @extends global.Array
+     */
+    tm.dom.ElementList = tm.createClass({
+        superClass: Array,
+        
+        /**
+         * @constructor
+         * TM.DOM.Element 用配列
+         */
+        init: function(arr) {
+            if (typeof arguments[0] == "string") {
+                var query = arguments[0];
+                arr = document.querySelectorAll(query);
+            }
+            else if (arr == undefined) {
+                return ;
+            }
+            
+            for (var i=0,len=arr.length; i<len; ++i) {
+                this.push( tm.dom.Element(arr[i]) );
+            }
+        },
+        
+        /**
+         * 文字列に変換
+         */
+        toString: function() {
+            return "";
+        }
+    });
+    
+})();
+
+
+/*
+ * dom/evnet.js
+ */
+
+tm.dom = tm.dom || {};
+
+(function() {
+    
+    /**
+     * @class global.Event
+     * 既存のEventオブジェクト拡張
+     */
+    
+    // 仕方なしの IE 対応(これ引っかかったら他のもダメだから必要ないかも)
+    if (!Event.prototype.stopPropagation) {
+        /** @method */
+        Event.prototype.stopPropagation = function() {
+            this.cancelBubble = true;
+        };
+    }
+    if (!Event.prototype.preventDefault) {
+        /** @method */
+        Event.prototype.preventDefault = function() {
+            this.returnValue = false;
+        };
+    }
+    
+    /**
+     * @method stop
+     * イベントのデフォルト処理 & 伝達を止める
+     */
+    Event.prototype.stop = function() {
+        // イベントキャンセル
+        this.preventDefault();
+        // イベント伝達を止める
+        this.stopPropagation();
+    };
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class global.KeyboardEvent
+     * KeyboardEvent クラス
+     */
+    
+    /**
+     * @method    character
+     * 押したキーの文字を取得
+     */
+    KeyboardEvent.prototype.getter("character", function(){
+        return String.fromCharCode(this.keyCode);
+    });
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class global.MouseEvent
+     * MouseEvent クラス
+     */
+    
+    /**
+     * @method    pointX
+     * マウスのX座標.
+     */
+    MouseEvent.prototype.getter("pointX", function() {
+        return this.clientX - this.target.getBoundingClientRect().left;
+//        return this.pageX - this.target.getBoundingClientRect().left - window.scrollX;
+    });
+    
+    /**
+     * @method    pointY
+     * マウスのY座標.
+     */
+    MouseEvent.prototype.getter("pointY", function() {
+        return this.clientY - this.target.getBoundingClientRect().top;
+//        return this.pageY - this.target.getBoundingClientRect().top - window.scrollY;
+    });
+    
+})();
+
+
+
+
+(function() {
+    
+    if (window.TouchEvent === undefined) { return ; }
+    
+    
+    /**
+     * @class global.TouchEvent
+     * TouchEvent クラス
+     */
+    
+    /**
+     * @method    pointX
+     * タッチイベント.
+     */
+    TouchEvent.prototype.getter("pointX", function() {
+        return this.touches[0].clientX - this.target.getBoundingClientRect().left;
+//        return this.touches[0].pageX - this.target.getBoundingClientRect().left - tm.global.scrollX;
+    });
+    
+    /**
+     * @method    pointY
+     * タッチイベント.
+     */
+    TouchEvent.prototype.getter("pointY", function() {
+        return this.touches[0].clientY - this.target.getBoundingClientRect().top;
+//        return this.touches[0].pageY - this.target.getBoundingClientRect().top - tm.global.scrollY;
+    });
+    
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.dom.Event
+     * Event クラス
+     */
+    tm.dom.Event = tm.createClass({
+
+        /** DOMエレメント */
+        element     : null,
+        /** イベント発火時に実行する関数リスト */
+        funcList    : null,
+        /** 関数リストのインデックス　未使用？ */
+        funcIndex   : 0,
+        /** @property domElement */
+        
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+            this.domElement = element.element;
+            this.funcList = {};
+        },
+        
+        /**
+         * イベントを追加
+         */
+        add: function(type, fn, id) {
+            var self = this;
+            var elm  = this.element;
+            
+            var temp_fn = function(e) {
+                // return fn.apply(self, arguments);
+                var result = fn.apply(elm, arguments);
+                
+                if (result === false) {
+                    // デフォルトイベントをキャンセル
+                    e.preventDefault();
+                    e.returnValue = false;  // IE
+                    // イベント伝達をキャンセル
+                    e.stopPropagation();
+                }
+                
+                return result;
+            }
+            
+            this._funcIndex = this._funcIndex || 0;
+            id = id || this._funcIndex++;
+            this.funcList[type] = this.funcList[type] || {};
+            this.funcList[type][id] = temp_fn;
+            fn._id = id;    // しれっと記録
+            
+            this.domElement.addEventListener(type, temp_fn, false);
+            return this;
+        },
+        
+        /**
+         * イベントを解除
+         */
+        remove: function(type, fn_or_id) {
+            var id = (typeof(fn_or_id) === "function") ? fn_or_id._id : fn_or_id;
+            var fn = this.getFunc(type, id);
+            
+            this.domElement.removeEventListener(type, fn, false);
+            delete this.funcList[type][id];
+        },
+        
+        /**
+         * クリックイベント
+         */
+        click: function(fn, id) {
+            this.add("click", fn, id);
+            return this;
+        },
+        
+        /**
+         * ミドルクリックイベント
+         */
+        mdlclick: function(fn, id) {
+            var temp_fn = function(e) {
+                if (e.button == 1) {
+                    fn(e);
+                }
+            }
+            this.add("click", temp_fn, id);
+        },
+        
+        /**
+         * ポインティングスタート
+         */
+        pointstart: function(fn, id) {
+            this.add(tm.dom.Event.POINT_START, fn, id);
+        },
+        /**
+         * ポインティング中
+         */
+        pointmove: function(fn, id) {
+            this.add(tm.dom.Event.POINT_MOVE, fn, id);
+        },
+        /**
+         * ポインティングエンド
+         */
+        pointend: function(fn, id) {
+            this.add(tm.dom.Event.POINT_END, fn, id);
+        },
+        
+        /**
+         * ホバーイベント
+         */
+        hover: function(fn, id) {
+            this.add("mouseover", fn, id);
+            return this;
+        },
+        
+        /**
+         * 一度だけ呼ばれるイベントを登録
+         */
+        one: function(type, fn, id) {
+            var self = this;
+            var elm  = this.element;
+            
+            var temp_fn = function() {
+                var result = fn.apply(elm, arguments);
+                self.remove(type, temp_fn);
+                return result;
+            };
+            
+            this.add(type, temp_fn, id);
+            
+            return this;
+        },
+        
+        /**
+         * トグルイベント登録
+         */
+        toggle: function(type, fn_list) {
+            var self = this;
+            var elm  = this.element;
+            var temp_list = [];
+            
+            for (var i=0; i<fn_list.length; ++i) {
+                var temp_fn = (function(i){
+                    return function(){
+                        var result = fn_list[i].apply(elm, arguments);
+                        
+                        if (result !== false) {
+                            var index = (i+1)%fn_list.length;
+                            self.one(type, temp_list[index]);
+                        }
+                    }
+                })(i);
+                temp_list.push(temp_fn);
+            }
+            
+            this.one(type, temp_list[0]);
+            
+            return this;
+        },
+        
+        /**
+         * 指定したイベントタイプ & id の関数を取得
+         */
+        getFunc: function(type, id) {
+            return this.funcList[type][id];
+        },
+        
+    });
+    
+    /** @static @property */
+    tm.dom.Event.POINT_START    = (tm.isMobile) ? "touchstart" : "mousedown";
+    /** @static @property */
+    tm.dom.Event.POINT_MOVE     = (tm.isMobile) ? "touchmove" : "mousemove";
+    /** @static @property */
+    tm.dom.Event.POINT_END      = (tm.isMobile) ? "touchend" : "mouseup";
+    
+    
+    /**
+     * @member      tm.dom.Element
+     * @property    event
+     * スタイルクラス
+     */
+    tm.dom.Element.prototype.getter("event", function(){
+        return this._event || ( this._event = tm.dom.Event(this) );
+    });
+    
+})();
+
+
+
+
+/*
+ * attr.js
+ */
+
+tm.dom = tm.dom || {};
+
+(function(){
+    
+    /**
+     * @class tm.dom.Attr
+     * 属性クラス
+     */
+    tm.dom.Attr = tm.createClass({
+        
+        /**
+         * エレメント
+         */
+        element: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+        },
+        
+        /**
+         * 属性をセット
+         */
+        set: function(name, value) {
+            this.element.setAttribute(name, value);
+            return this;
+        },
+        
+        /**
+         * 属性を追加
+         */
+        add: function(name, value) {
+            var now = this.get(name);
+            value = (now) ? now + ' ' + value : value;
+            this.element.setAttribute(name, value);
+            return this;
+        },
+        
+        /**
+         * 属性を削除
+         */
+        remove: function(name, value) {
+            // value があるときはそれのみを削除する
+            if (value) {
+                var now = this.get(name);
+                var next= (now) ? now.replace(value, '').replace('  ', ' ') : '';
+                this.element.setAttribute(name, next.trim());
+            }
+            // ないときは属性そのものを削除する
+            else {
+                this.element.removeAttribute(name);
+            }
+            return this;
+        },
+        
+        /**
+         * 属性を取得
+         */
+        get: function(name) {
+            return this.element.getAttribute(name);
+        },
+
+        /**
+         * 属性の存在チェック
+         */
+        contains: function(name, value) {
+            var now = this.get(name);
+            if (arguments.length == 1) {
+                return now != null;
+            }
+            else if (arguments.length == 2) {
+                return (' '+now+' ').indexOf(' '+value+' ') > -1;
+            }
+
+            return false;
+        },
+
+        /**
+         * トグル
+         */
+        toggle: function(name, value) {
+            if (this.contains(name, value)) {
+                this.remove(name, value);
+            } else {
+                this.add(name, value);
+            }
+            return this;
+        }
+    });
+    
+    /**
+     * Attr クラス
+     * @property    attr
+     */
+    tm.dom.Element.prototype.getter("attr", function(){
+        return this._attr || ( this._attr = tm.dom.Attr(this.element) );
+    });
+    
+})();
+
+
+/*
+ * style.js
+ */
+
+tm.dom = tm.dom || {};
+
+(function(){
+    
+    /**
+     * @class tm.dom.Style
+     * スタイル
+     */
+    tm.dom.Style = tm.createClass({
+        
+        /** エレメント */
+        element: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+        },
+        
+        /**
+         * セット
+         */
+        set: function(name, value) {
+            this.element.style[name] = value;
+            return this;
+        },
+        
+        /**
+         * 削除
+         */
+        remove: function(name) {
+            this.element.style.removeProperty(name);
+            // delete this.element.style[name];
+            return this;
+        },
+        
+        /**
+         * クリア
+         */
+        clear: function(name) {
+            
+            return this;
+        },
+        
+        /**
+         * 取得
+         */
+        get: function(name) {
+            return this.element.style[name];
+        },
+        
+        /**
+         * CSS の値も考慮した上での値を取得
+         */
+        getPropValue: function(prop_name) {
+            return document.defaultView.getComputedStyle(this.element, '').getPropertyValue(prop_name);
+        },
+    });
+    
+    /**
+     * スタイルクラス
+     * @member      tm.dom.Element
+     * @property    style
+     */
+    tm.dom.Element.prototype.getter("style", function(){
+        return this._style || ( this._style = tm.dom.Style(this.element) );
+    });
+    
+})();
+
+
+/*
+ * anim.js
+ */
+
+tm.dom = tm.dom || {};
+
+(function() {
+    
+    var prefix = tm.VENDER_PREFIX;
+    
+    var ANIMATION                   = prefix + "Animation";
+    var ANIMATION_END               = prefix + "AnimationEnd";
+    var ANIMATION_PLAY_STATE        = prefix + "AnimationPlayState";
+    var ANIMATION_NAME              = prefix + "AnimationName";
+    var ANIMATION_DURATION          = prefix + "AnimationDuration";
+    var ANIMATION_TIMING_FUNCTION   = prefix + "AnimationTimingFunction";
+    var ANIMATION_DELAY             = prefix + "AnimationDelay";
+    var ANIMATION_DIRECTION         = prefix + "AnimationDirection";
+    var ANIMATION_ITERATION_COUNT   = prefix + "AnimationIterationCount";
+    
+    /**
+     * @class tm.dom.Anim
+     * アニメーションクラス
+     */
+    tm.dom.Anim = tm.createClass({
+        
+        /** @property element */
+
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+            
+            // アニメーションが終了したらステートを "paused" にする(何度も再生できるようにする為)
+            var self = this;
+            this.element.addEventListener(ANIMATION_END, function() {
+                self.stop();
+            }, false);
+        },
+        
+        /**
+         * アニメーション開始
+         */
+        start: function() {
+            this.element.style[ANIMATION_PLAY_STATE] = "running";
+            return this;
+        },
+        
+        /**
+         * アニメーション終了
+         */
+        stop: function() {
+            this.element.style[ANIMATION_PLAY_STATE] = "paused";
+            return this;
+        },
+        
+        /**
+         * プロパティをセット
+         */
+        setProperty: function(prop) {
+            if (typeof prop == "string") {
+                this.element.style[ANIMATION] = prop;
+            }
+            else {
+                for (var key in prop) {
+                    var fn = ANIM_SETTER_FUNC_NAME_MAP[key];
+                    var value = prop[key];
+                    fn.call(this, value);
+                }
+            }
+            return this;
+        },
+        
+        /**
+         * 名前をセット
+         */
+        setName: function(name) {
+            this.element.style[ANIMATION_NAME] = name;
+            return this;
+        },
+        
+        /**
+         * アニメーション時間の長さをセット
+         */
+        setDuration: function(s) {
+            this.element.style[ANIMATION_DURATION] = s;
+            return this;
+        },
+        
+        /**
+         * 補間関数をセット
+         */
+        setTimingFunction: function(func) {
+            this.element.style[ANIMATION_TIMING_FUNCTION] = func;
+            return this;
+        },
+        
+        /**
+         * イテレータカウントをセット
+         */
+        setIterationCount: function(n) {
+            this.element.style[ANIMATION_ITERATION_COUNT] = n;
+            return this;
+        },
+        
+        /**
+         * アニメーション開始待ち時間をセット
+         */
+        setDelay: function(s) {
+            this.element.style[ANIMATION_DELAY] = s;
+            return this;
+        },
+        
+        /**
+         * 判定再生させるかどうかを指定
+         * "normal" or "alternate"
+         */
+        setDirection: function(t) {
+            this.element.style[ANIMATION_DURATION] = t;
+            return this;
+        },
+    });
+    
+    var ANIM_SETTER_FUNC_NAME_MAP = {
+        // 小文字対応
+        "name"          : tm.dom.Anim.prototype.setName,
+        "duration"      : tm.dom.Anim.prototype.setDuration,
+        "timingFunction": tm.dom.Anim.prototype.setTimingFunction,
+        "iterationCount": tm.dom.Anim.prototype.setIterationCount,
+        "delay"         : tm.dom.Anim.prototype.setDelay,
+        
+        // 大文字対応
+        "Name"          : tm.dom.Anim.prototype.setName,
+        "Duration"      : tm.dom.Anim.prototype.setDuration,
+        "TimingFunction": tm.dom.Anim.prototype.setTimingFunction,
+        "IterationCount": tm.dom.Anim.prototype.setIterationCount,
+        "Delay"         : tm.dom.Anim.prototype.setDelay,
+    };
+    
+    /**
+     * @property    anim
+     */
+    tm.dom.Element.prototype.getter("anim", function() {
+        return this._anim || (this._anim = tm.dom.Anim(this.element));
+    });
+    
+})();
+
+
+(function(){
+    
+    /**
+     * @class tm.dom.Trans
+     * トランス
+     */
+    tm.dom.Trans = tm.createClass({
+        
+        /** エレメント */
+        element: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+        },
+        
+        /**
+         * 変換開始
+         */
+        to: function(props, t) {
+            this.set(props).duration(t||1000);
+            return this;
+        },
+
+        /**
+         * セット
+         */
+        set: function(props) {
+            var style = this.element.style;
+            var names = [];
+            
+            for (var key in props) {
+                var name = _checkStyleProperty(key);
+                names.push( name.toDash() );
+                style[name] = props[key] + "";
+            }
+            
+            style[tm.dom.Trans.PROPERTY] = names.join(', ');   // none;
+            
+            return this;
+        },
+
+        /**
+         * 間関
+         */
+        duration: function(t) {
+            var style = this.element.style;
+            if (typeof t == "number") t = t + "ms";
+            style[tm.dom.Trans.DURATION] = t;
+            return this;
+        },
+
+        /**
+         * イージング
+         */
+        easing: function(ease) {
+            var style = this.element.style;
+            style[tm.dom.Trans.TIMING_FUNCTION] = func;
+            return this;
+        },
+
+        /**
+         * 終了
+         */
+        end: function(fn) {
+            var elm  = tm.dom.Element(this.element);
+            elm.event.add(tm.dom.Trans.END_EVENT, fn);
+            return this;
+        },
+
+        /**
+         * リセット
+         */
+        reset: function() {
+            var style = this.element.style;
+            style[tm.dom.Trans.PROPERTY] = "none";
+            return this;
+        },
+
+        /**
+         * 移動
+         */
+        translate: function(x, y, t) {
+            this.to({"transform": "translate({0}px,{1}px)".format(x, y)}, t);
+            return this;
+        },
+
+        /**
+         * 移動3D
+         */
+        translate3d: function(x, y, z, t) {
+            this.to({"transform": "translate3d({0}px,{1}px,{2}px)".format(x, y, z)}, t);
+            return this;
+        },
+
+        /**
+         * 回転
+         */
+        rotate: function(deg, t) {
+            this.to({"transform": "rotate({0}deg)".format(deg)}, t);
+            return this;
+        },
+
+        /**
+         * 回転3D
+         */
+        rotate3d: function(x, y, z, deg, t) {
+            this.to({"transform": "rotate3d({0},{1},{2},{3}deg)".format(x, y, z, deg)}, t);
+            return this;
+        },
+
+        /**
+         * スケール
+         */
+        scale: function(x, y, t) {
+            this.to({"transform": "scale({0},{1})".format(x, y)}, t);
+            return this;
+        },
+
+        /**
+         * 行列変換
+         */
+        transform: function() {
+            // TODO: 実装する
+        },
+        
+        // -------------------------------------
+        
+        /**
+         * プロパティをセット
+         */
+        setProp: function(prop) {
+            var style = this.element.style;
+            var prop_list = [];
+            
+            for (var key in prop) {
+                var name = _checkStyleProperty(key);
+                prop_list.push( name.toDash() );
+                style[name] = prop[key];
+            }
+            
+            style[tm.dom.Trans.PROPERTY] = prop_list.join(', ');   // none;
+            
+            return this;
+        },
+
+        /**
+         * 間関をセット
+         */
+        setDuration: function(t) {
+            var style = this.element.style;
+            style[tm.dom.Trans.DURATION] = t;
+            return this;
+        },
+
+        /**
+         * タイミングファンクをセット
+         */
+        setTimingFunction: function(func) {
+            var style = this.element.style;
+            style[tm.dom.Trans.TIMING_FUNCTION] = func;
+            return this;
+        },
+
+        /**
+         * リセット
+         */
+        resetProp: function() {
+            var style = this.element.style;
+            style[tm.dom.Trans.PROPERTY] = "none";
+            return this;
+        },
+
+        /**
+         * 終了時関数を登録
+         */
+        setEndFunction: function(fn) {
+            var elm  = tm.dom.Element(this.element);
+            elm.event.add(tm.dom.Trans.END_EVENT, fn);
+            return this;
+        },
+    });
+    
+    /** @static @property */
+    tm.dom.Trans.PROPERTY        = tm.VENDER_PREFIX + "TransitionProperty";
+    /** @static @property */
+    tm.dom.Trans.DURATION        = tm.VENDER_PREFIX + "TransitionDuration";
+    /** @static @property */
+    tm.dom.Trans.TIMING_FUNCTION = tm.VENDER_PREFIX + "TransitionTimingFunction";
+    /** @static @property */
+    tm.dom.Trans.DELAY           = tm.VENDER_PREFIX + "TransitionDelay";
+    /** @static @method @member tm.dom.Trans */
+    tm.dom.Trans.END_EVENT       = (function(){
+        return {
+            "webkit": "webkitTransitionEnd",
+            "moz"   : "transitionend",
+            "o"     : "oTransitionEnd",
+        }[tm.VENDER_PREFIX];
+    })();
+    
+    /**
+     * @property    trans
+     */
+    tm.dom.Element.prototype.getter("trans", function(){
+        return this._trans || ( this._trans = tm.dom.Trans(this.element) );
+    });
+    
+    var _styleList = {
+        "transform": true,
+    };
+    var _checkStyleProperty = function(name) {
+        if (_styleList[name] === true) {
+            return '-'+tm.VENDER_PREFIX + name.capitalizeFirstLetter();
+        }
+        return name;
+    };
+})();
+/*
+ * dom/data.js
+ */
+
+(function(){
+    
+    /**
+     * @class tm.dom.Data
+     */
+    tm.define("tm.dom.Data", {
+
+        /** エレメント */
+        element: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element;
+        },
+        
+        /**
+         * 属性をセット
+         */
+        set: function(name, value) {
+        	var key = "data-" + name.toDash();
+            this.element.setAttribute(key, value);
+
+            return this;
+        },
+        
+        /**
+         * 属性をゲット
+         */
+        get: function(name, value) {
+        	var key = "data-" + name.toDash();
+        	return this.element.attributes[key].value;
+        },
+    });
+    
+    /**
+     * Attr クラス
+     * @property    data
+     */
+    tm.dom.Element.prototype.getter("data", function(){
+        return this._data || ( this._data = tm.dom.Data(this.element) );
+    });
+
+})();
+/*
+ * manager.js
+ */
+
+(function() {
+
+    tm.asset = tm.asset || {};
+    
+    /**
+     * アセットマネージャー
+     */
+    tm.asset.Manager = {
+        /** アセット */
+        assets: {},
+        
+        /**
+         * アセットのゲット
+         * @param {Object} key
+         */
+        get: function(key) {
+            return this.assets[key];
+        },
+
+        /**
+         * アセットのセット
+         * @param {Object} key
+         * @param {Object} asset
+         */
+        set: function(key, asset) {
+            this.assets[key] = asset;
+            return this;
+        },
+
+        /**
+         * キーと一致するアセットを含んでいるか
+         * @param {Object} key
+         */
+        contains: function(key) {
+            return (this.assets[key]) ? true : false;
+        },
+
+    };
+
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+(function() {
+
+    /**
+     * @class tm.asset.Loader
+     * @extends tm.event.EventDispatcher
+     * アセットローダー
+     */
+    tm.define("tm.asset.Loader", {
+        superClass: "tm.event.EventDispatcher",
+
+        /** @property assets  アセット */
+        
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.superInit();
+            
+            this.assets = {};
+        },
+        
+        /**
+         * キーと一致するアセットを含んでいるか
+         * @param {Object} key
+         */
+        contains: function(key) {
+            return (this.assets[key]) ? true : false;
+        },
+        
+        /**
+         * アセットのロード実行
+         * @param {Object} arg
+         */
+        load: function(arg) {
+            if (tm.util.Type.isObject(arg)) {
+                this._loadByObject(arg);
+            }
+            else {
+                this._loadString(arguments[0], arguments[1], arguments[2]);
+            }
+            
+            return this;
+        },
+
+        /**
+         * アセットのゲット
+         * @param {Object} key
+         */
+        get: function(key) {
+            return this.assets[key];
+        },
+
+        /**
+         * アセットのセット
+         * @param {Object} key
+         * @param {Object} asset
+         */
+        set: function(key, asset) {
+            this.assets[key] = asset;
+            
+            // manager の方にもセットする
+            tm.asset.Manager.set(key, asset);
+            
+            return this;
+        },
+        
+        /**
+         * アセットのロード
+         * @private
+         * @param {Object} key
+         * @param {Object} path
+         * @param {Object} type
+         */
+        _load: function(key, path, type) {
+            // if (tm.asset.Manager.contains(key)) {
+            //     return tm.asset.Manager.get(key);
+            // }
+            
+            path = path || key;
+            // type が省略されている場合は拡張子から判定する
+            type = type || path.split('?')[0].split('#')[0].split('.').last;
+            
+            var asset = tm.asset.Loader._funcs[type](path, key);
+            this.set(key, asset);
+            
+            return asset;
+        },
+        /**
+         * 文字列指定のアセットのロード
+         * @private
+         * @param {Object} key
+         * @param {Object} path
+         * @param {Object} type
+         */
+        _loadString: function(key, path, type) {
+            
+            var hash = {};
+            hash[key] = {
+                url: path,
+                type: type,
+            };
+            this._loadByObject(hash);
+        },
+        /**
+         * オブジェクト指定のアセットのロード
+         * @private
+         * @param {Object} hash
+         */
+        _loadByObject: function(hash) {
+            var flow = tm.util.Flow(Object.keys(hash).length, function() {
+                var e = tm.event.Event("load");
+                this.dispatchEvent(e);
+            }.bind(this));
+            
+            var loadAsset = function(asset, key) {
+
+                var e = tm.event.Event("progress");
+                e.key = key;
+                e.asset = asset;
+                e.progress = (flow.counter+1)/flow.waits; // todo
+                this.dispatchEvent(e);
+
+                flow.pass();
+            }.bind(this);
+            
+            Object.keys(hash).each(function(key) {
+                var value = hash[key];
+                var asset = null;
+
+                if (typeof value == 'string') {
+                    asset = this._load(key, value);
+                }
+                else {
+                    asset = this._load(key, value['url'] || value['src'] || value['path'], value['type']);
+                }
+                
+                if (asset.loaded) {
+                    loadAsset(asset, key);
+                }
+                else {
+                    asset.on("load", function() {
+                        loadAsset(asset, key);
+                    });
+                }
+            }.bind(this));
+        },
+    });
+    
+    
+    tm.asset.Loader._funcs = [];
+    tm.asset.Loader.defineFunction("register", function(type, func) {
+        this._funcs[type] = func;
+    });
+    
+    
+    var _textureFunc = function(path) {
+        var texture = tm.asset.Texture(path);
+        return texture;
+    };
+    var _soundFunc = function(path) {
+        var audio = tm.sound.WebAudio(path);
+        return audio;
+    };
+    
+    var _tmxFunc = function(path) {
+        var mapSheet = tm.asset.MapSheet(path);
+        return mapSheet;
+    };
+    
+    var _tmssFunc = function(path) {
+        var ss = tm.asset.SpriteSheet(path);
+        return ss;
+    };
+
+    var _jsonFunc = function(path) {
+        var file = tm.util.File();
+        
+        if (typeof path == 'string') {
+            file.load({
+                url: path,
+                dataType: 'json',
+            });
+        }
+        else {
+            var data = path;
+            file.setData(path);
+            file.loaded = true;
+        }
+
+        return file;
+    };
+
+    var _loadScript = function(path) {
+        var script = tm.asset.Script(path);
+
+        return script;
+    };
+
+    // image
+    tm.asset.Loader.register("png", _textureFunc);
+    tm.asset.Loader.register("gif", _textureFunc);
+    tm.asset.Loader.register("jpg", _textureFunc);
+    tm.asset.Loader.register("jpeg", _textureFunc);
+
+    // sound
+    tm.asset.Loader.register("wav", _soundFunc);
+    tm.asset.Loader.register("mp3", _soundFunc);
+    tm.asset.Loader.register("ogg", _soundFunc);
+    tm.asset.Loader.register("m4a", _soundFunc);
+
+    // json
+    tm.asset.Loader.register("json", _jsonFunc);
+
+    // map data
+    tm.asset.Loader.register("tmx", _tmxFunc);
+    
+    // spritesheet for tmlib.js
+    tm.asset.Loader.register("tmss", _tmssFunc);
+    
+    // script file
+    tm.asset.Loader.register("js", _loadScript);
+    
+})();
+
+
+/*
+ * texture.js
+ */
+
+(function() {
+    
+    /**
+     * @class tm.asset.Texture
+     * テクスチャクラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define("tm.asset.Texture", {
+        superClass: "tm.event.EventDispatcher",
+        
+        /** window.document.Image */
+        element: null,
+
+        /** ロード済みかどうか */
+        loaded: false,
+        
+        /**
+         * @constructor
+         */
+        init: function(src) {
+            this.superInit();
+            
+            this.element = new Image();
+            if ( !tm.isLocal() && !(/^data:/.test(src)) ) {
+                // this.element.crossOrigin = "anonymous";
+            }
+            this.element.src = src;
+            
+            var self = this;
+            this.element.onload = function() {
+                self.loaded = true;
+                var e = tm.event.Event("load");
+                self.dispatchEvent( e );
+            };
+
+            this.element.onerror = function(e) {
+                console.error("[tmlib] {0}の読み込みに失敗!".format(src));
+                
+                var key = src.split('/').last.replace('.png', '').split('?').first.split('#').first;
+                var elm = e.target;
+                
+                elm.src = "http://dummyimage.com/128x128/444444/eeeeee&text=" + key;
+                elm.onerror = null;
+            };
+        },
+        
+        /**
+         * window.document.Image クラスのインスタンスを返す
+         */
+        getElement: function() {
+            return this.element;
+        },
+    });
+    
+    /**
+     * @property    width
+     * 幅
+     */
+    tm.asset.Texture.prototype.getter("width", function() {
+        return this.element.width;
+    });
+    
+    /**
+     * @property    height
+     * 高さ
+     */
+    tm.asset.Texture.prototype.getter("height", function() {
+        return this.element.height;
+    });
+    
+})();
+
+(function(){
+
+    /*
+     * @static
+     * @method
+     * ### ref
+     * http://dummyimage.com/
+     */
+    /*
+    tm.graphics.TextureManager.loadDummy = function(key, param) {
+        param = param || {};
+
+        var paths = ["http://dummyimage.com"];
+        paths.push(param.size || 256);
+        paths.push(param.bgColor || "aaa");
+        paths.push(param.color || "000");
+        paths.push(param.format || "png");
+
+        var src = paths.join('/');
+        if (param.text) {
+            src += '&text=' + param.text;
+        }
+
+        this.textures[key] = tm.graphics.Texture(src);
+        this.loaded = false;
+    };
+    */
+
+})();
+
+
+
+/*
+ * spritesheet.js
+ */
+
+(function() {
+    
+    /**
+     * @class tm.asset.SpriteSheet
+     * マップシート
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define("tm.asset.SpriteSheet", {
+        superClass: "tm.event.EventDispatcher",
+
+        /** ロード済みかどうか */
+        loaded: false,
+
+        /**
+         * @constructor
+         */
+        init: function(src) {
+            this.superInit();
+
+            this.loaded = false;
+
+            if (typeof src == "string") {
+            	this.load(src);
+            }
+            else {
+	            this.parse(src);
+    			this.loaded = true;
+    			this.dispatchEvent(tm.event.Event("load"));
+            }
+
+        },
+
+        /**
+         * ロード
+         */
+        load: function(path) {
+        	tm.util.Ajax.load({
+        		url: path,
+        		dataType: "json",
+        		success: function(d) {
+        			this.parse(d);
+        			this.loaded = true;
+        		}.bind(this),
+        	});
+        },
+
+        /**
+         * パース
+         */
+        parse: function(param) {
+            this.frame = param.frame;
+
+            if (typeof param.image == "string") {
+                if (!tm.asset.Manager.contains(param.image)) {
+                    var loader = tm.asset.Loader();
+                    loader.load(param.image);
+                }
+                this.image = tm.asset.Manager.get(param.image);
+            }
+            else {
+                this.image = param.image;
+            }
+
+            if (this.image.loaded === false) {
+                this.image.addEventListener("load", function() {
+                    this._calcFrames(param.frame);
+                    var e = tm.event.Event("load");
+                    this.dispatchEvent(e);
+                }.bind(this), false);
+            }
+            else {
+                this._calcFrames(param.frame);
+                var e = tm.event.Event("load");
+                this.dispatchEvent(e);
+            }
+
+            this._calcAnim(param.animations);
+        },
+
+        /**
+         * フレームを取得
+         */
+        getFrame: function(index) {
+            return this.frames[index];
+        },
+        
+        /**
+         * アニメーションを取得
+         */
+        getAnimation: function(name) {
+            return this.animations[name];
+        },
+        
+        /**
+         * @private
+         */
+        _calcFrames: function(frame) {
+            var frames = this.frames = [];
+            
+            var w = frame.width;
+            var h = frame.height;
+            var row = ~~(this.image.width / w);
+            var col = ~~(this.image.height/ h);
+            
+            if (!frame.count) frame.count = row*col;
+
+            for (var i=0,len=frame.count; i<len; ++i) {
+                var x   = i%row;
+                var y   = (i/row)|0;
+                var rect = {
+                    x:x*w,
+                    y:y*h,
+                    width: w,
+                    height: h
+                };
+                frames.push(rect);
+            }
+        },
+
+        /**
+         * @private
+         */
+        _calcAnim: function(animations) {
+            this.animations = {};
+            for (var key in animations) {
+                var anim = animations[key];
+
+                if (anim instanceof Array) {
+                    this.animations[key] = {
+                        frames: [].range(anim[0], anim[1]),
+                        next: anim[2],
+                        frequency: anim[3] || 1
+                    };
+                }
+                else if (typeof anim == "number") {
+                    this.animations[key] = {
+                        frames: [anim],
+                        next: null,
+                        frequency: 1
+                    };
+                }
+                else {
+                    this.animations[key] = {
+                        frames: anim.frames,
+                        next: anim.next,
+                        frequency: anim.frequency || 1
+                    };
+                }
+            }
+            
+            // デフォルトアニメーション
+            this.animations["default"] = {
+                frames: [].range(0, this.frame.count),
+                next: "default",
+                frequency: 1,
+            };
+        }
+
+    });
+
+})();
+
+/*
+ * mapsheet.js
+ */
+
+(function() {
+
+    /**
+     * @class tm.asset.MapSheet
+     * マップシート
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define("tm.asset.MapSheet", {
+        superClass: "tm.event.EventDispatcher",
+
+        /** @property loaded  */
+
+        /**
+         * @constructor
+         */
+        init: function(path) {
+            this.superInit();
+
+            this.loaded = false;
+
+            if (typeof path == "string") {
+                tm.util.Ajax.load({
+                    url: path,
+                    success: function(e) {
+                        var d = this._parse(e);
+                        this.$extend(d);
+                        this._checkImage();
+                    }.bind(this),
+                });
+            }
+            else {
+                this.$extend(arguments[0]);
+
+                this._checkImage();
+            }
+        },
+
+        /**
+         * パース
+         * @private
+         */
+        _parse: function(str) {
+            var each = Array.prototype.forEach;
+            var data = {};
+            var parser = new DOMParser();
+            var xml = parser.parseFromString(str, 'text/xml');
+            var map = this._attrToJSON(xml.getElementsByTagName('map')[0]);
+
+            this.$extend(map);
+
+            // tilesets(image)
+            data.tilesets = this._parseTilesets(xml);
+
+            // layer
+            data.layers = this._parseLayers(xml);
+
+            return data;
+        },
+
+        /**
+         * @private
+         */
+        _parseTilesets: function(xml) {
+            var each = Array.prototype.forEach;
+            var self = this;
+            var data = [];
+            var tilesets = xml.getElementsByTagName('tileset');
+            each.call(tilesets, function(tileset) {
+                var t = {};
+                var props = self._propertiesToJson(tileset);
+
+                if (props.src) {
+                    t.image = props.src;
+                }
+                else {
+                    t.image = tileset.getElementsByTagName('image')[0].getAttribute('source');
+                }
+                data.push(t);
+            });
+
+            return data;
+        },
+
+        /**
+         * @private
+         */
+        _parseLayers: function(xml) {
+            var each = Array.prototype.forEach;
+            var data = [];
+
+            var map = xml.getElementsByTagName("map")[0];
+            var layers = [];
+            each.call(map.childNodes, function(elm) {
+                if (elm.tagName == "layer" || elm.tagName == "objectgroup" || elm.tagName == "imagelayer") {
+                    layers.push(elm);
+                }
+            });
+
+            layers.each(function(layer) {
+                if (layer.tagName == "layer") {
+                    var d = layer.getElementsByTagName('data')[0];
+                    var encoding = d.getAttribute("encoding");
+                    var l = {
+                        type: "layer",
+                        name: layer.getAttribute("name"),
+                    };
+
+                    if (encoding == "csv") {
+                        l.data = this._parseCSV(d.textContent);
+                    }
+                    else if (encoding == "base64") {
+                        l.data = this._parseBase64(d.textContent);
+                    }
+
+                    var attr = this._attrToJSON(layer);
+                    l.$extend(attr);
+
+                    data.push(l);
+                }
+                else if (layer.tagName == "objectgroup") {
+                    var l = {
+                        type: "objectgroup",
+                        objects: [],
+                        name: layer.getAttribute("name"),
+                    };
+                    each.call(layer.childNodes, function(elm) {
+                        if (elm.nodeType == 3) return ;
+
+                        var d = this._attrToJSON(elm);
+                        d.properties = this._propertiesToJson(elm);
+
+                        l.objects.push(d);
+                    }.bind(this));
+
+                    data.push(l);
+                }
+                else if (layer.tagName == "imagelayer") {
+                    var l = {
+                        type: "imagelayer",
+                        name: layer.getAttribute("name"),
+                        x: layer.getAttribute("x") || 0,
+                        y: layer.getAttribute("y") || 0,
+                        alpha: layer.getAttribute("opacity") || 1,
+                        visible: (layer.getAttribute("visible") === undefined || layer.getAttribute("visible") != 0),
+                    };
+                    var imageElm = layer.getElementsByTagName("image")[0];
+                    l.image = {
+                        source: imageElm.getAttribute("source")
+                    };
+
+                    data.push(l);
+                }
+            }.bind(this));
+
+            return data;
+        },
+
+        /**
+         * @private
+         */
+        _parseCSV: function(data) {
+            var dataList = data.split(',');
+            var layer = [];
+
+            dataList.each(function(elm, i) {
+                var num = parseInt(elm, 10) - 1;
+                layer.push(num);
+            });
+
+            return layer;
+        },
+
+        /**
+         * http://thekannon-server.appspot.com/herpity-derpity.appspot.com/pastebin.com/75Kks0WH
+         * @private
+         */
+        _parseBase64: function(data) {
+            var dataList = atob(data.trim());
+            var rst = [];
+
+            dataList = dataList.split('').map(function(e) {
+                return e.charCodeAt(0);
+            });
+
+            for (var i=0,len=dataList.length/4; i<len; ++i) {
+                var n = dataList[i*4];
+                rst[i] = parseInt(n, 10) - 1;
+            }
+
+            return rst;
+        },
+
+        /**
+         * @private
+         */
+        _propertiesToJson: function(elm) {
+            var properties = elm.getElementsByTagName("properties")[0];
+            var obj = {};
+            if (properties === undefined) {
+                return obj;
+            }
+            for (var k = 0;k < properties.childNodes.length;k++) {
+                var p = properties.childNodes[k];
+                if (p.tagName === "property") {
+                    obj[p.getAttribute('name')] = p.getAttribute('value');
+                }
+            }
+
+            return obj;
+        },
+
+        /**
+         * @private
+         */
+        _attrToJSON: function(source) {
+            var obj = {};
+            for (var i = 0; i < source.attributes.length; i++) {
+                var val = source.attributes[i].value;
+                val = isNaN(parseFloat(val))? val: parseFloat(val);
+                obj[source.attributes[i].name] = val;
+            }
+
+            return obj;
+        },
+
+        /**
+         * @private
+         */
+        _checkImage: function() {
+            var self = this;
+            var imageSoruces = [];
+
+            // for tile set
+            if (this.tilesets.length) {
+                Array.prototype.push.apply(imageSoruces, this.tilesets.map(function(tile) {
+                    return tile.image;
+                }));
+            }
+
+            // for image layer
+            this.layers.each(function(layer) {
+                if (layer.type == "imagelayer") {
+                    imageSoruces.push(layer.image.source);
+                }
+            });
+
+            if (imageSoruces.length) {
+                var i = 0;
+                var len = imageSoruces.length;
+
+                var _onloadimage = function() {
+                    i++;
+                    if (i==len) {
+                        this.loaded = true;
+                        var e = tm.event.Event("load");
+                        this.dispatchEvent(e);
+                    }
+                }.bind(this);
+
+                imageSoruces.each(function(imageName) {
+                    var image = tm.asset.Manager.get(imageName);
+
+                    if (image) {
+                        if (image.loaded) {
+                            // ロード済み
+                            ++i;
+                            if (i==len) {
+                                this.loaded = true;
+                                var e = tm.event.Event("load");
+                                self.dispatchEvent(e);
+                            }
+                        }
+                        else {
+                            image.addEventListener("load", _onloadimage);
+                        }
+                    }
+                    else {
+                        var loader = tm.asset.Loader();
+                        loader.load(imageName);
+                        var texture = tm.asset.Manager.get(imageName);
+                        texture.addEventListener("load", _onloadimage);
+                    }
+                });
+
+            }
+            else {
+                this.loaded = true;
+                var e = tm.event.Event("load");
+                this.dispatchEvent(e);
+            }
+        },
+    });
+
+})();
+tm.asset = tm.asset || {};
+
+(function() {
+
+    tm.define("tm.asset.Font", {
+        superClass: "tm.event.EventDispatcher",
+
+        init: function(path, key, format) {
+            this.superInit();
+
+            var fontFaceStyleElement = tm.dom.Element("head").create("style");
+            fontFaceStyleElement.text = "@font-face { font-family: '{0}'; src: url({1}) format('{2}'); }".format(key, path, format);
+
+            tm.asset.Font.checkLoaded(key, function() {
+                this.flare("load");
+            }.bind(this));
+        },
+    });
+
+    tm.asset.Font.checkLoaded = function (font, callback) {
+        var canvas = tm.graphics.Canvas();
+        var DEFAULT_FONT = canvas.context.font.split(' ')[1];
+        canvas.context.font = '40px ' + DEFAULT_FONT;
+
+        var checkText = "1234567890-^\\qwertyuiop@[asdfghjkl;:]zxcvbnm,./\!\"#$%&'()=~|QWERTYUIOP`{ASDFGHJKL+*}ZXCVBNM<>?_１２３４５６７８９０－＾￥ｑｗｅｒｔｙｕｉｏｐａｓｄｆｇｈｊｋｌｚｘｃｖｂｎｍ，．あいうかさたなをん時は金なり";
+
+        var before = canvas.context.measureText(checkText).width;
+        canvas.context.font = '40px ' + font + ', ' + DEFAULT_FONT;
+
+        var checkLoadFont = function () {
+            if (canvas.context.measureText(checkText).width !== before) {
+                callback && callback();
+            } else {
+                setTimeout(checkLoadFont, 100);
+            }
+        };
+        setTimeout(checkLoadFont, 100);
+    };
+
+    tm.asset.Loader.register("ttf", function(path, key) {
+        return tm.asset.Font(path, key, "truetype");
+    });
+    tm.asset.Loader.register("otf", function(path, key) {
+        return tm.asset.Font(path, key, "opentype");
+    });
+    tm.asset.Loader.register("woff", function(path, key) {
+        return tm.asset.Font(path, key, "woff");
+    });
+    tm.asset.Loader.register("woff2", function(path, key) {
+        return tm.asset.Font(path, key, "woff2");
+    });
+
+})();
+
+/*
+ * script.js
+ */
+
+tm.util = tm.util || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.asset.Script
+     * スクリプトクラス
+     */
+
+    tm.define("tm.asset.Script", {
+
+        superClass: "tm.event.EventDispatcher",
+
+        /** element */
+        element: null,
+        /** loaded */
+        loaded: false,
+        
+        /**
+         * @constructor
+         */
+        init: function(src) {
+            this.superInit();
+
+            this.loaded = false;
+            this.element = document.createElement("script");
+            this.element.type = "text/javascript";
+            this.element.src = src;
+            this.element.charset = "UTF-8";
+            this.element.setAttribute("defer", true);
+            document.head.appendChild(this.element);
+            
+            var self = this;
+            this.element.onload = function() {
+                self.loaded = true;
+                self.fire(tm.event.Event("load"));
+            };
+        },
+        
+        /**
+         * getElement
+         */
+        getElement: function() {
+            return this.element;
+        },
+        
+    });
+
+    tm.asset.Script.load = function(src) {
+        var script = tm.asset.Script(src);
+
+        return script;
+    };
+
+    /**
+     * @static
+     * @method
+     * Stats を動的ロード
+     */
+    tm.asset.Script.loadStats = function(version) {
+        version = version || "r11";
+        var path = null;
+        if (["r6", "r7", "r8", "r9", "10"].indexOf(version) != -1) {
+            path = "http://rawgithub.com/mrdoob/stats.js/" + version + "/build/Stats.js";
+        }
+        else {
+            path = "http://rawgithub.com/mrdoob/stats.js/" + version + "/build/stats.min.js";
+        }
+
+        return this.load(path);
+    };
+
+    /**
+     * @static
+     * @method
+     * datGUI を動的ロード
+     */
+    tm.asset.Script.loadDatGUI = function(version) {
+        // http://dat-gui.googlecode.com/git/build/dat.gui.min.js
+        // https://dat-gui.googlecode.com/git-history/0.5/build/dat.gui.min.js
+
+        version = version || "0.5";
+//        var path = "https://dat-gui.googlecode.com/git-history/" + version + "/build/dat.gui.min.js";
+//        var path = "http://dat-gui.googlecode.com/git/build/dat.gui.min.js";
+        var path = "http://dat-gui.googlecode.com/git/build/dat.gui.js";
+        return this.load(path);
+    };
+
+    /**
+     * @static
+     * @method
+     * Three.js を動的ロード
+     */
+    tm.asset.Script.loadThree = function(version) {
+        var THREE_JS_URL = "http://rawgithub.com/mrdoob/three.js/{version}/build/three.js";
+//        var THREE_JS_URL = "https://raw.github.com/mrdoob/three.js/{version}/build/three.min.js";
+        version = version || "r55";
+
+        var path = THREE_JS_URL.format({version: version});
+
+        return this.load(path);
+    };
+
+    /**
+     * @static
+     * @method
+     * BulletML.js を動的ロード
+     */
+    tm.asset.Script.loadBulletML = function(version) {
+        var BULLETML_FOR_TMLIB_JS_URL   = "http://rawgithub.com/daishihmr/bulletml.js/{version}/target/bulletml.for.tmlib.js";
+        version = version || "v0.4.2";
+        var path = BULLETML_FOR_TMLIB_JS_URL.format({version: version});        
+        return this.load(path);
+    };
+
+
+})();
+
+/*
+ * keyboard.js
+ */
+
+tm.input = tm.input || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.input.Keyboard
+     * キーボードクラス
+     * 
+     *      @example
+     *      
+     */
+    tm.input.Keyboard = tm.createClass({
+        
+        /** target element */
+        element: null,
+        /** key */
+        key: null,
+        /** 押しているキー */
+        press   : null,
+        /** 押したキー */
+        down    : null,
+        /** 離したキー */
+        up      : null,
+        /** 押していたキー */
+        last    : null,
+        
+        /**
+         * @constructor
+         * <a href="http://tmlib-js.googlecode.com/svn/trunk/test/input/keyboard-test.html">Test Program</a>.
+         * ### Example
+         * TM.loadScript("input", "keyboard");
+         *  
+         * TM.main(function() {
+         *     var k = TM.$Key(document);
+         *     k.run();
+         *     TM.setLoop(function(){
+         *         if (k.getKey('a')) { console.log("press 'a'!!"); }
+         *     });
+         * });
+         */
+        init: function(element) {
+            this.element = element || document;
+            
+            this.key = {};
+            
+            this.press  = {};
+            this.down   = {};
+            this.up     = {};
+            this.last   = {};
+            
+            var self = this;
+            this.element.addEventListener("keydown", function(e){
+                self.key[e.keyCode] = true;
+            });
+            this.element.addEventListener("keyup", function(e){
+                // delete self.key[e.keyCode];
+                self.key[e.keyCode] = false;
+                // self.button |= 1<<e.button;
+            });
+            this.element.addEventListener("keypress", function(e){
+                // self.button &= ~(1<<e.button);
+            });
+        },
+        
+        /**
+         * run.
+         * 自動でマウス情報を更新したい際に使用する
+         */
+        run: function(fps) {
+            var self = this;
+            fps = fps || 30;
+            tm.setLoop(function(){
+                self._update();
+                if (self.update) self.update();
+            }, 1000/fps);
+        },
+        
+        /**
+         * 情報更新処理
+         * マイフレーム呼んで下さい.
+         * @private
+         */
+        _update: function() {
+            // TODO: 一括ビット演算で行うよう修正する
+            for (var k in this.key) {
+                this.last[k]    = this.press[k];
+                this.press[k]   = this.key[k];
+                
+                this.down[k] = (this.press[k] ^ this.last[k]) & this.press[k];
+                this.up[k] = (this.press[k] ^ this.last[k]) & this.last[k];
+            }
+            
+            return this;
+        },
+        
+        /**
+         * キーを押しているかをチェック
+         * @param   {Number/String} key keyCode or keyName
+         * @returns {Boolean}   チェック結果
+         */
+        getKey: function(key) {
+            if (typeof(key) == "string") {
+                key = KEY_CODE[key];
+            }
+            return this.press[key] == true;
+        },
+        
+        /**
+         * キーを押したかをチェック
+         * @param   {Number/String} key keyCode or keyName
+         * @returns {Boolean}   チェック結果
+         */
+        getKeyDown: function(key) {
+            if (typeof(key) == "string") {
+                key = KEY_CODE[key];
+            }
+            return this.down[key] == true;
+        },
+        
+        /**
+         * キーを離したかをチェック
+         * @param   {Number/String} key keyCode or keyName
+         * @returns {Boolean}   チェック結果
+         */
+        getKeyUp: function(key) {
+            if (typeof(key) == "string") {
+                key = KEY_CODE[key];
+            }
+            return this.up[key] == true;
+        },
+        
+        /**
+         * キーの方向を Angle(Degree) で取得
+         * @returns {Boolean}   角度(Degree)
+         */
+        getKeyAngle: function() {
+            var angle = null;
+            var arrowBit =
+                (this.getKey("left")   << 3) | // 1000
+                (this.getKey("up")     << 2) | // 0100
+                (this.getKey("right")  << 1) | // 0010
+                (this.getKey("down"));         // 0001
+            
+            if (arrowBit != 0 && ARROW_BIT_TO_ANGLE_TABLE.hasOwnProperty(arrowBit)) {
+                angle = ARROW_BIT_TO_ANGLE_TABLE[arrowBit];
+            }
+            
+            return angle;
+        },
+
+        /**
+         * キーの押している向きを取得
+         * 正規化されている
+         */
+        getKeyDirection: function() {
+            var direction = tm.geom.Vector2(0, 0);
+
+            if (this.getKey("left")) {
+                direction.x = -1;
+            }
+            else if (this.getKey("right")) {
+                direction.x = 1;
+            }
+            if (this.getKey("up")) {
+                direction.y = -1;
+            }
+            else if (this.getKey("down")) {
+                direction.y = 1;
+            }
+
+            if (direction.x && direction.y) {
+                direction.div(Math.SQRT2);
+            }
+
+            return direction;
+        },
+        
+        /**
+         * キーの状態を設定する
+         */
+        setKey: function(key, flag) {
+            if (typeof(key) == "string") {
+                key = KEY_CODE[key];
+            }
+            this.key[key] = flag;
+            
+            return this;
+        },
+
+        /**
+         * キーを全て離したことにする
+         */
+        clearKey: function() {
+            this.key = {};
+            
+            return this;
+        },
+        
+    });
+
+    /*
+     * @enum ARROW_BIT_TO_ANGLE_TABLE
+     * 方向のアングル jsduckでは数字をプロパティに指定できない？
+     * @private
+     */
+    var ARROW_BIT_TO_ANGLE_TABLE = {
+        /* @property 下 */
+        0x01: 270,
+        /* @property 右 */
+        0x02:   0,
+        /* @property 上 */
+        0x04:  90,
+        /* @property 左 */
+        0x08: 180,
+
+        /* @property 右上 */
+        0x06:  45,
+        /* @property 右下 */
+        0x03: 315,
+        /* @property 左上 */
+        0x0c: 135,
+        /* @property 左下 */
+        0x09: 225,
+
+        // 三方向同時押し対応
+        // 想定外の操作だが対応しといたほうが無難
+        /* @property 右上左 */
+        0x0e:  90,
+        /* @property 上左下 */
+        0x0d: 180,
+        /* @property 左下右 */
+        0x0b: 270,
+        /* @property 下右上 */
+        0x07:   0,
+    };
+
+    /*
+     * @enum KEY_CODE
+     * キー番号
+     * @private
+     */
+    var KEY_CODE = {
+        /* @property */
+        "backspace" : 8,
+        /* @property */
+        "tab"       : 9,
+        /* @property */
+        "enter"     : 13,
+        /* @property */
+        "return"    : 13,
+        /* @property */
+        "shift"     : 16,
+        /* @property */
+        "ctrl"      : 17,
+        /* @property */
+        "alt"       : 18,
+        /* @property */
+        "pause"     : 19,
+        /* @property */
+        "capslock"  : 20,
+        /* @property */
+        "escape"    : 27,
+        /* @property */
+        "pageup"    : 33,
+        /* @property */
+        "pagedown"  : 34,
+        /* @property */
+        "end"       : 35,
+        /* @property */
+        "home"      : 36,
+        /* @property */
+        "left"      : 37,
+        /* @property */
+        "up"        : 38,
+        /* @property */
+        "right"     : 39,
+        /* @property */
+        "down"      : 40,
+        /* @property */
+        "insert"    : 45,
+        /* @property */
+        "delete"    : 46,
+        
+        /* @property */
+        "0" : 48,
+        /* @property */
+        "1" : 49,
+        /* @property */
+        "2" : 50,
+        /* @property */
+        "3" : 51,
+        /* @property */
+        "4" : 52,
+        /* @property */
+        "5" : 53,
+        /* @property */
+        "6" : 54,
+        /* @property */
+        "7" : 55,
+        /* @property */
+        "8" : 56,
+        /* @property */
+        "9" : 57,
+        /* @property */
+        
+        "a" : 65,
+        /* @property */
+        "A" : 65,
+        /* @property */
+        "b" : 66,
+        /* @property */
+        "B" : 66,
+        /* @property */
+        "c" : 67,
+        /* @property */
+        "C" : 67,
+        /* @property */
+        "d" : 68,
+        /* @property */
+        "D" : 68,
+        /* @property */
+        "e" : 69,
+        /* @property */
+        "E" : 69,
+        /* @property */
+        "f" : 70,
+        /* @property */
+        "F" : 70,
+        /* @property */
+        "g" : 71,
+        /* @property */
+        "G" : 71,
+        /* @property */
+        "h" : 72,
+        /* @property */
+        "H" : 72,
+        /* @property */
+        "i" : 73,
+        /* @property */
+        "I" : 73,
+        /* @property */
+        "j" : 74,
+        /* @property */
+        "J" : 74,
+        /* @property */
+        "k" : 75,
+        /* @property */
+        "K" : 75,
+        /* @property */
+        "l" : 76,
+        /* @property */
+        "L" : 76,
+        /* @property */
+        "m" : 77,
+        /* @property */
+        "M" : 77,
+        /* @property */
+        "n" : 78,
+        /* @property */
+        "N" : 78,
+        /* @property */
+        "o" : 79,
+        /* @property */
+        "O" : 79,
+        /* @property */
+        "p" : 80,
+        /* @property */
+        "P" : 80,
+        /* @property */
+        "q" : 81,
+        /* @property */
+        "Q" : 81,
+        /* @property */
+        "r" : 82,
+        /* @property */
+        "R" : 82,
+        /* @property */
+        "s" : 83,
+        /* @property */
+        "S" : 83,
+        /* @property */
+        "t" : 84,
+        /* @property */
+        "T" : 84,
+        /* @property */
+        "u" : 85,
+        /* @property */
+        "U" : 85,
+        /* @property */
+        "v" : 86,
+        /* @property */
+        "V" : 86,
+        /* @property */
+        "w" : 87,
+        /* @property */
+        "W" : 87,
+        /* @property */
+        "x" : 88,
+        /* @property */
+        "X" : 88,
+        /* @property */
+        "y" : 89,
+        /* @property */
+        "Y" : 89,
+        /* @property */
+        "z" : 90,
+        /* @property */
+        "Z" : 90,
+        
+        /* @property */
+        "numpad0" : 96,
+        /* @property */
+        "numpad1" : 97,
+        /* @property */
+        "numpad2" : 98,
+        /* @property */
+        "numpad3" : 99,
+        /* @property */
+        "numpad4" : 100,
+        /* @property */
+        "numpad5" : 101,
+        /* @property */
+        "numpad6" : 102,
+        /* @property */
+        "numpad7" : 103,
+        /* @property */
+        "numpad8" : 104,
+        /* @property */
+        "numpad9" : 105,
+        /* @property */
+        "multiply"      : 106,
+        /* @property */
+        "add"           : 107,
+        /* @property */
+        "subtract"      : 109,
+        /* @property */
+        "decimalpoint"  : 110,
+        /* @property */
+        "divide"        : 111,
+
+        /* @property */
+        "f1"    : 112,
+        /* @property */
+        "f2"    : 113,
+        /* @property */
+        "f3"    : 114,
+        /* @property */
+        "f4"    : 115,
+        /* @property */
+        "f5"    : 116,
+        /* @property */
+        "f6"    : 117,
+        /* @property */
+        "f7"    : 118,
+        /* @property */
+        "f8"    : 119,
+        /* @property */
+        "f9"    : 120,
+        /* @property */
+        "f10"   : 121,
+        /* @property */
+        "f11"   : 122,
+        /* @property */
+        "f12"   : 123,
+        
+        /* @property */
+        "numlock"   : 144,
+        /* @property */
+        "scrolllock": 145,
+        /* @property */
+        "semicolon" : 186,
+        /* @property */
+        "equalsign" : 187,
+        /* @property */
+        "comma"     : 188,
+        /* @property */
+        "dash"      : 189,
+        /* @property */
+        "period"    : 190,
+        /* @property */
+        "forward slash" : 191,
+        /* @property */
+        "/": 191,
+        /* @property */
+        "grave accent"  : 192,
+        /* @property */
+        "open bracket"  : 219,
+        /* @property */
+        "back slash"    : 220,
+        /* @property */
+        "close bracket"  : 221,
+        /* @property */
+        "single quote"  : 222,
+        /* @property */
+        "space"         : 32
+    };
+    
+    
+})();
+
+
+/*
+ * mouse.js
+ */
+
+tm.input = tm.input || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.input.Mouse
+     * マウスクラス
+     */
+    tm.input.Mouse = tm.createClass({
+        /** element */
+        element: null,
+        
+        /** @property  position */
+        /** @property  deltaPosition */
+        /** @property  prevPosition */
+        /** @private @property  _x */
+        /** @private @property  _y */
+
+        /**
+         * @constructor
+         */
+        init: function(element) {
+            this.element = element || window.document;
+            
+            this.position       = tm.geom.Vector2(0, 0);
+            this.deltaPosition  = tm.geom.Vector2(0, 0);
+            this.prevPosition   = tm.geom.Vector2(0, 0);
+            this._x = 0;
+            this._y = 0;
+            this.touches = [];
+            
+            var self = this;
+            this.element.addEventListener("mousedown", function(e){
+                self._mousemove(e);
+                self.prevPosition.set(self._x, self._y);    // prevPostion をリセット
+                self.button |= 1<<e.button;
+            });
+            this.element.addEventListener("mouseup", function(e){
+                self.button &= ~(1<<e.button);
+            });
+            this.element.addEventListener("mousemove", function(e){
+                // 座標更新
+                self._mousemove(e);
+            });
+        },
+        
+        /**
+         * run
+         * 自動でマウス情報を更新したい際に使用する
+         */
+        run: function(fps) {
+            var self = this;
+            fps = fps || 30;
+            
+            tm.setLoop(function() {
+                self.update();
+            }, 1000/fps);
+            
+            return this;
+        },
+        
+        /**
+         * 情報更新処理
+         * マイフレーム呼んで下さい.
+         */
+        update: function() {
+            this.last = this.press;
+            
+            this.press = this.button;
+            
+            this.down = (this.press ^ this.last) & this.press;
+            this.up   = (this.press ^ this.last) & this.last;
+            
+            // 変化値を更新
+            this.deltaPosition.x = this._x - this.position.x;
+            this.deltaPosition.y = this._y - this.position.y;
+            
+            // 前回の座標を更新
+            this.prevPosition.setObject(this.position);
+            
+            // 現在の位置を更新
+            this.position.set(this._x, this._y);
+        },
+        
+        /**
+         * ボタン取得
+         */
+        getButton: function(button) {
+            if (typeof(button) == "string") {
+                button = BUTTON_MAP[button];
+            }
+            
+            return (this.press & button) != 0;
+        },
+        
+        /**
+         * ボタンダウン取得
+         */
+        getButtonDown: function(button) {
+            if (typeof(button) == "string") {
+                button = BUTTON_MAP[button];
+            }
+            
+            return (this.down & button) != 0;
+        },
+        
+        /**
+         * ボタンアップ取得
+         */
+        getButtonUp: function(button) {
+            if (typeof(button) == "string") {
+                button = BUTTON_MAP[button];
+            }
+            
+            return (this.up & button) != 0;
+        },
+
+        /**
+         * @private
+         */
+        _mousemove: function(e) {
+            var rect = e.target.getBoundingClientRect();
+            this._x = e.clientX - rect.left;
+            this._y = e.clientY - rect.top;
+        },
+
+        /**
+         * @private
+         */
+        _mousemoveNormal: function(e) {
+            var rect = e.target.getBoundingClientRect();
+            this._x = e.clientX - rect.left;
+            this._y = e.clientY - rect.top;
+        },
+
+        /**
+         * @private
+         */
+        _mousemoveScale: function(e) {
+            var rect = e.target.getBoundingClientRect();
+            this._x = e.clientX - rect.left;
+            this._y = e.clientY - rect.top;
+            
+            //if (e.target instanceof HTMLCanvasElement) {
+                // スケールを考慮した拡縮
+                if (e.target.style.width) {
+                    this._x *= e.target.width / parseInt(e.target.style.width);
+                }
+                if (e.target.style.height) {
+                    this._y *= e.target.height / parseInt(e.target.style.height);
+                }
+            //}
+        },
+        
+    });
+    
+    /** @static @property */
+    tm.input.Mouse.BUTTON_LEFT      = 0x1;
+    /** @static @property */
+    tm.input.Mouse.BUTTON_MIDDLE    = 0x2;
+    /** @static @property */
+    tm.input.Mouse.BUTTON_RIGHT     = 0x4;
+    
+    /*
+     * 
+     */
+    var BUTTON_MAP = {
+        "left"  : tm.input.Mouse.BUTTON_LEFT,
+        "middle": tm.input.Mouse.BUTTON_MIDDLE,
+        "right" : tm.input.Mouse.BUTTON_RIGHT
+    };
+    
+    
+    /**
+     * @property    x
+     * x座標値
+     */
+    tm.input.Mouse.prototype.accessor("x", {
+        "get": function()   { return this.position.x; },
+        "set": function(v)  { this.position.x = v; }
+    });
+    
+    /**
+     * @property    y
+     * y座標値
+     */
+    tm.input.Mouse.prototype.accessor("y", {
+        "get": function()   { return this.position.y; },
+        "set": function(v)  { this.position.y = v; }
+    });
+    
+    /**
+     * @property    dx
+     * dx値
+     */
+    tm.input.Mouse.prototype.accessor("dx", {
+        "get": function()   { return this.deltaPosition.x; },
+        "set": function(v)  { this.deltaPosition.x = v; }
+    });
+    
+    /**
+     * @property    dy
+     * dy値
+     */
+    tm.input.Mouse.prototype.accessor("dy", {
+        "get": function()   { return this.deltaPosition.y; },
+        "set": function(v)  { this.deltaPosition.y = v; }
+    });
+    
+    
+    /**
+     * @static
+     * @method getPointing
+     * ポインティング状態取得(touch との差異対策)
+     */
+    tm.input.Mouse.prototype.getPointing        = function() { return this.getButton("left"); };
+    /**
+     * @static
+     * @method getPointingStart
+     * ポインティングを開始したかを取得(touch との差異対策)
+     */
+    tm.input.Mouse.prototype.getPointingStart   = function() { return this.getButtonDown("left"); };
+    /**
+     * @static
+     * @method getPointingEnd
+     * ポインティングを終了したかを取得(touch との差異対策)
+     */
+    tm.input.Mouse.prototype.getPointingEnd     = function() { return this.getButtonUp("left"); };
+    
+    
+})();
+
+
+/*
+ * touch.js
+ */
+
+tm.input = tm.input || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.input.Touch
+     * タッチクラス
+     */
+    tm.input.Touch = tm.createClass({
+        /** element */
+        element: null,
+        /** touched */
+        touched: false,
+
+        /** @property position */
+        /** @property deltaPosition */
+        /** @property prevPosition */
+        /** @private @property _x */
+        /** @private @property _y */
+        
+        /**
+         * @constructor
+         * <a href="http://tmlib-js.googlecode.com/svn/trunk/test/input/touch-test.html">Test Program</a>.
+         */
+        init: function(element) {
+            this.element = element || window.document;
+            
+            this.position       = tm.geom.Vector2(0, 0);
+            this.deltaPosition  = tm.geom.Vector2(0, 0);
+            this.prevPosition   = tm.geom.Vector2(0, 0);
+            this._x = 0;
+            this._y = 0;
+            this.touches = [];
+
+            var self = this;
+            this.element.addEventListener("touchstart", function(e){
+                self.touched = true;
+                
+                self._touchmove(e);
+                // 最初だけセット
+                self.position.set(self._x, self._y);
+                self.prevPosition.set(self._x, self._y);    // prevPostion をリセット
+
+                self._setTouches(e);
+            });
+            this.element.addEventListener("touchend", function(e){
+                self.touched = false;
+
+                self._setTouches(e);
+            });
+            this.element.addEventListener("touchmove", function(e){
+                self._touchmove(e);
+                // 画面移動を止める
+                e.stop();
+
+                self._setTouches(e);
+            });
+            
+            // var self = this;
+            // this.element.addEventListener("touchstart", function(e) {
+            //     if (self._touch) return ;
+            //     self._touch = e.changedTouches[0];
+
+            //     // changedTouches;
+            //     // targetTouches;
+            //     self._touchmove(e);
+            //     self.prevPosition.setObject(self.position);
+
+            //     self.touched = true;
+            // });
+            // this.element.addEventListener("touchend", function(e){
+            //     if (self._touch == e.changedTouches[0]) {
+            //         self.touched = false;
+            //     }
+            // });
+            // this.element.addEventListener("touchmove", function(e){
+            //     self._touchmove(e);
+            //     // 画面移動を止める
+            //     e.stop();
+            // });
+        },
+        
+        /**
+         * run.
+         * 自動でマウス情報を更新したい際に使用する
+         */
+        run: function(fps) {
+            var self = this;
+            fps = fps || 30;
+            
+            tm.setLoop(function() {
+                
+                self.update();
+                
+            }, 1000/fps);
+            
+            return this;
+        },
+        
+        /**
+         * 情報更新処理
+         * マイフレーム呼んで下さい.
+         */
+        update: function() {
+            this.last   = this.now;
+            this.now    = Number(this.touched);
+            
+            this.start  = (this.now ^ this.last) & this.now;
+            this.end    = (this.now ^ this.last) & this.last;
+            
+            // 変化値を更新
+            this.deltaPosition.x = this._x - this.position.x;
+            this.deltaPosition.y = this._y - this.position.y;
+            
+            // 前回の座標を更新
+            this.prevPosition.setObject(this.position);
+            
+            // 現在の位置を更新
+            this.position.set(this._x, this._y);
+        },
+        
+        /**
+         * タッチしているかを判定
+         */
+        getTouch: function() {
+            return this.touched != 0;
+        },
+        
+        /**
+         * タッチ開始時に true
+         */
+        getTouchStart: function() {
+            return this.start != 0;
+        },
+        
+        /**
+         * タッチ終了時に true
+         */
+        getTouchEnd: function() {
+            return this.end != 0;
+        },
+
+        /**
+         * @private
+         */
+        _touchmove: function(e) {
+            var t = e.touches[0];
+            var r = e.target.getBoundingClientRect();
+            this._x = t.clientX - r.left;
+            this._y = t.clientY - r.top;
+        },
+
+        /**
+         * @private
+         */
+        _touchmoveScale: function(e) {
+            var t = e.touches[0];
+            var r = e.target.getBoundingClientRect();
+            this._x = t.clientX - r.left;
+            this._y = t.clientY - r.top;
+            
+            if (e.target.style.width) {
+                this._x *= e.target.width / parseInt(e.target.style.width);
+            }
+            if (e.target.style.height) {
+                this._y *= e.target.height / parseInt(e.target.style.height);
+            }
+        },
+
+        _getAdjustPoint: function(p) {
+            var elm = this.element;
+            var style = elm.style;
+            var r = elm.getBoundingClientRect();
+            var p = {
+                x: p.clientX - r.left,
+                y: p.clientY - r.top,
+            };
+            
+            if (style.width) {
+                p.x *= elm.width / parseInt(style.width);
+            }
+            if (style.height) {
+                p.y *= elm.height / parseInt(style.height);
+            }
+
+            return p;
+         },
+
+        _setTouches: function(e) {
+            var touches = e.touches;
+
+            this.touches.clear();
+            for (var i=0,len=touches.length; i<len; ++i) {
+                var p = this._getAdjustPoint(touches[i]);
+                this.touches.push(p);
+            }
+
+            return this;
+        }
+        
+    });
+    
+    
+
+    /**
+     * @property    x
+     * x座標値
+     */
+    tm.input.Touch.prototype.accessor("x", {
+        "get": function()   { return this.position.x; },
+        "set": function(v)  { this.position.x = v; }
+    });
+    
+    /**
+     * @property    y
+     * y座標値
+     */
+    tm.input.Touch.prototype.accessor("y", {
+        "get": function()   { return this.position.y; },
+        "set": function(v)  { this.position.y = v; }
+    });
+    
+    /**
+     * @property    dx
+     * dx値
+     */
+    tm.input.Touch.prototype.accessor("dx", {
+        "get": function()   { return this.deltaPosition.x; },
+        "set": function(v)  { this.deltaPosition.x = v; }
+    });
+    
+    /**
+     * @property    dy
+     * dy値
+     */
+    tm.input.Touch.prototype.accessor("dy", {
+        "get": function()   { return this.deltaPosition.y; },
+        "set": function(v)  { this.deltaPosition.y = v; }
+    });
+    
+    
+    
+    /**
+     * @method
+     * ポインティング状態取得(mouse との差異対策)
+     */
+    tm.input.Touch.prototype.getPointing        = tm.input.Touch.prototype.getTouch;
+    /**
+     * @method
+     * ポインティングを開始したかを取得(mouse との差異対策)
+     */
+    tm.input.Touch.prototype.getPointingStart   = tm.input.Touch.prototype.getTouchStart;
+    /**
+     * @method
+     * ポインティングを終了したかを取得(mouse との差異対策)
+     */
+    tm.input.Touch.prototype.getPointingEnd     = tm.input.Touch.prototype.getTouchEnd;
+    
+})();
+
+
+
+(function() {
+    return ;
+
+    /**
+     * @class tm.input.Touches
+     * マルチタッチ対応クラス
+     * @extends global.Array
+     */
+    tm.define("tm.input.Touches", {
+        superClass: Array,
+
+        /**
+         * @constructor
+         */
+        init: function(elm, length) {
+            this.element = elm;
+            for (var i=0; i<length; ++i) {
+                var touch = tm.input.Touch(this.element);
+                this.push(touch);
+            }
+
+            var self = this;
+            this.element.addEventListener("touchstart", function(e) {
+                var target = null;
+                for (var i=0; i<length; ++i) {
+                    if (!self[i]._touch) {
+                        target = self[i];
+                        break;
+                    }
+                }
+                if (!target) return ;
+
+                target._touch = e.changedTouches[0];
+
+                target._touchmove(e);
+                target.prevPosition.setObject(target.position);
+
+                target.touched = true;
+                // changedTouches;
+                // targetTouches;
+            });
+            this.element.addEventListener("touchend", function(e){
+                for (var i=0; i<length; ++i) {
+                    if (self[i]._touch == e.changedTouches[0]) {
+                        self[i]._touch = null;
+                        self[i].touched = false;
+                    }
+                }
+            });
+            this.element.addEventListener("touchmove", function(e){
+                for (var i=0; i<length; ++i) {
+                    if (self[i]._touch) {
+                        self[i]._touchmove(e);
+                    }
+                }
+                // 画面移動を止める
+                e.stop();
+            });
+        },
+
+        /**
+         * 更新
+         */
+        update: function() {
+            this.each(function(touch) {
+                touch.update();
+            });
+        }
+    });
+
+})();
+
+
+
+
+
+
+/*
+ * accelerometer.js
+ */
+
+tm.input = tm.input || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.input.Accelerometer
+     * スマートフォンのセンサー情報
+     */
+    tm.input.Accelerometer = tm.createClass({
+
+        /** @property  gravity 重力センサー */
+        /** @property  acceleration 加速度センサー */
+        /** @property  rotation 回転加速度センサー */
+        /** @property  orientation スマートフォンの傾き */
+        
+        /**
+         * @constructor
+         * ### Example
+         * <a href="http://tmlib-js.googlecode.com/svn/trunk/test/input/touch-test.html">Test Program</a>.
+         * 
+         * ### Reference
+         * - <http://tmlife.net/programming/javascript/javascript-iphone-acceleration.html>
+         * - <http://hidekatsu.com/html5/archives/113>
+         * - <http://d.hatena.ne.jp/nakamura001/20110209/1297229062>
+         * - <http://d.hatena.ne.jp/nakamura001/20101128/1290946966>
+         */
+        init: function(element) {
+            
+            this.gravity        = tm.geom.Vector3(0, 0, 0);
+            this.acceleration   = tm.geom.Vector3(0, 0, 0);
+            this.rotation       = tm.geom.Vector3(0, 0, 0);
+            this.orientation    = tm.geom.Vector3(0, 0, 0);
+            
+            var self = this;
+            window.addEventListener("devicemotion", function(e) {
+                var acceleration = self.acceleration;
+                var gravity = self.gravity;
+                var rotation = self.rotation;
+                
+                if (e.acceleration) {
+                    acceleration.x = e.acceleration.x;
+                    acceleration.y = e.acceleration.y;
+                    acceleration.z = e.acceleration.z;
+                }
+                if (e.accelerationIncludingGravity) {
+                    gravity.x = e.accelerationIncludingGravity.x;
+                    gravity.y = e.accelerationIncludingGravity.y;
+                    gravity.z = e.accelerationIncludingGravity.z;
+                }
+                if (e.rotationRate) {
+                    rotation.x = rotation.beta  = e.rotationRate.beta;
+                    rotation.y = rotation.gamma = e.rotationRate.gamma;
+                    rotation.z = rotation.alpha = e.rotationRate.alpha;
+                }
+            });
+            
+            window.addEventListener("deviceorientation", function(e) {
+                var orientation = self.orientation;
+                orientation.alpha   = e.alpha;  // z(0~360)
+                orientation.beta    = e.beta;   // x(-180~180)
+                orientation.gamma   = e.gamma;  // y(-90~90)
+            });
+        },
+        
+    });
+    
+})();
+
+
+/*
+ * color.js
+ */
+
+tm.graphics = tm.graphics || {};
+
+(function() {
+    
+    /**
+     * @class tm.graphics.Color
+     * カラークラス
+     */
+    tm.graphics.Color = tm.createClass({
+        /** R値 */
+        r: 255,
+        /** G値 */
+        g: 255,
+        /** B値 */
+        b: 255,
+        /** A値 */
+        a: 1.0,
+        
+        /**
+         * @constructor
+         */
+        init: function(r, g, b, a) {
+            this.set.apply(this, arguments);
+        },
+
+        /**
+         * セッター.
+         */
+        set: function(r, g, b, a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = (a !== undefined) ? a : 1.0;
+            return this;
+        },
+        
+        /**
+         * 数値によるセッター.
+         */
+        setFromNumber: function(r, g, b, a) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.a = (a !== undefined) ? a : 1.0;
+            return this;
+        },
+        
+        /**
+         * 配列によるセッター
+         */
+        setFromArray: function(arr) {
+            return this.set.apply(this, arr);
+        },
+        
+        /**
+         * オブジェクトによるセッター
+         */
+        setFromObject: function(obj) {
+            return this.set(obj.r, obj.g, obj.b, obj.a);
+        },
+        
+        /**
+         * 文字列によるセッター
+         */
+        setFromString: function(str) {
+            var color = tm.graphics.Color.stringToNumber(str);
+            return this.set(color[0], color[1], color[2], color[3]);
+        },
+        
+        /**
+         * 賢いセッター
+         */
+        setSmart: function() {
+            var arg = arguments[0];
+            if (arguments.length >= 3) {
+                this.set(arguments.r, arguments.g, arguments.b, arguments.a);
+            }
+            else if (arg instanceof Array) {
+                this.setFromArray(arg);
+            }
+            else if (arg instanceof Object) {
+                this.setFromObject(arg);
+            }
+            else if (typeof(arg) == "string") {
+                this.setFromString(arg);
+            }
+            return this;
+        },
+
+        /**
+         * CSS 用 16進数文字列に変換
+         */
+        toStyleAsHex: function() {
+            return "#{0}{1}{2}".format(
+                this.r.toString(16).padding(2, '0'),
+                this.g.toString(16).padding(2, '0'),
+                this.b.toString(16).padding(2, '0')
+            );
+        },
+        
+        /**
+         * CSS 用 RGB文字列に変換
+         */
+        toStyleAsRGB: function() {
+            return "rgb({r},{g},{b})".format({
+                r: ~~this.r,
+                g: ~~this.g,
+                b: ~~this.b
+            });
+        },
+        
+        
+        /**
+         * CSS 用 RGBA文字列に変換
+         */
+        toStyleAsRGBA: function() {
+            return "rgba({r},{g},{b},{a})".format({
+                r: ~~this.r,
+                g: ~~this.g,
+                b: ~~this.b,
+                a: this.a
+            });
+        },
+
+        /**
+         * CSS 用 RGBA 文字列に変換
+         */
+        toStyle: function() {
+            return "rgba({r},{g},{b},{a})".format({
+                r: ~~this.r,
+                g: ~~this.g,
+                b: ~~this.b,
+                a: this.a
+            });
+        },
+        
+    });
+    
+    var MATCH_SET_LIST = {
+        "hex111": {
+            reg: /^#(\w{1})(\w{1})(\w{1})$/,
+            exec: function(m) {
+                return [
+                    parseInt(m[1]+m[1], 16),
+                    parseInt(m[2]+m[2], 16),
+                    parseInt(m[3]+m[3], 16)
+                ];
+            }
+        },
+        "hex222": {
+            reg: /^#(\w{2})(\w{2})(\w{2})$/,
+            exec: function(m) {
+                return [
+                    parseInt(m[1], 16),
+                    parseInt(m[2], 16),
+                    parseInt(m[3], 16)
+                ];
+            }
+        },
+        "rgb": {
+            reg: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
+            exec: function(m) {
+                return [
+                    parseInt(m[1]),
+                    parseInt(m[2]),
+                    parseInt(m[3])
+                ];
+            }
+        },
+        "rgba": {
+            reg: /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1}(\.{1}\d+)?)\)$/,
+            exec: function(m) {
+                return [
+                    parseInt(m[1]),
+                    parseInt(m[2]),
+                    parseInt(m[3]),
+                    parseFloat(m[4])
+                ];
+            }
+        },
+        "hsl": {
+            reg: /^hsl\((\d{1,3}),\s*(\d{1,3})%,\s*(\d{1,3})%\)$/,
+            exec: function(m) {
+                return tm.graphics.Color.HSLtoRGB(m[1], m[2], m[3]);
+            }
+        },
+        "hsla": {
+            reg: /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1}(\.{1}\d+)?)\)$/,
+            exec: function(m) {
+                return Color.HSLAtoRGBA(m[1], m[2], m[3], m[4]);
+            }
+        },
+    };
+
+    /**
+     * @static
+     * カラーリスト
+     */
+    tm.graphics.Color.COLOR_LIST = {
+        /** @property black */
+        "black"     : [0x00, 0x00, 0x00],
+        /** @property silver */
+        "silver"    : [0xc0, 0xc0, 0xc0],
+        /** @property gray */
+        "gray"      : [0x80, 0x80, 0x80],
+        /** @property white */
+        "white"     : [0xff, 0xff, 0xff],
+        /** @property maroon */
+        "maroon"    : [0x80, 0x00, 0x00],
+        /** @property red */
+        "red"       : [0xff, 0x00, 0x00],
+        /** @property purple */
+        "purple"    : [0x80, 0x00, 0x80],
+        /** @property fuchsia */
+        "fuchsia"   : [0xff, 0x00, 0xff],
+        /** @property green */
+        "green"     : [0x00, 0x80, 0x00],
+        /** @property lime */
+        "lime"      : [0x00, 0xff, 0x00],
+        /** @property olive */
+        "olive"     : [0x80, 0x80, 0x00],
+        /** @property yellow */
+        "yellow"    : [0xff, 0xff, 0x00],
+        /** @property navy */
+        "navy"      : [0x00, 0x00, 0x80],
+        /** @property blue */
+        "blue"      : [0x00, 0x00, 0xff],
+        /** @property teal */
+        "teal"      : [0x00, 0x80, 0x80],
+        /** @property aqua */
+        "aqua"      : [0x00, 0xff, 0xff],
+    };
+
+    /**
+     * @static
+     * @member tm.graphics.Color
+     * @method strToNum
+     */
+    tm.graphics.Color.strToNum = tm.graphics.Color.stringToNumber = function(str){
+        var vlaue = null;
+        var type = null;
+        
+        if (str[0] === '#') {
+            type = (str.length == 4) ?  "hex111" : "hex222";
+        }
+        else if (str[0] === 'r' && str[1] === 'g' && str[2] === 'b') {
+            type = (str[3] == 'a') ? "rgba" : "rgb";
+        }
+        else if (str[0] === 'h' && str[1] === 's' && str[2] === 'l') {
+            type = (str[3] == 'a') ? "hsla" : "hsl";
+        }
+        
+        if (type) {
+            var match_set = MATCH_SET_LIST[type];
+            var m = str.match( match_set.reg );
+            value = match_set.exec(m);
+        }
+        else if (Color.COLOR_LIST[str]){
+            value = Color.COLOR_LIST[str];
+        }
+        
+        return value;
+    };
+
+    /**
+     * @static
+     * @method
+     * hsl を rgb に変換
+     */
+    tm.graphics.Color.HSLtoRGB = function(h, s, l) {
+        var r, g, b;
+        
+        h%=360;
+        h+=360;
+        h%=360;
+        s *= 0.01;
+        l *= 0.01;
+        
+        if (s == 0) {
+            var l = Math.round(l * 255);
+            return [l, l, l];
+        }
+        var m2 = (l < 0.5) ? l * (1+s) : l + s - l*s;
+        var m1 = l*2 - m2;
+        
+        // red
+        var temp = (h + 120)%360;
+        if      (temp < 60) { r = m1 + (m2-m1) * temp/60; }
+        else if (temp < 180){ r = m2; }
+        else                { r = m1; }
+        
+        // green
+        temp = h;
+        if      (temp < 60) { g = m1 + (m2-m1) * temp/60; }
+        else if (temp < 180){ g = m2; }
+        else if (temp < 240){ g = m1 + (m2-m1) * (240-temp)/60; }
+        else                { g = m1; }
+        
+        // blue
+        temp = ((h-120)+360)%360;
+        if      (temp < 60) { b = m1 + (m2-m1) * temp/60; }
+        else if (temp < 180){ b = m2; }
+        else if (temp < 240){ b = m1 + (m2-m1) * (240-temp)/60; }
+        else                { b = m1; }
+        
+        return [
+            parseInt(r*255),
+            parseInt(g*255),
+            parseInt(b*255)
+            ];
+    };
+
+    /**
+     * @static
+     * @method
+     * hsla を rgba に変換
+     */
+    tm.graphics.Color.HSLAtoRGBA = function(h, s, l, a) {
+        var temp = Color.HSLtoRGB(h, s, l); temp[3] = a;
+        return rgb;
+    };
+
+    /**
+     * @static
+     * @method
+     * rgb 値を作成
+     */
+    tm.graphics.Color.createStyleRGB = function(r, g, b) {
+        return "rgba(" + r + "," + g + "," + b + ")";
+    };
+    
+    /**
+     * @static
+     * @method
+     * rgba 値を作成
+     */
+    tm.graphics.Color.createStyleRGBA = function(r, g, b, a) {
+        return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+    };
+
+    /**
+     * @static
+     * @method
+     * hsl 値を作成
+     */
+    tm.graphics.Color.createStyleHSL = function(h, s, l) {
+        return "hsl(" + h + "," + s + "%," + l + "%)";
+    };
+    
+    /**
+     * @static
+     * @method
+     * hsla 値を作成
+     */
+    tm.graphics.Color.createStyleHSLA = function(h, s, l, a) {
+        return "hsla(" + h + "," + s + "%," + l + "%," + a + ")";
+    };
+})();
+
+/*
+ * canvas.js
+ */
+
+tm.graphics = tm.graphics || {};
+
+(function() {
+    
+    /**
+     * @class tm.graphics.Canvas
+     * キャンバス
+     */
+    tm.graphics.Canvas = tm.createClass({
+        
+        /** 要素 */
+        element: null,
+        
+        /** キャンバス */
+        canvas: null,
+        
+        /** コンテキスト */
+        context: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(canvas) {
+            this.canvas = null;
+            if (typeof canvas == "string") {
+                this.canvas = document.querySelector(canvas);
+            }
+            else {
+                this.canvas = canvas || document.createElement("canvas");
+            }
+            this.element            = this.canvas;
+            this.context            = this.canvas.getContext("2d");
+            this.context.lineCap    = "round";
+            this.context.lineJoin   = "round";
+        },
+        
+        /**
+         * リサイズする
+         */
+        resize: function(width, height) {
+            this.canvas.width   = width;
+            this.canvas.height  = height;
+            return this;
+        },
+        
+        /**
+         * リサイズウィンドウ
+         */
+        resizeWindow: function() {
+            this.canvas.style.position  = "fixed";
+            this.canvas.style.margin    = "0px";
+            this.canvas.style.padding   = "0px";
+            this.canvas.style.left      = "0px";
+            this.canvas.style.top       = "0px";
+            return this.resize(window.innerWidth, window.innerHeight);
+        },
+        
+        /**
+         * フィット
+         */
+        resizeToFitScreen: function() {
+            this.canvas.style.position  = "fixed";
+            this.canvas.style.margin    = "0px";
+            this.canvas.style.padding   = "0px";
+            this.canvas.style.left      = "0px";
+            this.canvas.style.top       = "0px";
+            return this.resize(window.innerWidth, window.innerHeight);
+        },
+        
+        /**
+         * 拡縮で画面にフィットさせる
+         * 名前は仮. 検討する
+         */
+        fitWindow: function(everFlag) {
+            var _fitFunc = function() {
+                everFlag = everFlag === undefined ? true : everFlag;
+                var e = this.element;
+                var s = e.style;
+                
+                s.position = "absolute";
+                s.margin = "auto";
+                s.left = "0px";
+                s.top  = "0px";
+                s.bottom = "0px";
+                s.right = "0px";
+
+                var rateWidth = e.width/window.innerWidth;
+                var rateHeight= e.height/window.innerHeight;
+                var rate = e.height/e.width;
+                
+                if (rateWidth > rateHeight) {
+                    s.width  = (innerWidth).floor()+"px";
+                    s.height = (innerWidth*rate).floor()+"px";
+                }
+                else {
+                    s.width  = (innerHeight/rate).floor()+"px";
+                    s.height = (innerHeight).floor()+"px";
+                }
+            }.bind(this);
+            
+            // 一度実行しておく
+            _fitFunc();
+            // リサイズ時のリスナとして登録しておく
+            if (everFlag) {
+                window.addEventListener("resize", _fitFunc, false);
+            }
+        },
+        
+        /**
+         * クリア
+         */
+        clear: function(x, y, width, height) {
+            x = x || 0;
+            y = y || 0;
+            width = width || this.width;
+            height= height|| this.height;
+            this.context.clearRect(x, y, width, height);
+            return this;
+        },
+        
+        
+        /**
+         * 色指定クリア
+         * @param {String}  fillStyle
+         * @param {Number}  [x=0]
+         * @param {Number}  [y=0]
+         * @param {Number}  [width=this.width]
+         * @param {Number}  [height=this.height]
+         */
+        clearColor: function(fillStyle, x, y, width, height) {
+            x = x || 0;
+            y = y || 0;
+            width = width || this.width;
+            height= height|| this.height;
+            
+            this.save();
+            this.resetTransform();          // 行列初期化
+            this.fillStyle = fillStyle;     // 塗りつぶしスタイルセット
+            this.context.fillRect(x, y, width, height);
+            this.restore();
+            
+            return this;
+        },
+                
+        /**
+         * パスを開始(リセット)
+         */
+        beginPath: function() {
+            this.context.beginPath();
+            return this;
+        },
+                
+        /**
+         *  パスを閉じる
+         */
+        closePath: function() {
+            this.context.closePath();
+            return this;
+        },
+        
+
+        /**
+         *  新規パス生成
+         */
+        moveTo: function(x, y) {
+            this.context.moveTo(x, y);
+            return this;
+        },
+        
+        /**
+         * パスに追加
+         */
+        lineTo: function(x, y) {
+            this.context.lineTo(x, y);
+            return this;
+        },
+        
+        /**
+         * パス内を塗りつぶす
+         */
+        fill: function() {
+            this.context.fill();
+            return this;
+        },
+        
+        /**
+         * パス上にラインを引く
+         */
+        stroke: function() {
+            this.context.stroke();
+            return this;
+        },
+        
+        /**
+         * クリップ
+         */
+        clip: function() {
+            this.context.clip();
+            return this;
+        },
+        
+        /**
+         * 点描画
+         */
+        drawPoint: function(x, y) {
+            return this.strokeRect(x, y, 1, 1);
+            // return this.beginPath().moveTo(x-0.5, y-0.5).lineTo(x+0.5, y+0.5).stroke();
+        },
+
+        /**
+         * ラインパスを作成
+         */
+        line: function(x0, y0, x1, y1) {
+            return this.moveTo(x0, y0).lineTo(x1, y1);
+        },
+        
+        /**
+         * ラインを描画
+         */
+        drawLine: function(x0, y0, x1, y1) {
+            return this.beginPath().line(x0, y0, x1, y1).stroke();
+        },
+        
+        /**
+         * ダッシュラインを描画
+         */
+        drawDashLine: function(x0, y0, x1, y1, pattern) {
+            var patternTable = null;
+            if (typeof(pattern) == "string") {
+                patternTable = pattern;
+            }
+            else {
+                pattern = pattern || 0xf0f0;
+                patternTable = pattern.toString(2);
+            }
+            patternTable = patternTable.padding(16, '1');
+            
+            var vx = x1-x0;
+            var vy = y1-y0;
+            var len = Math.sqrt(vx*vx + vy*vy);
+            vx/=len; vy/=len;
+            
+            var x = x0;
+            var y = y0;
+            for (var i=0; i<len; ++i) {
+                if (patternTable[i%16] == '1') {
+                    this.drawPoint(x, y);
+                    // this.fillRect(x, y, this.context.lineWidth, this.context.lineWidth);
+                }
+                x += vx;
+                y += vy;
+            }
+            
+            return this;
+        },
+        
+        /**
+         * v0(x0, y0), v1(x1, y1) から角度を求めて矢印を描画
+         * http://hakuhin.jp/as/rotation.html
+         */
+        drawArrow: function(x0, y0, x1, y1, arrowRadius) {
+            var vx = x1-x0;
+            var vy = y1-y0;
+            var angle = Math.atan2(vy, vx)*180/Math.PI;
+            
+            this.drawLine(x0, y0, x1, y1);
+            this.fillPolygon(x1, y1, arrowRadius || 5, 3, angle);
+            
+            return this;
+        },
+        
+        
+        /**
+         * lines
+         */
+        lines: function() {
+            this.moveTo(arguments[0], arguments[1]);
+            for (var i=1,len=arguments.length/2; i<len; ++i) {
+                this.lineTo(arguments[i*2], arguments[i*2+1]);
+            }
+            return this;
+        },
+
+        /**
+         * ラインストローク描画
+         */
+        strokeLines: function() {
+            this.beginPath();
+            this.lines.apply(this, arguments);
+            this.stroke();
+            return this;
+        },
+
+        /**
+         * ライン塗りつぶし描画
+         */
+        fillLines: function() {
+            this.beginPath();
+            this.lines.apply(this, arguments);
+            this.fill();
+            return this;
+        },
+        
+        /**
+         * 四角形パスを作成する
+         */
+        rect: function(x, y, width, height) {
+            this.context.rect.apply(this.context, arguments);
+            return this;
+        },
+        
+        /**
+         * 四角形塗りつぶし描画
+         */
+        fillRect: function() {
+            this.context.fillRect.apply(this.context, arguments);
+            return this;
+        },
+        
+        /**
+         * 四角形ライン描画
+         */
+        strokeRect: function() {
+            this.context.strokeRect.apply(this.context, arguments);
+            return this;
+        },
+        
+        /**
+         * 角丸四角形パス
+         */
+        roundRect: function(x, y, width, height, radius) {
+            var l = x + radius;
+            var r = x + width - radius;
+            var t = y + radius;
+            var b = y + height - radius;
+            
+            /*
+            var ctx = this.context;
+            ctx.moveTo(l, y);
+            ctx.lineTo(r, y);
+            ctx.quadraticCurveTo(x+width, y, x+width, t);
+            ctx.lineTo(x+width, b);
+            ctx.quadraticCurveTo(x+width, y+height, r, y+height);
+            ctx.lineTo(l, y+height);
+            ctx.quadraticCurveTo(x, y+height, x, b);
+            ctx.lineTo(x, t);
+            ctx.quadraticCurveTo(x, y, l, y);
+            /**/
+            
+            this.context.arc(l, t, radius,     -Math.PI, -Math.PI*0.5, false);  // 左上
+            this.context.arc(r, t, radius, -Math.PI*0.5,            0, false);  // 右上
+            this.context.arc(r, b, radius,            0,  Math.PI*0.5, false);  // 右下
+            this.context.arc(l, b, radius,  Math.PI*0.5,      Math.PI, false);  // 左下
+            this.closePath();
+            
+            return this;
+        },
+        /**
+         * 角丸四角形塗りつぶし
+         */
+        fillRoundRect: function(x, y, width, height, radius) {
+            return this.beginPath().roundRect(x, y, width, height, radius).fill();
+        },
+        /**
+         * 角丸四角形ストローク描画
+         */
+        strokeRoundRect: function(x, y, width, height, radius) {
+            return this.beginPath().roundRect(x, y, width, height, radius).stroke();
+        },
+        
+        /**
+         * ポリゴンパス
+         */
+        polygon: function(x, y, size, sides, offsetAngle) {
+            var radDiv = (Math.PI*2)/sides;
+            var radOffset = (offsetAngle!=undefined) ? offsetAngle*Math.PI/180 : -Math.PI/2;
+            
+            this.moveTo(x + Math.cos(radOffset)*size, y + Math.sin(radOffset)*size);
+            for (var i=1; i<sides; ++i) {
+                var rad = radDiv*i+radOffset;
+                this.lineTo(
+                    x + Math.cos(rad)*size,
+                    y + Math.sin(rad)*size
+                );
+            }
+            this.closePath();
+            return this;
+        },
+        /**
+         * ポリゴン塗りつぶし
+         */
+        fillPolygon: function(x, y, radius, sides, offsetAngle) {
+            return this.beginPath().polygon(x, y, radius, sides, offsetAngle).fill();
+        },
+        /**
+         * ポリゴンストローク描画
+         */
+        strokePolygon: function(x, y, radius, sides, offsetAngle) {
+            return this.beginPath().polygon(x, y, radius, sides, offsetAngle).stroke();
+        },
+        
+        /**
+         * star
+         */
+        star: function(x, y, radius, sides, sideIndent, offsetAngle) {
+            var sideIndentRadius = radius * (sideIndent || 0.38);
+            var radOffset = (offsetAngle) ? offsetAngle*Math.PI/180 : -Math.PI/2;
+            var radDiv = (Math.PI*2)/sides/2;
+            
+            this.moveTo(
+                x + Math.cos(radOffset)*radius,
+                y + Math.sin(radOffset)*radius
+            );
+            for (var i=1; i<sides*2; ++i) {
+                var rad = radDiv*i + radOffset;
+                var len = (i%2) ? sideIndentRadius : radius;
+                this.lineTo(
+                    x + Math.cos(rad)*len,
+                    y + Math.sin(rad)*len
+                );
+            }
+            this.closePath();
+            return this;
+        },
+
+        /**
+         * 星を塗りつぶし描画
+         */
+        fillStar: function(x, y, radius, sides, sideIndent, offsetAngle) {
+            return this.beginPath().star(x, y, radius, sides, sideIndent, offsetAngle).fill();
+        },
+
+        /**
+         * 星をストローク描画
+         */
+        strokeStar: function(x, y, radius, sides, sideIndent, offsetAngle) {
+            return this.beginPath().star(x, y, radius, sides, sideIndent, offsetAngle).stroke();
+        },
+
+        /*
+         * heart
+         */
+        heart: function(x, y, radius, angle) {
+            var half_radius = radius*0.5;
+            var rad = (angle === undefined) ? Math.PI/4 : Math.degToRad(angle);
+
+            // 半径 half_radius の角度 angle 上の点との接線を求める
+            var p = Math.cos(rad)*half_radius;
+            var q = Math.sin(rad)*half_radius;
+
+            // 円の接線の方程式 px + qy = r^2 より y = (r^2-px)/q
+            var x2 = -half_radius;
+            var y2 = (half_radius*half_radius-p*x2)/q;
+
+            // 中心位置調整
+            var height = y2 + half_radius;
+            var offsetY = half_radius-height/2;
+
+            // パスをセット
+            this.moveTo(0+x, y2+y+offsetY);
+
+            this.arc(-half_radius+x, 0+y+offsetY, half_radius, Math.PI-rad, Math.PI*2);
+            this.arc(half_radius+x, 0+y+offsetY, half_radius, Math.PI, rad);
+            this.closePath();
+
+            return this;
+        },
+
+        /*
+         * fill heart
+         */
+        fillHeart: function(x, y, radius, angle) {
+            return this.beginPath().heart(x, y, radius, angle).fill();
+        },
+
+        /*
+         * stroke heart
+         */
+        strokeHeart: function(x, y, radius, angle) {
+            return this.beginPath().heart(x, y, radius, angle).stroke();
+        },
+        
+        /**
+         * 円のパスを設定
+         */
+        circle: function(x, y, radius) {
+            this.context.arc(x, y, radius, 0, Math.PI*2, false);
+            return this;
+        },
+        
+        /**
+         * 塗りつぶし円を描画
+         */
+        fillCircle: function(x, y, radius) {
+            var c = this.context;
+            c.beginPath();
+            c.arc(x, y, radius, 0, Math.PI*2, false);
+            c.closePath();
+            c.fill();
+            return this;
+            // return this.beginPath().circle(x, y, radius).fill();
+        },
+        
+        /**
+         * ストローク円を描画
+         */
+        strokeCircle: function(x, y, radius) {
+            return this.beginPath().circle(x, y, radius).stroke();
+        },
+        
+        
+        /**
+         * 円弧のパスを設定
+         */
+        arc: function(x, y, radius, startAngle, endAngle, anticlockwise) {
+            this.context.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+            return this;
+        },
+        
+        /**
+         * 塗りつぶし円弧を描画
+         */
+        fillArc: function(x, y, radius, startAngle, endAngle, anticlockwise) {
+            return this.beginPath().arc(x, y, radius, startAngle, endAngle, anticlockwise).fill();
+        },
+        
+        /**
+         * ストローク円弧を描画
+         */
+        strokeArc: function(x, y, radius, startAngle, endAngle, anticlockwise) {
+            return this.beginPath().arc(x, y, radius, startAngle, endAngle, anticlockwise).stroke();
+        },
+        
+        /**
+         * 三角形パスを設定
+         */
+        triangle: function(x0, y0, x1, y1, x2, y2) {
+            this.moveTo(x0, y0).lineTo(x1, y1).lineTo(x2, y2);
+            this.closePath();
+            return this;
+        },
+        
+        /**
+         * 塗りつぶし三角形を描画
+         */
+        fillTriangle: function(x0, y0, x1, y1, x2, y2) {
+            return this.beginPath().triangle(x0, y0, x1, y1, x2, y2).fill();
+        },
+        
+        /**
+         * ストローク三角形を描画
+         */
+        strokeTriangle: function(x0, y0, x1, y1, x2, y2) {
+            return this.beginPath().triangle(x0, y0, x1, y1, x2, y2).stroke();
+        },
+        
+
+        /**
+         * 塗りつぶしテキストを描画
+         */
+        fillText: function(text, x, y) {
+            return this.context.fillText.apply(this.context, arguments);
+        },
+        
+        /**
+         * ストロークテキスト
+         */
+        strokeText: function(text, x, y) {
+            return this.context.strokeText.apply(this.context, arguments);
+        },
+        
+        fillVerticalText: function(text, x, y) {
+            this._drawVerticalText("fillText", text, x, y);
+        },
+        strokeVerticalText: function(text, x, y) {
+            this._drawVerticalText("strokeText", text, x, y);
+        },
+        
+        _drawVerticalText: function(func, text, x, y) {
+            var ctx = this.context;
+            var lines = text.split('\n');
+            var charSize = this.context.measureText('あ').width;
+            
+            ctx.save();
+            
+            ctx.textAlign = "right";
+            ctx.textBaseline = "top";
+
+            Array.prototype.forEach.call(text, function(ch, j) {
+                ctx[func](ch, x, y+charSize*j);
+            });
+            
+            ctx.restore();
+        },
+        
+        /**
+         * drawLabelBox, drawLabelArea, drawTextBox, 
+         */
+        _drawLabelArea: function(func, param) {
+            var ctx = this.context;
+            var text = param.text;
+            var charSize = this.context.measureText('あ').width;
+            var lines = text.split('\n');
+            var lineSpace = (param.lineSpace || 1)*charSize;
+            
+            ctx.save();
+            
+            // 横書き
+            if (!param.mode || param.mode == "horizon") {
+                var maxCharNum = Math.max( (param.width/charSize)|0, 1 );
+                var normalLines = [];
+                
+                ctx.textAlign = "left";
+                ctx.textBaseline = "top";
+                
+                
+                lines.each(function(line) {
+                    for (var i=0,len=line.length; i<len; i+=maxCharNum) {
+                        var str = line.substr(i, maxCharNum);
+                        normalLines.push(str);
+                    }
+                });
+                
+                var funcName = func + "Text";
+                normalLines.each(function(line, i) {
+                    ctx[funcName](line, param.x, param.y + i*lineSpace + 4);
+                });
+            }
+            // 縦書き
+            else {
+                var maxCharNum = Math.max( (param.height/charSize)|0, 1 );
+                var startX = param.x + param.width;
+                var normalLines = [];
+                
+                lines.each(function(line) {
+                    for (var i=0,len=line.length; i<len; i+=maxCharNum) {
+                        var str = line.substr(i, maxCharNum);
+                        normalLines.push(str);
+                    }
+                });
+                
+                var funcName = func + "VerticalText";
+                normalLines.each(function(line, i) {
+                    // boldになるとフォントサイズが変わるため、マージンとして15pxずらす
+                    this[funcName](line, startX-i*lineSpace, param.y+15);
+                }.bind(this));
+            }
+            
+            ctx.restore();
+        },
+        
+        fillLabelArea: function(param) {
+            this._drawLabelArea("fill", param);
+        },
+        
+        strokeLabelArea: function(param) {
+            this._drawLabelArea("stroke", param);
+        },
+        
+        /**
+         * 画像描画
+         */
+        drawImage: function(image, x, y) {
+            this.context.drawImage.apply(this.context, arguments);
+            return ;
+            
+            x = x || 0;
+            y = y || 0;
+            this.context.drawImage(image, x, y);
+            return this;
+            // ctx.drawImage(this.image.canvas,
+                // 0, 0, this.width, this.height,
+                // -this.width/2, -this.height/2, this.width, this.height);
+        },
+        
+        /**
+         * テクスチャ描画
+         */
+        drawTexture: function(texture, x, y) {
+            arguments[0] = texture.element;
+            this.context.drawImage.apply(this.context, arguments);
+            
+            return this;
+        },
+        
+        /**
+         * ビットマップ描画
+         */
+        drawBitmap: function(bitmap, x, y) {
+            arguments[0] = bitmap.imageData;
+            this.context.putImageData.apply(this.context, arguments);
+            
+            return this;
+        },
+        
+        /**
+         * dummy
+         */
+        drawScale9Image: function(image, rect0, rect1) {
+            
+            var leftWidth   = rect1.x;
+            var middleWidth = rect1.width;
+            var rightWidth  = image.width - (leftWidth+middleWidth);
+            var finalWidth  = rect0.width - (leftWidth+rightWidth);
+            var topHeight   = rect1.y;
+            
+            // left top
+            this.drawImage(image,
+                0, 0, leftWidth, topHeight,
+                rect0.x, rect0.y, leftWidth, topHeight);
+            // middle top
+            this.drawImage(image,
+                leftWidth, 0, middleWidth, topHeight,
+                rect0.x + leftWidth, rect0.y, finalWidth, topHeight)
+            // right top
+            this.drawImage(image,
+                leftWidth+middleWidth, 0, rightWidth, topHeight,
+                rect0.x + leftWidth + finalWidth, rect0.y, rightWidth, topHeight);
+            
+            return this;
+        },
+        
+        /**
+         * 行列をセット
+         */
+        setTransform: function(m11, m12, m21, m22, dx, dy) {
+            this.context.setTransform(m11, m12, m21, m22, dx, dy);
+            return this;
+        },
+        
+        
+        /**
+         * 行列をリセット
+         */
+        resetTransform: function() {
+            this.setTransform(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+            return this;
+        },
+        
+        
+        /**
+         * 中心に移動
+         */
+        setTransformCenter: function() {
+            this.context.setTransform(1, 0, 0, 1, this.width/2, this.height/2);
+            return this;
+        },
+        
+        /**
+         * 行列を掛ける
+         */
+        transform: function(m11, m12, m21, m22, dx, dy) {
+            this.context.transform(m11, m12, m21, m22, dx, dy);
+            return this;
+        },
+        
+        /**
+         * 保存
+         */
+        save: function() {
+            this.context.save();
+            return this;
+        },
+        
+        /**
+         * 復元
+         */
+        restore: function() {
+            this.context.restore();
+            return this;
+        },
+        
+        /**
+         * 移動
+         */
+        translate: function(x, y) {
+            this.context.translate(x, y);
+            return this;
+        },
+        
+        /**
+         * 回転
+         */
+        rotate: function(rotation) {
+            this.context.rotate(rotation);
+            return this;
+        },
+        
+        /**
+         * スケール
+         */
+        scale: function(scaleX, scaleY) {
+            this.context.scale(scaleX, scaleY);
+            return this;
+        },
+        
+        /**
+         * 画像として保存
+         */
+        saveAsImage: function(mime_type) {
+            mime_type = mime_type || tm.graphics.Canvas.MIME_TYPE_PNG;
+            var data_url = this.canvas.toDataURL(mime_type);
+            // data_url = data_url.replace(mime_type, "image/octet-stream");
+            window.open(data_url, "save");
+            
+            // toDataURL を使えば下記のようなツールが作れるかも!!
+            // TODO: プログラムで絵をかいて保存できるツール
+        },
+
+        /**
+         * アルファとブレンドモードを同時セット
+         * TODO: 未実装
+         */
+        setCompositing: function(alpha, compositeOperation) {
+            // TODO
+        },
+
+        /**
+         * 塗りつぶしスタイルをセット
+         */
+        setFillStyle: function(style) {
+            this.context.fillStyle = style;
+            return this;
+        },
+
+        /**
+         * ストロークスタイルをセット
+         */
+        setStrokeStyle: function(style) {
+            this.context.strokeStyle = style;
+            return this;
+        },
+        
+        /**
+         * <a href="http://www.w3.org/TR/2010/WD-2dcontext-20100624/#colors-and-styles">http://www.w3.org/TR/2010/WD-2dcontext-20100624/#colors-and-styles</a>
+         */
+        setColorStyle: function(stroke, fill) {
+            fill = fill || stroke;
+            
+            this.context.strokeStyle    = stroke;
+            this.context.fillStyle      = fill;
+            return this;
+        },
+        
+        /**
+         * テキストをセット
+         */
+        setText: function(font, align, baseline) {
+            var c = this.context;
+            c.font          = font;
+            c.textAlign     = align;
+            c.textBaseline  = baseline;
+        },
+        
+        /**
+         * ラインスタイルを一括セット
+         * <a href="http://www.w3.org/TR/2010/WD-2dcontext-20100624/#line-styles">http://www.w3.org/TR/2010/WD-2dcontext-20100624/#line-styles</a>
+         */
+        setLineStyle: function(width, cap, join, miter) {
+            with(this.context) {
+                lineWidth   = width || 1;
+                lineCap     = cap   || "round";
+                lineJoin    = join  || "round";
+                miterLimit  = miter || 10.0;
+            }
+            return this;
+        },
+        
+        /**
+         * 影をセット
+         * - <http://www.html5.jp/canvas/ref/property/shadowColor.html>
+         * - <http://www.w3.org/TR/2010/WD-2dcontext-20100624/#shadows>
+         */
+        setShadow: function(color, offsetX, offsetY, blur) {
+            var ctx = this.context;
+            
+            ctx.shadowColor     = color     || "black";
+            ctx.shadowOffsetX   = offsetX   || 0;
+            ctx.shadowOffsetY   = offsetY   || 0;
+            ctx.shadowBlur      = blur      || 0;
+            
+            return this;
+        },
+        
+        /**
+         * エレメント取得
+         */
+        getElement: function() {
+            return this.element;
+        },
+    });
+    
+    /** @static @property */
+    tm.graphics.Canvas.MIME_TYPE_PNG = "image/png";
+    /** @static @property */
+    tm.graphics.Canvas.MIME_TYPE_JPG = "image/jpeg";
+    /** @static @property */
+    tm.graphics.Canvas.MIME_TYPE_SVG = "image/svg+xml";
+    
+    /**
+     * @property    width
+     * 幅
+     */
+    tm.graphics.Canvas.prototype.accessor("width", {
+        "get": function()   { return this.canvas.width; },
+        "set": function(v)  { this.canvas.width = v; }
+    });
+    
+    /**
+     * @property    height
+     * 高さ
+     */
+    tm.graphics.Canvas.prototype.accessor("height", {
+        "get": function()   { return this.canvas.height; },
+        "set": function(v)  { this.canvas.height = v;   }
+    });
+    
+    /**
+     * @property    fillStyle
+     * 塗りつぶしスタイル
+     */
+    tm.graphics.Canvas.prototype.accessor("fillStyle", {
+        "get": function()   { return this.context.fillStyle; },
+        "set": function(v)  { this.context.fillStyle = v;   }
+    });
+    
+    
+    /**
+     * @property    strokeStyle
+     * ストロークスタイル
+     */
+    tm.graphics.Canvas.prototype.accessor("strokeStyle", {
+        "get": function()   { return this.context.strokeStyle; },
+        "set": function(v)  { this.context.strokeStyle = v;   }
+    });
+    
+    
+    /**
+     * @property    globalAlpha
+     * アルファ指定
+     */
+    tm.graphics.Canvas.prototype.accessor("globalAlpha", {
+        "get": function()   { return this.context.globalAlpha; },
+        "set": function(v)  { this.context.globalAlpha = v;   }
+    });
+    
+    
+    /**
+     * @property    globalCompositeOperation
+     * ブレンド指定
+     */
+    tm.graphics.Canvas.prototype.accessor("globalCompositeOperation", {
+        "get": function()   { return this.context.globalCompositeOperation; },
+        "set": function(v)  { this.context.globalCompositeOperation = v;   }
+    });
+
+    /**
+     * @property    shadowBlur
+     * シャドウブラー
+     */
+    tm.graphics.Canvas.prototype.accessor("shadowBlur", {
+        "get": function()   { return this.context.shadowBlur; },
+        "set": function(v)  { this.context.shadowBlur = v;   }
+    });
+    
+
+    /**
+     * @property    shadowColor
+     * シャドウブラーカラー
+     */
+    tm.graphics.Canvas.prototype.accessor("shadowColor", {
+        "get": function()   { return this.context.shadowColor; },
+        "set": function(v)  { this.context.shadowColor = v;   }
+    });
+    
+
+    /**
+     * @property    shadowOffsetX
+     * シャドウオフセット X 
+     */
+    tm.graphics.Canvas.prototype.accessor("shadowOffsetX", {
+        "get": function()   { return this.context.shadowOffsetX; },
+        "set": function(v)  { this.context.shadowOffsetX = v;   }
+    });
+    
+
+    /**
+     * @property    shadowOffsetY
+     * シャドウオフセット Y
+     */
+    tm.graphics.Canvas.prototype.accessor("shadowOffsetY", {
+        "get": function()   { return this.context.shadowOffsetY; },
+        "set": function(v)  { this.context.shadowOffsetY = v;   }
+    });
+    
+    /**
+     * @property    lineCap
+     * ライン終端の描画方法
+     */
+    tm.graphics.Canvas.prototype.accessor("lineCap", {
+        "get": function()   { return this.context.lineCap; },
+        "set": function(v)  { this.context.lineCap = v;   }
+    });
+    
+    /**
+     * @property    lineJoin
+     * ラインつなぎ目の描画方法
+     */
+    tm.graphics.Canvas.prototype.accessor("lineJoin", {
+        "get": function()   { return this.context.lineJoin; },
+        "set": function(v)  { this.context.lineJoin = v;   }
+    });
+    
+    /**
+     * @property    miterLimit
+     * マイターリミット
+     */
+    tm.graphics.Canvas.prototype.accessor("miterLimit", {
+        "get": function()   { return this.context.miterLimit; },
+        "set": function(v)  { this.context.miterLimit = v;   }
+    });
+    
+    /**
+     * @property    lineWidth
+     * ライン幅設定
+     */
+    tm.graphics.Canvas.prototype.accessor("lineWidth", {
+        "get": function()   { return this.context.lineWidth; },
+        "set": function(v)  { this.context.lineWidth = v;   }
+    });
+    
+    /**
+     * @property    font
+     * フォント
+     */
+    tm.graphics.Canvas.prototype.accessor("font", {
+        "get": function()   { return this.context.font; },
+        "set": function(v)  { this.context.font = v;   }
+    });
+    
+    /**
+     * @property    textAlign
+     * テキストのアラインメント
+     */
+    tm.graphics.Canvas.prototype.accessor("textAlign", {
+        "get": function()   { return this.context.textAlign; },
+        "set": function(v)  { this.context.textAlign = v;   }
+    });
+    
+    /**
+     * @property    textBaseline
+     * テキストのベースライン
+     */
+    tm.graphics.Canvas.prototype.accessor("textBaseline", {
+        "get": function()   { return this.context.textBaseline; },
+        "set": function(v)  { this.context.textBaseline = v;   }
+    });
+    
+    /**
+     * @property    centerX
+     * センターX
+     */
+    tm.graphics.Canvas.prototype.getter("centerX", function() {
+        return this.canvas.width/2;
+    });
+    
+    /**
+     * @property    centerY
+     * センターY
+     */
+    tm.graphics.Canvas.prototype.getter("centerY", function(){
+        return this.canvas.height/2;
+    });
+
+    /**
+     * @property    imageSmoothingEnabled
+     * 画像スムージング設定
+     */
+    tm.graphics.Canvas.prototype.accessor("imageSmoothingEnabled", {
+        "get": function() {
+            return this.context.imageSmoothingEnabled;
+        },
+        "set": function(v) {
+            this.context.imageSmoothingEnabled = v;
+            this.context.webkitImageSmoothingEnabled = v;
+            this.context.mozImageSmoothingEnabled = v;
+        }
+    });
+    
+})();
+
+
+
+
+/*
+ * bitmap.js
+ */
+
+tm.graphics = tm.graphics || {};
+
+(function() {
+    
+    /**
+     * @class tm.graphics.Bitmap
+     * ビットマップクラス
+     */
+    tm.graphics.Bitmap = tm.createClass({
+        
+        /** イメージデータ */
+        imageData: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(imageData) {
+            if (!dummyCanvas) {
+                dummyCanvas = document.createElement("canvas");
+                dummyContext= dummyCanvas.getContext("2d");
+            }
+            this._init.apply(this, arguments);
+            this.init = this._init;
+        },
+
+        /**
+         * @private
+         */
+        _init: function(imageData) {
+            if (arguments.length == 1) {
+                this.imageData = imageData;
+                this.data = imageData.data;
+            }
+            else if (arguments.length == 2) {
+                var w = arguments[0];
+                var h = arguments[1];
+                this.imageData = dummyContext.createImageData(w, h);
+                this.data = this.imageData.data;
+            }
+        },
+        
+        /**
+         * index 指定でピクセル値を取得
+         * 最も高速
+         */
+        getPixelIndex: function(index) {
+            var i = index*4;
+            return [
+                this.data[i+0],
+                this.data[i+1],
+                this.data[i+2],
+                this.data[i+3]
+            ];
+        },
+        
+        /**
+         * x, y 指定でピクセル値を取得
+         */
+        getPixelXY: function(x, y) {
+            return this.getPixelIndex( this.posToIndex(x, y) );
+        },
+        
+        /**
+         * ピクセル値を取得
+         * ### Memo
+         * - index 指定か x, y 指定にするか検討中
+         * - 配列で返すか数値で返すか検討中. 速度の早いやつを採用する
+         */
+        getPixel: function(x, y) {
+            return this.getPixelIndex( this.posToIndex(x, y) );
+        },
+
+        /**
+         * ピクセルを数値としてゲット
+         */
+        getPixelAsNumber: function(index) {
+            var i = index*4;
+            return (this.data[i+3] << 24) | (this.data[i+0] << 16) | (this.data[i+1] << 8) | this.data[i+2];
+        },
+
+        /**
+         * ピクセルをオブジェクトとしてゲット
+         */
+        getPixelAsObject: function(index) {
+            var i = index*4;
+            return {
+                r: this.data[i+0],
+                g: this.data[i+1],
+                b: this.data[i+2],
+                a: this.data[i+3]
+            };
+        },
+
+        /**
+         * ピクセルを配列としてゲット
+         */
+        getPixelAsArray: function(index) {
+            var i = index*4;
+            return [
+                this.data[i+0],
+                this.data[i+1],
+                this.data[i+2],
+                this.data[i+3]
+            ];
+        },
+        
+        /**
+         * 指定した範囲内のピクセル平均値を取得
+         */
+        getPixelAverage: function(x, y, width, height) {
+            var rgba = [0, 0, 0, 0];
+            
+            // 範囲
+            var l = x;
+            var r = x+width;
+            var t = y;
+            var b = y+height;
+            
+            // ハミ出し調整
+            if (l < 0) { l = 0; }
+            if (r > this.width) { r = this.width; }
+            if (t < 0) { t = 0; }
+            if (b > this.height) { b = this.height; }
+            
+            // 範囲内のピクセル全てを取得
+            var temp = [];
+            var bitmapWidth = this.width;
+            for (var i=t; i<b; ++i) {
+                for (var j=l; j<r; ++j) {
+                    var index = bitmapWidth*i + j;
+                    temp.push( this.getPixelIndex(index) );
+                    // temp.push( this.getPixelXY(j, i) );
+                }
+            }
+            
+            // 平均を求める
+            var len = len=temp.length;
+            for (var i=0; i<len; ++i) {
+                rgba[0] += temp[i][0];
+                rgba[1] += temp[i][1];
+                rgba[2] += temp[i][2];
+                rgba[3] += temp[i][3];
+            }
+            
+            rgba[0]/=len;
+            rgba[1]/=len;
+            rgba[2]/=len;
+            rgba[3]/=len;
+            
+            return rgba;
+        },
+        
+        
+        /**
+         * index 指定でピクセル値をセット
+         * 最も高速
+         */
+        setPixelIndex: function(index, r, g, b) {
+            var i = index*4;
+            this.data[i+0] = r;
+            this.data[i+1] = g;
+            this.data[i+2] = b;
+            return this;
+        },
+        
+        /**
+         * x, y指定でピクセル値をセット
+         */
+        setPixelXY: function(x, y, r, g, b) {
+            return this.setPixelIndex(y*this.imageData.width+x, r, g, b);
+        },
+        
+        /**
+         * ピクセル値をセット
+         */
+        setPixel: function(index, r, g, b) {
+            return this.setPixelIndex(y*this.imageData.width+x, r, g, b);
+        },
+
+        /**
+         * 32bit セット
+         */
+        setPixel32Index: function(index, r, g, b, a) {
+            var i = index*4;
+            this.data[i+0] = r;
+            this.data[i+1] = g;
+            this.data[i+2] = b;
+            this.data[i+3] = a;
+            return this;
+        },
+
+        /**
+         * 32bit セット
+         */
+        setPixel32: function(x, y, r, g, b, a) {
+            return this.setPixel32Index(y*this.width+x, r, g, b, a);
+        },
+
+        /**
+         * 32bit セット
+         */
+        setPixel32XY: function(x, y, r, g, b, a) {
+            return this.setPixel32Index(y*this.width+x, r, g, b, a);
+        },
+
+        /**
+         * 配列からピクセルをセット
+         */
+        setPixelFromArray: function(index, pixel) {
+            return this.setPixel(index, pixel[0], pixel[1], pixel[2]);
+        },
+
+        /**
+         * 配列からピクセルをセット
+         */
+        setPixel32FromArray: function(index, pixel) {
+            return this.setPixel32(index, pixel[0], pixel[1], pixel[2], pixel[3]);
+        },
+
+        /**
+         * argb
+         */
+        setPixelFromNumber: function(index, pixel) {
+            return this.setPixel(index, (pixel & 0x00ff0000)>>>16, (pixel & 0x0000ff00)>>>8, (pixel & 0x000000ff)>>>0);
+        },
+
+        /**
+         * argb
+         */
+        setPixel32FromNumber: function(index, pixel) {
+            return this.setPixel32(index, (pixel & 0x00ff0000)>>>16, (pixel & 0x0000ff00)>>>8, (pixel & 0x000000ff)>>>0, (pixel & 0xff000000)>>>24);
+        },
+        
+        /**
+         * object
+         */
+        setPixelFromObject: function(index, pixel) {
+            return this.setPixel(pixel.r, pixel.g, pixel.b);
+        },
+        /**
+         * オブジェクトからピクセルをセット
+         */
+        setPixel32FromObject: function(index, pixel) {
+            return this.setPixel32(pixel.r, pixel.g, pixel.b, pixel.a);
+        },
+        
+        /**
+         * string
+         * rgb, hsl, #... #...... などに対応予定
+         */
+        setPixelFromString: function(index, pixel) {
+            // TODO
+        },
+        
+        /**
+         * 位置をインデックスに変換
+         */
+        posToIndex: function(x, y) {
+            return y*this.imageData.width + x;
+        },
+        
+        /**
+         * フィルター
+         */
+        filter: function(filter) {
+            for (var i=0; i<this.height; ++i) {
+                for (var j=0; j<this.width; ++j) {
+                    var index = this.posToIndex(j, i);
+                    var p = this.getPixel(j, i);
+                    
+                    filter.calc(p, index, j, i, this);
+                }
+            }
+            
+            return this;
+        },
+        
+        /**
+         * ノイズ
+         */
+        noise: function(low, high) {
+            low = low  || 0;
+            high= high || 255;
+            range= high-low;
+            
+            for (var i=0,len=this.length; i<len; ++i) {
+                var p = this.getPixelIndex(i);
+                p[0] = Math.random()*range + low;
+                p[1] = Math.random()*range + low;
+                p[2] = Math.random()*range + low;
+                p[3] = 255;
+                this.setPixel32Index(i, p[0], p[1], p[2], p[3]);
+            }
+        },
+
+        /**
+         * フィルタを適応する
+         * TODO: 未実装
+         */
+        applyFilter: function(filter) {
+            
+        },
+        
+    });
+    
+    /** @property width  幅 */
+    tm.graphics.Bitmap.prototype.accessor("width", {
+        "get": function()   { return this.imageData.width; },
+        "set": function(v)  { this.imageData.width = v;    }
+    });
+    /** @property height  高さ */
+    tm.graphics.Bitmap.prototype.accessor("height", {
+        "get": function()   { return this.imageData.height; },
+        "set": function(v)  { this.imageData.height = v;    }
+    });
+    /** @property length */
+    tm.graphics.Bitmap.prototype.getter("length", function() {
+        return this.imageData.width*this.imageData.height;
+    });
+    
+    
+    /**
+     * @member tm.graphics.Canvas
+     * ビットマップ取得
+     */
+    tm.graphics.Canvas.prototype.getBitmap = function(x, y, width, height) {
+        return tm.graphics.Bitmap(this.context.getImageData(x||0, y||0, width||this.width, height||this.height));
+    };
+    
+    /**
+     * @member tm.graphics.Canvas
+     * ビットマップ生成
+     */
+    tm.graphics.Canvas.prototype.createBitmap = function(width, height) {
+        return tm.graphics.Bitmap(this.context.createImageData(width||this.width, height||this.height));
+    };
+
+    /**
+     * @member tm.asset.Texture
+     * ビットマップ生成
+     */
+    tm.asset.Texture.prototype.getBitmap = function(x, y, width, height) {
+        var canvas = tm.graphics.Canvas();
+        canvas.resize(this.width, this.height);
+        canvas.drawTexture(this, 0, 0, this.width, this.height);
+        return canvas.getBitmap(x, y, width, height);
+    };
+
+    var dummyCanvas = null;
+    var dummyContext = null;
+})();
+
+
+/*
+ * filter.js
+ */
+
+tm.graphics = tm.graphics || {};
+
+(function() {
+    
+    /**
+     * @class tm.graphics.MonochromeFilter
+     * モノクロフィルタ
+     */
+    tm.graphics.MonochromeFilter = tm.createClass({
+        
+        /**
+         * @constructor
+         */
+        init: function() {},
+        
+        /**
+         * apply
+         */
+        apply: function(src, dst) {
+            var len = src.length;
+            for (var i=0; i<len; ++i) {
+                var p = src.getPixelIndex(i);
+                var grayscale = p[0]*0.3 + p[1]*0.59 + p[2]*0.11;
+                dst.setPixel32Index(i, grayscale, grayscale, grayscale, p[3]);
+            }
+            
+            return dst;
+        },
+    });
+    
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.graphics.ReverseFilter
+     * リバースフィルタ
+     */
+    tm.graphics.ReverseFilter = tm.createClass({
+        
+        /**
+         * @constructor
+         */
+        init: function() {},
+        
+        /**
+         * apply
+         */
+        apply: function(src, dst) {
+            for (var i=0,len=src.width*src.height; i<len; ++i) {
+                var p = src.getPixelIndex(i);
+                p[0] = 255-p[0];
+                p[1] = 255-p[1];
+                p[2] = 255-p[2];
+                dst.setPixel32Index(i, p[0], p[1], p[2], 255);
+            }
+            
+            return dst;
+        },
+    });
+    
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.graphics.BlurFilter
+     * ブラーフィルタ
+     * 
+     * ### Reference
+     * - <http://www40.atwiki.jp/spellbound/pages/153.html>
+     * - <http://www.flother.com/blog/2010/image-blur-html5-canvas/>
+     */
+    tm.graphics.BlurFilter = tm.createClass({
+
+        /** @property blurX */
+        /** @property blurY */
+        /** @property quality */
+        
+        /**
+         * @constructor
+         */
+        init: function(blurX, blurY, quality) {
+            this.blurX      = blurX || 4;
+            this.blurY      = blurY || 4;
+            this.quality    = quality || 1;
+        },
+        
+        /**
+         * apply
+         */
+        apply: function(src, dst) {
+            var halfX       = Math.floor(this.blurX/2);
+            var halfY       = Math.floor(this.blurY/2);
+            var rangeX      = this.blurX;
+            var rangeY      = this.blurY;
+            var srcWidth    = src.width;
+            var srcHeight   = src.height;
+            var len         = src.length;
+            
+            // ブラー処理
+            var _apply = function(src, dst) {
+                for (var i=0; i<len; ++i) {
+                    var x = i%srcWidth;
+                    var y = Math.floor(i/srcWidth);
+                    var p = src.getPixelAverage(x-halfX, y-halfY, rangeX, rangeY);
+                    dst.setPixel32Index(i, p[0], p[1], p[2], 255);
+                }
+            };
+            
+            // quality の回数だけブラーをかける
+            var tempDst     = src;
+            for (var i=0; i<this.quality; ++i) {
+                src = tempDst;
+                tempDst = tm.graphics.Bitmap(srcWidth, srcHeight);
+                _apply(src, tempDst);
+            }
+            
+            // 結果に代入
+            //? メモリリークとか大丈夫なのかな
+            dst.imageData = tempDst.imageData;
+            
+            return dst;
+        },
+    });
+    
+    
+})();
+
+
+(function() {
+    
+    // トゥーンテーブル
+    var defaultToonTable = [];
+    for(var i=0; i<255; ++i) {
+        var n=0;
+        
+        if      (i<100) { n =  60; }
+        else if (i<150) { n = 150; }
+        else if (i<180) { n = 180; }
+        else            { n = 220; }
+        
+        defaultToonTable[i] = n;
+    }
+    
+    /**
+     * @class tm.graphics.ToonFilter
+     * トゥーンフィルタ
+     */
+    tm.graphics.ToonFilter = tm.createClass({
+        
+        /** トゥーンテーブル */
+        toonTable: null,
+        
+        /**
+         * @constructor
+         */
+        init: function(toonTable) {
+            this.toonTable = toonTable || defaultToonTable;
+        },
+        
+        /**
+         * apply
+         */
+        apply: function(src, dst) {
+            for (var i=0,len=src.width*src.height; i<len; ++i) {
+                var pixel = src.getPixelIndex(i);
+                var r = this.toonTable[ pixel[0] ];
+                var g = this.toonTable[ pixel[1] ];
+                var b = this.toonTable[ pixel[2] ];
+                dst.setPixel32Index(i, r, g, b, 255);
+            }
+            
+            return dst;
+        },
+    });
+    
+    
+})();
+
+
+
+(function() {
+    
+    /**
+     * @class tm.graphics.ColorMatrixFilter
+     * カラーマトリックスフィルタ
+     * 
+     * ### Reference
+     * - <http://blog.boreal-kiss.com/2008/04/08113113.html/>
+     * - <http://voglia.jp/2010/01/26/260>
+     * - <http://hakuhin.jp/as/color.html#COLOR_02>
+     * - <http://d.hatena.ne.jp/umezo/20090122/1232627694>
+     * - <http://www40.atwiki.jp/spellbound/pages/188.html>
+     */
+    tm.graphics.ColorMatrixFilter = tm.createClass({
+        
+        /** @property colorMatrix */
+
+        /**
+         * @constructor
+         */
+        init: function(colorMatrix) {
+            this.colorMatrix = colorMatrix;
+        },
+        
+        /**
+         * @property
+         * apply
+         */
+        apply: function(src, dst) {
+            var cm = this.colorMatrix;
+            for (var i=0,len=src.length; i<len; ++i) {
+                var pixel = src.getPixelIndex(i);
+                var r = (pixel[0] * cm[0]) + (pixel[1] * cm[1]) + (pixel[2] * cm[2]) + (pixel[3] * cm[3]) + cm[4];
+                var g = (pixel[0] * cm[5]) + (pixel[1] * cm[6]) + (pixel[2] * cm[7]) + (pixel[3] * cm[8]) + cm[9];
+                var b = (pixel[0] * cm[10]) + (pixel[1] * cm[11]) + (pixel[2] * cm[12]) + (pixel[3] * cm[13]) + cm[14];
+                var a = (pixel[0] * cm[15]) + (pixel[1] * cm[16]) + (pixel[2] * cm[17]) + (pixel[3] * cm[18]) + cm[19];
+                dst.setPixel32Index(i, r, g, b, a);
+            }
+            
+            return dst;
+        }
+        
+    });
+    
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * gradient.js
+ */
+
+tm.graphics = tm.graphics || {};
+
+(function() {
+    
+    tm.graphics.Canvas.prototype.setGradient = function(gradient) {
+        this.context.fillStyle = gradient.gradient;
+    };
+    
+})();
+
+(function() {
+    
+    /**
+     * @class tm.graphics.LinearGradient
+     * 線形グラデーション
+     */
+    tm.graphics.LinearGradient = tm.createClass({
+
+        /**
+         * @constructor
+         */
+        init: function(x, y, width, height) {
+            if (!dummyCanvas) {
+                dummyCanvas = document.createElement("canvas");
+                dummyContext= dummyCanvas.getContext("2d");
+            }
+            this._init(x, y, width, height);
+            this.init = this._init;
+        },
+
+        /**
+         * @private
+         */
+        _init: function(x, y, width, height) {
+            this.gradient = dummyContext.createLinearGradient(x, y, width, height);
+        },
+
+        /**
+         * カラー点を追加
+         */
+        addColorStop: function(offset, color) {
+            this.gradient.addColorStop(offset, color);
+            return this;
+        },
+
+        /**
+         * カラー点をリストで追加
+         */
+        addColorStopList: function(prop) {
+            for (var i=0,len=prop.length; i<len; ++i) {
+                var offset  = prop[i].offset;
+                var color   = prop[i].color;
+                this.addColorStop(offset, color);
+            }
+            return this;
+        },
+
+        /**
+         * スタイル化
+         */
+        toStyle: function() {
+            return this.gradient;
+        },
+        
+    });
+
+    
+    /**
+     * @class tm.graphics.RadialGradient
+     * 円形グラデーション
+     */
+    tm.graphics.RadialGradient = tm.createClass({
+
+        /**
+         * @constructor
+         */        
+        init: function(x0, y0, r0, x1, y1, r1) {
+            if (!dummyCanvas) {
+                dummyCanvas = document.createElement("canvas");
+                dummyContext= dummyCanvas.getContext("2d");
+            }
+            this._init(x0, y0, r0, x1, y1, r1);
+            this.init = this._init;
+        },
+
+        /**
+         * @private
+         */
+        _init: function(x0, y0, r0, x1, y1, r1) {
+            this.gradient = dummyContext.createRadialGradient(x0, y0, r0, x1, y1, r1);
+        },
+        
+        /**
+         * カラー点を追加
+         */
+        addColorStop: function(offset, color) {
+            this.gradient.addColorStop(offset, color);
+            return this;
+        },
+
+        /**
+         * カラー点をリストで追加
+         */
+        addColorStopList: function(prop) {
+            for (var i=0,len=prop.length; i<len; ++i) {
+                var offset  = prop[i].offset;
+                var color   = prop[i].color;
+                this.addColorStop(offset, color);
+            }
+            return this;
+        },
+
+        /**
+         * スタイル化
+         */
+        toStyle: function() {
+            return this.gradient;
+        },
+        
+    });
+
+    var dummyCanvas = null;
+    var dummyContext = null;
+    
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * tween.js
+ */
+
+tm.anim = tm.anim || {};
+
+(function() {
+    
+    
+    /**
+     * @class tm.anim.Tween
+     * Tween クラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.anim.Tween = tm.createClass({
+        
+        superClass: tm.event.EventDispatcher,
+
+        /** アニメーションさせる対象  */
+        target      : null,
+        /** アニメーションの時間  */
+        time        : null,
+        /** プロパティ 未使用？  */
+        prop        : null,
+        /** 現在のプロパティ  */
+        nowProps    : null,
+        /** 未使用  */
+        now         : null,
+        /** 未使用  */
+        begin       : null,
+        /** 未使用  */
+        finish      : null,
+        /** アニメーションにかける時間  */
+        duration    : null,
+        /** ループするかどうか  */
+        isLooping   : null,
+        /** アニメーション中かどうか  */
+        isPlaying   : null,
+        /** アニメーション実行関数  */
+        func        : Math.linear,
+        /** フレームレート  */
+        fps         : 30,
+        
+        /**
+         * @constructor
+         * @param {Object} target
+         * @param {Object} finishProps
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        init: function(target, finishProps, duration, func) {
+            this.superInit();
+            
+            this.time = 0;
+            this.nowProps = {};
+            this.isPlaying = false;
+
+            if (arguments.length > 0) {
+                this.to.apply(this, arguments);
+            }
+        },
+
+        /**
+         * 指定した値までアニメーション
+         * @param {Object} target
+         * @param {Object} finishProps
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        to: function(target, finishProps, duration, func) {
+            var beginProps = {};
+
+            for (var key in finishProps) {
+                beginProps[key] = target[key];
+            }
+
+            this.fromTo(target, beginProps, finishProps, duration, func);
+
+            return this;
+        },
+
+        /**
+         * 指定した値を足した値までアニメーション
+         * @param {Object} target
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        by: function(target, props, duration, func) {
+            var beginProps = {};
+            var finishProps = {};
+
+            for (var key in props) {
+                beginProps[key] = target[key];
+                finishProps[key] = target[key] + props[key];
+            }
+
+            this.fromTo(target, beginProps, finishProps, duration, func);
+
+            return this;
+        },
+
+        /**
+         * 開始の値から終了の値までアニメーション
+         * @param {Object} target
+         * @param {Object} beginProps
+         * @param {Object} finishProps
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        fromTo: function(target, beginProps, finishProps, duration, func) {
+            this.target = target;
+            this.beginProps  = beginProps;
+            this.finishProps = finishProps;
+            this.duration = duration;
+            
+            // setup
+            this.changeProps = {};
+            for (var key in beginProps) {
+                this.changeProps[key] = finishProps[key] - beginProps[key];
+            }
+            this.setTransition(func);
+
+            return this;
+        },
+
+        /**
+         * from
+         * @param {Object} target
+         * @param {Object} beginProps
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        from: function(target, beginProps, duration, func) {
+            var finishProps = {};
+
+            for (var key in beginProps) {
+                finishProps[key] = target[key];
+            }
+
+            this.fromTo(target, beginProps, finishProps, duration, func);
+
+            return this;
+        },
+        
+        /**
+         * easingの指定か、コールバックの指定か調べる
+         * @param {Function} func
+         */
+        setTransition: function(func) {
+            if (typeof func == 'function') {
+                this.func = func;
+            }
+            else if (typeof func == 'string'){
+                this.func = tm.anim.easing[func];
+            }
+            else {
+                this.func = tm.anim.easing["default"];
+            }
+            return this;
+        },
+        
+        /**
+         * アニメーションの再開
+         */
+        resume: function() {
+            this.isPlaying = true;
+            this._resumeTime();
+            this._updateTime();
+            this.dispatchEvent(tm.event.TweenEvent("resume", this.time, this.nowProps));
+        },
+        
+        /**
+         * アニメーションの開始
+         */
+        start: function() {
+            this.isPlaying = true;
+            this._startTime();
+            this._updateTime();
+            this.dispatchEvent(tm.event.TweenEvent("start", this.time, this.nowProps));
+        },
+        
+        /**
+         * アニメーションのストップ
+         */
+        stop: function() {
+            this.isPlaying = false;
+            this.dispatchEvent(tm.event.TweenEvent("stop", this.time, this.nowProps));
+        },
+        
+        /**
+         * 開始位置まで戻る
+         */
+        rewind: function() {
+            this.time = 0;
+            this.update();
+        },
+        
+        /**
+         * 最後位置まで早送り
+         */
+        fforward: function() {
+            this.time = this.duration;
+            this.update();
+        },
+
+        /**        
+         * ヨーヨーのアニメーション
+         */
+        yoyo: function() {
+            var temp = this.finishProps;
+            this.finishProps = this.beginProps;
+            this.beginProps  = temp;
+            for (var key in this.beginProps) {
+                this.changeProps[key] = this.finishProps[key] - this.beginProps[key];
+            }
+            this.start();
+        },
+        
+        /**
+         * 更新
+         */
+        update: function() {
+            for (var key in this.changeProps) {
+                this.nowProps[key] = this.func(this.time, this.beginProps[key], this.changeProps[key], this.duration);
+                this.target[key] = this.nowProps[key];
+            }
+            this.dispatchEvent(tm.event.TweenEvent("change", this.time, this.nowProps));
+        },
+        
+        /**
+         * 時間を巻き戻す
+         * @private
+         */
+        _resumeTime: function() {
+            this.startTime = (new Date()).getTime() - this.time;
+        },
+        
+        /**
+         * スタート時間を設定
+         * @private
+         */
+        _startTime: function() {
+            this.startTime = (new Date()).getTime();
+        },
+        
+        /**
+         * 時間を進める
+         * @private
+         */
+        _updateTime: function() {
+            if (this.isPlaying) {
+                this._setTime((new Date()).getTime() - this.startTime);
+                setTimeout(arguments.callee.bind(this), 1000/this.fps);
+            }
+        },
+        
+        /**
+         * 時間を設定する
+         * @param {Object} t
+         * @private
+         */
+        _setTime: function(t) {
+            var time = t;
+            // モーション終了
+            if (time > this.duration) {
+                // ループ
+                if (this.isLooping) {
+                    this.rewind();
+                    // 座標を更新
+                    this.update();
+                    // イベント開始
+                    this.dispatchEvent(tm.event.TweenEvent("loop", this.time, this.nowProps));
+                }
+                // 終了
+                else {
+                    this.time = this.duration;
+                    // 座標を更新
+                    this.update();
+                    // 停止
+                    this.stop();
+                    // イベント
+                    this.dispatchEvent(tm.event.TweenEvent("finish", this.time, this.nowProps));
+                }
+            }
+            // 更新
+            else {
+                this.time = time;
+                // 座標を更新
+                this.update();
+            }
+        }
+    });
+})();
+
+
+/*
+ * easing
+ */
+(function() {
+    
+    /**
+     * @class tm.anim.easing
+     * イージング
+     * ### Reference
+     * - <http://coderepos.org/share/wiki/JSTweener>
+     * - <http://coderepos.org/share/browser/lang/javascript/jstweener/trunk/src/JSTweener.js>
+     * - <http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js>
+     * - <http://hosted.zeh.com.br/tweener/docs/en-us/misc/transitions.html>
+     */
+    tm.anim.easing = {
+        /** default */
+        "default": function(t, b, c, d) {
+            return c*t/d + b;
+        },        
+        /** linear */
+        linear: function(t, b, c, d) {
+            return c*t/d + b;
+        },        
+        /** swing */
+        swing: function(t, b, c, d) {
+            return -c *(t/=d)*(t-2) + b;
+        },        
+        /** easeInQuad */
+        easeInQuad: function(t, b, c, d) {
+            return c*(t/=d)*t + b;
+        },        
+        /** easeOutQuad */
+        easeOutQuad: function(t, b, c, d) {
+            return -c *(t/=d)*(t-2) + b;
+        },        
+        /** easeInOutQuad */
+        easeInOutQuad: function(t, b, c, d) {
+            if((t/=d/2) < 1) return c/2*t*t + b;
+            return -c/2 *((--t)*(t-2) - 1) + b;
+        },
+        /** defeInCubic */
+        easeInCubic: function(t, b, c, d) {
+            return c*(t/=d)*t*t + b;
+        },
+        /** easeOutCubic */
+        easeOutCubic: function(t, b, c, d) {
+            return c*((t=t/d-1)*t*t + 1) + b;
+        },
+        /** easeInOutCubic */
+        easeInOutCubic: function(t, b, c, d) {
+            if((t/=d/2) < 1) return c/2*t*t*t + b;
+            return c/2*((t-=2)*t*t + 2) + b;
+        },
+        /** easeOutInCubic */
+        easeOutInCubic: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutCubic(t*2, b, c/2, d);
+            return tm.anim.easing.easeInCubic((t*2)-d, b+c/2, c/2, d);
+        },
+        /** easeInQuart */
+        easeInQuart: function(t, b, c, d) {
+            return c*(t/=d)*t*t*t + b;
+        },
+        /** easeOutQuart */
+        easeOutQuart: function(t, b, c, d) {
+            return -c *((t=t/d-1)*t*t*t - 1) + b;
+        },
+        /** easeInOutQuart */
+        easeInOutQuart: function(t, b, c, d) {
+            if((t/=d/2) < 1) return c/2*t*t*t*t + b;
+            return -c/2 *((t-=2)*t*t*t - 2) + b;
+        },
+        /** easeOutInQuart */
+        easeOutInQuart: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutQuart(t*2, b, c/2, d);
+            return tm.anim.easing.easeInQuart((t*2)-d, b+c/2, c/2, d);
+        },
+        /** easeInQuint */
+        easeInQuint: function(t, b, c, d) {
+            return c*(t/=d)*t*t*t*t + b;
+        },
+        /** easeOutQuint */
+        easeOutQuint: function(t, b, c, d) {
+            return c*((t=t/d-1)*t*t*t*t + 1) + b;
+        },
+        /** easeInOutQuint */
+        easeInOutQuint: function(t, b, c, d) {
+            if((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
+            return c/2*((t-=2)*t*t*t*t + 2) + b;
+        },
+        /** easeOutInQuint */
+        easeOutInQuint: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutQuint(t*2, b, c/2, d);
+            return tm.anim.easing.easeInQuint((t*2)-d, b+c/2, c/2, d);
+        },
+        /** easeInSine */
+        easeInSine: function(t, b, c, d) {
+            return -c * Math.cos(t/d *(Math.PI/2)) + c + b;
+        },
+        /** easeOutSine */
+        easeOutSine: function(t, b, c, d) {
+            return c * Math.sin(t/d *(Math.PI/2)) + b;
+        },
+        /** easeInOutSine */
+        easeInOutSine: function(t, b, c, d) {
+            return -c/2 *(Math.cos(Math.PI*t/d) - 1) + b;
+        },
+        /** easeOutInSine */
+        easeOutInSine: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutSine(t*2, b, c/2, d);
+            return tm.anim.easing.easeInSine((t*2)-d, b+c/2, c/2, d);
+        },
+        /** easeInExpo */
+        easeInExpo: function(t, b, c, d) {
+            return(t==0) ? b : c * Math.pow(2, 10 *(t/d - 1)) + b - c * 0.001;
+        },
+        /** easeOutExpo */
+        easeOutExpo: function(t, b, c, d) {
+            return(t==d) ? b+c : c * 1.001 *(-Math.pow(2, -10 * t/d) + 1) + b;
+        },
+        /** easeInOutExpo */
+        easeInOutExpo: function(t, b, c, d) {
+            if(t==0) return b;
+            if(t==d) return b+c;
+            if((t/=d/2) < 1) return c/2 * Math.pow(2, 10 *(t - 1)) + b - c * 0.0005;
+            return c/2 * 1.0005 *(-Math.pow(2, -10 * --t) + 2) + b;
+        },
+        /** easeOutInExpo */
+        easeOutInExpo: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutExpo(t*2, b, c/2, d);
+            return tm.anim.easing.easeInExpo((t*2)-d, b+c/2, c/2, d);
+        },
+        /** easeInCirc */
+        easeInCirc: function(t, b, c, d) {
+            return -c *(Math.sqrt(1 -(t/=d)*t) - 1) + b;
+        },
+        /** easeOutCirc */
+        easeOutCirc: function(t, b, c, d) {
+            return c * Math.sqrt(1 -(t=t/d-1)*t) + b;
+        },
+        /** easeInOutCirc */
+        easeInOutCirc: function(t, b, c, d) {
+            if((t/=d/2) < 1) return -c/2 *(Math.sqrt(1 - t*t) - 1) + b;
+            return c/2 *(Math.sqrt(1 -(t-=2)*t) + 1) + b;
+        },
+        /** easeOutInCirc */
+        easeOutInCirc: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutCirc(t*2, b, c/2, d);
+            return tm.anim.easing.easeInCirc((t*2)-d, b+c/2, c/2, d);
+        },
+        /** easeInElastic */
+        easeInElastic: function(t, b, c, d, a, p) {
+            var s;
+            if(t==0) return b;  if((t/=d)==1) return b+c;  if(!p) p=d*.3;
+            if(!a || a < Math.abs(c)) { a=c; s=p/4; } else s = p/(2*Math.PI) * Math.asin(c/a);
+            return -(a*Math.pow(2,10*(t-=1)) * Math.sin((t*d-s)*(2*Math.PI)/p )) + b;
+        },
+        /** easeOutElastic */
+        easeOutElastic: function(t, b, c, d, a, p) {
+            var s;
+            if(t==0) return b;  if((t/=d)==1) return b+c;  if(!p) p=d*.3;
+            if(!a || a < Math.abs(c)) { a=c; s=p/4; } else s = p/(2*Math.PI) * Math.asin(c/a);
+            return(a*Math.pow(2,-10*t) * Math.sin((t*d-s)*(2*Math.PI)/p ) + c + b);
+        },
+        /** easeInOutElastic */
+        easeInOutElastic: function(t, b, c, d, a, p) {
+            var s;
+            if(t==0) return b;  if((t/=d/2)==2) return b+c;  if(!p) p=d*(.3*1.5);
+            if(!a || a < Math.abs(c)) { a=c; s=p/4; }       else s = p/(2*Math.PI) * Math.asin(c/a);
+            if(t < 1) return -.5*(a*Math.pow(2,10*(t-=1)) * Math.sin((t*d-s)*(2*Math.PI)/p )) + b;
+            return a*Math.pow(2,-10*(t-=1)) * Math.sin((t*d-s)*(2*Math.PI)/p )*.5 + c + b;
+        },
+        /** easeOutInElastic */
+        easeOutInElastic: function(t, b, c, d, a, p) {
+            if(t < d/2) return tm.anim.easing.easeOutElastic(t*2, b, c/2, d, a, p);
+            return tm.anim.easing.easeInElastic((t*2)-d, b+c/2, c/2, d, a, p);
+        },
+        /** easeInBack */
+        easeInBack: function(t, b, c, d, s) {
+            if(s == undefined) s = 1.70158;
+            return c*(t/=d)*t*((s+1)*t - s) + b;
+        },
+        /** easeOutBack */
+        easeOutBack: function(t, b, c, d, s) {
+            if(s == undefined) s = 1.70158;
+            return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+        },
+        /** easeInOutBack */
+        easeInOutBack: function(t, b, c, d, s) {
+            if(s == undefined) s = 1.70158;
+            if((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
+            return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
+        },
+        /** easeOutInBack */
+        easeOutInBack: function(t, b, c, d, s) {
+            if(t < d/2) return tm.anim.easing.easeOutBack(t*2, b, c/2, d, s);
+            return tm.anim.easing.easeInBack((t*2)-d, b+c/2, c/2, d, s);
+        },
+        /** easeInBounce */
+        easeInBounce: function(t, b, c, d) {
+            return c - tm.anim.easing.easeOutBounce(d-t, 0, c, d) + b;
+        },
+        /** easeOutBounce */
+        easeOutBounce: function(t, b, c, d) {
+            if((t/=d) <(1/2.75)) {
+                return c*(7.5625*t*t) + b;
+            } else if(t <(2/2.75)) {
+                return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+            } else if(t <(2.5/2.75)) {
+                return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+            } else {
+                return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+            }
+        },
+        /** easeInOutBounce */
+        easeInOutBounce: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeInBounce(t*2, 0, c, d) * .5 + b;
+            else return tm.anim.easing.easeOutBounce(t*2-d, 0, c, d) * .5 + c*.5 + b;
+        },
+        /** easeOutInBounce */
+        easeOutInBounce: function(t, b, c, d) {
+            if(t < d/2) return tm.anim.easing.easeOutBounce(t*2, b, c/2, d);
+            return tm.anim.easing.easeInBounce((t*2)-d, b+c/2, c/2, d);
+        }
+    };
+    
+})();
+
+
+
+
+
+
+
+
+/*
+ * Timer
+ */
+
+
+(function() {
+
+    tm.define("tm.app.Timer", {
+        /** フレーム */
+        frame: 0,
+        fps: 30,
+        frameTime: 1000/30,
+
+        init: function() {
+            this.frame = 0;
+            this.fps = tm.app.Timer.default.fps;
+        },
+
+        reset: function() {
+            this.frame = 0;
+            return this;
+        },
+
+        update: function() {
+            this.frame = this.frame + 1;
+            return this;
+        },
+
+        getFrame: function() {
+            return this.frame;
+        },
+
+        getSeconds: function() {
+            return this._seconds;
+        },
+
+        getMilliseconds: function() {
+            return this._milliseconds;
+        },
+
+        checkIntervalEnd: function(time) {
+            var t = (time/this.fps)|0;
+            if (this.frame % t == 0) {
+                return true;
+            }
+            return false;
+        },
+
+        // start ~ end の間かを判定する
+        checkBetween: function(start, end) {
+            if (arguments.length == 1) {
+                end = Math.max(start, 0);
+                start = end-this.frameTime;
+            }
+            var time = (this.frame/this.fps)*1000;
+
+            return start <= time < end;
+            return Math.inside(time, start, end);
+        },
+
+        _update: function() {
+            var time = (this.frame/this.fps);
+            this._seconds = time|0;
+            this._milliseconds = (time*1000)|0;
+        }
+    });
+
+    tm.app.Timer.prototype.accessor("frame", {
+        "get": function() {
+            return this._frame;
+        },
+        "set": function(frame){
+            this._frame = frame;
+            this._update();
+        },
+    });
+    
+    /**
+     * @property fps
+     * fps
+     */
+    tm.app.Timer.prototype.accessor("fps", {
+        "get": function() {
+            return this._fps;
+        },
+        "set": function(fps){
+            if (fps !== this._fps) {
+                this.frameTime = (1000/fps);
+            }
+            this._fps = fps;
+            this._update();
+        },
+    });    
+
+    tm.app.Timer.default = {
+        fps: 30,
+    };
+
+})();
+
+
+
+
+/*
+ * updater.js
+ */
+
+ 
+(function() {
+    
+    /**
+     * @class tm.app.Updater
+     * 更新管理クラス
+     */
+    tm.define("tm.app.Updater", {
+        app: null,
+
+        init: function(app) {
+            this.app = app;
+        },
+
+        update: function(root) {
+            this._updateElement(root);
+        },
+
+        _updateElement: function(elm) {
+            var app = this.app;
+            
+            // 更新するかを判定
+            if (elm.awake == false) return ;
+
+            // 更新
+            if (elm.update) elm.update(app);
+
+            // エンターフレームイベント
+            if (elm.hasEventListener("enterframe")) {
+                var e = tm.event.Event("enterframe");
+                e.app = app;
+                elm.fire(e);
+            }
+            
+            // タッチ判定
+            if (elm.interactive) {
+                elm._checkPointing(app);
+            }
+
+            // 子供を更新
+            var len = elm.children.length;
+            if (len > 0) {
+                var tempChildren = elm.children.slice();
+                for (var i=0; i<len; ++i) {
+                    this._updateElement(tempChildren[i]);
+                }
+            }
+        },
+    });
+
+})();
+
+
+
+/*
+ * baseapp.js
+ */
+
+tm.app = tm.app || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.app.BaseApp
+     * ベースアプリケーション
+     */
+    tm.app.BaseApp = tm.createClass({
+
+        superClass: tm.event.EventDispatcher,
+        
+        /** エレメント */
+        element       : null,
+        /** マウスクラス */
+        mouse         : null,
+        /** タッチクラス */
+        touch         : null,
+        /** マウスクラス + タッチクラス */
+        pointing      : null,
+        /** キーボードクラス */
+        keyboard      : null,
+        /** 加速度センサー */
+        accelerometer : null,
+        /** 更新クラス */
+        updater       : null,
+        /** statsライブラリ */
+        stats         : null,
+        /** タイマー */
+        timer         : null,
+        /** 現在更新中か */
+        awake         : null,
+        /** @private  シーン情報の管理 */
+        _scenes       : null,
+        /** @private  シーンのインデックス */
+        _sceneIndex   : 0,
+
+        /**
+         * @constructor
+         * @param {Object} elm
+         */
+        init: function(elm) {
+            this.superInit();
+
+            this.element = elm;
+
+            // タイマー
+            this.timer = tm.app.Timer();
+
+            // マウスを生成
+            this.mouse      = tm.input.Mouse(this.element);
+            // タッチを生成
+            this.touch      = tm.input.Touch(this.element, 0);
+            // キーボードを生成
+            this.keyboard   = tm.input.Keyboard();
+            
+            // ポインティングをセット(PC では Mouse, Mobile では Touch)
+            this.pointing   = (tm.isMobile) ? this.touch : this.mouse;
+            this.element.addEventListener("touchstart", function () {
+                this.pointing = this.touch;
+            }.bind(this));
+            this.element.addEventListener("mousedown", function () {
+                this.pointing = this.mouse;
+            }.bind(this));
+            
+            // 加速度センサーを生成
+            this.accelerometer = tm.input.Accelerometer();
+
+            this.updater = tm.app.Updater(this);
+            
+            // 再生フラグ
+            this.awake = true;
+            
+            // シーン周り
+            this._scenes = [ tm.app.Scene() ];
+            this._sceneIndex = 0;
+            
+            // 決定時の処理をオフにする(iPhone 時のちらつき対策)
+            this.element.addEventListener("touchstart", function(e) { e.stop(); });
+            this.element.addEventListener("touchmove", function(e) { e.stop(); });
+            
+            // ウィンドウフォーカス時イベントリスナを登録
+            window.addEventListener("focus", function() {
+                this.fire(tm.event.Event("focus"));
+                this.currentScene.dispatchEvent(tm.event.Event("focus"));
+            }.bind(this));
+            // ウィンドウブラー時イベントリスナを登録
+            window.addEventListener("blur", function() {
+                this.fire(tm.event.Event("blur"));
+                this.currentScene.dispatchEvent(tm.event.Event("blur"));
+            }.bind(this));
+            // クリック
+            this.element.addEventListener((tm.isMobile) ? "touchend" : "mouseup", this._onclick.bind(this));
+        },
+        
+        /**
+         * 実行
+         */
+        run: function() {
+            var self = this;
+
+            this.startedTime = new Date();
+            this.prevTime = new Date();
+            this.deltaTime = 0;
+
+            var _run = function() {
+                // start
+                var start = (new Date()).getTime();
+
+                // run
+                self._loop();
+
+                // calculate progress time
+                var progress = (new Date()).getTime() - start;
+                // calculate next waiting time
+                var newDelay = self.timer.frameTime-progress;
+
+                // set next running function
+                setTimeout(_run, newDelay);
+            };
+
+            _run();
+
+            return this;
+        },
+        
+        /*
+         * ループ処理
+         * @private
+         */
+        _loop: function() {
+            // update
+            if (this.update) this.update();
+            this._update();
+            
+            // draw
+            if (this.draw) this.draw();
+            this._draw();
+
+            var now = new Date();
+            this.deltaTime = now - this.prevTime;
+            this.prevTime = now;
+            
+            // stats update
+            if (this.stats) this.stats.update();
+        },
+        
+        /**
+         * シーンを切り替える
+         * @param {Object} scene
+         * ## Reference
+         * - <http://ameblo.jp/hash-r-1234/entry-10967942550.html>
+         */
+        replaceScene: function(scene) {
+            var e = null;
+            if (this.currentScene) {
+                e = tm.event.Event("exit");
+                e.app = this;
+                this.currentScene.dispatchEvent(e);
+                this.currentScene.app = null;
+            }
+            e = tm.event.Event("enter");
+            e.app = this;
+            this.currentScene = scene;
+            this.currentScene.app = this;
+            this.currentScene.dispatchEvent(e);
+
+            return this;
+        },
+        
+        /**
+         * シーンをプッシュする(ポーズやオブション画面などで使用)
+         * @param {Object} scene
+         */
+        pushScene: function(scene) {
+            this.fire(tm.event.Event("push"));
+
+            var e = tm.event.Event("pause");
+            e.app = this;
+            this.currentScene.dispatchEvent(e);
+            
+            this._scenes.push(scene);
+            ++this._sceneIndex;
+            
+            this.fire(tm.event.Event("pushed"));
+
+            var e = tm.event.Event("enter");
+            e.app = this;
+            scene.app = this;
+            scene.dispatchEvent(e);
+
+
+            return this;
+        },
+        
+        /**
+         * シーンをポップする(ポーズやオブション画面などで使用)
+         */
+        popScene: function() {
+            this.fire(tm.event.Event("pop"));
+            
+            var scene = this._scenes.pop();
+            --this._sceneIndex;
+            
+            var e = tm.event.Event("exit");
+            e.app = this;
+            scene.dispatchEvent(e);
+            scene.app = null;
+
+            this.fire(tm.event.Event("poped"));
+            
+            // 
+            var e = tm.event.Event("resume");
+            e.app = this;
+            e.prevScene = scene;
+            this.currentScene.dispatchEvent(e);
+            
+            return scene;
+        },
+        
+        /**
+         * 外部のFPS表示ライブラリ Stats を生成、配置する
+         * ## Reference
+         * - <https://github.com/mrdoob/stats.js>
+         */
+        enableStats: function() {
+            if (window["Stats"]) {
+                // Stats
+                this.stats = new Stats();
+                // 右上に設定
+                this.stats.domElement.style.position = "fixed";
+                this.stats.domElement.style.left     = "5px";
+                this.stats.domElement.style.top      = "20px";
+                document.body.appendChild(this.stats.domElement);
+            }
+            else {
+                console.warn("not defined stats.");
+            }
+
+            return this;
+        },
+        
+        /**
+         * dat gui を有効化
+         */
+        enableDatGUI: function() {
+            if (window.dat) {
+                var gui = new dat.GUI();
+                
+                return gui;
+            }
+        },
+        
+        /**
+         * シーンのupdateを実行するようにする
+         */
+        start: function() {
+            this.awake = true;
+
+            return this;
+        },
+        
+        /**
+         * シーンのupdateを実行しないようにする
+         */
+        stop: function() {
+            this.awake = false;
+
+            return this;
+        },
+        
+        /**
+         * デバイスやシーンのアップデート呼び出し処理
+         * @private
+         */
+        _update: function() {
+            // デバイス系 Update
+            this.mouse.update();
+            this.keyboard._update();
+            this.touch.update();
+            // this.touches.update();
+            
+            if (this.awake) {
+                this.updater.update(this.currentScene);
+                this.timer.update();
+            }
+        },
+        
+        /**
+         * 描画用仮想関数
+         * @private
+         */
+        _draw: function() {},
+        
+        /**
+         * elementの取得
+         */
+        getElement: function() {
+            return this.element;
+        },
+
+        /**
+         * クリックイベント登録
+         * @private
+         * @param {Object} e
+         */
+        _onclick: function(e) {
+            var _fn = function(elm) {
+                if (elm.children.length > 0) {
+                    elm.children.each(function(elm) { _fn(elm); });
+                }
+                if (elm._clickFlag && elm.hasEventListener("click")) {
+                    elm.dispatchEvent(tm.event.Event("click"));
+                }
+                elm._clickFlag = false;
+            };
+            _fn(this.currentScene);
+        },
+    });
+    
+    /**
+     * @property currentScene
+     * カレントシーン
+     */
+    tm.app.BaseApp.prototype.accessor("currentScene", {
+        "get": function() { return this._scenes[this._sceneIndex]; },
+        "set": function(v){ this._scenes[this._sceneIndex] = v; }
+    });
+    
+    /**
+     * @property frame
+     * フレーム
+     */
+    tm.app.BaseApp.prototype.accessor("frame", {
+        "get": function() {
+            return this.timer.frame;
+        },
+        "set": function(v){
+            this.timer.frame = v;
+        }
+    });
+    
+    /**
+     * @property fps
+     * fps
+     */
+    tm.app.BaseApp.prototype.accessor("fps", {
+        "get": function() {
+            return this.timer.fps;
+        },
+        "set": function(v){
+            this.timer.fps = v;
+        }
+    });
+    
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * element.js
+ */
+
+tm.app = tm.app || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.app.Element
+     * アプリケーション用オブジェクトの基底となるクラス
+     * 親子関係の情報を管理する
+     * @extends tm.event.EventDispatcher
+     */
+    tm.app.Element = tm.createClass({
+        superClass: tm.event.EventDispatcher,
+        
+        /** 親 */
+        parent: null,
+        /** 子 */
+        children: null,
+        
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.superInit();
+            this.children = [];
+        },
+        
+        /**
+         * 親から離す
+         */
+        remove: function() {
+            console.assert(this.parent);
+            this.parent.removeChild(this);
+
+            this.parent = null;
+            
+            return this;
+        },
+        
+        /**
+         * 子供を追加
+         * @param {Object} child
+         */
+        addChild: function(child) {
+            if (child.parent) child.remove();
+            child.parent = this;
+            this.children.push(child);
+
+            var e = tm.event.Event("added");
+            child.dispatchEvent(e);
+            
+            return child;
+        },
+        
+        /**
+         * parent に自分を子供として追加
+         * @param {Object} parent
+         */
+        addChildTo: function(parent) {
+            parent.addChild(this);
+            
+            // if (this.parent) this.remove();
+            // this.parent = parent;
+            // parent.children.push(child);
+            
+            return this;
+        },
+        
+        /**
+         * まとめて追加
+         * scene 遷移時に子供をごっそり移譲するときなどに使用
+         * まだ動作確認していない
+         * @param {Object} children
+         */
+        addChildren: function(children) {
+            var tempChildren = children.slice();
+            for (var i=beginIndex,len=tempChildren.length; i<len; ++i) {
+                this.addChild(tempChildren[i]);
+            }
+        },
+        
+        /**
+         * index 指定で要素を取得
+         */
+        addChildAt: function(child, index) {
+            if (child.parent) child.remove();
+            child.parent = this;
+            this.children.splice(index, 0, child);
+
+            var e = tm.event.Event("added");
+            child.dispatchEvent(e);
+
+            return child;
+        },
+        
+        /**
+         * 指定で要素を取得
+         */
+        getChildAt: function(child) {
+            return this.children.at(child);
+        },
+        
+        /**
+         * 指定で要素を取得
+         */
+        getChildIndex: function(child) {
+            return this.children.indexOf(child);
+        },
+        
+        /**
+         * child に一致するエレメントを離す
+         * @param {Object} child
+         */
+        removeChild: function(child) {
+            var index = this.children.indexOf(child);
+            if (index != -1) {
+                this.children.splice(index, 1);
+                var e = tm.event.Event("removed");
+                child.dispatchEvent(e);
+            }
+        },
+        
+        /**
+         * すべての child を離す
+         * @param {Object} beginIndex
+         */
+        removeChildren: function(beginIndex) {
+            beginIndex = beginIndex || 0;
+            var tempChildren = this.children.slice();
+            for (var i=beginIndex,len=tempChildren.length; i<len; ++i) {
+                tempChildren[i].remove();
+            }
+            this.children = [];
+        },
+        
+        /**
+         * 名前の一致する child を取得
+         * @param {String} name
+         */
+        getChildByName: function(name) {
+            for (var i=0,len=this.children.length; i<len; ++i)
+                if (this.children[i].name == name) return this.children[i];
+            
+            return null;
+        },
+        
+        /**
+         * 関数実行
+         * @param {Function} func
+         * @param {Object} args
+         */
+        execChildren: function(func, args) {
+            args = (args && args.length) ? args : [args];
+            // 関数内で remove される可能性があるので配列をコピーする
+            var tempChildren = this.children.slice();
+            for (var i=0,len=tempChildren.length; i<len; ++i) {
+                func.apply(tempChildren[i], args);
+            }
+        },
+        
+        /**
+         * 親を取得
+         */
+        getParent: function() { return this.parent; },
+        
+        /**
+         * ルートを取得
+         */
+        getRoot: function() {
+            if (!this.parent) return null;
+            // TODO: 親をたどって NULL だったらそのエレメントを返す
+            var elm = null;
+            for (elm=this.parent; elm.parent != null; elm = elm.parent) {}
+            return elm;
+        },
+        
+        /**
+         * jsonをパースしてthisに展開
+         */
+        fromJSON: function(data) {
+            var _fromJSON = function(name, data) {
+                var init = data["init"];
+                var args = (init instanceof Array) ? init : [init];
+                var type = (DIRTY_CLASS_MAP[data.type]) ? DIRTY_CLASS_MAP[data.type] : data.type;
+                var _class = tm.using(type);
+                
+                console.assert(Object.keys(_class).length !== 0, _class + " is not defined.");
+                
+                var elm = _class.apply(null, args);
+                elm.fromJSON(data);
+                
+                this[name] = elm;
+                
+                elm.addChildTo(this);
+            }.bind(this);
+            
+            for (var key in data) {
+                var value = data[key];
+                if (key == "children") {
+                    if (value instanceof Array) {
+                        for (var i=0,len=value.length; i<len; ++i) {
+                            var childData = value[i];
+                            _fromJSON(childData.name, childData);
+                        }
+                    }
+                    else {
+                        for (var key in value) {
+                            var childData = value[key];
+                            _fromJSON(key, childData);
+                        }
+                    }
+                }
+                else {
+                    if (key == "type") key = "__key";
+                    this[key] = value;
+                }
+            }
+
+            return this;
+        },
+        /**
+         * 要素を JSON 化する
+         * TODO: 実装する予定
+         */
+        toJSON: function() {
+            // TODO:
+        },
+        
+    });
+
+    /*
+     * @private
+     * namespaceの後方互換
+     */
+    var DIRTY_CLASS_MAP = {
+        "Sprite"                : "tm.display.Sprite",
+        "Label"                 : "tm.display.Label",
+        "Shape"                 : "tm.display.Shape",
+        "CircleShape"           : "tm.display.CircleShape",
+        "TriangleShape"         : "tm.display.TriangleShape",
+        "RectangleShape"        : "tm.display.RectangleShape",
+        "RoundRectangleShape"   : "tm.display.RoundRectangleShape",
+        "TextShape"             : "tm.display.TextShape",
+        "StarShape"             : "tm.display.StarShape",
+        "PolygonShape"          : "tm.display.PolygonShape",
+        "HeartShape"            : "tm.display.HeartShape",
+        "AnimationSprite"       : "tm.display.AnimationSprite",
+        
+        "LabelButton"           : "tm.ui.LabelButton",
+        "IconButton"            : "tm.ui.IconButton",
+        "GlossyButton"          : "tm.ui.GlossyButton",
+        "FlatButton"            : "tm.ui.FlatButton",
+    };
+    
+})();
+
+/*
+ * object2d.js
+ */
+
+(function() {
+    
+    /**
+     * @class tm.app.Object2D
+     * Object2D
+     * @extends tm.app.Element
+     */
+    tm.define("tm.app.Object2D", {
+        superClass: "tm.app.Element",
+        
+        /** 位置 */
+        position: null,
+        /** スケール */
+        scale: null,
+        /** 回転 */
+        rotation: 0,
+        /** 起きているフラグ */
+        awake: true,
+        /** @private  幅 */
+        _width:  64,
+        /** @private  高さ */
+        _height: 64,
+        /** @property pointing      ポインティング */
+        /** @property origin        中心位置 */
+        /** @property _matrix       マトリックス */
+        /** @property hitFlags      ヒット判定フラグ */
+        /** @property downFlags     ダウンフラグ */
+        /** @property _worldMatrix  グローバル行列 */
+        /** @property _worldAlpha   グローバルのα値 */
+        
+        /**
+         * @constructor
+         * @param {Object} elm
+         */
+        init: function() {
+            this.superInit();
+            this.position = tm.geom.Vector2(0, 0);
+            this.scale    = tm.geom.Vector2(1, 1);
+            this.pointing = tm.geom.Vector2(0, 0);
+            this.origin   = tm.geom.Vector2(0.5, 0.5);
+            this._matrix  = tm.geom.Matrix33();
+            this._matrix.identity();
+            
+            this.boundingType = "circle";
+            this.checkHierarchy = true;
+            this.interactive = false;
+            this.hitFlags = [];
+            this.downFlags= [];
+            this._clickFlag = false;
+
+            this._worldMatrix = tm.geom.Matrix33().identity();
+            this._worldAlpha = 1.0;
+        },
+        
+        /**
+         * 最終的な行列をゲット
+         */
+        getFinalMatrix: function() {
+            var matrix = tm.geom.Matrix33();
+ 
+            if (this.parent) {
+                matrix.multiply(this.parent.getFinalMatrix());
+            }
+            matrix.translate(this.x, this.y);
+            matrix.rotateZ(this.rotation*Math.DEG_TO_RAD);
+            matrix.scale(this.scaleX, this.scaleY);
+ 
+            return matrix;
+        },
+        
+        /**
+         * 点と衝突しているかを判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPoint: function(x, y) {
+            // 円判定
+            var p = this.globalToLocal(tm.geom.Vector2(x, y));
+            this.pointing.x = p.x;
+            this.pointing.y = p.y;
+            
+            if (((p.x)*(p.x)+(p.y)*(p.y)) < (this.radius*this.radius)) {
+                return true;
+            }
+            return false;
+        },
+ 
+        /**
+         * 円として点と衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointCircle: function(x, y) {
+            var lenX = this.x - x;
+            var lenY = this.y - y;
+            if (((lenX)*(lenX)+(lenY)*(lenY)) < (this.radius*this.radius)) {
+                return true;
+            }
+            return false;
+        },
+ 
+        /**
+         * 矩形として点と衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointRect: function(x, y) {
+            // ここから下のバージョンは四角形
+            
+            var left   = this.x - this.width*this.originX;
+            var right  = this.x + this.width*(1-this.originX);
+            var top    = this.y - this.height*this.originY;
+            var bottom = this.y + this.height*(1-this.originY);
+            
+            if ( left < x && x < right && top  < y && y < bottom ) { return true; }
+            
+            return false;
+        },
+        
+        /**
+         * 階層を考慮した円衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointCircleHierarchy: function(x, y) {
+            // 円判定
+            var p = this.globalToLocal(tm.geom.Vector2(x, y));
+            this.pointing.x = p.x;
+            this.pointing.y = p.y;
+            
+            if (((p.x)*(p.x)+(p.y)*(p.y)) < (this.radius*this.radius)) {
+                return true;
+            }
+            return false;
+        },
+        
+        /**
+         * 階層を考慮した矩形衝突判定
+         * @param {Number} x
+         * @param {Number} y
+         */
+        isHitPointRectHierarchy: function(x, y) {
+            var p = this.globalToLocal(tm.geom.Vector2(x, y));
+            this.pointing.x = p.x;
+            this.pointing.y = p.y;
+            
+            var left   = -this.width*this.originX;
+            var right  = +this.width*(1-this.originX);
+            var top    = -this.height*this.originY;
+            var bottom = +this.height*(1-this.originY);
+            
+            if ( left < p.x && p.x < right && top  < p.y && p.y < bottom ) { return true; }
+            
+            return false;
+        },
+        
+        /**
+         * 要素と衝突しているかを判定
+         * @param {Object} elm
+         */
+        isHitElement: function(elm) {
+            var selfGlobalPos  = this.parent.localToGlobal(this);
+            if (((this.x-elm.x)*(this.x-elm.x)+(this.y-elm.y)*(this.y-elm.y)) < (this.radius+elm.radius)*(this.radius+elm.radius)) {
+                return true;
+            }
+            return false;
+        },
+ 
+        /**
+         * 円同士の衝突判定
+         * @param {Object} elm
+         */
+        isHitElementCircle: function(elm) {
+            return tm.collision.testCircleCircle(this.getBoundingCircle(), elm.getBoundingCircle());
+        },
+ 
+        /**
+         * 円同士の衝突判定
+         * @param {Object} elm
+         */
+        isHitElementRect: function(elm) {
+            return tm.collision.testRectRect(this.getBoundingRect(), elm.getBoundingRect());    
+        },
+ 
+        /**
+         * バウンディングサークル
+         * @param {Object} elm
+         */
+        getBoundingCircle: function() {
+            return tm.geom.Circle(this.centerX, this.centerY, this.radius);
+        },
+ 
+        /**
+         * バウンディングレクト
+         * @param {Object} elm
+         */
+        getBoundingRect: function() {
+            return tm.geom.Rect(this.left, this.top, this.width, this.height);
+        },
+ 
+        /**
+         * ローカル座標をグローバル座標に変換
+         * @param {Object} elm
+         */
+        localToGlobal: function(p) {
+            return this.getFinalMatrix().multiplyVector2(p);
+        },
+        
+        /**
+         * グローバル座標をローカル座標に変換
+         * @param {Object} elm
+         */
+        globalToLocal: function(p) {
+            var matrix = this._worldMatrix.clone();
+            matrix.invert();
+            matrix.transpose();
+
+            return matrix.multiplyVector2(p);
+        },
+        
+        /**
+         * X 座標値をセット
+         * @param {Number} x
+         */
+        setX: function(x) {
+            this.position.x = x;
+            return this;
+        },
+        
+        /**
+         * Y 座標値をセット
+         * @param {Number} y
+         */
+        setY: function(y) {
+            this.position.y = y;
+            return this;
+        },
+        
+        /**
+         * XY 座標をセット
+         * @param {Number} x
+         * @param {Number} y
+         */
+        setPosition: function(x, y) {
+            this.position.x = x;
+            this.position.y = y;
+            return this;
+        },
+
+        /**
+         * 回転をセット
+         * @param {Number} rotation
+         */
+        setRotation: function(rotation) {
+            this.rotation = rotation;
+            return this;
+        },
+
+        /**
+         * スケールをセット
+         * @param {Number} x
+         * @param {Number} y
+         */
+        setScale: function(x, y) {
+            this.scale.x = x;
+            if (arguments.length <= 1) {
+                this.scale.y = x;
+            } else {
+                this.scale.y = y;
+            }
+            return this;
+        },
+        
+        /**
+         * 基準点をセット
+         * @param {Number} x
+         * @param {Number} y
+         */
+        setOrigin: function(x, y) {
+            this.origin.x = x;
+            this.origin.y = y;
+            return this;
+        },
+        
+        /**
+         * 幅をセット
+         * @param {Number} width
+         */
+        setWidth: function(width) {
+            this.width = width;
+            return this;
+        },
+        
+        /**
+         * 高さをセット
+         * @param {Number} height
+         */
+        setHeight: function(height) {
+            this.height = height;
+            return this;
+        },
+        
+        /**
+         * サイズ(幅, 高さ)をセット
+         * @param {Number} width
+         * @param {Number} height
+         */
+        setSize: function(width, height) {
+            this.width  = width;
+            this.height = height;
+            return this;
+        },
+        
+        /**
+         * 起動
+         */
+        wakeUp: function() {
+            this.awake = true;
+            return this;
+        },
+        
+        /**
+         * 停止
+         */
+        sleep: function() {
+            this.awake = false;
+            return this;
+        },
+        
+        /**
+         * タッチ判定の有効/無効をセット
+         * @param {Boolean} flag
+         */
+        setInteractive: function(flag, type) {
+            this.interactive = flag;
+
+            if (type) {
+                this.boundingType = type;
+            }
+
+            return this;
+        },
+        
+        /**
+         * バウンディングタイプをセット("circle" or "rect")
+         * @param {Object} type
+         */
+        setBoundingType: function(type) {
+            this.boundingType = type;
+            return this;
+        },
+        
+        /**
+         * ポインティングをチェック
+         * @private
+         * @param {Object} app
+         */
+        _checkPointing: function(app) {
+            console.assert(false);
+        },
+        
+        /**
+         * マウスチェック
+         * @private
+         * @param {Object} app
+         */
+        _checkMouse: function(app) {
+            this.__checkPointing(app, app.pointing, 0);
+        },
+
+        /**
+         * タッチチェック
+         * @private
+         * @param {Object} app
+         */
+        _checkTouch: function(app) {
+            var self = this;
+            this.__checkPointing(app, app.pointing, 0);
+            // app.touches.each(function(touch, i) {
+            //     self.__checkPointing(app, touch, i);
+            // });
+        },
+        
+        /**
+         * チェックポインンティング
+         * @private
+         * @param {Object} app
+         * @param {Object} p
+         * @param {Number} index
+         */
+        __checkPointing: function(app, p, index) {
+            var elm = this.element;
+            
+            var prevHitFlag = this.hitFlags[index];
+            this.hitFlags[index]    = this.isHitPoint(p.x, p.y);
+
+            if (!prevHitFlag && this.hitFlags[index]) {
+                this._dispatchPointingEvent("mouseover", "touchover", "pointingover", app, p);
+            }
+            
+            if (prevHitFlag && !this.hitFlags[index]) {
+                this._dispatchPointingEvent("mouseout", "touchout", "pointingout", app, p);
+            }
+            
+            if (this.hitFlags[index]) {
+                if (p.getPointingStart()) {
+                    this._dispatchPointingEvent("mousedown", "touchstart", "pointingstart", app, p);
+                    this.downFlags[index] = true;
+                    this._clickFlag = true;
+                }
+            }
+            
+            if (this.downFlags[index]) {
+                this._dispatchPointingEvent("mousemove", "touchmove", "pointingmove", app, p);
+            }
+            
+            if (this.downFlags[index]==true && p.getPointingEnd()) {
+                this._dispatchPointingEvent("mouseup", "touchend", "pointingend", app, p);
+                this.downFlags[index] = false;
+            }
+        },
+        
+        /**
+         * ポイントイベントを発火する
+         * @private
+         * @param {Object} mouse
+         * @param {Object} touch
+         * @param {Object} pointing
+         * @param {Object} app
+         * @param {Object} p
+         */
+        _dispatchPointingEvent: function(mouse, touch, pointing, app, p) {
+            this.dispatchEvent( tm.event.MouseEvent(mouse, app, p) );
+            this.dispatchEvent( tm.event.TouchEvent(touch, app, p) );
+            this.dispatchEvent( tm.event.PointingEvent(pointing, app, p) );
+        },
+        
+        /**
+         * ワールドマトリックスを計算
+         * @private
+         */
+        _calcWorldMatrix: function() {
+            if (!this.parent) {
+                return ;
+            }
+
+            // 行列
+            if(this.rotation != this.rotationCache) {
+                this.rotationCache = this.rotation;
+                var r = this.rotation*Math.DEG_TO_RAD;
+                this._sr =  Math.sin(r);
+                this._cr =  Math.cos(r);
+            }
+
+            var localTransform = this._matrix.m;
+            var parentTransform = this.parent._worldMatrix.m;
+            var worldTransform = this._worldMatrix.m;
+            //console.log(localTransform)
+            localTransform[0] = this._cr * this.scale.x;
+            localTransform[1] =-this._sr * this.scale.y
+            localTransform[3] = this._sr * this.scale.x;
+            localTransform[4] = this._cr * this.scale.y;
+
+            // 
+            localTransform[2] = this.position.x;
+            localTransform[5] = this.position.y;
+
+            // cache
+            var a00 = localTransform[0], a01 = localTransform[1], a02 = localTransform[2],
+                a10 = localTransform[3], a11 = localTransform[4], a12 = localTransform[5],
+
+                b00 = parentTransform[0], b01 = parentTransform[1], b02 = parentTransform[2],
+                b10 = parentTransform[3], b11 = parentTransform[4], b12 = parentTransform[5];
+
+            worldTransform[0] = b00 * a00 + b01 * a10;
+            worldTransform[1] = b00 * a01 + b01 * a11;
+            worldTransform[2] = b00 * a02 + b01 * a12 + b02;
+
+            worldTransform[3] = b10 * a00 + b11 * a10;
+            worldTransform[4] = b10 * a01 + b11 * a11;
+            worldTransform[5] = b10 * a02 + b11 * a12 + b12;
+        },
+        
+        /**
+         * dirty method
+         * @private
+         */
+        _dirtyCalc: function() {
+            this._calcWorldMatrix();
+        },
+    });
+ 
+    /**
+     * @property    x
+     * x座標値
+     */
+    tm.app.Object2D.prototype.accessor("x", {
+        "get": function()   { return this.position.x; },
+        "set": function(v)  { this.position.x = v; }
+    });
+    
+    /**
+     * @property    y
+     * y座標値
+     */
+    tm.app.Object2D.prototype.accessor("y", {
+        "get": function()   { return this.position.y; },
+        "set": function(v)  { this.position.y = v; }
+    });
+ 
+    /**
+     * @property    originX
+     * x座標値
+     */
+    tm.app.Object2D.prototype.accessor("originX", {
+        "get": function()   { return this.origin.x; },
+        "set": function(v)  { this.origin.x = v; }
+    });
+    
+    /**
+     * @property    originY
+     * y座標値
+     */
+    tm.app.Object2D.prototype.accessor("originY", {
+        "get": function()   { return this.origin.y; },
+        "set": function(v)  { this.origin.y = v; }
+    });
+    
+    /**
+     * @property    scaleX
+     * スケールX値
+     */
+    tm.app.Object2D.prototype.accessor("scaleX", {
+        "get": function()   { return this.scale.x; },
+        "set": function(v)  { this.scale.x = v; }
+    });
+    
+    /**
+     * @property    scaleY
+     * スケールY値
+     */
+    tm.app.Object2D.prototype.accessor("scaleY", {
+        "get": function()   { return this.scale.y; },
+        "set": function(v)  { this.scale.y = v; }
+    });
+    
+    
+    
+    /**
+     * @property    width
+     * width
+     */
+    tm.app.Object2D.prototype.accessor("width", {
+        "get": function()   { return this._width; },
+        "set": function(v)  { this._width = v; }
+    });
+    
+    
+    /**
+     * @property    height
+     * height
+     */
+    tm.app.Object2D.prototype.accessor("height", {
+        "get": function()   { return this._height; },
+        "set": function(v)  { this._height = v; }
+    });
+    
+    /**
+     * @property    radius
+     * 半径
+     */
+    tm.app.Object2D.prototype.accessor("radius", {
+        "get": function()   {
+            return (this._radius !== undefined) ? this._radius : (this.width+this.height)/4;
+        },
+        "set": function(v)  { this._radius = v; }
+    });
+    
+    /**
+     * @property    top
+     * 左
+     */
+    tm.app.Object2D.prototype.accessor("top", {
+        "get": function()   { return this.y - this.height*this.originY; },
+        "set": function(v)  { this.y = v + this.height*this.originY; },
+    });
+ 
+    /**
+     * @property    right
+     * 左
+     */
+    tm.app.Object2D.prototype.accessor("right", {
+        "get": function()   { return this.x + this.width*(1-this.originX); },
+        "set": function(v)  { this.x = v - this.width*(1-this.originX); },
+    });
+ 
+    /**
+     * @property    bottom
+     * 左
+     */
+    tm.app.Object2D.prototype.accessor("bottom", {
+        "get": function()   { return this.y + this.height*(1-this.originY); },
+        "set": function(v)  { this.y = v - this.height*(1-this.originY); },
+    });
+ 
+    /**
+     * @property    left
+     * 左
+     */
+    tm.app.Object2D.prototype.accessor("left", {
+        "get": function()   { return this.x - this.width*this.originX; },
+        "set": function(v)  { this.x = v + this.width*this.originX; },
+    });
+
+    /**
+     * @property    centerX
+     * centerX
+     */
+    tm.app.Object2D.prototype.accessor("centerX", {
+        "get": function()   { return this.x + this.width/2 - this.width*this.originX; },
+        "set": function(v)  {
+            // TODO: どうしようかな??
+        }
+    });
+ 
+    /**
+     * @property    centerY
+     * centerY
+     */
+    tm.app.Object2D.prototype.accessor("centerY", {
+        "get": function()   { return this.y + this.height/2 - this.height*this.originY; },
+        "set": function(v)  {
+            // TODO: どうしようかな??
+        }
+    });
+ 
+    /**
+     * @property    boundingType
+     * boundingType
+     */
+    tm.app.Object2D.prototype.accessor("boundingType", {
+        "get": function() {
+            return this._boundingType;
+        },
+        "set": function(v) {
+            this._boundingType = v;
+            this._setIsHitFunc();
+        },
+    });
+ 
+    /**
+     * @property    checkHierarchy
+     * checkHierarchy
+     */
+    tm.app.Object2D.prototype.accessor("checkHierarchy", {
+        "get": function()   { return this._checkHierarchy; },
+        "set": function(v)  {
+            this._checkHierarchy = v;
+            this._setIsHitFunc();
+        }
+    });
+ 
+ 
+    var _isHitFuncMap = {
+        "rect": tm.app.Object2D.prototype.isHitPointRect,
+        "circle": tm.app.Object2D.prototype.isHitPointCircle,
+        "true": function() { return true; },
+        "false": function() { return false; },
+    };
+ 
+    var _isHitFuncMapHierarchy = {
+        "rect": tm.app.Object2D.prototype.isHitPointRectHierarchy,
+        "circle": tm.app.Object2D.prototype.isHitPointCircleHierarchy,
+        "true": function() { return true; },
+        "false": function() { return false; },
+    };
+ 
+    var _isHitElementMap = {
+        "rect": tm.app.Object2D.prototype.isHitElementRect,
+        "circle": tm.app.Object2D.prototype.isHitElementCircle,
+        "true": function() { return true; },
+        "false": function() { return false; },
+    };
+ 
+    /**
+     * @member      tm.app.Object2D
+     * @property    _setIsHitFunc
+     * @private
+     */
+    tm.app.Object2D.prototype._setIsHitFunc = function() {
+        var isHitFuncMap = (this.checkHierarchy) ? _isHitFuncMapHierarchy : _isHitFuncMap;
+        var boundingType = this.boundingType;
+        var isHitFunc = (isHitFuncMap[boundingType]) ? (isHitFuncMap[boundingType]) : (isHitFuncMap["true"]);
+ 
+        this.isHitPoint   = (isHitFuncMap[boundingType]) ? (isHitFuncMap[boundingType]) : (isHitFuncMap["true"]);
+        this.isHitElement = (_isHitElementMap[boundingType]) ? (_isHitElementMap[boundingType]) : (_isHitElementMap["true"]);
+    };
+    
+    /**
+     * @member      tm.app.Object2D
+     * @property    _checkPointing
+     * ポイントをチェック
+     * @param {Object} isMobile
+     * @private
+     */
+    tm.app.Object2D.prototype._checkPointing = (tm.isMobile) ?
+        tm.app.Object2D.prototype._checkTouch : tm.app.Object2D.prototype._checkMouse;
+
+    
+})();
+
+
+
+
+;(function() {
+
+
+    /**
+     * @class tm.app.Grid
+     * @extends tm.app.Object2d
+     * グリッド
+     */
+    tm.define("tm.app.Grid", {
+        superClass: "tm.app.Object2D",
+
+        cellWidth: 64,
+        cellHeight: 64,
+        maxPerLine: 8,
+        arrangement: "horizontal", // vertical
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            this.superInit();
+
+        },
+
+        reposition: function() {
+            var childs = this.children;
+
+            if (this.arrangement == "horizontal") {
+                childs.each(function(child, i) {
+                    var xIndex = (i%this.maxPerLine);
+                    var yIndex = (i/this.maxPerLine)|0;
+                    var x = this.cellWidth*xIndex;
+                    var y = this.cellHeight*yIndex;
+                    child.setPosition(x, y);
+                }, this);
+            }
+            else {
+                childs.each(function(child, i) {
+                    var xIndex = (i/this.maxPerLine)|0;
+                    var yIndex = (i%this.maxPerLine);
+                    var x = this.cellWidth*xIndex;
+                    var y = this.cellHeight*yIndex;
+                    child.setPosition(x, y);
+                }, this);
+            }
+        },
+    });
+
+})();
+
+
+/*
+ * scene.js
+ */
+
+tm.app = tm.app || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.app.Scene
+     * シーンとして使用するゲームエレメントクラス
+     * @extends tm.app.Object2D
+     */
+    tm.app.Scene = tm.createClass({
+        superClass: tm.app.Object2D,
+
+        app: null,
+
+        /** ManagerScene 経由で生成された際に次にどのシーンに遷移するかのラベル */
+        nextLabel: "",
+
+        /** ManagerScene 経由で生成された際に次のシーンに渡す引数 */
+        nextArguments: null,
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.superInit();
+            
+            this.boundingType = "none";
+            
+            // タッチに反応させる
+            this.setInteractive(true);
+        },
+
+        exit: function(param) {
+            if (!this.app) return ;
+
+            if (typeof param !== 'object') {
+                var temp = {};
+                temp.nextLabel = arguments[0];
+                temp.nextArguments = arguments[1];
+                param = temp;
+            }
+
+            if (param.nextLabel) {
+                this.nextLabel = param.nextLabel;
+            }
+            if (param.nextArguments) {
+                this.nextArguments = param.nextArguments;
+            }
+
+            this.app.popScene();
+
+            return this;
+        },
+
+    });
+    
+})();
+
+
+
+/*
+ * collision.js
+ */
+
+tm.app = tm.app || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.app.Collision
+     * 衝突管理クラス
+     */
+    tm.app.Collision = tm.createClass({
+        
+        /** @property */
+        element: null,
+        /** @property */
+        collideList: null,
+
+        /**
+         * @constructor
+         * @param {Object} elm
+         */
+        init: function(elm) {
+            this.element = elm;
+            this.collideList = [];
+        },
+        
+        /**
+         * 更新
+         * @param {Object} app
+         */
+        update: function(app) {
+            var cl  = this.collideList.clone();
+            var elm = this.element;
+            
+            for (var i=0,len=cl.length; i<len; ++i) {
+                var c = cl[i];
+                if (elm.isHitElement(c.element)) {
+                    // 最初の衝突だった場合は collisionenter を呼ぶ
+                    if (c.collide === false) {
+                        var e = tm.event.Event("collisionenter");
+                        e.other = c.element;
+                        elm.dispatchEvent(e);
+                    }
+                    // 通常の衝突イベント
+                    var e = tm.event.Event("collisionstay");
+                    e.other = c.element;
+                    elm.dispatchEvent(e);
+                    
+                    c.collide = true;
+                }
+                else {
+                    if (c.collide == true) {
+                        var e = tm.event.Event("collisionexit");
+                        e.other = c.element;
+                        elm.dispatchEvent(e);
+                    }
+                    c.collide = false;
+                }
+            }
+        },
+        
+        /**
+         * 追加
+         * @param {Object} elm
+         */
+        add: function(elm) {
+            this.collideList.push({
+                element: elm,
+                collide: false,
+            });
+        },
+        
+        /**
+         * 削除
+         * @param {Object} elm
+         */
+        remove: function(elm) {
+            this.collideList.eraseIf(function(v) {
+                return v.element == elm;
+            });
+        },
+        
+    });
+    
+    
+    /**
+     * @member      tm.app.Element
+     * @property    collision
+     * コリジョン
+     */
+    tm.app.Element.prototype.getter("collision", function() {
+        if (!this._collision) {
+            this._collision = tm.app.Collision(this);
+            this.addEventListener("enterframe", function(e){
+                this._collision.update(e.app);
+            });
+        }
+        
+        return this._collision;
+    });
+    
+    
+})();
+/*
+ * tweener.js
+ */
+
+(function() {
+
+    /**
+     * @class tm.app.Tweener
+     * トゥイーナークラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define("tm.app.Tweener", {
+        superClass: "tm.app.Element",
+
+        /**
+         * @constructor
+         * @param {Object} elm
+         */
+        init: function(elm) {
+            this.superInit();
+
+            this.setTarget(elm || {});
+            this.loop = false;
+
+            this._init();
+        },
+
+        /**
+         * 初期化
+         */
+        _init: function() {
+            this._index = 0;
+            this._tasks = [];
+            this._func = this._updateTask;
+            this.isPlaying = true;
+        },
+
+        /**
+         * ターゲットのセット
+         * @param {Object} target
+         */
+        setTarget: function(target) {
+            this.element = target;
+
+            return this;
+        },
+
+        /**
+         * 更新
+         * @param {Object} app
+         */
+        update: function(app) {
+            this._func(app);
+            return ;
+            var tweens = this.tweens.clone();
+            for (var i=0,len=tweens.length; i<len; ++i) {
+                var tween = tweens[i];
+                
+                // 待ちチェック
+                if (tween.delay > 0) {
+                    tween.delay -= 1000/app.fps;
+                    continue;
+                }
+                
+                var time = tween.time + 1000/app.fps;
+                tween._setTime(time);
+                
+                if (tween.time >= tween.duration) {
+                    // 削除
+                    this.tweens.erase(tween);
+                    
+                    // 全てのアニメーション終了チェック
+                    if (this.tweens.length <= 0) {
+                        this.isAnimation = false;
+                        var e = tm.event.Event("finish");
+                        this.element.fire(e);
+                        this.dispatchEvent(e);
+                    }
+                }
+                else {
+                    tween.update();
+                }
+            }
+        },
+
+        /**
+         * タスクの更新
+         * @private
+         * @param {Object} app
+         */
+        _updateTask: function(app) {
+            if (!this.isPlaying) return ;
+
+            var task = this._tasks[this._index];
+            if (!task) {
+
+                if (this.loop === true) {
+                    this._index = 0;
+                    return this._updateTask(app);
+                }
+                else {
+                    this.isPlaying = false;
+                }
+
+                return ;
+            }
+            this._index++;
+
+            if (task.type == "tween") {
+                var data = task.data;
+                var fnStr= task.data.type;
+                var args = task.data.args;
+                this._tween = tm.anim.Tween();
+
+                this._tween[fnStr].apply(this._tween, args);
+
+                this._func = this._updateTween;
+                this._func(app);
+            }
+            else if (task.type == "wait") {
+                this._wait = task.data;
+                this._wait.time = 0;
+
+                this._func = this._updateWait;
+                this._func(app);
+            }
+            else if (task.type == "call") {
+                task.data.func.apply(task.data.self, task.data.args);
+                // 1フレーム消費しないよう再帰
+                this._updateTask(app);
+            }
+            else if (task.type == "set") {
+                this.element.$extend(task.data.values);
+                // 1フレーム消費しないよう再帰
+                this._updateTask(app);
+            }
+        },
+
+        /**
+         * Tween の更新
+         * @private
+         * @param {Object} elm
+         */
+        _updateTween: function(app) {
+            var tween = this._tween;
+            var time = tween.time + 1000/app.fps;
+            tween._setTime(time);
+            
+            if (tween.time >= tween.duration) {
+                // 削除
+                delete this._tween;
+                this._tween = null;
+                this._func = this._updateTask;
+            }
+            else {
+                tween.update();
+            }
+
+        },
+
+        /**
+         * 時間の更新
+         * @private
+         * @param {Object} elm
+         */
+        _updateWait: function(app) {
+            var wait = this._wait;
+            wait.time += 1000/app.fps;
+
+            if (wait.time >= wait.limit) {
+                delete this._wait;
+                this._wait = null;
+                this._func = this._updateTask;
+            }
+        },
+
+        /**
+         * 追加
+         * @param {Object} param
+         */
+        add: function(param) {
+            if (!param.target) param.target = this.element;
+
+            this._tasks.push({
+                type: "tween",
+                data: param
+            });
+
+            if (this.isAnimation == false) {
+                this.isAnimation = true;
+                var e = tm.event.Event("animationstart");
+                this.element.dispatchEvent(e);
+            }
+            
+            return this;
+        },
+
+        /**
+         * 指定した値を足した値までアニメーション
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} fn
+         */
+        by: function(props, duration, fn) {
+            this._addTweenTask({
+                props: props,
+                duration: duration,
+                fn: fn,
+                type: "by"
+            });
+            return this;
+        },
+
+        /**
+         * 指定した値までアニメーション
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} fn
+         */
+        to: function(props, duration, fn) {
+            this._addTweenTask({
+                props: props,
+                duration: duration,
+                fn: fn,
+                type: "to"
+            });
+            return this;
+        },
+
+        from: function(props, duration, fn) {
+            this._addTweenTask({
+                props: props,
+                duration: duration,
+                fn: fn,
+                type: "from"
+            });
+            return this;
+        },
+
+        /**
+         * 移動アニメーション
+         * @param {Number} x
+         * @param {Number} y
+         * @param {Object} duration
+         * @param {Function} fn
+         */
+        move: function(x, y, duration, fn) {
+            return this.to({x:x, y:y}, duration, fn);
+        },
+
+        /**
+         * 指定した値を足した座標までアニメーション
+         * @param {Number} x
+         * @param {Number} y
+         * @param {Object} duration
+         * @param {Function} fn
+         */
+        moveBy: function(x, y, duration, fn) {
+            return this.by({x:x, y:y}, duration, fn);
+        },
+
+        /**
+         * 回転アニメーション
+         * @param {Number} rotation
+         * @param {Object} duration
+         * @param {Function} fn
+         */
+        rotate: function(rotation, duration, fn) {
+            return this.to({rotation:rotation}, duration, fn);
+        },
+
+        /**
+         * 拡縮アニメーション
+         * @param {Number} scale
+         * @param {Object} duration
+         * @param {Function} fn
+         */
+        scale: function(scale, duration, fn) {
+            return this.to({scaleX:scale, scaleY:scale}, duration, fn);
+        },
+
+        /**
+         * フェードアニメーション
+         * @param {Object} value
+         * @param {Object} duration
+         */
+        fade: function(value, duration) {
+            this.to({"alpha":value}, duration);
+            return this;
+        },
+
+        /**
+         * フェードイン
+         * @param {Object} duration
+         */
+        fadeIn: function(duration) {
+            this.fade(1.0, duration);
+            return this;
+        },
+
+        /**
+         * フェードアウト
+         * @param {Object} duration
+         */
+        fadeOut: function(duration) {
+            this.fade(0.0, duration);
+            return this;
+        },
+
+        /**
+         * Tween のタスクを追加
+         * @private
+         * @param {Object} param
+         */
+        _addTweenTask: function(param) {
+            param.target   = (param.target !== undefined) ? param.target : this.element;
+            param.duration = (param.duration !== undefined) ? param.duration : 1000;
+
+            this._tasks.push({
+                type: "tween",
+                data: {
+                    args: [param.target, param.props, param.duration, param.fn],
+                    type: param.type
+                }
+            });
+
+            if (this.isAnimation == false) {
+                this.isAnimation = true;
+                var e = tm.event.Event("animationstart");
+                this.element.dispatchEvent(e);
+            }
+            
+            return this;
+        },
+
+        /**
+         * 待ち時間
+         * @param {Object} time
+         */
+        wait: function(time) {
+            this._tasks.push({
+                type: "wait",
+                data: {
+                    limit: time
+                }
+            });
+            return this;
+        },
+
+        /**
+         * コールバックを登録
+         * @param {Function} fn
+         * @param {Object} args
+         */
+        call: function(fn, self, args) {
+            this._tasks.push({
+                type: "call",
+                data: {
+                    func: fn,
+                    self: self || this,
+                    args: args,
+                },
+            });
+
+            return this;
+        },
+
+        /**
+         * プロパティをセット
+         * @param {Object} key
+         * @param {Object} value
+         */
+        set: function(key, value) {
+            var values = null;
+            if (arguments.length == 2) {
+                values = {};
+                values[key] = value;
+            }
+            else {
+                values = key;
+            }
+            this._tasks.push({
+                type: "set",
+                data: {
+                    values: values
+                }
+            });
+
+            return this;
+        },
+
+        /**
+         * アニメーション開始
+         */
+        play: function() {
+            this.isPlaying = true;
+            return this;
+        },
+
+        /**
+         * アニメーションを一時停止
+         */
+        pause: function() {
+            this.isPlaying = false;
+            return this;
+        },
+
+        /**
+         * アニメーションを巻き戻す
+         */
+        rewind: function() {
+            this._func = this._updateTask;
+            this._index = 0;
+            this.play();
+            return this;
+        },
+
+        /**
+         * アニメーションループ設定
+         * @param {Boolean} flag
+         */
+        setLoop: function(flag) {
+            this.loop = flag;
+            return this;
+        },
+
+        /**
+         * アニメーションをクリア
+         */
+        clear: function() {
+            this._init();
+            return this;
+        }
+    });
+
+    /**
+     * @member      tm.app.Element
+     * @property    tweener
+     * トゥイーンアニメーション
+     */
+    tm.app.Element.prototype.getter("tweener", function() {
+        if (!this._tweener) {
+            this._tweener = tm.app.Tweener(this);
+            this.on("enterframe", function(e) {
+                this._tweener.update(e.app);
+            });
+        }
+        
+        return this._tweener;
+    });
+})();
+
+/*
+ * timeline.js
+ */
+
+tm.namespace("tm.app", function() {
+
+    /**
+     * @class tm.app.Timeline
+     * タイムラインクラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.define("tm.app.Timeline", {
+        superClass: "tm.app.Element",
+        
+        /**
+         * @constructor
+         * @param {Object} elm
+         */
+        init: function(elm) {
+            this.superInit();
+            
+            this.setTarget(elm || {});
+            
+            this.currentFrame = 0;
+            this.currentTime = 0;
+            this.prevTime = 0;
+            this.duration = 0;
+            this.isPlay = true;
+            this._tweens  = [];
+            this._actions = [];
+        },
+        
+        /**
+         * 更新
+         * @param {Object} app
+         */
+        update: function(app) {
+            if (!this.isPlay) return ;
+
+            if (this.prevTime <= this.duration) {
+                this._updateTween();
+                this._updateAction();
+            }
+
+            this.currentFrame++;
+            this.prevTime = this.currentTime;
+            this.currentTime = ((this.currentFrame/app.fps)*1000)|0;
+        },
+        
+        /**
+         * トゥイーンを更新
+         * @private
+         */
+        _updateTween: function() {
+            var tweens = this._tweens;
+            for (var i=0,len=tweens.length; i<len; ++i) {
+                var tween = tweens[i];
+                
+                if (tween.delay > this.currentTime) {
+                    continue ;
+                }
+                
+                var time = this.currentTime - tween.delay;
+                tween._setTime(time);
+                if (tween.time >= tween.duration) {
+                }
+                else {
+                    tween.update();
+                }
+            }
+        },
+        
+        /**
+         * アクションを更新
+         * @private
+         */
+        _updateAction: function() {
+            var actions = this._actions;
+            
+            for (var i=0,len=actions.length; i<len; ++i) {
+                var action = actions[i];
+                
+                if (this.prevTime <= action.delay && action.delay < this.currentTime) {
+                    if (action.type == "call") {
+                        action.func.call(action.self);
+                        // action.func();
+                    }
+                    else if (action.type == "set") {
+                        var props = action.props;
+                        for (var key in props) {
+                            this.element[key] = props[key];
+                        }
+                    }
+                }
+            }
+        },
+        
+        /**
+         * 指定した値までアニメーション
+         * @param {Object} delay
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        to: function(delay, props, duration, fn) {
+            console.assert(typeof delay == "number", "to の第一引数はdelayに変わりました");
+            this._addTween({
+                props: props,
+                duration: duration,
+                fn: fn,
+                delay: delay
+            });
+            
+            return this;
+        },
+
+        /**
+         * 指定した値を足した値までアニメーション
+         * @param {Object} delay
+         * @param {Object} props
+         * @param {Object} duration
+         * @param {Function} func
+         */
+        by: function(delay, props, duration, fn) {
+            console.assert(typeof delay == "number", "by の第一引数はdelayに変わりました");
+            for (var key in props) {
+                props[key] += this.element[key] || 0;
+            }
+            this._addTween({
+                props: props,
+                duration: duration,
+                fn: fn,
+                delay: delay
+            });
+            
+            return this;
+        },
+        
+        /**
+         * 関数を実行
+         * @param {Object} delay
+         * @param {Function} func
+         */
+        call: function(delay, func, self) {
+            console.assert(typeof delay == "number", "call の第一引数はdelayに変わりました");
+            this._addAction({
+                "type": "call",
+                func: func,
+                self: self || this,
+                delay: delay,
+            });
+            return this;
+        },
+        
+        /**
+         * プロパティをセット
+         * @param {Object} delay
+         * @param {Object} props
+         */
+        set: function(delay, props) {
+            console.assert(typeof delay == "number", "set の第一引数はdelayに変わりました");
+            this._addAction({
+                "type": "set",
+                props: props,
+                delay: delay,
+            });
+            return this;
+        },
+
+
+        /**
+         * ターゲットのセット
+         * @param {Object} target
+         */
+        setTarget: function(target) {
+            this.element = target;
+
+            return this;
+        },
+
+        /**
+         * ターゲットをゲット
+         */
+        getTarget: function() {
+            return this.element;
+        },
+        
+        /**
+         * アニメーション開始
+         * アニメーションが終了したら再度アニメーションを行う
+         * @param {Number} frame
+         */
+        gotoAndPlay: function(frame) {
+            this.isPlay = true;
+            this.currentFrame = frame;
+            this._updateTween();
+        },
+        
+        /**
+         * アニメーション開始
+         * アニメーションが終了したらストップする
+         * @param {Number} frame
+         */
+        gotoAndStop: function(frame) {
+            this.currentFrame = frame;
+            this.isPlay = false;
+            this._updateTween();
+        },
+
+        /**
+         * tween を追加
+         * @private
+         * @param {Object} tween
+         */
+        _addTween: function(tween) {
+            tween.duration = tween.duration || 1000;
+            tween.duration = this._dirty(tween.duration);
+            tween.delay = tween.delay || 0;
+            tween.delay = this._dirty(tween.delay);
+
+            var tweenObj = tm.anim.Tween();
+            tweenObj.to(this.element, tween.props, tween.duration, tween.fn);
+            tweenObj.delay = tween.delay;
+
+            this._tweens.push(tweenObj);
+            this._updateDuration(tweenObj);
+        },
+
+        /**
+         * アニメーションを追加
+         * @private
+         * @param {Object} action
+         */
+        _addAction: function(action) {
+            action.delay = action.delay || 0;
+            action.delay = this._dirty(action.delay);
+
+            this._actions.push(action);
+            this._updateDuration(action);
+        },
+        
+        /**
+         * 時間を更新
+         * @private
+         * @param {Object} task
+         */
+        _updateDuration: function(task) {
+            var duration = task.delay + (task.duration ? task.duration : 0);
+            if (this.duration < duration) this.duration = duration;
+            return this;
+        },
+
+        /**
+         * dirty method
+         * @private
+         * @param {Object} t
+         */
+        _dirty: function(t) {
+            return t;
+//            return (t/this.fps).toInt();
+        },
+        
+        /**
+         * ロード
+         * @param {Object} data
+         */
+        load: function(data) {
+            
+            for (var key in data.timeline) {
+                var value = data.timeline[key];
+            }
+            
+            return this;
+        },
+        
+        /**
+         * アニメーションをクリア
+         */
+        clear: function() {
+            this.currentFrame = 0;
+            this.prevTime = 0;
+            this.currentTime = 0;
+            this.duration = 0;
+            this.isPlay = true;
+            this._tweens  = [];
+            this._actions = [];
+            
+            return this;
+        }
+        
+    });
+    
+    
+    
+    /**
+     * @member      tm.app.Element
+     * @property    timeline
+     * タイムラインアニメーション
+     */
+    tm.app.Element.prototype.getter("timeline", function() {
+        if (!this._timeline) {
+            this._timeline = tm.app.Timeline(this);
+            this.on("enterframe", function(e) {
+                this._timeline.update(e.app);
+            });
+        }
+
+        return this._timeline;
+    });
+    
+});
+
+/*
+ * canvasapp.js
+ */
+
+tm.display = tm.display || {};
+
+(function() {
+
+    /**
+     * @class tm.display.CanvasApp
+     * キャンバスアプリケーション
+     * @extends tm.app.BaseApp
+     */
+    tm.display.CanvasApp = tm.createClass({
+        superClass: tm.app.BaseApp,
+
+        /** @property element */
+        /** @property canvas */
+        /** @property renderer */
+        /** @property background */
+        /** @property _scenes */
+        /** @property mouse */
+        /** @property touch */
+        
+        /**
+         * @constructor
+         */
+        init: function(canvas) {
+            if (canvas instanceof HTMLCanvasElement) {
+                this.element = canvas;
+            }
+            else if (typeof canvas == "string") {
+                this.element = document.querySelector(canvas);
+            }
+            else {
+                this.element = document.createElement("canvas");
+            }
+
+            // 親の初期化
+            this.superInit(this.element);
+
+            // グラフィックスを生成
+            this.canvas = tm.graphics.Canvas(this.element);
+            this.renderer = tm.display.CanvasRenderer(this.canvas);
+            
+            // カラー
+            this.background = "black";
+            
+            // シーン周り
+            this._scenes = [ tm.app.Scene() ];
+
+
+            this._canvasCache = [];
+            this._canvasCacheCache = [];
+            this.on("push", function() {
+                this._draw();
+
+                var canvas = this._canvasCacheCache.pop();
+                if (!canvas) {
+                    var element = this.canvas.element.cloneNode();
+                    canvas = tm.graphics.Canvas(element);
+                }
+                canvas.clear();
+                canvas.drawTexture(this.canvas, 0, 0);
+                this._canvasCache.push(canvas);
+            });
+            this.on("poped", function() {
+                var canvas = this._canvasCache.pop();
+                this._draw();
+
+                this._canvasCacheCache.push(canvas);
+            });
+        },
+        
+        /**
+         * リサイズ
+         */
+        resize: function(width, height) {
+            this.width = width;
+            this.height= height;
+            
+            return this;
+        },
+
+        /**
+         * ウィンドウのサイズにリサイズ
+         */
+        resizeWindow: function() {
+            this.width = innerWidth;
+            this.height= innerHeight;
+            
+            return this;
+        },
+        
+        /**
+         * 画面にフィットさせる
+         */
+        fitWindow: function(everFlag) {
+            // 画面にフィット
+            this.canvas.fitWindow(everFlag);
+            
+            // マウスとタッチの座標更新関数をパワーアップ
+            this.mouse._mousemove = this.mouse._mousemoveScale;
+            this.touch._touchmove = this.touch._touchmoveScale;
+
+            return this;
+        },
+
+        /**
+         * @private
+         */
+        _draw: function() {
+            this.canvas.clear();
+            
+            this.canvas.fillStyle   = "white";
+            this.canvas.strokeStyle = "white";
+            this.canvas.context.lineJoin = "round";
+            this.canvas.context.lineCap  = "round";
+
+            // スタックしたキャンバスを描画
+            if (this._canvasCache.last)
+                this.canvas.drawTexture(this._canvasCache.last, 0, 0);
+            
+            // this._canvasCache.each(function(bitmap, index) {
+            //     this.canvas.drawBitmap(bitmap, 0, 0);
+            // }, this);
+
+            
+            // 描画は全てのシーン行う
+            this.canvas.save();
+
+            this.renderer.render(this.currentScene);
+
+            this.canvas.restore();
+        },
+        
+    });
+    
+    
+    /**
+     * @property    width
+     * 幅
+     */
+    tm.display.CanvasApp.prototype.accessor("width", {
+        "get": function()   { return this.canvas.width; },
+        "set": function(v)  { this.canvas.width = v; }
+    });
+    
+    /**
+     * @property    height
+     * 高さ
+     */
+    tm.display.CanvasApp.prototype.accessor("height", {
+        "get": function()   { return this.canvas.height; },
+        "set": function(v)  { this.canvas.height = v; }
+    });
+    
+    /**
+     * @property    height
+     * 高さ
+     */
+    tm.display.CanvasApp.prototype.accessor("background", {
+        "get": function()   { return this._background; },
+        "set": function(v)  {
+            this._background = v;
+            this.element.style.background = v;
+        }
+    });
+
+})();
+
+
+
+/*
+ * canvaselement.js
+ */
+
+tm.display = tm.display || {};
+
+
+(function() {
+
+    /**
+     * @class tm.display.CanvasElement
+     * キャンバスエレメント
+     * @extends tm.app.Object2D
+     */
+    tm.display.CanvasElement = tm.createClass({
+        superClass: tm.app.Object2D,
+
+        /** 表示フラグ */
+        visible: true,
+        /** クリッピングフラグ */
+        clipping: false,
+        /** fillStyle */
+        fillStyle: "white",
+        /** strokeStyle */
+        strokeStyle: "white",
+        /** アルファ */
+        alpha: 1.0,
+        /** ブレンドモード */
+        blendMode: "source-over",
+        /** シャドウカラー */
+        shadowColor: "black",
+        /** シャドウオフセットX */
+        shadowOffsetX: 0,
+        /** シャドウオフセットY */
+        shadowOffsetY: 0,
+        /** シャドウオフブラー */
+        shadowBlur: 0,
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.superInit();
+        },
+
+        /**
+         * アルファをセット
+         */
+        setAlpha: function(alpha) {
+            this.alpha = alpha;
+            return this;
+        },
+
+        /**
+         * シャドウカラーをセット
+         */
+        setShadowColor: function(color) {
+            this.shadowColor = color;
+            return this;
+        },
+        
+        /**
+         * シャドウブラーをセット
+         */
+        setShadowBlur: function(blur) {
+            this.shadowBlur = blur;
+            return this;
+        },
+        
+        /**
+         * シャドウオフセットをセット
+         */
+        setShadowOffset: function(x, y) {
+            this.shadowOffsetX = x;
+            this.shadowOffsetY = y;
+            return this;
+        },
+
+        /**
+         * バウンディングサークルを描画
+         */
+        drawBoundingCircle: function(canvas) {
+            canvas.save();
+            canvas.lineWidth = 2;
+            canvas.strokeCircle(0, 0, this.radius);
+            canvas.restore();
+        },
+
+        /**
+         * バウンディングレクトを描画
+         */
+        drawBoundingRect: function(canvas) {
+            canvas.save();
+            canvas.lineWidth = 2;
+            canvas.strokeRect(-this.width*this.originX, -this.height*this.originY, this.width, this.height);
+            canvas.restore();
+        },
+
+        /**
+         * ????
+         */
+        drawFillRect: function(ctx) {
+            ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height);
+            return this;
+        },
+        /**
+         * ????
+         */
+        drawStrokeRect: function(ctx) {
+            ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+            return this;
+        },
+
+        /**
+         * ????
+         */
+        drawFillArc: function(ctx) {
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, Math.PI*2, false);
+            ctx.fill();
+            ctx.closePath();
+            return this;
+        },
+        /**
+         * ????
+         */
+        drawStrokeArc: function(ctx) {
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius, 0, Math.PI*2, false);
+            ctx.stroke();
+            ctx.closePath();
+            return this;
+        },
+
+        /**
+         * 表示/非表示をセット
+         */
+        setVisible: function(flag) {
+            this.visible = flag;
+            return this;
+        },
+
+        /**
+         * 表示
+         */
+        show: function() {
+            this.visible = true;
+            return this;
+        },
+
+        /**
+         * 非表示
+         */
+        hide: function() {
+            this.visible = false;
+            return this;
+        },
+
+        /**
+         * 塗りつぶしスタイルをセット
+         */
+        setFillStyle: function(style) {
+            this.fillStyle = style;
+            return this;
+        },
+
+        /**
+         * ストロークスタイルをセット
+         */
+        setStrokeStyle: function(style) {
+            this.strokeStyle = style;
+            return this;
+        },
+
+        /**
+         * ブレンドモードをセット
+         */
+        setBlendMode: function(blendMode) {
+            this.blendMode = blendMode;
+            return this;
+        },
+
+        /**
+         * ロード
+         */
+        load: function(data) {
+            var self = this;
+
+            data.layers.forEach(function(layer) {
+                if (layer.type != "objectgroup") return ;
+
+                var group = tm.display.CanvasElement().addChildTo(self);
+                group.width = layer.width;
+                group.height = layer.height;
+
+                layer.objects.forEach(function(obj) {
+                    var _class = tm.using(obj.type);
+                    if (Object.keys(_class).length === 0) {
+                        _class=tm.display[obj.type];
+                    }
+                    var initParam = null;
+                    if (obj.properties.init) {
+                        initParam = JSON.parse(obj.properties.init);
+                    }
+                    var element = _class.apply(null, initParam).addChildTo(group);
+                    var props   = obj.properties;
+                    for (var key in props) {
+                        if (key == "init") continue ;
+                        var value = props[key];
+                        element[key] = value;
+                    }
+
+                    element.x = obj.x;
+                    element.y = obj.y;
+                    element.width = obj.width;
+                    element.height = obj.height;
+                });
+
+                self[layer.name] = group;
+            });
+        },
+
+        /**
+         * @private
+         */
+        _calcAlpha: function() {
+            if (!this.parent) {
+                this._worldAlpha = this.alpha;
+                return ;
+            }
+            else {
+                // alpha
+                this._worldAlpha = this.parent._worldAlpha * this.alpha;
+            }
+        },
+
+        /**
+         * @private
+         */
+        _dirtyCalc: function() {
+            this._calcAlpha();
+            this._calcWorldMatrix();
+        },
+    });
+
+
+})();
+
+
+/*
+ * sprite.js
+ */
+
+
+tm.display = tm.display || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.display.Sprite
+     * 画像の描画を行うクラス
+     * @extends tm.display.CanvasElement
+     */
+    tm.display.Sprite = tm.createClass({
+        superClass: tm.display.CanvasElement,
+        
+        /** @property srcRect          */
+        /** @property width            width */
+        /** @property height           height */
+        /** @property @private _image  表示しているアセット(画像) */
+
+        /**
+         * @constructor
+         */
+        init: function(image, width, height) {
+            this.superInit();
+            
+            console.assert(typeof image != 'number', "Sprite の第一引数はテクスチャもしくはテクスチャ名に変わりました");
+            
+            this._frameIndex = 0;
+            this.srcRect = tm.geom.Rect(0, 0, 64, 64);
+            
+            // 引数あり
+            if (arguments.length >= 1) {
+                this.setImage(image).fitImage();
+
+                if (width !== undefined) this.width = width;
+                if (height !== undefined) this.height = height;
+            }
+        },
+
+        /**
+         * 表示するアセット(画像)をセット
+         */
+        setImage: function(image, width, height) {
+            if (typeof image == "string") {
+                var key = image;
+                image = tm.asset.Manager.get(key);
+                console.assert(image != null, "don't find '" + key + "' as image.");
+            }
+            
+            this._image = image;
+            this.srcRect.x = 0;
+            this.srcRect.y = 0;
+            this.srcRect.width  = image.element.width;
+            this.srcRect.height = image.element.height;
+
+            if (width  !== undefined) this.width  = width;
+            if (height !== undefined) this.height = height;
+            // this.width  = (width !== undefined)  ? width  : image.element.width;
+            // this.height = (height !== undefined) ? height : image.element.height;
+
+            return this;
+        },
+
+        /**
+         * 表示しているアセット(画像)を取得
+         */
+        getImage: function() {
+            return this._image;
+        },
+
+        /**
+         * 自分自信を画像サイズと同じサイズにする
+         */
+        fitImage: function() {
+            this.width  = this.image.width;
+            this.height = this.image.height;
+
+            return this;
+        },
+        
+        /**
+         * フレームインデックスをセット
+         */
+        setFrameIndex: function(index, width, height) {
+            var tw  = width || this.width;      // tw
+            var th  = height || this.height;    // th
+            var row = ~~(this.image.width / tw);
+            var col = ~~(this.image.height / th);
+            var maxIndex = row*col;
+            index = index%maxIndex;
+            
+            var x   = index%row;
+            var y   = ~~(index/row);
+            this.srcRect.x = x*tw;
+            this.srcRect.y = y*th;
+            this.srcRect.width  = tw;
+            this.srcRect.height = th;
+
+            this._frameIndex = index;
+
+            return this;
+        },
+        
+        /**
+         * @private
+         */
+        _refreshSize: function() {},
+    });
+    
+    /**
+     * @property    image
+     * 画像
+     */
+    tm.display.Sprite.prototype.accessor("image", {
+        "get": function()   {
+            return this._image;
+        },
+        "set": function(image)  {
+            this.setImage(image);
+        }
+    });
+
+    /**
+     * @property    frameIndex
+     * フレームインデックス
+     */
+    tm.display.Sprite.prototype.accessor("frameIndex", {
+        "get": function()   {
+            return this._frameIndex;
+        },
+        "set": function(value)  {
+            this.setFrameIndex(value);
+        }
+    });
+    
+})();
+
+/*
+ * shape.js
+ */
+
+
+tm.display = tm.display || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.display.Shape
+     * @extends tm.display.CanvasElement
+     * 図形を描画するクラス
+     */
+    tm.display.Shape = tm.createClass({
+        superClass: tm.display.CanvasElement,
+        
+        /** @property canvsa */
+        /** @property width */
+        /** @property height */
+        /** @property autoRender */
+
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            var param = {}.$safe(param, {
+                width: 64,
+                height: 64,
+                // bgColor: "#888",
+                bgColor: "transparent",
+
+                fillStyle: "red",
+                strokeStyle: "white",
+                lineWidth: "2",
+                shadowBlur: 0,
+                shadowColor: "red",
+            });
+            
+            this.superInit();
+
+            // 
+            this.canvas = tm.graphics.Canvas();
+            // 
+            this.$extend(param);
+            // 
+            this.render();
+            // 
+            this.autoRender = true;
+        },
+
+        _prerender: function() {
+            var c = this.canvas;
+            c.resize(this.width, this.height);
+            c.clearColor(this.bgColor);
+
+            c.save();
+
+            // パラメータセット
+            c.fillStyle   = this.fillStyle;
+            c.strokeStyle = this.strokeStyle;
+            c.lineWidth   = this.lineWidth;
+            c.shadowBlur  = this.shadowBlur;
+            c.shadowColor  = this.shadowColor;
+
+            return this;
+        },
+
+        _postrender: function() {
+            var c = this.canvas;
+            c.restore();
+
+            return this;
+        },
+
+        render: function() {
+            this._prerender();
+
+            this._render();
+
+            this._postrender();
+        },
+
+        _render: function() {
+
+        },
+
+        /**
+         * テキスト描画
+         */
+        renderText: function(param) {
+            var c = this.canvas;
+            param = {}.$extend(tm.display.Shape.DEFAULT_SHAPE_PARAM_TEXT, param);
+
+            c.save();
+            
+            // パラメータセット
+            c.fillStyle     = param.fillStyle;
+            c.strokeStyle   = param.strokeStyle;
+            c.lineWidth     = param.lineWidth;
+            c.font          = param.font;
+            c.textAlign     = param.textAlign;
+            c.textBaseline  = param.textBaseline;
+
+            // 描画
+            c.strokeText(param.text, this.width/2, this.height/2);
+            c.fillText(param.text, this.width/2, this.height/2);
+            
+            c.restore();
+        },
+
+
+        // TODO: old support(plan delete)
+        _dirtyCheckParam: function(param) {
+            var param = param;
+            if (arguments.length >= 2) {
+                var width = arguments[0];
+                var height= arguments[1];
+                var param = arguments[2] || {};
+                param.width = width;
+                param.height = height;
+
+                console.warn("tmlib.js warn: arguments of shape init is only param from version 0.4");
+            }
+
+            return param;
+        },
+        
+    });
+
+    ["width", "height", "bgColor", "strokeStyle", "fillStyle", "lineWidth", "shadowBlur", "shadowColor"].each(function(prop) {
+        var propName = '_' + prop;
+
+        tm.display.Shape.prototype.accessor(prop, {
+            "get": function()   {
+                return this[propName];
+            },
+            "set": function(v)  {
+                this[propName] = v;
+                if (this.autoRender === true) {
+                    this.render();
+                }
+            }
+        });
+    });
+
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.display.CircleShape
+     * @extends tm.display.Shape
+     * 簡単に円を描画できるクラス
+     * 
+     *      @example display
+     *      var shape = tm.display.CircleShape().addChildTo(this);
+     *      shape.setPosition(50, 50);
+     */
+    tm.define("tm.display.CircleShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+            // 描画
+            var radius = Math.min(this.width, this.height)/2;
+            c.fillCircle(this.width/2, this.height/2, radius);
+            c.strokeCircle(this.width/2, this.height/2, radius-Number(c.lineWidth)/2);
+        },
+    });
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.display.TriangleShape
+     * 簡単に三角形を描画できるクラス
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.display.TriangleShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "green",
+            });
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+
+            // 描画
+            var x = this.width/2;
+            var y = this.height/2;
+            var radius = Math.min(this.width, this.height)/2;
+            var offsetLine = Number(c.lineWidth)*1;
+            c.fillPolygon(x, y, radius, 3);
+            c.strokePolygon(x, y, radius-offsetLine, 3);
+        },
+    });
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.display.RectangleShape
+     * 簡単に矩形を描画できるクラス
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.display.RectangleShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "blue",
+            });
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+            // 描画
+            var lw = this.lineWidth;
+            var lw_half = lw/2;
+            c.fillRect(0, 0, this.width, this.height);
+            c.strokeRect(lw_half, lw_half, this.width-lw, this.height-lw);
+        },
+    });
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.display.RoundRectangleShape
+     * 簡単に矩形を描画できるクラス
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.display.RoundRectangleShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "blue",
+                cornerRadius: 8,
+            });
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+            // 描画
+            var lw = this.lineWidth;
+            var lw_half = lw/2;
+
+            c.fillRoundRect(lw_half, lw_half, this.width-lw, this.height-lw, this.cornerRadius);
+            c.strokeRoundRect(lw_half, lw_half, this.width-lw, this.height-lw, this.cornerRadius);
+        },
+    });
+
+    ["cornerRadius"].each(function(prop) {
+        var propName = '_' + prop;
+
+        tm.display.RoundRectangleShape.prototype.accessor(prop, {
+            "get": function()   {
+                return this[propName];
+            },
+            "set": function(v)  {
+                this[propName] = v;
+                if (this.autoRender === true) { this.render(); }
+            }
+        });
+    });
+
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.display.StarShape
+     * 簡単に星形を描画できるクラス
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.display.StarShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "yellow",
+                sides: 5,
+                sideIndent: 0.38,
+                offsetAngle: -90,
+            });
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+
+            var sides       = this.sides;
+            var sideIndent  = this.sideIndent;
+            var offsetAngle = this.offsetAngle;
+            
+            // 描画
+            var x = this.width/2;
+            var y = this.height/2;
+            var radius = Math.min(this.width, this.height)/2;
+            var offsetLine = Number(c.lineWidth)*1.5;
+            c.fillStar(x, y, radius, sides, sideIndent, offsetAngle);
+            c.strokeStar(x, y, radius-offsetLine, sides, sideIndent, offsetAngle);
+        },
+    });
+
+    ["sides", "sideIndent", "offsetAngle"].each(function(prop) {
+        var propName = '_' + prop;
+
+        tm.display.StarShape.prototype.accessor(prop, {
+            "get": function()   {
+                return this[propName];
+            },
+            "set": function(v)  {
+                this[propName] = v;
+                if (this.autoRender === true) {
+                    this.render();
+                }
+            }
+        });
+    });
+    
+})();
+
+
+
+(function() {
+    
+    /**
+     * @class tm.display.PolygonShape
+     * @extends tm.display.Shape
+     * ポリゴン描画クラス
+     */
+    tm.define("tm.display.PolygonShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "cyan",
+                sides: 5,
+                sideIndent: 0.38,
+                offsetAngle: -90,
+            });
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+
+            var sides       = this.sides;
+            var offsetAngle = this.offsetAngle;
+            
+            // 描画
+            var x = this.width/2;
+            var y = this.height/2;
+            var radius = Math.min(this.width, this.height)/2;
+            var offsetLine = Number(c.lineWidth)*0.6;
+            c.fillPolygon(x, y, radius, sides, offsetAngle);
+            c.strokePolygon(x, y, radius-offsetLine, sides, offsetAngle);
+        },
+    });
+
+    ["sides", "offsetAngle"].each(function(prop) {
+        var propName = '_' + prop;
+
+        tm.display.PolygonShape.prototype.accessor(prop, {
+            "get": function()   {
+                return this[propName];
+            },
+            "set": function(v)  {
+                this[propName] = v;
+                if (this.autoRender === true) {
+                    this.render();
+                }
+            }
+        });
+    });
+    
+})();
+
+
+
+
+(function() {
+    
+    /**
+     * @class tm.display.HeartShape
+     * 簡単にハートを描画できるクラス
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.display.HeartShape", {
+        superClass: tm.display.Shape,
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "pink",
+                cornerAngle: 45,
+            });
+            this.superInit(param);
+
+            this.render();
+        },
+
+        _render: function() {
+            var c = this.canvas;
+            // 描画
+            var x = this.width/2;
+            var y = this.height/2;
+            var radius = Math.min(this.width, this.height)/2;
+            c.fillHeart(x, y, radius, this.cornerAngle);
+            c.strokeHeart(x, y, radius-Number(c.lineWidth)/2, this.cornerAngle);
+        },
+    });
+
+    ["cornerAngle"].each(function(prop) {
+        var propName = '_' + prop;
+
+        tm.display.HeartShape.prototype.accessor(prop, {
+            "get": function()   {
+                return this[propName];
+            },
+            "set": function(v)  {
+                this[propName] = v;
+                if (this.autoRender === true) { this.render(); }
+            }
+        });
+    });
+
+})();
+
+
+
+
+(function() {
+
+    var dummyCanvas = null;
+    
+    /**
+     * @class tm.display.TextShape
+     * @extends tm.display.Shape
+     * テキスト描画クラス
+     */
+    tm.define("tm.display.TextShape", {
+
+        superClass: "tm.display.Shape",
+        
+        /**
+         * @constructor
+         */
+        init: function(width, height, param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param = {}.$safe(param, {
+                fillStyle: "black",
+                lineWidth: 4,
+                text: "hello, world!",
+                fontSize: 64,
+                fontWeight: "",
+                fontFamily: "'HiraKakuProN-W3'",
+            });
+            this.superInit(param);
+
+            this.fit();
+
+            this.render();
+        },
+
+        fit: function() {
+            if (!dummyCanvas) {
+                dummyCanvas = tm.graphics.Canvas();
+            }
+            dummyCanvas.font = "{fontWeight} {fontSize}px {fontFamily}".format(this);
+            var textWidth = dummyCanvas.context.measureText(this.text).width + (10);
+            var textHeight = dummyCanvas.context.measureText('あ').width*1.5;
+            this.width = textWidth;
+            this.height = textHeight;
+        },
+
+        _render: function() {
+            var c = this.canvas;
+
+            c.fillStyle = this.fillStyle;
+            c.strokeStyle = this.strokeStyle;
+            c.font = "{fontWeight} {fontSize}px {fontFamily}".format(this);
+            c.textAlign = "center";
+            c.textBaseline = "middle";
+
+            var textWidth = c.context.measureText(this.text).width;
+
+            var hw = this.width/2;
+            var hh = this.height/2
+            c.strokeText(this.text, hw, hh);
+            c.fillText(this.text, hw, hh);
+        },
+
+    });
+
+    ['text', "fontWeight", "fontSize", "fontFamily"].each(function(prop) {
+        var propName = '_' + prop;
+
+        tm.display.TextShape.prototype.accessor(prop, {
+            "get": function()   {
+                return this[propName];
+            },
+            "set": function(v)  {
+                this[propName] = v;
+                if (this.autoRender === true) { this.render(); }
+            }
+        });
+    });
+
+    
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * label.js
+ */
+
+tm.display = tm.display || {};
+
+
+(function() {
+    
+    var dummyCanvas = document.createElement("canvas");
+    var dummyContext = dummyCanvas.getContext('2d');
+
+    /**
+     * @class tm.display.Label
+     * システムフォントを描画するクラス
+     * @extends tm.display.CanvasElement
+     */
+    tm.display.Label = tm.createClass({
+        
+        superClass: tm.display.CanvasElement,
+        
+        /** 塗りつぶしフラグ */
+        fill: true,
+        /** ストロークフラグ */
+        stroke: false,
+        /** デバッグボックス */
+        debugBox: false,
+        /** キャッシュ */
+        _cache: null,
+
+
+        /** @property _fontSize @private */
+        /** @property _fontFamily @private */
+        /** @property _fontWeight @private */
+        /** @property _lineHeight @private */
+        /** @property _rowWidth @private */
+        /** @property align */
+        /** @property baseline */
+        /** @property maxWidth */
+
+        /**
+         * @constructor
+         */
+        init: function(text, size) {
+            this.superInit();
+            
+            this.text       = text;
+            
+            this._fontSize   = size || 24;
+            this._fontFamily = tm.display.Label.default.fontFamily;
+            this._fontWeight = "";
+            this._lineHeight = 1.2;
+            this._updateFont();
+            
+            this.align = tm.display.Label.default.align;
+            this.baseline = tm.display.Label.default.baseline;
+
+            this.maxWidth   = null;
+        },
+        
+        /**
+         * アラインをセット
+         */
+        setAlign: function(align) {
+            this.align = align;
+            return this;
+        },
+        
+        /**
+         * ベースラインをセット
+         */
+        setBaseline: function(baseline) {
+            this.baseline = baseline;
+            return this;
+        },
+        
+        /**
+         * フォントサイズをセット
+         */
+        setFontSize: function(size) {
+            this.fontSize = size;
+            return this;
+        },
+        
+        /**
+         * フォントファミリーをセット
+         */
+        setFontFamily: function(family) {
+            this.fontFamily= family;
+            return this;
+        },
+
+        /**
+         * フォントウェイトをセット
+         */
+        setFontWeight: function(weight) {
+            this.fontWeight= weight;
+            return this;
+        },
+
+        /**
+         * @private
+         */
+        _updateFont: function() {
+            this.fontStyle = "{fontWeight} {fontSize}px {fontFamily}".format(this);
+
+            this._cache = tm.display.Label._cache[this.fontStyle];
+
+            this.textSize = this.measure('あ') * this.lineHeight;
+        },
+
+        /**
+         * @private
+         */
+        _updateLines: function() {
+            var lines = this._lines = (this._text + '').split('\n');
+
+            if (this._rowWidth) {
+                var rowWidth = this._rowWidth;
+                //どのへんで改行されるか目星つけとく
+                var defaultIndex = rowWidth / this.measure('あ') | 0;
+                var cache = this._cache || (this._cache = tm.display.Label._cache[this.fontStyle] = {});
+                for (var i = lines.length; i--;) {
+                    var text = lines[i], index, len, j = 0, width, char;
+                    while (true) {
+                        if (rowWidth > (cache[text] || (cache[text] = dummyContext.measureText(text).width))) break;
+
+                        index = index || defaultIndex;
+                        len = text.length;
+                        if (len <= index) index = len - 1;
+
+                        if (rowWidth < (width = cache[char = text.substring(0, index)] || (cache[char] = dummyContext.measureText(char).width))) {
+                            while (rowWidth < (width -= cache[char = text[--index]] || (cache[char] = dummyContext.measureText(char).width)));
+                        } else {
+                            while (rowWidth >= (width += cache[char = text[index++]] || (cache[char] = dummyContext.measureText(char).width)));
+                            --index;
+                        }
+
+                        //index が 0 のときは無限ループになるので、1にしとく
+                        if (index === 0) index = 1;
+                        lines.splice(i + j++, 1, text.substring(0, index), text = text.substring(index, len));
+                    }
+
+                }
+            }
+        },
+
+        /**
+         * このLabelインスタンスの設定で文字を描画したときの幅
+         * newLine true 指定で\nによる改行も考慮する
+         */
+        measure: function (text, newLine) {
+            dummyContext.font = this.fontStyle;
+            text = text == null ? '' : text + '';
+
+            if (newLine) {
+                text = text.split('\n');
+                var max = 0;
+
+                text.forEach(function (text) {
+                    var width = dummyContext.measureText(text).width;
+                    if (width > max) max = width;
+                });
+
+                return max;
+            }
+
+            return dummyContext.measureText(text).width;
+        },
+
+        /**
+         * 列の幅をセット
+         */
+        setRowWidth: function (rowWidth) {
+            this.rowWidth = rowWidth;
+            return this;
+        },
+
+        /**
+         * 文字列をセット
+         */
+        setText: function (text) {
+            this.text = text;
+            return this;
+        },
+        
+    });
+    
+    /**
+     * @property    text
+     * 文字
+     */
+    tm.display.Label.prototype.accessor("text", {
+        "get": function() { return this._text; },
+        "set": function (v) {
+            if (this._text === v) return;
+            this._text = (v != null) ? v : '';
+            this._updateLines();
+        }
+    });
+    
+    /**
+     * @property    fontSize
+     * フォントサイズ
+     */
+    tm.display.Label.prototype.accessor("fontSize", {
+        "get": function() { return this._fontSize; },
+        "set": function(v){ this._fontSize = v; this._updateFont(); }
+    });
+    
+    /**
+     * @property    fontFamily
+     * フォント
+     */
+    tm.display.Label.prototype.accessor("fontFamily", {
+        "get": function() { return this._fontFamily; },
+        "set": function(v){ this._fontFamily = v; this._updateFont(); }
+    });
+    
+    /**
+     * @property    fontWeight
+     */
+    tm.display.Label.prototype.accessor("fontWeight", {
+        "get": function() { return this._fontWeight; },
+        "set": function(v) {
+            this._fontWeight = v; this._updateFont();
+        },
+    });
+    
+    /**
+     * @property lineHeight
+     */
+    tm.display.Label.prototype.accessor("lineHeight", {
+        "get": function() { return this._lineHeight; },
+        "set": function(v) {
+            this._lineHeight = v; this._updateFont();
+        },
+    });
+
+
+    /**
+     * @property rowWidth
+     */
+    tm.display.Label.prototype.accessor("rowWidth", {
+        "get": function () { return this._rowWidth; },
+        "set": function (v) {
+            this._rowWidth = v; this._updateLines();
+        },
+    });
+    
+    tm.display.Label.default = {
+        align: "center",
+        baseline: "middle",
+        fontFamily: "'HiraKakuProN-W3'", // Hiragino or Helvetica
+        // align: "start",
+        // baseline: "alphabetic",
+    };
+
+    tm.display.Label._cache = {};
+
+    
+})();
+
+
+/*
+ * animationsprite.js
+ */
+
+
+tm.display = tm.display || {};
+
+
+(function() {
+
+    /**
+     * @class tm.display.AnimationSprite
+     * スプライトアニメーションクラス
+     * @extends tm.display.CanvasElement
+     */
+    tm.display.AnimationSprite = tm.createClass({
+        superClass: tm.display.CanvasElement,
+
+        /** @property ss                 sprite sheet */
+        /** @property width              width */
+        /** @property height             height */
+        /** @property currentFrame       現在のフレーム */
+        /** @property currentFrameIndex  現在のフレームインデックス */
+        /** @property paused             ポーズ */
+        /** @property currentAnimation   現在のアニメーション */
+
+        /**
+         * @constructor
+         */
+        init: function(ss, width, height) {
+            this.superInit();
+
+            if (typeof ss == "string") {
+                var ss = tm.asset.Manager.get(ss);
+                console.assert(ss, "not found " + ss);
+            }
+
+            console.assert(typeof ss == "object", "AnimationSprite の第一引数はスプライトシートもしくはスプライトシート名に変わりました");
+
+            this.ss = ss;
+
+            this.width  = width || ss.frame.width;
+            this.height = height|| ss.frame.height;
+
+            this.currentFrame = 0;
+            this.currentFrameIndex = 0;
+            this.paused = true;
+
+            this.currentAnimation = null;
+
+            this.addEventListener("enterframe", function(e) {
+                if (!this.paused && e.app.frame%this.currentAnimation.frequency === 0) {
+                    this._updateFrame();
+                }
+            });
+        },
+
+        /**
+         * 描画
+         */
+        draw: function(canvas) {
+            var srcRect = this.ss.getFrame(this.currentFrame);
+            var element = this.ss.image.element;
+
+            canvas.drawImage(element,
+                srcRect.x, srcRect.y, srcRect.width, srcRect.height,
+                -this.width*this.originX, -this.height*this.originY, this.width, this.height);
+        },
+
+        /**
+         * 再生
+         */
+        gotoAndPlay: function(name) {
+            name = (name !== undefined) ? name : "default";
+
+            this.paused = false;
+            this.currentAnimation = this.ss.animations[name];
+            this.currentFrame = 0;
+            this.currentFrameIndex = 0;
+            this._normalizeFrame();
+
+            return this;
+        },
+
+        /**
+         * ストップ
+         */
+        gotoAndStop: function(name) {
+            name = (name !== undefined) ? name : "default";
+
+            this.paused = true;
+            this.currentAnimation = this.ss.animations[name];
+            this.currentFrame = 0;
+            this.currentFrameIndex = 0;
+            this._normalizeFrame();
+
+            return this;
+        },
+
+        /**
+         * フレーム数のカウントアップ
+         * @private
+         */
+        _updateFrame: function() {
+            this.currentFrameIndex += 1;
+            this._normalizeFrame();
+        },
+
+        /**
+         * @private
+         */
+        _normalizeFrame: function() {
+            var anim = this.currentAnimation;
+            if (anim) {
+                if (this.currentFrameIndex < anim.frames.length) {
+                    this.currentFrame = anim.frames[this.currentFrameIndex];
+                }
+                else {
+                    if (anim.next) {
+                        this.gotoAndPlay(anim.next);
+                    }
+                    else {
+                        this.currentFrameIndex = anim.frames.length - 1;
+                        this.currentFrame = anim.frames[this.currentFrameIndex];
+                        this.paused = true;
+                    }
+                    // dispatch animationend
+                    var e = tm.event.Event("animationend");
+                    this.dispatchEvent(e);
+                }
+            }
+        },
+
+    });
+
+})();
+
+
+/*
+ * mapsprite.js
+ */
+
+
+(function() {
+
+    /**
+     * @class tm.display.MapSprite
+     * マップ描画クラス
+     * @extends tm.display.CanvasElement
+     */
+    tm.define("tm.display.MapSprite", {
+        superClass: "tm.display.CanvasElement",
+
+        /** @property mapSheet */
+        /** @property chipWidth */
+        /** @property chipHeight */
+        /** @property originX */
+        /** @property originY */
+        /** @property width */
+        /** @property height */
+        /** @property tileset */
+
+        /**
+         * @constructor
+         */
+        init: function(mapSheet, chipWidth, chipHeight) {
+            this.superInit();
+
+            if (typeof mapSheet == "string") {
+                this.mapSheet = tm.asset.Manager.get(mapSheet);
+            }
+            else {
+                this.mapSheet = mapSheet;
+            }
+
+            this.chipWidth  = chipWidth  || 32;
+            this.chipHeight = chipHeight || 32;
+
+            this.originX = this.originY = 0;
+
+            this.width = chipWidth*this.mapSheet.width;
+            this.height= chipWidth*this.mapSheet.height;
+
+            this.tileset = [];
+            this.tilesetInfo = {};
+            this._build();
+        },
+
+        /**
+         * @private
+         */
+        _build: function() {
+            var self = this;
+
+            this.mapSheet.tilesets.each(function(tileset, index) {
+                self._buildTileset(tileset, index);
+            });
+
+            this.mapSheet.layers.each(function(layer, hoge) {
+                if (layer.type == "objectgroup") {
+                    self._buildObject(layer);
+                }
+                else if (layer.type == "imagelayer") {
+                    self._buildImageLayer(layer);
+                }
+                else {
+                    self._buildLayer(layer);
+                }
+            });
+        },
+
+        /**
+         * @private
+         */
+        _buildTileset: function(tileset, index) {
+            var self      = this;
+            var mapSheet  = this.mapSheet;
+            var texture   = tm.asset.Manager.get(tileset.image);
+            var xIndexMax = (texture.width / mapSheet.tilewidth)|0;
+            var yIndexMax = (texture.height / mapSheet.tileheight)|0;
+
+            var info = {
+                begin: self.tileset.length,
+                end: self.tileset.length + xIndexMax * yIndexMax
+            };
+
+            self.tilesetInfo[index] = info;
+
+            if (tileset.name !== undefined) {
+                self.tilesetInfo[tileset.name] = info;
+            }
+
+            yIndexMax.times(function(my) {
+                xIndexMax.times(function(mx) {
+                    var rect = tm.geom.Rect(
+                        mx * mapSheet.tilewidth,
+                        my * mapSheet.tileheight,
+                        mapSheet.tilewidth,
+                        mapSheet.tileheight
+                        );
+                    self.tileset.push({
+                        image: tileset.image,
+                        rect: rect
+                    });
+                });
+            });
+        },
+
+        /**
+         * @private
+         */
+        _buildLayer: function(layer) {
+            var self     = this;
+            var mapSheet = this.mapSheet;
+            var shape    = tm.display.Shape({
+                width: this.width,
+                height: this.height
+            }).addChildTo(this);
+            var visible  = (layer.visible === 1) || (layer.visible === undefined);
+            var opacity  = layer.opacity === undefined ? 1 : layer.opacity;
+            var tileset  = [];
+            shape.origin.set(0, 0);
+
+            if (layer.tilesets !== undefined) {
+                var tilesets = null;
+                if (Array.isArray(layer.tilesets)) {
+                    tilesets = layer.tilesets;
+                } else {
+                    tilesets = [layer.tilesets];
+                }
+                tilesets.each(function(n) {
+                    var info = self.tilesetInfo[n];
+                    tileset = tileset.concat(self.tileset.slice(info.begin, info.end));
+                });
+            } else {
+                tileset = self.tileset;
+            }
+
+            if (visible) {
+                layer.data.each(function(d, index) {
+                    var type = d;
+                    if (type == -1) {
+                        return ;
+                    }
+                    type = Math.abs(type);
+                    if (tileset[type] === undefined) {
+                        return ;
+                    }
+
+                    var xIndex = index%mapSheet.width;
+                    var yIndex = (index/mapSheet.width)|0;
+                    var dx = xIndex*self.chipWidth;
+                    var dy = yIndex*self.chipHeight;
+
+                    var tile = tileset[type];
+
+                    var texture = tm.asset.Manager.get(tile.image);
+                    var rect = tile.rect;
+
+                    shape.canvas.globalAlpha = opacity;
+                    shape.canvas.drawTexture(texture,
+                        rect.x, rect.y, rect.width, rect.height,
+                        dx, dy, self.chipWidth, self.chipHeight
+                        );
+                }.bind(this));
+            }
+
+        },
+
+        /**
+         * @private
+         */
+        _buildObject: function(layer) {
+            var self = this;
+
+            var group = tm.display.CanvasElement().addChildTo(self);
+            group.width = self.width;
+            group.height = self.height;
+
+            layer.objects.forEach(function(obj) {
+                var _class = tm.using(obj.type);
+                if (Object.keys(_class).length === 0) {
+                    _class=tm.display[obj.type];
+                }
+
+                var initParam = null;
+                if (obj.properties.init) {
+                    initParam = JSON.parse(obj.properties.init);
+                }
+                var element = _class.apply(null, initParam).addChildTo(group);
+                var props   = obj.properties;
+                for (var key in props) {
+                    if (key == "init") continue ;
+                    var value = props[key];
+                    element[key] = value;
+                }
+
+                element.x = obj.x;
+                element.y = obj.y;
+                element.width = obj.width;
+                element.height = obj.height;
+
+                group[obj.name] = element;
+            });
+
+            self[layer.name] = group;
+
+        },
+
+        /**
+         * @private
+         */
+        _buildImageLayer: function(layer) {
+            var sprite = tm.display.Sprite(layer.image.source).setOrigin(0, 0).addChildTo(this);
+            sprite.x = layer.x;
+            sprite.y = layer.y;
+            sprite.alpha = layer.alpha;
+            sprite.visible = layer.visible;
+
+            this[layer.name] = sprite;
+        }
+
+    });
+
+})();
+
+
+
+
+/*
+ * renderer.js
+ */
+
+ 
+(function() {
+    
+    /**
+     * @class tm.display.CanvasRenderer
+     * キャンバス描画クラス
+     */
+    tm.define("tm.display.CanvasRenderer", {
+        /** キャンバス */
+        canvas: null,
+
+        /** @property @private _context     コンテキスト */
+
+        /**
+         * @constructor
+         * コンストラクタ
+         */
+        init: function(canvas) {
+            this.canvas = canvas;
+            this._context = this.canvas.context;
+        },
+
+        /**
+         * 描画
+         */
+        render: function(root) {
+            this.canvas.save();
+            this.renderObject(root);
+            this.canvas.restore();
+        },
+
+        /**
+         * オブジェクトを描画
+         */
+        renderObject: function(obj) {
+            if (obj.visible === false) return ;
+            var context = this._context;
+
+            // TODO: 別の場所で呼ぶよう調整する
+            obj._dirtyCalc && obj._dirtyCalc();
+
+            // 描画可能かをチェック
+            if (!this._checkRenderable(obj)) {
+                // 子供達のみ描画実行
+                if (obj.children.length > 0) {
+                    var tempChildren = obj.children.slice();
+                    for (var i=0,len=tempChildren.length; i<len; ++i) {
+                        this.renderObject(tempChildren[i]);
+                    }
+                }
+
+                return ;
+            }
+            
+            if (obj.name==="Mesh")console.log("Mesh");
+
+            // 
+            if (!obj.draw) {
+                this._setRenderFunction(obj);
+            }
+
+            // 情報をセット
+            if (obj.fillStyle)   context.fillStyle   = obj.fillStyle;
+            if (obj.strokeStyle) context.strokeStyle = obj.strokeStyle;
+            context.globalAlpha    = obj._worldAlpha;
+            context.globalCompositeOperation = obj.blendMode;
+            
+            if (obj.shadowBlur) {
+                context.shadowColor   = obj.shadowColor;
+                context.shadowOffsetX = obj.shadowOffsetX;
+                context.shadowOffsetY = obj.shadowOffsetY;
+                context.shadowBlur    = obj.shadowBlur;
+            }
+            else {
+                context.shadowOffsetX = 0;
+                context.shadowOffsetY = 0;
+                context.shadowColor   = "rgba(0, 0, 0, 0)";
+            }
+            
+            // 行列をセット
+            var m = obj._worldMatrix.m;
+            context.setTransform( m[0], m[3], m[1], m[4], m[2], m[5] );
+            
+
+            if (obj.clipping) {
+                context.save();
+
+                // クリップ処理を実行
+                if (obj.clip) {
+                    obj.clip();
+                }
+                else {
+                    onclip.call(obj, this.canvas);
+                }
+                context.clip();
+
+                obj.draw(this.canvas);
+                
+                // 子供達も実行
+                if (obj.children.length > 0) {
+                    var tempChildren = obj.children.slice();
+                    for (var i=0,len=tempChildren.length; i<len; ++i) {
+                        this.renderObject(tempChildren[i]);
+                    }
+                }
+
+                context.restore();
+            }
+            else {
+                obj.draw(this.canvas);
+                
+                // 子供達も実行
+                if (obj.children.length > 0) {
+                    var tempChildren = obj.children.slice();
+                    for (var i=0,len=tempChildren.length; i<len; ++i) {
+                        this.renderObject(tempChildren[i]);
+                    }
+                }
+            }
+        },
+
+        /**
+         * @private
+         */
+        _checkRenderable: function(obj) {
+            if (obj._renderable === undefined) {
+                obj._renderable = (obj instanceof tm.display.CanvasElement);
+            }
+            return obj._renderable;
+        },
+
+        /**
+         * @private
+         */
+        _setRenderFunction: function(obj) {
+            if (obj instanceof tm.display.Sprite) {
+                obj.draw = renderFuncList["sprite"];
+            }
+            else if (obj instanceof tm.display.MapSprite) {
+                obj.draw = function() {};
+            }
+            else if (obj instanceof tm.display.Label) {
+                obj.draw = renderFuncList["label"];
+            }
+            else if (obj instanceof tm.display.Shape) {
+                obj.draw = renderFuncList["shape"];
+            }
+            else {
+                obj.draw = function() {};
+            }
+        }
+
+    });
+    
+    var renderFuncList = {
+        "sprite": function(canvas) {
+            var srcRect = this.srcRect;
+            var element = this._image.element;
+            
+            canvas.context.drawImage(element,
+                srcRect.x, srcRect.y, srcRect.width, srcRect.height,
+                -this.width*this.origin.x, -this.height*this.origin.y, this.width, this.height);
+        },
+        "shape": function(canvas) {
+            var srcRect = this.srcRect;
+            canvas.drawImage(
+                this.canvas.canvas,
+                0, 0, this.canvas.width, this.canvas.height,
+                -this.width*this.origin.x, -this.height*this.origin.y, this.width, this.height);
+        },
+        "label": function(canvas) {
+            canvas.setText(this.fontStyle, this.align, this.baseline);
+            if (this.lineWidth) canvas.lineWidth = this.lineWidth;
+            
+            if (this.stroke) {
+                if (this.maxWidth) {
+                    this._lines.each(function(elm, i) {
+                        canvas.strokeText(elm, 0, this.textSize*i, this.maxWidth);
+                    }.bind(this));
+                }
+                else {
+                    this._lines.each(function(elm, i) {
+                        canvas.strokeText(elm, 0, this.textSize*i);
+                    }.bind(this));
+                }
+            }
+            if (this.fill) {
+                if (this.maxWidth) {
+                    this._lines.each(function(elm, i) {
+                        canvas.fillText(elm, 0, this.textSize*i, this.maxWidth);
+                    }.bind(this));
+                }
+                else {
+                    this._lines.each(function(elm, i) {
+                        canvas.fillText(elm, 0, this.textSize*i);
+                    }.bind(this));
+                }
+            }
+            
+            if (this.debugBox) {
+                canvas.strokeRect(0, 0, this.width, -this.size);
+            }
+        }
+    };
+
+    var onclip = function(c) {
+        c.beginPath();
+        c.rect(
+            -this.width*this.origin.x,
+            -this.height*this.origin.y,
+            this.width,
+            this.height
+            );
+    };
+
+})();
+ 
+
+
+ 
+(function() {
+    
+    /**
+     * @class tm.display.BoundingRectRenderer
+     * バウンディング表示レンダー
+     * @extends tm.display.CanvasRenderer
+     */
+    tm.define("tm.display.BoundingRectRenderer", {
+        superClass: "tm.display.CanvasRenderer",
+
+        /**
+         * @constructor
+         * コンストラクタ
+         */
+        init: function(canvas) {
+            this.superInit(canvas);
+        },
+
+        /**
+         * @private
+         */
+        _setRenderFunction: function(obj) {
+            obj.draw = render;
+        }
+    });
+
+    var render = function(canvas) {
+        canvas.save();
+        canvas.lineWidth = 2;
+        canvas.strokeRect(-this.width*this.originX, -this.height*this.originY, this.width, this.height);
+        canvas.restore();
+    };
+
+})();
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * userinterface.js
+ */
+
+tm.ui = tm.ui || {};
+
+
+
+(function() {
+    
+    /**
+     * @class tm.ui.Pad
+     * padクラス
+     * @extends tm.display.Shape
+     */
+    tm.ui.Pad = tm.createClass({
+        superClass: tm.display.Shape,
+        
+        isTouching: false,
+        circle: null,
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.superInit(120, 120);
+            
+            var c = this.canvas;
+            c.fillStyle = "#fff";
+            c.fillCircle(60, 60, 60);
+            c.fillStyle = "#eee";
+            
+            this._createCircle();
+            
+            this.setInteractive(true);
+            
+            this.alpha = 0.75;
+        },
+
+        /**
+         * @private
+         */
+        _createCircle: function() {
+            var circle = this.circle = tm.display.Shape(80, 80);
+            this.addChild(circle);
+            
+            var c = circle.canvas;
+            c.fillStyle = "#222";
+            c.setShadow("black", 2, 2, 2);
+            c.fillCircle(40, 40, 35);
+        },
+
+        onpointingstart: function() {
+            this.isTouching = true;
+        },
+
+        onpointingend: function() {
+            this.isTouching = false;
+            this.circle.position.set(0, 0);
+        },
+
+        onpointingmove: function(e) {
+            if (this.isTouching==false) return ;
+            var p = e.pointing;
+            var v = tm.geom.Vector2(p.x - this.x, p.y - this.y);
+            var len = v.length();
+            v.div(len);
+            if (len > 40) len = 40;
+            
+            this.angle = Math.radToDeg(v.toAngle());
+            this.circle.position.set(v.x*len, v.y*len);
+            
+            // 大きさ
+            this.distance  = len/40.0;
+            // 向きベクトル
+            this.direction = v.mul(this.distance);
+        }
+        
+        
+    });
+    
+})();
+
+
+
+
+/*
+ * button.js
+ */
+
+tm.ui = tm.ui || {};
+
+
+;(function() {
+
+    tm.define("tm.ui.BaseButton", {
+        superClass: "tm.display.CanvasElement",
+
+        init: function(param) {
+            this.superInit();
+
+            param = param || {};
+            this.width = param.width || 64;
+            this.height = param.height || 64;
+
+            this.setInteractive(true);
+            this.boundingType = "rect";
+
+            this.on("pointingend", function() {
+                this.flare('push');
+            });
+        },
+    });
+
+})();
+
+
+;(function() {
+
+    tm.define("tm.ui.SpriteButton", {
+        superClass: "tm.ui.BaseButton",
+
+        init: function(image) {
+            this.superInit();
+
+            this.sprite = tm.display.Sprite(image).addChildTo(this);
+
+            this.width = this.sprite.width;
+            this.height = this.sprite.height;
+        },
+    });
+
+})();
+
+
+;(function() {
+    
+    /**
+     * @class tm.ui.LabelButton
+     * LabelButton
+     * @extends tm.display.Label
+     */
+    tm.ui.LabelButton = tm.createClass({
+        superClass: tm.display.Label,
+
+        /**
+         * @constructor
+         */
+        init: function(text) {
+            this.superInit(text);
+            
+            this.alpha = tm.ui.LabelButton.DEFAULT_ALPHA;
+            this.setAlign("center").setBaseline("middle");
+            
+            this.setInteractive(true);
+            this.boundingType = "rect";
+            
+            this.addEventListener("pointingover", function() {
+                this.tweener.clear();
+                this.tweener.fadeIn(250);
+            }.bind(this));
+            this.addEventListener("pointingout", function() {
+                this.tweener.clear();
+                this.tweener.fade(tm.ui.LabelButton.DEFAULT_ALPHA, 250);
+            }.bind(this));
+            
+            /*
+            var d = this.draw;
+            this.draw = function(canvas) {
+                d.call(this, canvas);
+                this.drawBoundingRect(canvas);
+            }
+            /*
+            */
+        }
+    });
+    
+    /**
+     * @static
+     * @property
+     * デフォルトとなるアルファ値
+     */
+    tm.ui.LabelButton.DEFAULT_ALPHA = 0.5;
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.ui.IconButton
+     * IconButton
+     * @extends tm.display.Sprite
+     */
+    tm.ui.IconButton = tm.createClass({
+        superClass: tm.display.Sprite,
+        
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.superInit.apply(this, arguments);
+            
+            this.setInteractive(true);
+            this.boundingType = "rect";
+
+            this.on("pointingend", function() {
+                this.flare('push');
+            });
+        },
+    });
+    
+    /**
+     * @static
+     * @property
+     * デフォルトとなるアルファ値
+     */
+    tm.ui.IconButton.DEFAULT_ALPHA = 0.5;
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.ui.GlossyButton
+     * glossy button
+     * @extends tm.display.Shape
+     */
+    tm.ui.GlossyButton = tm.createClass({
+        superClass: tm.display.Shape,
+
+        /**
+         * @constructor
+         */
+        init: function(width, height, backgroundColor, text) {
+            this.superInit(width, height);
+            
+            text  = text  || "Button";
+            this.backgroundColor = backgroundColor || "black";
+            this.alpha = tm.ui.GlossyButton.DEFAULT_ALPHA;
+            
+            this.setInteractive(true);
+            this.boundingType = "rect";
+            this.addEventListener("pointingover", function() {
+                this.tweener.clear();
+                this.tweener.fade(1.0, 250);
+            });
+            this.addEventListener("pointingout", function() {
+                this.tweener.clear();
+                this.tweener.fade(tm.ui.GlossyButton.DEFAULT_ALPHA, 250);
+            });
+            
+            // ラベル
+            this.label = tm.display.Label(text || "").addChildTo(this);
+            this.label.setAlign("center").setBaseline("middle");
+            
+            this._refresh();
+        },
+
+        /**
+         * 背景色をセット
+         */
+        setBackgroundColor: function(backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            
+            this._refresh();
+            
+            return this;
+        },
+
+        /**
+         * リフレッシュ
+         * @private
+         */
+        _refresh: function() {
+            // ボタン描画
+            var c = this.canvas;
+            c.resize(this.width, this.height);
+            c.fillStyle = this.backgroundColor;
+            c.fillRoundRect(2, 2, this.width-4, this.height-4, 10);
+            c.strokeStyle   = "rgba(100,100,100,0.75)";
+            c.lineWidth     = 2;
+            c.strokeRoundRect(2, 2, this.width-4, this.height-4, 10);
+            
+            // テカリ
+            c.roundRect(2, 2, this.width-4, this.height-4, 10);
+            c.clip();
+            
+            var grad = tm.graphics.LinearGradient(0, 0, 0, this.height);
+            
+            // grad.addColorStop(0.0, "hsl(  0, 75%, 50%)");
+            // grad.addColorStop(0.5, "hsl(120, 75%, 50%)");
+            // grad.addColorStop(1.0, "hsl(240, 75%, 50%)");
+            grad.addColorStop(0.0, "rgba(255,255,255,0.9)");
+            grad.addColorStop(0.5, "rgba(255,255,255,0.5)");
+            grad.addColorStop(0.51, "rgba(255,255,255,0.2)");
+            grad.addColorStop(1.0, "rgba(255,255,255,0.0)");
+            c.setGradient(grad);
+            c.fillRect(2, 2, this.width-4, this.height-4, 10);
+            
+            // ラベルのサイズをリセット
+            this.label.setSize(this.width, this.height);
+        },
+    });
+
+    /**
+     * @static
+     * @property
+     * デフォルトとなるアルファ値
+     */
+    tm.ui.GlossyButton.DEFAULT_ALPHA = 0.5;
+    
+    
+})();
+
+
+(function() {
+
+    /**
+     * @class tm.ui.FlatButton
+     * フラットデザインのボタン
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.ui.FlatButton", {
+        superClass: "tm.ui.BaseButton",
+
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = (param || {}).$safe(tm.ui.FlatButton.defaults);
+
+            this.superInit(param);
+
+            this.shape = tm.display.RoundRectangleShape(param).addChildTo(this);
+
+            this.label = tm.display.Label(param.text).addChildTo(this);
+            this.label.setFontSize(param.fontSize).setFontFamily(param.fontFamily).setAlign("center").setBaseline("middle");
+        },
+    });
+
+    tm.ui.FlatButton.defaults = {
+        width: 300,
+        height: 100,
+        fillStyle: "hsl(180, 60%, 50%)",
+        strokeStyle: "transparent",
+        text: "START",
+        fontSize: 50,
+        cornerRadius: 8,
+        fontFamily: "'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif",
+    };
+
+})();
+
+
+
+
+/*
+ * menudialog.js
+ */
+
+(function() {
+    
+    /**
+     * @class tm.ui.MenuDialog
+     * メニューダイアログ
+     * @extends tm.app.Scene
+     */
+    tm.define("tm.ui.MenuDialog", {
+        superClass: tm.app.Scene,
+
+        /** @type {string} タイトル */
+        titleText: null,
+        /** @type {Array.<string>} メニュー名リスト */
+        menu: null,
+        /** @type {Array.<string>} メニュー詳細リスト */
+        descriptions: null,
+        /** @type {boolean} exit の表示/非表示 */
+        showExit: false,
+
+        /** @type {tm.display.Label} dummy */
+        title: null,
+        /** @type {Array.<tm.ui.LabelButton>} dummy */
+        selections: [],
+        /** @type {tm.display.Label} dummy */
+        description: null,
+        /** @type {tm.display.RectangleShape} dummy */
+        box: null,
+        /** @type {tm.display.RectangleShape} dummy */
+        cursor: null,
+
+        /** @private */
+        _selected: 0,
+        /** @private */
+        _opened: false,
+        /** @private */
+        _finished: false,
+
+        /** @private */
+        _screenWidth: 0,
+        /** @private */
+        _screenHeight: 0,
+
+        /**
+         * @constructor
+         * @param {Object} params
+         */
+        init: function(params) {
+            this.superInit();
+
+            this._screenWidth = params.screenWidth;
+            this._screenHeight = params.screenHeight;
+
+            this.titleText = params.title;
+            this.menu = [].concat(params.menu);
+            this._selected = ~~params.defaultSelected;
+            this.showExit = !!params.showExit;
+            if (params.menuDescriptions) {
+                this.descriptions = params.menuDescriptions;
+            } else {
+                this.descriptions = [].concat(params.menu);
+            }
+
+            if (this.showExit) {
+                this.menu.push("exit");
+                this.descriptions.push("前の画面へ戻ります");
+            }
+
+            var height = Math.max((1+this.menu.length)*50, 50) + 40;
+            this.box = tm.display.RectangleShape(this._screenWidth * 0.8, height, {
+                strokeStyle: "rgba(0,0,0,0)",
+                fillStyle: "rgba(43,156,255, 0.8)",
+            }).setPosition(this._screenWidth*0.5, this._screenHeight*0.5);
+            this.box.width = 1;
+            this.box.height = 1;
+            this.box.setBoundingType("rect");
+            this.box.tweener
+                .to({ width: this._screenWidth*0.8, height: height }, 200, "easeOutExpo")
+                .call(this._onOpen.bind(this));
+            this.box.addChildTo(this);
+
+            this.description = tm.display.Label("", 14)
+                .setAlign("center")
+                .setBaseline("middle")
+                .setPosition(this._screenWidth*0.5, this._screenHeight-10)
+                .addChildTo(this);
+        },
+
+        /**
+         * @private
+         */
+        _onOpen: function() {
+            var self = this;
+            var y = this._screenHeight*0.5 - this.menu.length * 25;
+
+            this.title = tm.display.Label(this.titleText, 30)
+                .setAlign("center")
+                .setBaseline("middle")
+                .setPosition(this._screenWidth*0.5, y)
+                .addChildTo(this);
+
+            this.cursor = this._createCursor();
+
+            this.selections = this.menu.map(function(text, i) {
+                var self = this;
+                y += 50;
+                var selection = tm.ui.LabelButton(text)
+                    .setPosition(this._screenWidth*0.5, y)
+                    .addChildTo(this);
+                selection.interactive = true;
+                selection.addEventListener("click", function() {
+                    if (self._selected === i) {
+                        self.closeDialog(self._selected);
+                    } else {
+                        self._selected = i;
+                        var e = tm.event.Event("menuselect");
+                        e.selectValue = self.menu[self._selected];
+                        e.selectIndex = i;
+                        self.dispatchEvent(e);
+                    }
+                });
+                selection.width = this._screenWidth * 0.7;
+                return selection;
+            }.bind(this));
+
+            this.cursor.y = this.selections[this._selected].y;
+
+            this._opened = true;
+
+            // close window when touch bg outside
+            this.addEventListener("pointingend", function(e) {
+                var p = e.app.pointing;
+                if (!self.box.isHitPoint(p.x, p.y)) {
+                    self.closeDialog(self._selected);
+                }
+            });
+
+            // dispatch opened event
+            var e = tm.event.Event("menuopened");
+            this.dispatchEvent(e);
+        },
+
+        /**
+         * @private
+         */
+        _createCursor: function() {
+            var cursor = tm.display.RectangleShape(this._screenWidth*0.7, 30, {
+                strokeStyle: "rgba(0,0,0,0)",
+                fillStyle: "rgba(12,79,138,1)"
+            }).addChildTo(this);
+            cursor.x = this._screenWidth*0.5;
+            cursor.target = this._selected;
+            
+            cursor.update = function() {
+                if (this.target !== this.parent._selected) {
+                    this.target = this.parent._selected;
+                    this.tweener.clear();
+                    this.tweener.to({
+                        y: this.parent.selections[this.parent._selected].y
+                    }, 200, "easeOutExpo");
+                }
+            };
+
+            return cursor;
+        },
+
+        /**
+         * 更新
+         */
+        update: function(app) {
+            this.description.text = this.descriptions[this._selected];
+        },
+
+        /**
+         * 閉じる
+         */
+        closeDialog: function(result) {
+            this._finished = true;
+
+            var e = tm.event.Event("menuselected");
+            e.selectIndex = result;
+            this.dispatchEvent(e);
+
+            this.tweener
+                .clear()
+                .wait(200)
+                .call(function() {
+                    this.cursor.remove();
+                    this.title.remove();
+                    this.selections.each(function(sel) {
+                        sel.remove();
+                    });
+                    this.box.tweener.clear();
+                    this.box.tweener
+                        .to({ width: 1, height: 1 }, 200, "easeInExpo")
+                        .call(function() {
+                            this.app.popScene();
+                            var e = tm.event.Event("menuclosed");
+                            e.selectIndex = result;
+                            this.dispatchEvent(e);
+                        }.bind(this));
+                }.bind(this));
+            this.cursor.tweener
+                .clear()
+                .call(function() {
+                    this.visible = !this.visible;
+                }.bind(this.cursor))
+                .setLoop(true);
+        },
+
+        /**
+         * 描画
+         */
+        draw: function(canvas) {
+            canvas.fillStyle = "rgba(0,0,0,0.8)";
+            canvas.fillRect(0,0,this._screenWidth,this._screenHeight);
+        },
+
+    });
+
+})();
+
+/*
+ * sketch.js
+ */
+
+;(function() {
+    
+    var DEFAULT_PARAM = {
+        bgColor: "rgba(255, 255, 255, 1.0)",
+        penColor: "rgba(0, 0, 0, 1.0)",
+        lineWidth: 16,
+    };
+    
+    /**
+     * @class tm.ui.Sketch
+     * Sketch
+     * @extends tm.display.Shape
+     */
+    tm.define("tm.ui.Sketch", {
+        superClass: "tm.display.Shape",
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            param = this._dirtyCheckParam.apply(this, arguments);
+            param.$safe(DEFAULT_PARAM);
+            this.superInit(param);
+            
+            this.autoRender = false;
+            
+            this._setup(param);
+        },
+        
+        _setup: function(param) {
+            var self = this;
+            
+            // setup this
+            this.boundingType = "rect";
+            this.setInteractive(true);
+            
+            // setup canvas
+            var c = this.canvas.context;
+            c.lineCap  = "round";
+            c.lineJoin = "round";
+            c.miterLimit = 10.0;
+            this.bgColor = param.bgColor;
+            this.penColor = param.penColor;
+            this.lineWidth = param.lineWidth;
+            
+            // setup event
+            this.on("pointingstart", function(e) {
+                var p = e.app.pointing;
+                
+                self._drawPoint(p.position);
+            });
+            this.on("pointingmove", function(e) {
+                var p = e.app.pointing;
+                self._drawLine(p.prevPosition, p.position);
+                self.points.push({
+                    x: p.x-this.left,
+                    y: p.y-this.top,
+                });
+            });
+            this.on("pointingend", function(e) {
+                self.pointsList.push(self.points);
+                self.points = [];
+            });
+
+            // ポイントスタック
+            this.pointsList = [];
+            this.points = [];
+        },
+        
+        /**
+         * 画面をbgColor色でクリアする
+         */
+        clear: function() {
+            this.canvas.clear();
+            this.canvas.clearColor(this.bgColor);
+
+            this.pointsList = [];
+            this.points = [];
+            
+            return this;
+        },
+        
+        _drawPoint: function(p) {
+            this.canvas.drawPoint(p.x-this.left, p.y-this.top);
+        },
+        
+        _drawLine: function(p, prev) {
+            this.canvas.drawLine(
+                p.x-this.left, p.y-this.top,
+                prev.x-this.left, prev.y-this.top
+            );
+        },
+        
+    });
+
+    /**
+     * @property    penColor
+     * penColor
+     */
+    tm.ui.Sketch.prototype.accessor("penColor", {
+        "get": function()   { return this._penColor; },
+        "set": function(v)  {
+            this._penColor = v;
+            this.canvas.strokeStyle = v;
+        }
+    });
+    
+    /**
+     * @property    bgColor
+     * bgColor
+     */
+    tm.ui.Sketch.prototype.accessor("bgColor", {
+        "get": function()   { return this._bgColor; },
+        "set": function(v)  {
+            this._bgColor = v;
+            this.clear();
+        }
+    });
+    
+    /**
+     * @property    lineWidth
+     * lineWidth
+     */
+    tm.ui.Sketch.prototype.accessor("lineWidth", {
+        "get": function()   { return this._lineWidth; },
+        "set": function(v)  {
+            this._lineWidth = v;
+            this.canvas.lineWidth = v;
+        }
+    });
+
+    
+})();
+
+
+/*
+ *  gauge.js
+ */
+
+
+
+(function() {
+
+    /**
+     * @class tm.ui.Gauge
+     * ゲーム用ゲージクラス
+     * @extends tm.display.CanvasElement
+     */
+    tm.ui.Gauge = tm.createClass({
+        superClass: tm.display.CanvasElement,
+        
+        
+        /**
+         * アニメーションさせるかどうかのフラグ
+         */
+        animationFlag: true,
+        /**
+         * 0~100 に変化する際にかかる時間
+         * つまり10*1000 だった場合は, 0~10に変化するさいに　1秒かかる
+         */
+        animationTime: 10*1000, // 10 秒
+
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            this.superInit();
+            
+            param = param || {};
+            param.$safe({
+                width: 300,
+                height: 25,
+                color: "hsl(220, 100%, 50%)",
+                bgColor: "#444",
+                borderColor: "white",
+                borderWidth: 4,
+            });
+            
+            this.$extend(param);
+            
+            this._reset();
+        },
+
+        /**
+         * 満タンかをチェック
+         */
+        isFull: function() {
+            return this._value === this._maxValue;
+        },
+
+        /**
+         * 空っぽかをチェック
+         */
+        isEmpty: function() {
+            return this._value === 0;
+        },
+
+        /**
+         * @private
+         */
+        _reset: function(direction) {
+            this.originX = 0;
+            this._realValue = this._value = this._maxValue = 100;
+        },
+
+        /**
+         * 値をセット
+         */
+        setValue: function(value) {
+            value= Math.clamp(value, 0, this._maxValue);
+
+            this._realValue = value;
+            
+            // end when now value equal value of argument
+            if (this._value === value) return ;
+            
+            // fire value change event
+            this.fire(tm.event.Event("change"));
+            
+            if (this.isAnimation()) {
+                this.tweener.clear();
+
+                var time = (Math.abs(this._value-value)/100)*this.animationTime;
+                this.tweener.clear()
+                    .to({ "_value":value }, time)
+                    .call(function() {
+                        this.fire(tm.event.Event("changed"));
+
+                        if (this.isEmpty()) {
+                            this.fire(tm.event.Event("empty"));
+                        }
+                        else if (this.isFull()) {
+                            this.fire(tm.event.Event("full"));
+                        }
+                    }.bind(this));
+            }
+            else {
+                this._value = value;
+                this.fire(tm.event.Event("changed"));
+                
+                if (this.isEmpty()) {
+                    this.fire(tm.event.Event("empty"));
+                }
+                else if (this.isFull()) {
+                    this.fire(tm.event.Event("full"));
+                }
+            }
+            
+            return this;
+        },
+
+        /**
+         * 値をゲット
+         */
+        getValue: function() {
+            return this.value;
+        },
+
+
+        /**
+         * 値をゲット
+         */
+        getRealValue: function () {
+            return this._realValue;
+        },
+
+        /**
+         * 値を％でセット
+         */
+        setPercent: function(percent) {
+            return this.setValue(this._maxValue*percent*0.01);
+        },
+
+        /**
+         * 値を％でゲット
+         */
+        getPercent: function () {
+            return (this._value / this._maxValue) * 100;
+        },
+
+        /**
+         * 値を％でゲット
+         */
+        getRealPercent: function () {
+            return (this._realValue / this._maxValue) * 100;
+        },
+
+        /**
+         * 値を比率でセット
+         */
+        setRatio: function(ratio) {
+            return this.setValue(this._maxValue*ratio);
+        },
+
+        /**
+         * 値を比率でゲット
+         */
+        getRatio: function () {
+            return this._value / this._maxValue;
+        },
+
+        /**
+         * 値を比率でゲット
+         */
+        getRealRatio: function () {
+            return this._realValue / this._maxValue;
+        },
+
+        isAnimation: function() {
+            return this.animationFlag;
+        },
+        
+        draw: function(canvas) {
+            canvas.save();
+            
+            // bg
+            canvas.fillStyle = this.bgColor;
+            canvas.fillRect(0, 0, this.width, this.height);
+            
+            // bar
+            canvas.fillStyle = this.color;
+            canvas.fillRect(0, 0, this.width*this.getRatio(), this.height);
+            
+            // border
+            canvas.strokeStyle = this.borderColor;
+            canvas.lineWidth = this.borderWidth;
+            canvas.strokeRect(0, 0, this.width, this.height);
+            
+            canvas.restore();
+        }
+    });
+    
+    /**
+     * @property    value
+     * 値
+     */
+    tm.ui.Gauge.prototype.accessor("value", {
+        get: function() {
+            return this._value;
+        },
+        set: function(v) {
+            this.setValue(v);
+        },
+    });
+
+
+    /**
+     * @property    realValue
+     * 値
+     */
+    tm.ui.Gauge.prototype.accessor("realValue", {
+        get: function () {
+            return this._realValue;
+        },
+        set: function (v) {
+            this.setValue(v);
+        },
+    });
+
+    /**
+     * @property    percent
+     * パーセント
+     */
+    tm.ui.Gauge.prototype.accessor("percent", {
+        get: function() {
+            return this.getPercent();
+        },
+        set: function(v) {
+            this.setPercent(v);
+        },
+    });
+
+    /**
+     * @property    percent
+     * パーセント
+     */
+    tm.ui.Gauge.prototype.accessor("realPercent", {
+        get: function () {
+            return this.getRealPercent();
+        },
+        set: function (v) {
+            this.setRealPercent(v);
+        },
+    });
+    
+    
+    /**
+     * @property    ratio
+     * 比率
+     */
+    tm.ui.Gauge.prototype.accessor("ratio", {
+        get: function() {
+            return this.getRatio();
+        },
+        set: function(v) {
+            this.setRatio(v);
+        },
+    });
+
+    /**
+     * @property    ratio
+     * 比率
+     */
+    tm.ui.Gauge.prototype.accessor("realRatio", {
+        get: function () {
+            return this.getRealRatio();
+        },
+        set: function (v) {
+            this.setRatio(v);
+        },
+    });
+    
+})();
+
+
+;(function() {
+    
+    /**
+     * @class tm.ui.FlatGauge
+     * ゲーム用ゲージクラス
+     * @extends tm.ui.Gauge
+     */
+    tm.define("tm.ui.FlatGauge", {
+        superClass: "tm.ui.Gauge",
+        
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            this.superInit(param);
+        },
+        
+        draw: function(canvas) {
+            canvas.save();
+            
+            canvas.save();
+            
+            canvas.roundRect(0, 0, this.width, this.height, this.height/2);
+            canvas.clip();
+            
+            // bg
+            canvas.fillStyle = this.bgColor;
+            canvas.fillRect(0, 0, this.width, this.height);
+            
+            // bar
+            canvas.fillStyle = this.color;
+            canvas.fillRect(0, 0, this.width*this.getRatio(), this.height);
+            
+            canvas.restore();
+            
+            // border
+            canvas.strokeStyle = this.borderColor;
+            canvas.lineWidth = this.borderWidth;
+            canvas.strokeRoundRect(0, 0, this.width, this.height, this.height/2);
+            
+            canvas.restore();
+        },
+    });
+    
+})();
+
+
+
+;(function() {
+    
+    /**
+     * @class tm.ui.GlossyGauge
+     * ゲーム用ゲージクラス
+     * @extends tm.ui.Gauge
+     */
+    tm.define("tm.ui.GlossyGauge", {
+        superClass: "tm.ui.Gauge",
+        
+        init: function(param) {
+            param = param || {};
+            param.borderWidth = param.borderWidth || 2;
+            this.superInit(param);
+        },
+        
+        /**
+         * @constructor
+         */
+        draw: function(c) {
+            c.save();
+            
+            // clip
+            c.roundRect(0, 0, this.width, this.height, this.height/2);
+            c.clip();
+            
+            // bg
+            c.fillStyle = this.bgColor;
+            c.fillRect(0, 0, this.width, this.height);
+            
+            // bar
+            c.fillStyle = this.color;
+            c.fillRect(0, 0, this.width*this.getRatio(), this.height);
+            var grad = tm.graphics.LinearGradient(0, 0, 0, this.height);
+            grad.addColorStop(0.0,  "rgba(255,255,255,0.9)");
+            grad.addColorStop(0.5,  "rgba(255,255,255,0.5)");
+            grad.addColorStop(0.51, "rgba(255,255,255,0.2)");
+            grad.addColorStop(1.0,  "rgba(255,255,255,0.0)");
+            c.setGradient(grad);
+            c.fillRect(0, 0, this.width*this.getRatio(), this.height);
+            
+            c.restore();
+            
+            // border
+            c.lineWidth = this.borderWidth;
+            c.strokeStyle = this.borderColor;
+            c.strokeRoundRect(0, 0, this.width, this.height, this.height/2);
+        },
+    });
+    
+})();
+
+
+
+
+;(function() {
+    
+    /**
+     * @class tm.ui.LabelArea
+     * @extends tm.display.Shape
+     * ラベルエリアクラス
+     */
+    tm.define("tm.ui.LabelArea", {
+        superClass: "tm.display.Shape",
+        
+        init: function(param) {
+            param = param || {};
+            this.superInit(param.width || 150, param.height || 60);
+            this.canvas.clearColor("red");
+            this.$extend({
+                mode:         param.mode       || "horizon",
+                _fillStyle:   param.fillStyle  || "#aaa",
+                _bgColor:     param.bgColor    || "transparent",
+                _fontSize:    param.fontSize   || 24,
+                _fontFamily:  param.fontFamily || "'Consolas', 'Monaco', 'ＭＳ ゴシック'",
+                _fontWeight:  param.fontWeight || "",
+                lineSpace:    param.lineSpace  || 1, // 行間, 文字サイズ(px)に対する倍率
+            });
+            this._updateFont();
+            this.setText(param.text || "こんにちは,世界!");
+        },
+        
+        setText: function(text) {
+            if (this._text === text) { return ; }
+            
+            this._text =  text;
+            
+            this._renderText();
+        },
+        
+        _renderText: function() {
+            this.canvas.width  =this.width;
+            this.canvas.height =this.height;
+            
+            this.canvas.clearColor(this.bgColor);
+            
+            this.canvas.font = this.fontStyle;
+            this.canvas.fillStyle = this.fillStyle;
+            this.canvas.fillLabelArea({
+                text: this._text,
+                x: 0,
+                y: 0,
+                width: this.width,
+                height: this.height,
+                mode: this.mode,
+                lineSpace: this.lineSpace,
+            });
+        },
+
+        /**
+         * @private
+         */
+        _updateFont: function() {
+            this.fontStyle = "{fontWeight} {fontSize}px {fontFamily}".format(this);
+            if (this.text) {
+                this._renderText();
+            }
+        },
+    });
+    
+    
+    /**
+     * @property    text
+     * 文字
+     */
+    tm.ui.LabelArea.prototype.accessor("text", {
+        "get": function() { return this._text; },
+        "set": function(v){
+            this.setText(v);
+        }
+    });
+    
+    /**
+     * @property    fontSize
+     * フォントサイズ
+     */
+    tm.ui.LabelArea.prototype.accessor("fontSize", {
+        "get": function() { return this._fontSize; },
+        "set": function(v){ this._fontSize = v; this._updateFont(); }
+    });
+    
+    /**
+     * @property    fontFamily
+     * フォント
+     */
+    tm.ui.LabelArea.prototype.accessor("fontFamily", {
+        "get": function() { return this._fontFamily; },
+        "set": function(v){ this._fontFamily = v; this._updateFont(); }
+    });
+    
+    /**
+     * @property    fontWeight
+     */
+    tm.ui.LabelArea.prototype.accessor("fontWeight", {
+        "get": function() { return this._fontWeight; },
+        "set": function(v) {
+            this._fontWeight = v; this._updateFont();
+        },
+    });
+    
+    /**
+     * @property    fillStyle
+     */
+    tm.ui.LabelArea.prototype.accessor("fillStyle", {
+        "get": function() { return this._fillStyle; },
+        "set": function(v) {
+            this._fillStyle = v; this._updateFont();
+        },
+    });
+    
+    /**
+     * @property    bgColor
+     */
+    tm.ui.LabelArea.prototype.accessor("bgColor", {
+        "get": function() { return this._bgColor; },
+        "set": function(v) {
+            this._bgColor = v; this._updateFont();
+        },
+    });
+
+    /**
+     * @property    width
+     * dummy
+     */
+    tm.ui.LabelArea.prototype.accessor("width", {
+        "get": function() { return this._width; },
+        "set": function(v){
+            this._width = v;
+            if (this.text) {
+                this._renderText();
+            }
+        }
+    });
+    
+    /**
+     * @property    height
+     * dummy
+     */
+    tm.ui.LabelArea.prototype.accessor("height", {
+        "get": function() { return this._height; },
+        "set": function(v){
+            this._height = v;
+            if (this.text) {
+                this._renderText();
+            }
+        }
+    });
+
+    
+})();
+
+
+;(function() {
+
+    tm.game = tm.game || {};
+
+
+    tm.game.setup = function(param) {
+        param.$safe({
+            query: "#world",
+            title: "Title",
+            background: "rgba(250, 250, 250, 1.0)",
+            width: 640,
+            height: 960,
+            startLabel: 'title',
+            fitting: true,
+            fps: 30,
+            assets: window.ASSETS || null,
+        });
+
+        tm.globalize();
+
+        this.expand(param);
+
+        var scenes = [
+            {
+                className: "SplashScene",
+                arguments: {
+                    width: param.width,
+                    height: param.height,
+                },
+                label: "splash",
+                nextLabel: "title",
+            },
+            {
+                className: "TitleScene",
+                arguments: {
+                    title: param.title,
+                    width: param.width,
+                    height: param.height,
+                },
+                label: "title",
+            },
+            {
+                className: "GameScene",
+                label: "game",
+                nextLabel: "result",
+            },
+            {
+                className: "ResultScene",
+                arguments: {
+                    message: param.title,
+                    width: param.width,
+                    height: param.height,
+                },
+                label: "result",
+                nextLabel: "title",
+            },
+
+            {
+                className: "PauseScene",
+                label: "pause",
+            },
+        ];
+
+        tm.main(function() {
+            var app = tm.app.CanvasApp(param.query);    // 生成
+            app.resize(SCREEN_WIDTH, SCREEN_HEIGHT);    // サイズ(解像度)設定
+            if (param.fitting) { app.fitWindow(); }     // 自動フィッティング有効
+            app.background = param.background;          // 背景色
+            app.fps = param.fps;                        // fps
+
+            tm.game.app = app;
+
+            if (param.assets) {
+                var loading = tm.game.LoadingScene({
+                    assets: param.assets,
+                    width: SCREEN_WIDTH,
+                    height: SCREEN_HEIGHT,
+                });
+                loading.onload = function() {
+                    app.replaceScene(tm.game.ManagerScene({
+                        startLabel: param.startLabel,
+                        scenes: scenes,
+                    }));
+                };
+                app.replaceScene(loading);
+            }
+            else {
+                app.replaceScene(tm.game.ManagerScene({
+                    startLabel: param.startLabel,
+                    scenes: scenes,
+                }));
+            }
+
+            app.run();
+        });
+    };
+
+    tm.game.expand = function(param) {
+        tm.global.$extend({
+            SCREEN_WIDTH: param.width,
+            SCREEN_HEIGHT: param.height,
+            SCREEN_CENTER_X: param.width/2,
+            SCREEN_CENTER_Y: param.height/2,
+            SCREEN_GRID_X: GridSystem(param.width, 16),
+            SCREEN_GRID_Y: GridSystem(param.height, 16),
+            QUERY: tm.util.QueryString.parse(location.search.substr(1)),
+        });
+
+    };
+
+})();
+
+/*
+ * TitleScene
+ */
+
+    
+(function() {
+
+    tm.define("tm.game.TitleScene", {
+        superClass: "tm.app.Scene",
+
+        init: function(param) {
+            this.superInit();
+
+            param = {}.$extend(tm.game.TitleScene.default, param);
+            this.param = param;
+
+            this.fromJSON({
+                children: {
+                    bg: {
+                        type: "tm.display.RectangleShape",
+                        init: {
+                            width: param.width,
+                            height: param.height,
+                            fillStyle: param.bgColor,
+                            strokeStyle: "transparent",
+                        },
+                        originX: 0,
+                        originY: 0,
+                    }
+                }
+            });
+
+            if (param.bgImage) {
+                this.fromJSON({
+                    children: {
+                        bgImage: {
+                            type: "tm.display.Sprite",
+                            init: [param.bgImage],
+                            originX: 0,
+                            originY: 0,
+                        }
+                    }
+                });
+            }
+
+            this.fromJSON({
+                children: {
+                    titleLabel: {
+                        type: "Label", name: "titleLabel",
+                        text: param.title,
+                        x: this._toGridX(6),
+                        y: this._toGridY(3),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                        align: "center",
+                        baseline: "middle",
+                    },
+                    messageLabel: {
+                        type: "Label", name: "nextLabel",
+                        text: param.message || "",
+                        x: this._toGridX(6),
+                        y: this._toGridY(6),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize*0.36,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                        align: "center",
+                        baseline: "middle",
+                    },
+                    touchLabel: {
+                        type: "Label", name: "nextLabel",
+                        text: "TOUCH START",
+                        x: this._toGridX(6),
+                        y: this._toGridY(9),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize*0.4,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                        align: "center",
+                        baseline: "middle",
+                    }
+                }
+            });
+            
+            this.touchLabel.tweener
+                .fadeOut(500)
+                .fadeIn(1000)
+                .setLoop(true);
+
+            this.autopop = param.autopop;
+        },
+
+        _toGridX: function(index) {
+            return this.param.width/12*index;
+        },
+
+        _toGridY: function(index) {
+            return this.param.height/12*index;
+        },
+
+        onpointingstart: function() {
+            this.flare("finish");
+
+            if (this.autopop) {
+                this.app.popScene();
+            }
+        },
+    });
+
+    tm.game.TitleScene.default = {
+        title: "Time is money",
+        message: "",
+        fontSize: 72,
+        fontColor: "#444",
+        width: 640,
+        height: 960,
+        bgColor: "rgb(240,240,240)",
+        bgImage: null,
+        autopop: true,
+    };
+
+})();
+
+
+/*
+ * ResultScene
+ */
+
+    
+(function() {
+
+    tm.define("tm.game.ResultScene", {
+        superClass: "tm.app.Scene",
+
+        init: function(param) {
+            this.superInit();
+
+            param = {}.$extend(tm.game.ResultScene.default, param);
+            this.param = param;
+
+            var userData = this._getUserData();
+            var bestScore = (userData.bestScore) ? userData.bestScore : 0;
+            var highScoreFlag = (param.score > bestScore);
+
+            if (param.record) {
+                if (highScoreFlag) {
+                    userData.bestScore = param.score;
+                    this._record(userData);
+                }
+            }
+
+            this.fromJSON({
+                children: {
+                    bg: {
+                        type: "tm.display.RectangleShape",
+                        init: {
+                            width: param.width,
+                            height: param.height,
+                            fillStyle: param.bgColor,
+                            strokeStyle: "transparent",
+                        },
+                        originX: 0,
+                        originY: 0,
+                    }
+                }
+            });
+
+            if (param.bgImage) {
+                this.fromJSON({
+                    children: {
+                        bgImage: {
+                            type: "tm.display.Sprite",
+                            init: [param.bgImage],
+                            originX: 0,
+                            originY: 0,
+                        }
+                    }
+                });
+            }
+
+            var baseLabelParam = {
+                type: "Label",
+                fillStyle: param.fontColor,
+                fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+            };
+
+            this.fromJSON({
+                children: {
+                    scoreText: baseLabelParam.$extend({
+                        text: "score",
+                        x: this._toGridX(4),
+                        y: this._toGridY(3),
+                        fontSize: param.fontSize*0.5,
+                    }),
+                    scoreLabel: {
+                        type: "Label",
+                        text: param.score,
+                        x: this._toGridX(4),
+                        y: this._toGridY(4),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                    },
+                    bestText: {
+                        type: "Label",
+                        text: "best",
+                        x: this._toGridX(8),
+                        y: this._toGridY(3),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize*0.5,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                    },
+                    bestLabel: {
+                        type: "Label",
+                        text: bestScore,
+                        x: this._toGridX(8),
+                        y: this._toGridY(4),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                    },
+
+                    newRecordText: {
+                        type: "Label",
+                        text: "new record!",
+                        x: this._toGridX(6),
+                        y: this._toGridY(6),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize*0.5,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                        visible: false,
+                    },
+
+                    messageText: {
+                        type: "Label",
+                        text: param.message,
+                        x: this._toGridX(6),
+                        y: this._toGridY(7),
+                        fillStyle: param.fontColor,
+                        fontSize: param.fontSize*0.5,
+                        fontFamily: "'Helvetica-Light' 'Meiryo' sans-serif",
+                    },
+
+                    shareButton: {
+                        type: "FlatButton",
+                        init: {
+                            text: "Share",
+                            width: 200,
+                            fillStyle: "hsl(240, 100%, 64%)",
+                        },
+                        x: this._toGridX(4),
+                        y: this._toGridY(9),
+                    },
+                    backButton: {
+                        type: "FlatButton",
+                        init: {
+                            text: "Back",
+                            width: 200,
+                            fillStyle: "hsl(240, 80%, 0%)",
+                        },
+                        x: this._toGridX(8),
+                        y: this._toGridY(9),
+                    }
+                }
+            });
+
+            // setup tweet
+            var text = "SCORE: {score}, {message}".format(param);
+            var twitterURL = tm.social.Twitter.createURL({
+                type    : "tweet",
+                text    : text,
+                hashtags: param.hashtags,
+                url     : param.url, // or window.document.location.href
+            });
+            this.shareButton.onclick = function() {
+                window.open(twitterURL, 'share window', 'width=400, height=300');
+            };
+
+            // setup back
+            this.backButton.onpointingstart = this._back.bind(this);
+            this.autopop = param.autopop;
+
+            // setup record
+            if (highScoreFlag) {
+                this.newRecordText.show();
+                this.newRecordText.tweener
+                    .set({alpha:0.0})
+                    .fadeIn(2000)
+                    .setLoop(true)
+                    ;
+            }
+        },
+
+        _getUserData: function() {
+            var key = location.pathname.toCRC32();
+            var data = localStorage.getItem(key);
+            return (data) ? JSON.parse(data) : {};
+        },
+
+        _record: function(data) {
+            var key = location.pathname.toCRC32();
+            var dataString = JSON.stringify(data);
+            localStorage.setItem(key, dataString);
+            return this;
+        },
+
+        _toGridX: function(index) {
+            return this.param.width/12*index;
+        },
+
+        _toGridY: function(index) {
+            return this.param.height/12*index;
+        },
+
+        _back: function() {
+            this.flare("finish");
+
+            if (this.autopop) {
+                this.app.popScene();
+            }
+        },
+    });
+
+    tm.game.ResultScene.default = {
+        score: 0,
+        message: "this is tmlib.js project.",
+        hashtags: "tmlibjs,game",
+        related: "tmlib.js tmlife javascript",
+        url: "http://phi-jp.github.io/tmlib.js/",
+
+        width: 640,
+        height: 960,
+        fontColor: "#444",
+        fontSize: 90,
+        bgColor: "rgba(255,255,255, 0.9)",
+        bgImage: null,
+        record: true,
+        autopop: true,
+    };
+
+})();
+
+
+/*
+ * loadingscene.js
+ */
+
+
+;(function() {
+    
+    var DEFAULT_PARAM = {
+        width: 465,
+        height: 465,
+        bgColor: "transparent",
+    };
+    
+    tm.define("tm.game.LoadingScene", {
+        superClass: "tm.app.Scene",
+        
+        init: function(param) {
+            this.superInit();
+            
+            this.param = param = {}.$extend(DEFAULT_PARAM, param);
+
+            this.fromJSON({
+                children: {
+                    stage: {
+                        type: "tm.display.CanvasElement",
+                    },
+                }
+            });
+
+            this.stage.fromJSON({
+                children: {
+                    bg: {
+                        type: "tm.display.Shape",
+                        init: {
+                            width: param.width,
+                            height: param.height,
+                        },
+                        originX: 0,
+                        originY: 0,
+                    },
+                    piyoLayer: {
+                        type: "tm.display.CanvasElement",
+                    },
+                    label: {
+                        type: "tm.display.Label",
+                        text: "LOADING",
+                        x: param.width/2,
+                        y: param.height/2-20,
+                        align: "center",
+                        baseline: "middle",
+                        fontSize: 46,
+                        shadowBlur: 4,
+                        shadowColor: "hsl(190, 100%, 50%)",
+                    },
+                    // piyo: {
+                    //     type: "tm.display.Shape",
+                    //     init: [84, 84],
+                    // },
+                    bar: {
+                        type: "tm.ui.Gauge",
+                        init: [{
+                            width: param.width,
+                            height: 10,
+                            color: "hsl(200, 100%, 80%)",
+                            bgColor: "transparent",
+                            borderColor: "transparent",
+                            borderWidth: 0,
+                        }],
+                        x: 0,
+                        y: 0,
+                    },
+                }
+            });
+            
+            // bg
+            var bg = this.stage.bg;
+            bg.canvas.clearColor(param.bgColor);
+
+            // label
+            var label = this.stage.label;
+            label.tweener
+                .to({alpha:1}, 1000)
+                .to({alpha:0.5}, 1000)
+                .setLoop(true)
+
+            // bar
+            var bar = this.stage.bar;
+            bar.animationFlag = false;
+            bar.value = 0;
+            bar.animationFlag = true;
+            bar.animationTime = 100;
+            
+            // ひよこさん
+            this._createHiyoko(param).addChildTo(this.stage.piyoLayer);
+
+            // load
+            var stage = this.stage;
+            stage.alpha = 0.0;
+            stage.tweener.clear().fadeIn(100).call(function() {
+                if (param.assets) {
+                    var loader = tm.asset.Loader();
+                    loader.onload = function() {
+                        stage.tweener.clear().wait(200).fadeOut(200).call(function() {
+                            if (param.nextScene) {
+                                this.app.replaceScene(param.nextScene());
+                            }
+                            var e = tm.event.Event("load");
+                            this.fire(e);
+
+                            if (param.autopop == true) {
+                                this.app.popScene();
+                            }
+                        }.bind(this));
+                    }.bind(this);
+                    
+                    loader.onprogress = function(e) {
+                        // update bar
+                        bar.value = e.progress*100;
+
+                        // dispatch event
+                        var event = tm.event.Event("progress");
+                        event.progress = e.progress;
+                        this.fire(event);
+                    }.bind(this);
+                    
+                    loader.load(param.assets);
+                }
+            }.bind(this));
+        },
+
+        onpointingstart: function(app) {
+            // ひよこさん生成
+            var p = app.pointing;
+            var piyo = this._createHiyoko(this.param).addChildTo(this.stage.piyoLayer);
+            piyo.x = p.x;
+            piyo.y = p.y;
+        },
+
+        _createHiyoko: function(param) {
+            // ひよこさん
+            var piyo = tm.display.Shape({
+                width: 84,
+                height: 84,
+            });
+            piyo.x = tm.util.Random.randint(0, param.width);
+            piyo.y = tm.util.Random.randint(0, param.height);
+            piyo.canvas.setColorStyle("white", "yellow").fillCircle(42, 42, 32);
+            piyo.canvas.setColorStyle("white", "black").fillCircle(27, 27, 2);
+            piyo.canvas.setColorStyle("white", "brown").fillRect(40, 70, 4, 15).fillTriangle(0, 40, 11, 35, 11, 45);
+            piyo.dir = tm.geom.Vector2.random(0, 360, 4);
+            var rect = tm.geom.Rect(0, 0, param.width, param.height);
+            rect.padding(42);
+            piyo.update = function(app) {
+                this.position.add(this.dir);
+
+                if (this.x < rect.left) {
+                    this.x = rect.left;
+                    this.dir.x*=-1;
+                }
+                else if (this.x > rect.right) {
+                    this.x = rect.right;
+                    this.dir.x*=-1;
+                }
+                if (this.y < rect.top) {
+                    this.y = rect.top;
+                    this.dir.y*=-1;
+                }
+                else if (this.y > rect.bottom) {
+                    this.y = rect.bottom;
+                    this.dir.y*=-1;
+                }
+
+                if (this.dir.x<0) {
+                    this.rotation -= 7;
+                    this.scaleX = 1;
+                }
+                else {
+                    this.rotation += 7;
+                    this.scaleX = -1;
+                }
+
+                // // 向き更新
+                // if (app.pointing.getPointingStart()) {
+                //     var p = app.pointing.position;
+                //     var v = tm.geom.Vector2.sub(p, this.position);
+                //     this.dir = v.normalize().mul(4);
+                // }
+
+            };
+
+            return piyo;
+        },
+    });
+    
+})();
+
+
+
+
+
+
+/*
+ * splash
+ */
+
+;(function() {
+    var SPLASH_IMAGE_PATH = "https://files.gitter.im/phi-jp/tmlib.js/t5F7/splash.png";
+
+    tm.define("SplashScene", {
+        superClass: "tm.app.Scene",
+
+        init: function(param) {
+            this.superInit();
+
+            this.param = param;
+
+            this.splashImage = tm.asset.Texture(param.path || SPLASH_IMAGE_PATH);
+            this.splashImage.onload = this._init.bind(this);
+        },
+
+        _init: function() {
+            var width = this.param.width;
+            var height = this.param.height;
+            
+            tm.display.Shape({
+                width: width,
+                height: height,
+                bgColor: "white"
+            }).setOrigin(0, 0).addChildTo(this);
+
+            tm.display.Sprite(this.splashImage, width, height)
+                .setOrigin(0, 0)
+                .setAlpha(0)
+                .addChildTo(this)
+                .tweener
+                    .clear()
+                    .wait(250)
+                    .fadeIn(500)
+                    .wait(1000)
+                    .fadeOut(500)
+                    .wait(250)
+                    .call(function() {
+                        this.app.popScene();
+                    }.bind(this));
+        },
+    });
+})();
+
+
+/*
+ *
+ */
+
+;(function() {
+
+    /**
+     * @class tm.game.ManagerScene
+     * マネージャーシーン
+     * @extends tm.app.Scene
+     */
+    tm.define("tm.game.ManagerScene", {
+        superClass: "tm.app.Scene",
+
+        /**
+         * @constructor
+         */
+        init: function(param) {
+            this.superInit();
+
+            this.setScenes(param.scenes);
+
+            this.on("enter", function() {
+                this.gotoScene(param.startLabel || 0);
+            }.bind(this));
+
+            this.on("resume", this.onnext.bind(this));
+
+            this.commonArguments = {};
+        },
+
+        /**
+         * scenes をセット
+         */
+        setScenes: function(scenes) {
+            this.scenes = scenes;
+            this.sceneIndex = 0;
+
+            return this;
+        },
+
+        /**
+         * index(or label) のシーンへ飛ぶ
+         */
+        gotoScene: function(index, args) {
+            index = (typeof index == 'string') ? this.labelToIndex(index) : index||0;
+
+            // イベント発火
+            var e = tm.event.Event("prepare");
+            this.fire(e);
+
+            var data = this.scenes[index];
+            var klass = tm.using(data.className);
+            var initArguments = data.arguments;
+            var initArguments = {}.$extend(initArguments, args);
+            var scene = klass.call(null, initArguments);
+            if (!scene.nextLabel) {
+                scene.nextLabel = data.nextLabel;
+            }
+            if (!scene.nextArguments) {
+                scene.nextArguments = data.nextArguments;
+            }
+            this.app.pushScene(scene);
+
+            this.sceneIndex = index;
+            this.currentScene = scene;
+
+            // イベント発火
+            var e = tm.event.Event("goto");
+            e.scene = scene;
+            this.fire(e);
+
+            return this;
+        },
+
+        /**
+         * 次のシーンへ飛ぶ
+         */
+        gotoNext: function(args) {
+            var data = this.scenes[this.sceneIndex];
+            var nextIndex = null;
+
+            // 次のラベルが設定されていた場合
+            if (data.nextLabel) {
+                nextIndex = this.labelToIndex(data.nextLabel);
+            }
+            // 次のシーンに遷移
+            else if (this.sceneIndex+1 < this.scenes.length) {
+                nextIndex = this.sceneIndex+1;
+            }
+
+            if (nextIndex !== null) {
+                this.gotoScene(nextIndex, args);
+            }
+            else {
+                this.fire(tm.event.Event("finish"));
+            }
+
+            return this;
+        },
+
+        /**
+         * シーンインデックスを取得
+         */
+        getCurrentIndex: function() {
+            return this.sceneIndex;
+        },
+
+        /**
+         * シーンラベルを取得
+         */
+        getCurrentLabel: function() {
+            return this.scenes[this.sceneIndex].label;
+        },
+
+        /**
+         * ラベルからインデックスに変換
+         */
+        labelToIndex: function(label) {
+            var data = this.scenes.filter(function(data) {
+                return data.label == label;
+            })[0];
+
+            return this.scenes.indexOf(data);
+        },
+
+        /**
+         * インデックスからラベルに変換
+         */
+        indexToLabel: function(index) {
+            return this.scenes[index].label;
+        },
+
+        onnext: function(e) {
+            var nextLabel = e.prevScene.nextLabel;
+            var nextArguments = e.prevScene.nextArguments;
+            if (nextLabel) {
+                this.gotoScene(nextLabel, nextArguments);
+            }
+            else {
+                this.gotoNext(nextArguments);
+            }
+        },
+    });
+
+})();
+
+
+;(function() {
+
+	tm.define("tm.game.NumericalInputScene", {
+		superClass: "tm.app.Scene",
+
+		init: function(param) {
+			this.superInit();
+
+			this.fromJSON({
+				children: {
+					inputLabel: {
+						type: "tm.display.Label",
+						fillStyle: "white",
+						text: "",
+						fontSize: 64,
+						x: 320,
+						y: 120,
+					},
+					buttonGroup: {
+						type: "tm.display.CanvasElement",
+					},
+				},
+			});
+
+
+			[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, 'OK'].each(function(n, i) {
+				var button = this._createButton(n.toString()).addChildTo(this.buttonGroup);
+				var xIndex = i%3;
+				var yIndex = (i/3)|0;
+				button.x = 190*xIndex + 130;
+				button.y = 177*yIndex + 280;
+			}, this);
+
+			var self = this;
+			var buttons = this.buttonGroup.children;
+			buttons.each(function(button) {
+				button.setInteractive(true).setBoundingType("circle");
+				button.radius = 145/2;
+				button.onpointingstart = function() {
+					if (this.label.text == 'OK') {
+						var e = tm.event.Event("decided");
+						e.value = Number(self.inputLabel.text);
+						self.fire(e);
+					}
+					else if (this.label.text == 'C') {
+						var e = tm.event.Event("push");
+						self.inputLabel.text = "";
+						self.flare("clear");
+					}
+					else {
+						self.inputLabel.text += this.label.text;
+						self.flare("push", {
+							select: this.label.text,
+						});
+					}
+				}
+			});
+		},
+
+		_createButton: function(n) {
+			var button = tm.display.CanvasElement();
+
+			button.fromJSON({
+				children: {
+					bg: {
+						type: "tm.display.CircleShape",
+						init: [145, 145, {
+							fillStyle: "transparent",
+							strokeStyle: "white",
+						}],
+					},
+					label: {
+						type: "tm.display.Label",
+						text: n,
+						fontSize: 64,
+						fillStyle: "white",
+					},
+				},
+			});
+
+			return button;
+		},
+	});
+
+})();
+
+/*
+ * countscene.js
+ */
+
+;(function() {
+
+    tm.define("tm.game.CountScene", {
+        superClass: "tm.app.Scene",
+
+        init: function(param) {
+            this.superInit();
+
+            param = param.$safe({
+                width: 640,
+                height: 960,
+                bgColor: '#444',
+                count: 3,
+                autopop: true,
+                fontSize: 180,
+            });
+
+            param = param || {};
+
+            this.fromJSON({
+                children: {
+                    bg: {
+                        type: "tm.display.Shape",
+                        width: param.width,
+                        height: param.height,
+                        bgColor: param.bgColor,
+                        originX: 0,
+                        originY: 0,
+                    },
+                    label: {
+                        type: "tm.display.Label",
+                        fillStyle: "white",
+                        fontSize: param.fontSize,
+                        x: SCREEN_CENTER_X,
+                        y: SCREEN_CENTER_Y,
+                    },
+                }
+            });
+
+            if (param.count instanceof Array) {
+                this.countList = param.count.reverse();
+            }
+            else {
+                this.countList = Array.range(1, param.count+1);
+            }
+            this.counter = this.countList.length;
+            this.autopop = param.autopop;
+            this._updateCount();
+        },
+
+        _updateCount: function() {
+            var endFlag = this.counter <= 0;
+            var index = --this.counter;
+
+            this.label.text = this.countList[index];
+
+            this.label.scale.set(1, 1);
+            this.label.tweener
+                .clear()
+                .to({
+                    scaleX: 1,
+                    scaleY: 1,
+                    alpha: 1,
+                }, 250)
+                .wait(500)
+                .to({
+                    scaleX: 1.5,
+                    scaleY: 1.5,
+                    alpha: 0.0
+                }, 250)
+                .call(function() {
+                    if (this.counter <= 0) {
+                        this.flare('finish');
+                        if (this.autopop) {
+                            this.app.popScene();
+                        }
+                    }
+                    else {
+                        this._updateCount();
+                    }
+                }, this);
+        },
+
+    });
+
+})();
+/*
+ * three.js
+ */
+
+tm.three = tm.three || {};
+
+
+(function() {
+
+    if (!tm.global.THREE) return ;
+    
+    /**
+     * @class tm.three.ThreeApp
+     * 3Dライブラリ - Three.jsをtmlib.jsで対応
+     * @extends tm.app.BaseApp
+     */
+    tm.three.ThreeApp = tm.createClass({
+        superClass: tm.app.BaseApp,
+        
+        /** canvas */
+        canvas      : null,
+        /** canvas */
+        background  : null,
+        /** @private canvas */
+        _scenes      : null,
+        /** @private canvas */
+        _sceneIndex  : 0,
+        
+        /**
+         * @constructor
+         */
+        init: function(canvas) {
+            if (canvas instanceof HTMLCanvasElement) {
+                this.element = canvas;
+            }
+            else if (typeof canvas == "string") {
+                this.element = document.querySelector(canvas);
+            }
+            else {
+                this.element = document.createElement("canvas");
+                document.body.appendChild(this.element);
+            }
+
+            // 親の初期化
+            this.superInit(this.element);
+
+            // レンダラーを生成
+//            this.renderer = new THREE.CanvasRenderer({ canvas: this.element });
+            this.renderer = new THREE.WebGLRenderer({ canvas: this.element, clearColor: 0x222222, clearAlpha: 1.0 });
+
+            this.renderer.setSize(this.element.width, this.element.height);
+            
+            // シーン周り
+            this._scenes = [ tm.three.Scene() ];
+        },
+        
+        /**
+         * @TODO ?
+         */
+        resize: function(width, height) {
+            this.width = width;
+            this.height= height;
+            this.renderer.setSize(this.width, this.height);
+            
+            return this;
+        },
+
+        /**
+         * @TODO ?
+         */
+        resizeWindow: function() {
+            this.width = innerWidth;
+            this.height= innerHeight;
+            this.renderer.setSize(this.width, this.height);
+            
+            return this;
+        },
+        
+        /**
+         * 画面にフィットさせる
+         */
+        fitWindow: function(everFlag) {
+            // 画面にフィット
+            var _fitFunc = function() {
+                everFlag = everFlag === undefined ? true : everFlag;
+                var e = this.element;
+                var s = e.style;
+                
+                s.position = "absolute";
+                s.left = "0px";
+                s.top  = "0px";
+                
+                var rateWidth = e.width/window.innerWidth;
+                var rateHeight= e.height/window.innerHeight;
+                var rate = e.height/e.width;
+                
+                if (rateWidth > rateHeight) {
+                    s.width  = innerWidth+"px";
+                    s.height = innerWidth*rate+"px";
+                }
+                else {
+                    s.width  = innerHeight/rate+"px";
+                    s.height = innerHeight+"px";
+                }
+            }.bind(this);
+            
+            // 一度実行しておく
+            _fitFunc();
+            // リサイズ時のリスナとして登録しておく
+            if (everFlag) {
+                window.addEventListener("resize", _fitFunc, false);
+            }
+            
+            // マウスとタッチの座標更新関数をパワーアップ
+            this.mouse._mousemove = this.mouse._mousemoveScale;
+            this.touch._touchmove = this.touch._touchmoveScale;
+        },
+
+        /**
+         * @TODO ?
+         * @private
+         */
+        _draw: function() {
+            // 描画は全てのシーン行う
+            for (var i=0, len=this._scenes.length; i<len; ++i) {
+                this.renderer.render(this.currentScene, this.currentScene.camera);
+            }
+        },
+        
+    });
+    
+    
+    /**
+     * @property    width
+     * 幅
+     */
+    tm.three.ThreeApp.prototype.accessor("width", {
+        "get": function()   { return this.element.width; },
+        "set": function(v)  { this.element.width = v; }
+    });
+    
+    /**
+     * @property    height
+     * 高さ
+     */
+    tm.three.ThreeApp.prototype.accessor("height", {
+        "get": function()   { return this.element.height; },
+        "set": function(v)  { this.element.height = v; }
+    });
+    
+})();
+
+
+(function() {
+    
+    if (!tm.global.THREE) return ;
+
+    /**
+     * @class tm.three.Element
+     * @TODO ?
+     */
+    tm.three.Element = tm.createClass({
+        superClass: THREE.Object3D,
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            // THREE.Object3D の初期化 
+            THREE.Object3D.call(this);
+
+            tm.event.EventDispatcher.prototype.init.call(this);
+        },
+        
+        /**
+         * 更新処理
+         */
+        update: function() {},
+
+        /**
+         * @TODO ?
+         * @private
+         */
+        _update: function(app) {
+            // 更新有効チェック
+            if (this.awake == false) return ;
+            
+            this.update(app);
+            
+            var e = tm.event.Event("enterframe");
+            e.app = app;
+            this.dispatchEvent(e);
+            // 子供達も実行
+            if (this.children.length > 0) {
+                var tempChildren = this.children.slice();
+                for (var i=0,len=tempChildren.length; i<len; ++i) {
+                    var child = tempChildren[i];
+                    child._update && child._update(app);
+                }
+                //this.execChildren(arguments.callee, app);
+            }
+        },
+    });
+    
+    // tm.event.EventDispatcher を継承
+    tm.three.Element.prototype.$safe(tm.event.EventDispatcher.prototype);
+    
+})();
+
+(function() {
+    
+    if (!tm.global.THREE) return ;
+
+    /**
+     * @class tm.three.MeshElement
+     * @TODO ?
+     */
+    tm.three.MeshElement = tm.createClass({
+        superClass: THREE.Mesh,
+        
+        /**
+         * @constructor
+         */
+        init: function(geometry, material) {
+            material = material || new THREE.MeshNormalMaterial();
+            // THREE.Mesh の初期化
+            THREE.Mesh.call(this, geometry, material);
+
+            tm.three.Element.prototype.init.call(this);
+        },
+    });
+    
+    // tm.three.Element を継承
+    tm.three.MeshElement.prototype.$safe(tm.three.Element.prototype);
+
+    
+    /**
+     * @class tm.three.CubeElement
+     * @TODO ?
+     * @extends tm.three.MeshElement
+     */
+    tm.three.CubeElement = tm.createClass({
+        superClass: tm.three.MeshElement,
+
+        /**
+         * @constructor
+         */
+        init: function(width, height, depth) {
+            width  = width || 100;
+            height = height || 100;
+            depth  = depth || 100;
+
+            var geometry = new THREE.CubeGeometry(width, height, depth);
+            var material = new THREE.MeshNormalMaterial();
+
+            this.superInit(geometry, material);
+        }
+    });
+
+
+    /**
+     * @class tm.three.SphereElement
+     * @TODO ?
+     * @extends tm.three.MeshElement
+     */
+    tm.three.SphereElement = tm.createClass({
+        superClass: tm.three.MeshElement,
+
+        /**
+         * @constructor
+         */
+        init: function(radius, widthSegments, heightSegments) {
+            radius          = radius || 45;
+            widthSegments   = widthSegments || 16;
+            heightSegments  = heightSegments || 12;
+
+            var geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+            var material = new THREE.MeshNormalMaterial();
+
+            this.superInit(geometry, material);
+        }
+    });
+
+    /**
+     * @class tm.three.PlaneElement
+     * @TODO ?
+     * @extends tm.three.MeshElement
+     */
+    tm.three.PlaneElement = tm.createClass({
+        superClass: tm.three.MeshElement,
+
+        /**
+         * @constructor
+         */
+        init: function(width, height) {
+            var geometry = new THREE.PlaneGeometry(width, height);
+            var material = new THREE.MeshNormalMaterial();
+
+            this.superInit(geometry, material);
+        }
+    });
+
+
+    /**
+     * @class tm.three.FloorElement
+     * @TODO ?
+     * @extends tm.three.MeshElement
+     */
+    tm.three.FloorElement = tm.createClass({
+        superClass: tm.three.MeshElement,
+
+        /**
+         * @constructor
+         */
+        init: function(width, height) {
+            width  = width || 1000;
+            height = height || 1000;
+            var geometry = new THREE.PlaneGeometry(width, height);
+            var material = new THREE.MeshBasicMaterial();
+
+            this.superInit(geometry, material);
+
+            this.rotation.x = -Math.PI/2;
+            this._render();
+        },
+
+        /**
+         * @TODO ?
+         * @private
+         */
+        _render: function() {
+            var c = tm.graphics.Canvas();
+            c.resize(128, 128);
+            c.clearColor("#444");
+            c.setFillStyle("white");
+            c.fillRect(0, 0, 64, 64);
+            c.fillRect(64, 64, 64, 64);
+
+            var texture = new THREE.Texture(c.element);
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(10, 10);
+            texture.needsUpdate = true;
+            this.material.map = texture;
+        }
+    });
+
+    /**
+     * @class tm.three.TextElement
+     * @TODO ?
+     * @extends tm.three.MeshElement
+     */
+    tm.three.TextElement = tm.createClass({
+        superClass: tm.three.MeshElement,
+
+        /**
+         * @constructor
+         */
+        init: function(text, param) {
+            var geometry = new THREE.TextGeometry(text, param);
+            var material = new THREE.MeshNormalMaterial();
+
+            this.superInit(geometry, material);
+        }
+    });
+
+    /**
+     * @class tm.three.CanvasTexture
+     * @TODO ?
+     */
+    tm.three.CanvasTexture = tm.createClass({
+        superClass: THREE.Texture,
+
+        /** canvas */
+        canvas: null,
+        /** @property needsUpdate */
+
+        /**
+         * @constructor
+         */
+        init: function() {
+            this.canvas = tm.graphics.Canvas();
+
+            THREE.Texture.call(this, this.canvas.element);
+            this.needsUpdate = true;
+        }
+
+    });
+
+
+})();
+
+(function() {
+    
+    if (!tm.global.THREE) return ;
+
+    /**
+     * @class tm.three.Scene
+     * シーン
+     */
+    tm.three.Scene = tm.createClass({
+        superClass: THREE.Scene,
+        
+        /** @property camera    カメラ */
+        /** @property Projector プロジェクター */
+
+        /**
+         * @constructor
+         */
+        init: function(fov, aspect) {
+            fov = fov || 60;
+            aspect = aspect || 640/480;
+            // THREE.Scene の初期化
+            THREE.Scene.call(this);
+
+            // tm.three.Element を継承
+            tm.three.Element.prototype.init.call(this);
+
+            this.camera = new THREE.PerspectiveCamera(fov, aspect, 1, 10000);
+            this.camera.position.y = 100;
+            this.camera.position.z = 500;
+
+            this.projector = new THREE.Projector();
+        },
+
+        /**
+         * @TODO ?
+         */
+        intersect: function(objects) {
+            objects = objects || this.children;
+            var mouseX = this.app.pointing.x;
+            var mouseY = this.app.pointing.y;
+
+            mouseX = (mouseX/this.app.width) *2-1;
+            mouseY =-(mouseY/this.app.height)*2+1;
+
+            var vector = new THREE.Vector3(mouseX, mouseY, 0.5);
+            this.projector.unprojectVector(vector, this.camera);
+
+            var raycaster = new THREE.Raycaster(
+                this.camera.position, vector.sub(this.camera.position).normalize()
+            );
+
+            return raycaster.intersectObjects(objects);
+        }
+    });
+    
+    // tm.three.Element を継承
+    tm.three.Scene.prototype.$safe(tm.three.Element.prototype);
+})();
+
+
+
+
+
+/*
+ * sound.js
+ */
+
+tm.sound = tm.sound || {};
+
+
+(function() {
+    
+    tm.sound.globalVolume = 1.0;
+    
+})();
+
+
+(function() {
+    
+    /**
+     * @class tm.sound.Sound
+     * サウンドクラス
+     */
+    tm.sound.Sound = tm.createClass({
+        superClass: tm.event.EventDispatcher,
+
+        /** element */
+        element     : null,
+        /** loaded */
+        loaded      : false,
+        /** isPlay */
+        isPlay      : false,
+        
+        /**
+         * @constructor
+         */
+        init: function(src) {
+            this.superInit();
+            
+            this.element = new Audio();
+            this.element.src = src;
+            this.element.load();
+            this.element.setAttribute("preload", "auto");
+            
+            var self = this;
+            this.element.addEventListener("canplaythrough", function(){
+                self.loaded = true;
+                self.fire(tm.event.Event("load"));
+            });
+            this.element.addEventListener("ended", function(){
+                self.isPlay = false;
+            });
+            this.element.addEventListener("error", function(){
+                console.warn(this.src + "の読み込みに失敗しました");
+            });
+            
+            this.element.volume = 1.0;
+            
+            //? モバイル系は音が不安定なので一時対応
+            if (tm.isMobile) {
+                this.loaded = true;
+            }
+        },
+        
+        /**
+         * 再生
+         */
+        play: function() {
+            this.element.play();
+            this.isPlay = true;
+            return this;
+        },
+        
+        /**
+         * 停止
+         */
+        stop: function() {
+            this.element.pause();
+            //? スマホだと止まるので応急対応
+            if (!tm.isMobile) {
+                this.element.currentTime = 0;
+            }
+            this.isPlay = false;
+            return this;
+        },
+        
+        /**
+         * 一時停止
+         */
+        pause: function() {
+            this.element.pause();
+            return this;
+        },
+        
+        /**
+         * クローン
+         */
+        clone: function() {
+            return tm.sound.Sound( this.element.src );
+        },
+        
+    });
+    
+    
+    
+    /**
+     * @property    volume
+     * ボリューム
+     */
+    tm.sound.Sound.prototype.accessor("volume", {
+        "get": function() { return this.element.volume; },
+        "set": function(v){ this.element.volume = v; }
+    });
+    
+    
+    if ((new Audio()).loop !== undefined) {
+    
+        /**
+         * @property    loop
+         * ループフラグ
+         */
+        tm.sound.Sound.prototype.accessor("loop", {
+            "get": function() { return this.element.loop; },
+            "set": function(v){ this.element.loop = v; }
+        });
+    }
+    // firefox 対応
+    else {
+        var onLoopFunc = function() {
+            this.play();
+        }
+        tm.sound.Sound.prototype.accessor("loop", {
+            "get": function() { return this.element.loop; },
+            "set": function(v){
+                // ループが false の状態で ture が来た場合ループ用関数を登録する
+                if (this.element.loop != true && v == true) {
+                    this.element.addEventListener("ended", onLoopFunc, false);
+                }
+                // 関数が登録されていて false が設定された場合ループ用関数を解除する
+                else if (this.element.loop == true && v == false) {
+                    this.element.removeEventListener("ended", onLoopFunc, false);
+                }
+                this.element.loop = v;
+            }
+        });
+    }
+    
+    
+    /**
+     * @static
+     * サポートしている拡張子
+     */
+    tm.sound.Sound.SUPPORT_EXT = (function(){
+        var ext     = "";
+        var audio   = new Audio();
+        
+        if      (audio.canPlayType("audio/wav") == 'maybe') { ext="wav"; }
+        else if (audio.canPlayType("audio/mp3") == 'maybe') { ext="mp3"; }
+        else if (audio.canPlayType("audio/ogg") == 'maybe') { ext="ogg"; }
+        
+        return ext;
+    })();
+    
+})();
+
+/*
+ * webaudio.js
+ */
+
+tm.sound = tm.sound || {};
+
+(function() {
+
+    var context = null;
+
+    /**
+     * @class tm.sound.WebAudio
+     * WebAudioクラス
+     * @extends tm.event.EventDispatcher
+     */
+    tm.sound.WebAudio = tm.createClass({
+        superClass: tm.event.EventDispatcher,
+
+        /** loaded */
+        loaded: false,
+        /** context */
+        context: null,
+        /** panner */
+        panner: null,
+        /** volume */
+        volume: 0.8,
+        /** playing **/
+        playing: false,
+
+        _pannerEnabled: true,
+
+        /**
+         * @constructor
+         */
+        init: function(src_or_buffer) {
+            this.superInit();
+
+            this.context = context;
+            var type = typeof(src_or_buffer);
+
+            if (type==="string") {
+                this.loaded = false;
+                this._load(src_or_buffer);
+            }
+            else if (type==="object") {
+                this._setup();
+                this.buffer = src_or_buffer;
+                this.loaded = true;
+                this.dispatchEvent( tm.event.Event("load") );
+            }
+            else {
+                this._setup();
+                this.loaded = false;
+            }
+        },
+
+        /**
+         * 再生
+         * - noteGrainOn ... http://www.html5rocks.com/en/tutorials/casestudies/munkadoo_bouncymouse/
+         */
+        play: function(time) {
+            if (this.playing == true) { return ; }
+            this.playing = true;
+
+            if (time === undefined) time = 0;
+
+            this.source.start(this.context.currentTime + time);
+
+            var self = this;
+            var time = (this.source.buffer.duration/this.source.playbackRate.value)*1000;
+            window.setTimeout(function() {
+                var e = tm.event.Event("ended");
+                self.fire(e);
+            }, time);
+
+            return this;
+        },
+
+        /**
+         * 停止
+         */
+        stop: function(time) {
+            if (this.playing == false) { return ; }
+            this.playing = false;
+
+            if (time === undefined) time = 0;
+            if (this.source.playbackState == 0) {
+                return ;
+            }
+            this.source.stop(this.context.currentTime + time);
+
+            var buffer = this.buffer;
+            var volume = this.volume;
+            var loop   = this.loop;
+
+            this.source = this.context.createBufferSource();
+            this.source.connect(this.gainNode);
+            this.buffer = buffer;
+            this.volume = volume;
+            this.loop = loop;
+
+            return this;
+        },
+
+        /**
+         * ポーズ
+         */
+        pause: function() {
+            this.source.disconnect();
+
+            return this;
+        },
+
+        /**
+         * レジューム
+         */
+        resume: function() {
+            this.source.connect(this.gainNode);
+
+            return this;
+        },
+
+        /**
+         * 複製
+         */
+        clone: function() {
+            var webAudio = tm.sound.WebAudio(this.buffer);
+            webAudio.volume = this.volume;
+            return webAudio;
+        },
+        /**
+         * dummy
+         */
+        setPosition: function(x, y, z) {
+            this.panner.setPosition(x, y||0, z||0);
+
+            return this;
+        },
+        /**
+         * dummy
+         */
+        setVelocity: function(x, y, z) {
+            this.panner.setVelocity(x, y||0, z||0);
+
+            return this;
+        },
+        /**
+         * dummy
+         */
+        setOrientation: function(x, y, z) {
+            this.panner.setOrientation(x, y||0, z||0);
+
+            return this;
+        },
+
+        /**
+         * dummy
+         * チェーンメソッド用
+         */
+        setBuffer: function(v) {
+            this.buffer = v;
+            return this;
+        },
+
+
+        /**
+         * dummy
+         * チェーンメソッド用
+         */
+        setLoop: function(v) {
+            this.loop = v;
+            return this;
+        },
+
+
+        /**
+         * dummy
+         * チェーンメソッド用
+         */
+        setVolume: function(v) {
+            this.volume = v;
+            return this;
+        },
+
+
+        /**
+         * チェーンメソッド用
+         */
+        setPlaybackRate: function(v) {
+            this.playbackRate = v;
+            return this;
+        },
+
+        /**
+         * @private
+         */
+        _load: function(src) {
+            if (!this.context) {
+                console.warn("本環境はWebAudio未対応です。(" + src + ")");
+                return;
+            }
+
+            var self = this;
+            tm.util.Ajax.load({
+                type: "GET",
+                url: src,
+                responseType: "arraybuffer",
+                success: function(data) {
+                    // console.debug("WebAudio ajax load success");
+                    self.context.decodeAudioData(data, function(buffer) {
+                        // console.debug("WebAudio decodeAudioData success");
+                        self._setup();
+                        self.buffer = buffer;
+                        self.loaded = true;
+                        self.dispatchEvent( tm.event.Event("load") );
+                    }, function() {
+                        console.warn("音声ファイルのデコードに失敗しました。(" + src + ")");
+                        self._setup();
+                        self.buffer = context.createBuffer(1, 1, 22050);
+                        self.loaded = true;
+                        self.dispatchEvent( tm.event.Event("load") );
+                    });
+                }
+            });
+        },
+
+        /**
+         * @private
+         */
+        _setup: function() {
+            this.source     = this.context.createBufferSource();
+            this.gainNode   = this.context.createGain();
+            // this.panner     = this.context.createPanner();
+            this.analyser   = this.context.createAnalyser();
+
+            this.source.connect(this.gainNode);
+            // this.gainNode.connect(this.panner);
+            // this.panner.connect(this.analyser);
+            this.gainNode.connect(this.analyser);
+            this.analyser.connect(this.context.destination);
+
+            // TODO 暫定的対応
+            if (tm.BROWSER === "Firefox") {
+                this.pannerEnabled = false;
+            }
+        },
+
+        /**
+         * トーン
+         */
+        tone: function(hertz, seconds) {
+            // handle parameter
+            hertz   = hertz !== undefined ? hertz : 200;
+            seconds = seconds !== undefined ? seconds : 1;
+            // set default value
+            var nChannels   = 1;
+            var sampleRate  = 44100;
+            var amplitude   = 2;
+            // create the buffer
+            var buffer  = this.context.createBuffer(nChannels, seconds*sampleRate, sampleRate);
+            var fArray  = buffer.getChannelData(0);
+            // fill the buffer
+            for(var i = 0; i < fArray.length; i++){
+                var time    = i / buffer.sampleRate;
+                var angle   = hertz * time * Math.PI;
+                fArray[i]   = Math.sin(angle)*amplitude;
+            }
+            // set the buffer
+            this.buffer = buffer;
+            return this;    // for chained API
+        },
+    });
+
+    /**
+     * @property    buffer
+     * バッファー
+     */
+    tm.sound.WebAudio.prototype.accessor("buffer", {
+        get: function()  { return this.source.buffer; },
+        set: function(v) { this.source.buffer = v; }
+    });
+
+    /**
+     * @property    loop
+     * ループフラグ
+     */
+    tm.sound.WebAudio.prototype.accessor("loop", {
+        get: function()  { return this.source.loop; },
+        set: function(v) { this.source.loop = v; }
+    });
+
+    /**
+     * @property    valume
+     * ボリューム
+     */
+    tm.sound.WebAudio.prototype.accessor("volume", {
+        get: function()  { return this.gainNode.gain.value; },
+        set: function(v) { this.gainNode.gain.value = v; }
+    });
+
+    /**
+     * @property    playbackRate
+     * プレイバックレート
+     */
+    tm.sound.WebAudio.prototype.accessor("playbackRate", {
+        get: function()  { return this.source.playbackRate.value; },
+        set: function(v) { this.source.playbackRate.value = v; }
+    });
+
+    /**
+     * @property    pannerEnabled
+     * panner有効
+     */
+    tm.sound.WebAudio.prototype.accessor("pannerEnabled", {
+        get: function()  { return this._pannerEnabled; },
+        set: function(v) {
+            this.gainNode.disconnect();
+            this.panner.disconnect();
+            if (v) {
+                this.gainNode.connect(this.panner);
+                this.panner.connect(this.analyser);
+            } else {
+                this.gainNode.connect(this.analyser);
+            }
+            this._pannerEnabled = v;
+
+            // console.debug("WebAudio pannerEnabled: " + v);
+        }
+    });
+
+    /**
+     * @property    loopStart
+     * ループ開始位置（秒）
+     */
+    tm.sound.WebAudio.prototype.accessor("loopStart", {
+        get: function()  { return this.source.loopStart; },
+        set: function(v) { this.source.loopStart = v; }
+    });
+
+    /**
+     * @property    loopEnd
+     * ループ終了位置（秒）
+     */
+    tm.sound.WebAudio.prototype.accessor("loopEnd", {
+        get: function()  { return this.source.loopEnd; },
+        set: function(v) { this.source.loopEnd = v; }
+    });
+
+    /** @static @property */
+    tm.sound.WebAudio.isAvailable = (tm.global.AudioContext || tm.global.webkitAudioContext || tm.global.mozAudioContext) ? true : false;
+
+    tm.sound.WebAudio.createContext = function() {
+        if (tm.global.AudioContext) {
+            context = new AudioContext();
+        }
+        else if (tm.global.webkitAudioContext) {
+            context = new webkitAudioContext();
+        }
+        else if (tm.global.mozAudioContext) {
+            context = new mozAudioContext();
+        }
+
+        tm.sound.WebAudio.context = context;
+    };
+
+    /**
+     * @static
+     * iOSでWebAudioを使う場合、window.ontouchend等でこの関数を実行する
+     */
+    tm.sound.WebAudio.unlock = function() {
+        var unlockBuffer = context.createBuffer(1, 1, 22050);
+        var unlockSrc = context.createBufferSource();
+        unlockSrc.buffer = unlockBuffer;
+        unlockSrc.connect(context.destination);
+        unlockSrc.start(0);
+    };
+
+    tm.sound.WebAudio.createContext();
+})();
+
+
+
+
+/*
+ * soundmanager.js
+ */
+
+;(function() {
+
+    /*
+     * tm.sound.SoundManager
+     * ### Ref
+     * - http://evolve.reintroducing.com/_source/classes/as3/SoundManager/SoundManager.html
+     * - https://github.com/nicklockwood/SoundManager
+     */
+    tm.sound.SoundManager = {
+        volume: 0.8,
+        musicVolume: 0.8,
+        muteFlag: false,
+        currentMusic: null,
+
+        /*
+         * 再生
+         */
+        play: function(name, volume, startTime, loop) {
+            var origin = tm.asset.Manager.get(name);
+            if (origin == null) {
+                console.warn('not found ' + name);
+                return ;
+            }
+            var sound = origin.clone();
+
+            sound.volume = this.getVolume();
+            sound.play();
+
+            return sound;
+        },
+        stop: function() {
+            // TODO: 
+        },
+        pause: function() {
+            // TODO: 
+        },
+        fade: function() {
+            // TODO: 
+        },
+        setVolume: function(volume) {
+            this.volume = volume;
+        },
+        getVolume: function() {
+            return this.isMute() ? 0 : this.volume;
+        },
+        /*
+         * ミュート(toggle)
+         */
+        mute: function() {
+            this.muteFlag = (this.muteFlag === true) ? false : true;
+
+            if (this.currentMusic) {
+                this.currentMusic.volume = this.getVolumeMusic();
+            }
+
+            return this;
+        },
+        isMute: function() {
+            return this.muteFlag;
+        },
+
+        /*
+         * 音楽を再生
+         */
+        playMusic: function(name, fadeTime, loop) {
+            if (this.currentMusic) {
+                this.stopMusic(fadeTime);
+            }
+
+            var origin = tm.asset.Manager.get(name);
+            if (origin == null) {
+                console.warn('not found ' + name);
+                return ;
+            }
+            var music = origin.clone();
+
+            music.setLoop(true);
+            music.volume = this.getVolumeMusic();
+            music.play();
+
+            if (fadeTime > 0) {
+                var count = 32;
+                var counter = 0;
+                var unitTime = fadeTime/count;
+                var volume = this.getVolumeMusic();
+
+                music.volume = 0;
+                var id = setInterval(function() {
+                    counter += 1;
+                    var rate = counter/count;
+                    music.volume = rate*volume;
+
+                    if (rate >= 1) {
+                        clearInterval(id);
+                        return false;
+                    }
+
+                    return true;
+                }, unitTime);
+            }
+            else {
+                music.volume = this.getVolumeMusic();
+            }
+
+            this.currentMusic = music;
+
+            return this.currentMusic;
+        },
+
+        /*
+         * 音楽を停止
+         */
+        stopMusic: function(fadeTime) {
+            if (!this.currentMusic) { return ; }
+
+            var music = this.currentMusic;
+
+            if (fadeTime > 0) {
+                var count = 32;
+                var counter = 0;
+                var unitTime = fadeTime/count;
+                var volume = this.getVolumeMusic();
+
+                music.volume = 0;
+                var id = setInterval(function() {
+                    counter += 1;
+                    var rate = counter/count;
+                    music.volume = volume*(1-rate);
+
+                    if (rate >= 1) {
+                        music.stop();
+                        clearInterval(id);
+                        return false;
+                    }
+
+                    return true;
+                }, unitTime);
+            }
+            else {
+                this.currentMusic.stop();
+            }
+        },
+        /*
+         * 音楽を一時停止
+         */
+        pauseMusic: function() {
+            if (!this.currentMusic) { return ; }
+            this.currentMusic.pause();
+        },
+        /*
+         * 音楽を再開
+         */
+        resumeMusic: function() {
+            if (!this.currentMusic) { return ; }
+            this.currentMusic.resume();
+        },
+        /*
+         * 音楽のボリュームを設定
+         */
+        setVolumeMusic: function(volume) {
+            this.musicVolume = volume;
+            if (this.currentMusic) {
+                this.currentMusic.volume = volume;
+            }
+
+            return this;
+        },
+        /*
+         * 音楽のボリュームを取得
+         */
+        getVolumeMusic: function(volume) {
+            return this.isMute() ? 0 : this.musicVolume;
+        },
+    };
+
+})();
+
+
+/*
+ * twitter.js
+ */
+
+tm.social = tm.social || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.social.Twitter
+     * ツイッター関連ネームスペース
+     */
+    tm.social.Twitter = tm.social.Twitter || {};
+    
+    tm.social.Twitter.API_URL = "http://api.twitter.com/1";    // version 1 は廃止予定らしい
+    var BASE_URL = "http://twitter.com/intent";
+
+
+    /**
+     * @member      tm.social.Twitter
+     * Tweet する
+     * @param {Object} prop
+     * ### Reference
+     * - <https://dev.twitter.com/docs/intents>
+     * ### Example
+     *      tm.social.Twitter.createURL({
+     *          type        : "tweet",              // タイプ(tweet/retweet/favorite/user)
+     *          tweet_id    : "210219483959263232", // 対象となる Tweet
+     *          in_reply_to : "210219483959263232", // 返信する対象となる Tweet
+     *          text        : "Test",               // テキスト
+     *          screen_name : "phi_jp",             // スクリーンネーム
+     *          hashtags    : "javascript,tmlibjs", // ハッシュタグ
+     *          url         : "http://tmlife.net",  // url
+     *          via         : "phi_jp",             // ～から
+     *          related     : "tmlib.js tmlife",    // 関連ワード
+     *      });
+     */
+    tm.social.Twitter.createURL = function(prop) {
+        var param_string_list = [];
+        for (var key in prop) {
+            if (key == "type") continue;
+            var value = encodeURIComponent(prop[key]);
+            var param_string = key+"="+value;
+            param_string_list.push(param_string);
+        }
+        
+        var url = "{baseURL}/{type}?{param}".format({
+            baseURL : BASE_URL,
+            type    : prop.type,
+            param   : param_string_list.join('&'),
+        });
+        
+        return url;
+    };
+    
+    
+})();
+
+(function() {
+    
+    var BASE_URL = "http://api.twitter.com/1/{type}/{kind}.json";
+
+    /**
+     * @member      tm.social.Twitter
+     */
+    tm.social.Twitter.api = function(type, kind, param, callback) {
+        var url = BASE_URL.format({ type:type, kind:kind });
+        var qs  = tm.util.QueryString.stringify(param);
+        
+        tm.util.Ajax.loadJSONP(url + "?" + qs, callback);
+    };
+    
+})();
+
+
+
+(function() {
+    
+    var BASE_URL = "http://search.twitter.com/search.json";
+
+    /**
+     * @member      tm.social.Twitter
+     */
+    tm.social.Twitter.search = function(param, callback) {
+        var url = BASE_URL;
+        var qs  = tm.util.QueryString.stringify(param);
+        
+        tm.util.Ajax.loadJSONP(url + "?" + qs, callback);
+    };
+    
+})();
+
+
+(function() {
+    
+    /*
+     * format = xml or json
+     */
+    var BASE_URL = "http://api.twitter.com/1/statuses/followers.json";
+    //http://api.twitter.com/1/statuses/followers.json?id=tmlife_jp
+    
+    /**
+     * @member      tm.social.Twitter
+     * 
+     * user_id      ユーザーID
+     * screen_name  screen_name
+     * cursor       -1 を指定すると先頭から 100
+     * include_entities     true を指定すると entities を取得できる
+     * 
+     */
+    tm.social.Twitter.getFollowers = function(param, callback) {
+        tm.social.Twitter.api("statuses", "followers", param, callback);
+        
+        /*
+        tm.social.Twitter.api("statuses", "public_timeline", param, callback);
+        tm.social.Twitter.api("statuses", "home_timeline", param, callback);
+        tm.social.Twitter.api("statuses", "friends_timeline", param, callback);
+        tm.social.Twitter.api("statuses", "user_timeline", param, callback);
+        tm.social.Twitter.api("statuses", "replies", param, callback);
+        tm.social.Twitter.api("statuses", "mentions", param, callback);
+        */
+    };
+    
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * nineleap.js
+ */
+
+tm.social = tm.social || {};
+
+
+(function() {
+
+    /**
+     * @class tm.social.NineLeap
+     * 9leap ネームスペース
+     */
+    tm.social.Nineleap = tm.social.Nineleap || {};
+
+    var BASE_URL = "http://9leap.net/games/{id}/result?score={score}&result={result}";
+
+    /**
+     * @member      tm.social.Nineleap
+     */
+    tm.social.Nineleap.DEBUG_GAME_ID = "0";
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createURL
+     * 9leap 用の URL を生成
+     */
+    tm.social.Nineleap.createURL = function(id, score, result) {
+        return BASE_URL.format({
+            id      : id,
+            score   : score,
+            result  : result
+        });
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      postRanking
+     * 9leap でランキングを POST
+     */
+    tm.social.Nineleap.postRanking = function(score, result) {
+        if (location.hostname == 'r.jsgames.jp') {
+            var id = location.pathname.match(/^\/games\/(\d+)/)[1];
+            location.replace( this.createURL(id, score, result) );
+        }
+        else {
+            console.warn("9leap に投稿されていません!");
+        }
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      gotoLogin
+     * 9leapログインページヘ遷移する.
+     */
+    tm.social.Nineleap.gotoLogin = function() {
+        window.location.replace("http://9leap.net/api/login");
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      isOn9leap
+     * アプリケーションが9leap上にデプロイされているか
+     */
+    tm.social.Nineleap.isOn9leap = function() {
+        return window.location.hostname === "r.jsgames.jp";
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      getGameId
+     * 9leapのゲームIDを取得する
+     */
+    tm.social.Nineleap.getGameId = function() {
+        if (tm.social.Nineleap.isOn9leap()) {
+            return window.location.pathname.match(/^\/games\/(\d+)/)[1];
+        } else {
+            return tm.social.Nineleap.DEBUG_GAME_ID;
+        }
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      getMyData
+     * プレイヤーのゲームデータを取得する
+     */
+    tm.social.Nineleap.getMyData = function(callback) {
+        tm.util.Ajax.loadJSONP(tm.social.Nineleap.createMyDataURL(), callback);
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      postMyData
+     * プレイヤーのゲームデータを保存する
+     */
+    tm.social.Nineleap.postMyData = function(data, callback) {
+        tm.util.Ajax.load({
+            type: "POST",
+            url: tm.social.Nineleap.createMemoryURL("user_memory.json"),
+            dataType: "json",
+            data: "json=" + JSON.stringify(data),
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            async: false,
+            beforeSend: function(xhr) {
+                xhr.withCredentials = true;
+            },
+            success: callback,
+            error: function(responseText) {
+                console.error(responseText);
+            }
+        });
+    };
+
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createMemoryURL
+     * 9leap Memory API へアクセスするURLを生成
+     */
+    tm.social.Nineleap.createMemoryURL = function() {
+        var url = [
+            "http://9leap.net/api/memory/",
+            tm.social.Nineleap.getGameId() + "/",
+        ];
+        for (var i = 0, len = arguments.length; i < len; i++) {
+            url.push(arguments[i]);
+        }
+
+        return url.join("");
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createMyDataURL
+     * ユーザデータURLを生成
+     */
+    tm.social.Nineleap.createMyDataURL = function() {
+        return tm.social.Nineleap.createMemoryURL("user_memory.json");
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createUserDataURL
+     * 他のユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createUserDataURL = function(screenName) {
+        return tm.social.Nineleap.createMemoryURL("u/", screenName + ".json");
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createRecentDataURL
+     * 最近プレイしたユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createRecentDataURL = function(max) {
+        max = max || 30;
+        return tm.social.Nineleap.createMemoryURL("recent_memories.json", "?max=" + max);
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createFriendDataURL
+     * TwitterでフォローしているユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createFriendDataURL = function(max) {
+        max = max || 30;
+        return tm.social.Nineleap.createMemoryURL("friends_memories.json", "?max=" + max);
+    };
+    /**
+     * @member      tm.social.Nineleap
+     * @method      createRankingDataURL
+     * スコアランキング上位のユーザのプレイデータURLを生成
+     */
+    tm.social.Nineleap.createRankingDataURL = function(max) {
+        max = max || 30;
+        return tm.social.Nineleap.createMemoryURL("ranking_memories.json", "?max=" + max);
+    };
+})();
+
+
+/*
+ * chart.js
+ */
+
+tm.google = tm.google || {};
+
+
+(function() {
+    
+    /**
+     * @class tm.google.Chart
+     * チャートネームスペース
+     */
+    tm.google.Chart = tm.google.Chart || {};
+    
+    var DYNAMIC_ICONS_BASE_URL  = "https://chart.googleapis.com/chart?chst={type}&chld={data}";
+    var QR_CODE_BASE_URL        = "https://chart.googleapis.com/chart?chs={size}&cht={type}&chl={text}&chco={color}";
+    
+    /**
+     * @static
+     * ダイナミックアイコン
+     * @param {string}  type    d_bubble_text_small OR d_fnote_title OR chst=d_fnote etc...
+     * @param {string}  data    
+     * ### Example
+     *      tm.google.Chart.createDynamicIcons("d_bubble_icon_text_small", "ski|bb|Hello, world!|FFFFFF|000000");
+     *      tm.google.Chart.createDynamicIcons("d_fnote", "balloon|1|000000|l|Hello, world!");
+     *      tm.google.Chart.createDynamicIcons("d_fnote", "pinned_c|1|000000|l|Hello, world!");
+     *      tm.google.Chart.createDynamicIcons("d_weather", "taped_y|sunny|Barcelona|max+25°C|min+15°C");
+     *      tm.google.Chart.createDynamicIcons("d_simple_text_icon_left", "flag_jp|14|000|flag_jp|24|000|FFF");
+     */
+    tm.google.Chart.createDynamicIcons = function(type, data) {
+        // data = encodeURIComponent(data);
+        return DYNAMIC_ICONS_BASE_URL.format({
+            type:type,
+            data:data
+        });
+    };
+    
+    /**
+     * @static
+     * QRCode 生成
+     * @param {Object} prop
+     * ### Reference
+     * - <https://developers.google.com/chart/?hl=ja#qrcodes>
+     * - <https://developers.google.com/chart/infographics/?hl=ja>
+     * - <https://google-developers.appspot.com/chart/infographics/docs/overview>
+     * ### Example
+     *      tm.google.Chart.createQRCode("160x160", "http://tmlife.net");
+     *      tm.google.Chart.createQRCode("160x160", "Hello, world");
+     */
+    tm.google.Chart.createQRCode = function(size, text, color) {
+        text = encodeURIComponent(text);
+        
+        return QR_CODE_BASE_URL.format({
+            type:"qr",
+            size:size,
+            text:text,
+        });
+    };
+    
+    /**
+     * @static
+     * Tex 生成
+     */
+    tm.google.Chart.createTeX = function() {
+        //&chco=ff0000ff
+    };
+    
+})();
+
+
+;(function() {
+    
+    /**
+     * @member      tm.app.Element
+     * @property    interaction
+     * インタラクション
+     */
+    tm.app.Element.prototype.getter("interaction", function() {
+        console.assert(false, "interaction は Object2d に統合されました. obj.setInteractive(true); とすればタッチ判定が有効になります.");
+    });
+    
+    
+    var dirtyClass = {
+        "display": [
+            "Sprite",
+            "Shape",
+            "CircleShape",
+            "TriangleShape",
+            "RectangleShape",
+            "RoundRectangleShape",
+            "StarShape",
+            "PolygonShape",
+            "HeartShape",
+            "TextShape",
+            "CanvasRenderer",
+            "BoundingRectRenderer",
+            "Label",
+            "MapSprite",
+            "CanvasElement",
+            "CanvasApp",
+            "AnimationSprite",
+            "SpriteSheet",
+        ],
+        "ui": [
+            "LabelButton",
+            "IconButton",
+            "GlossyButton",
+            "FlatButton",
+            "LoadingScene",
+        ],
+    };
+    
+    for (var key in dirtyClass) {
+        var namespace = dirtyClass[key];
+        namespace.each(function(className) {
+            tm.app[className] = tm[key][className];
+        });
+    }
+    
+    tm.asset.AssetManager = tm.asset.Manager;
+
+    tm.util.getter('Script', function() {
+        console.warn('`tm.util.Script` は `tm.asset.Script` になりました!');
+    });
+
+    tm.ui.LoadingScene = function(param) {
+        console.warn('`tm.ui.LoadingScene` は `tm.game.LoadingScene` になりました!');
+        return tm.game.LoadingScene(param);
+    };
+
+    tm.scene = tm.scene || {};
+    tm.scene.ManagerScene = tm.game.ManagerScene;
+    tm.scene.LoadingScene = tm.game.LoadingScene;
+    tm.scene.TitleScene = tm.game.TitleScene;
+    tm.scene.ResultScene = tm.game.ResultScene;
+    tm.scene.NumericalInputScene = tm.game.NumericalInputScene;
+    
+    tm.getter('scene', function() {
+        debugger;
+        console.warn('tm.scene は tm.game に変更されました');
+        return tm.game;
+    });
+
+})();
+
+var glb = {};
+
+var SCREEN_WIDTH = 640;
+var SCREEN_HEIGHT = 960;
+
+var BULLET_APPEALANCE = "160.0";
+var GL_QUALITY = "0.5";
+
+var ASSETS = {
+    bullets: "./asset/bullets.png",
+    particles: "./asset/particles.png",
+    
+    test: "./asset/test.png",
+};
+
+tm.main(function() {
+    var application = tm.display.CanvasApp("#c2");
+    application.fps = 60;
+    application
+        .resize(SCREEN_WIDTH, SCREEN_HEIGHT)
+        .fitWindow()
+        .run();
+        
+    application.glContext = glb.GLContext("#c3")
+        .resize(SCREEN_WIDTH * GL_QUALITY, SCREEN_HEIGHT * GL_QUALITY)
+        .fitWindow();
+
+    application.replaceScene(tm.game.LoadingScene({
+        width: SCREEN_WIDTH,
+        height: SCREEN_HEIGHT,
+        assets: ASSETS,
+        nextScene: glb.GameScene,
+    }));
+    
+    tm.asset.Script.loadStats().onload = function() {
+        application.enableStats();
+    };
+});
+
+(function() {
+
+    tm.define("glb.Bullets", {
+        superClass: "glb.Object3D",
+
+        geometry: null,
+        material: null,
+
+        time: 0,
+
+        bullets: null,
+
+        init: function(texture) {
+            this.superInit();
+
+            this.geometry = glb.BulletsGeometry();
+            this.material = glb.BulletsMaterial(texture);
+
+            this.bullets = [];
+        },
+
+        initialize: function(glContext) {
+            this.geometry.initialize(glContext);
+            this.material.initialize(glContext);
+        },
+
+        update: function(app) {
+            this.time += 0.0001;
+
+            var self = this;
+            this.bullets = this.bullets.filter(function(b) {
+                b.position.add(b.velocity);
+                if (b.position.x < SCREEN_WIDTH * -0.2 || SCREEN_WIDTH * 0.2 < b.position.x ||
+                    b.position.y < SCREEN_HEIGHT * -0.2 || SCREEN_HEIGHT * 0.2 < b.position.y) {
+                    self.despawn(b.index);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        },
+
+        render: function(glContext, vpMatrix) {
+            var gl = glContext.gl;
+
+            if (this.geometry.vboNeedUpdate) {
+                this.geometry.rebind(gl);
+                this.geometry.vboNeedUpdate = false;
+            }
+
+            this.material.setProgram(glContext);
+            this.material.setAttributes(glContext, this.geometry);
+
+            this.material.setUniforms(glContext, this);
+            this.material.setUniform(glContext, "time", this.time);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+
+            this.material.draw(glContext, this.geometry.COUNT);
+        },
+
+        spawn: function(pos, vel, type) {
+            var index = this.geometry.spawn(this.time, pos, vel, type);
+            if (index < 0) return;
+            this.bullets.push({
+                position: pos,
+                velocity: vel,
+                index: index,
+            });
+            return index;
+        },
+
+        despawn: function(index) {
+            this.geometry.despawn(index);
+        },
+
+    });
+
+})();
+
+(function() {
+
+    tm.define("glb.BulletsGeometry", {
+        superClass: "glb.Geometry",
+
+        COUNT: 8192,
+
+        bufferUsage: 1,
+
+        initialPositionData: null,
+        velocityData: null,
+        spawnTimeData: null,
+        activeData: null,
+        typeData: null,
+
+        initialPosition: null,
+        velocity: null,
+        spawnTime: null,
+        active: null,
+        type: null,
+
+        vboNeedUpdate: false,
+
+        init: function() {
+            this.superInit();
+
+            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());;
+            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+        },
+
+        initialize: function(glContext) {
+            var gl = glContext.gl;
+
+            this.initialPosition = this.createVbo(gl, this.initialPositionData);
+            this.velocity = this.createVbo(gl, this.velocityData);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
+            this.active = this.createVbo(gl, this.activeData);
+            this.type = this.createVbo(gl, this.typeData);
+        },
+
+        rebind: function(gl) {
+            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
+            this.transfarVbo(gl, this.velocity, this.velocityData);
+            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
+            this.transfarVbo(gl, this.active, this.activeData);
+            this.transfarVbo(gl, this.type, this.typeData);
+        },
+
+        spawn: function(now, pos, vel, type) {
+            var index = find(this.activeData, 0);
+            if (index < 0) {
+                console.warn("弾が足りない");
+                return -1;
+            }
+
+            this.initialPositionData[index * 2 + 0] = pos.x;
+            this.initialPositionData[index * 2 + 1] = pos.y;
+            this.velocityData[index * 2 + 0] = vel.x;
+            this.velocityData[index * 2 + 1] = vel.y;
+            this.spawnTimeData[index] = now;
+            this.activeData[index] = 1;
+            this.typeData[index] = type;
+
+            this.vboNeedUpdate = true;
+
+            return index;
+        },
+
+        despawn: function(index) {
+            if (index < this.activeData.length) {
+                this.activeData[index] = 0;
+                this.vboNeedUpdate = true;
+            }
+        },
+
+    });
+
+    var find = function(array, value) {
+        return Array.prototype.indexOf.call(array, value);
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.BulletsMaterial", {
+        superClass: "glb.Material",
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+            this.image = image;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            this.superSetAttributes(glContext, attributeValues);
+
+            var gl = glContext.gl;
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+            gl.drawArrays(gl.POINTS, 0, length);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "initialPosition",
+        size: 2,
+    }, {
+        name: "velocity",
+        size: 2,
+    }, {
+        name: "spawnTime",
+        size: 1,
+    }, {
+        name: "active",
+        size: 1,
+    }, {
+        name: "type",
+        size: 1,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "time",
+        type: "float",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec2 initialPosition;",
+        "attribute vec2 velocity;",
+        "attribute float spawnTime;",
+        "attribute float active;",
+        "attribute float type;",
+
+        "uniform mat4 vpMatrix;",
+        "uniform float time;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vType;",
+        "varying float vAngle;",
+        "varying mat3 vUvMat;",
+
+        "mat3 translate(float x, float y) {",
+        "    return mat3(",
+        "        1.0, 0.0, 0.0,",
+        "        0.0, 1.0, 0.0,",
+        "          x,   y, 1.0",
+        "    );",
+        "}",
+
+        "mat3 rotate(float rad) {",
+        "    float s = sin(rad);",
+        "    float c = cos(rad);",
+        "    return mat3(",
+        "        c, s, 0,",
+        "       -s, c, 0,",
+        "        0, 0, 1",
+        "    );",
+        "}",
+
+        "void main(void) {",
+        "    vActive = active;",
+        "    vType = type;",
+        "    if (active < 0.5) {",
+        "        vAngle = 0.0;",
+        "        gl_Position = vec4(0.0);",
+        "        gl_PointSize = 0.0;",
+        "    } else {",
+        "        if (type < 8.0) {",
+        "            vAngle = atan(velocity.y, velocity.x);",
+        "        } else {",
+        "            vAngle = time * 3000.0;",
+        "        }",
+        "        vAge = time - spawnTime;",
+        "        vUvMat = translate(0.5, 0.5) * rotate(vAngle) * translate(-0.5, -0.5);",
+        "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
+        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
+        "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
+        "        gl_PointSize = ({0} + c) * {1};".format(BULLET_APPEALANCE, GL_QUALITY),
+        "    }",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+        
+        "uniform sampler2D texture;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vType;",
+        "varying float vAngle;",
+        "varying mat3 vUvMat;",
+
+        "void main(void) {",
+        "    if (vActive < 0.5) discard;",
+        "    if (0.7 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
+
+        "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
+        "    vec3 ruv = vUvMat * buv;",
+        "    vec2 uv = vec2((ruv.x + vType) * 0.0625, ruv.y);",
+
+        "    float c = sin(vAge * 6200.0) * 0.12;",
+        "    vec4 light = vec4(0.0, c, 0.0, 0.0);",
+
+        "    gl_FragColor = light + texture2D(texture, uv);",
+        "}",
+    ].join("\n");
+
+})();
+
+(function() {
+
+    tm.define("glb.Particle", {
+        superClass: "glb.Object3D",
+
+        geometry: null,
+        material: null,
+
+        particles: null,
+        
+        time: 0,
+
+        init: function(texture) {
+            this.superInit();
+
+            this.geometry = glb.ParticleGeometry();
+            this.material = glb.ParticleMaterial(texture);
+
+            this.particles = [];
+            
+            this.time = 0;
+        },
+
+        initialize: function(glContext) {
+            this.geometry.initialize(glContext);
+            this.material.initialize(glContext);
+        },
+
+        update: function(app) {
+            this.time += 0.0001;
+
+            var self = this;
+            var time = this.time;
+            this.particles = this.particles.filter(function(p) {
+                if (p.deathTime <= time) {
+                    self.despawn(p.index);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        },
+
+        render: function(glContext, vpMatrix) {
+            var gl = glContext.gl;
+
+            if (this.geometry.vboNeedUpdate) {
+                this.geometry.rebind(gl);
+                this.geometry.vboNeedUpdate = false;
+            }
+
+            this.material.setProgram(glContext);
+            this.material.setAttributes(glContext, this.geometry);
+
+            this.material.setUniforms(glContext, this);
+            this.material.setUniform(glContext, "time", this.time);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+
+            this.material.draw(glContext, this.geometry.COUNT);
+        },
+
+        spawn: function(param) {
+            var index = this.geometry.spawn(this.time, {}.$extend(DEFAULT_PARAM, param));
+            if (index < 0) return;
+            this.particles.push({
+                deathTime: this.time + param.ttl,
+                index: index,
+            });
+            return index;
+        },
+
+        despawn: function(index) {
+            this.geometry.despawn(index);
+        },
+
+    });
+
+    var DEFAULT_PARAM = {
+        position: { x:0, y:0 },
+        velocity: { x:1, y:0 },
+        accel: { x:-0.1, y:0 },
+        type: 0,
+        ttl: 60 * 0.0001,
+        sizeFrom: 30,
+        sizeTo: 30,
+        colorFrom: { r:255, g:255, b:255, a:1 },
+        colorTo: { r:255, g:255, b:255, a:0 },
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.ParticleGeometry", {
+        superClass: "glb.Geometry",
+
+        COUNT: 8192,
+
+        bufferUsage: 1,
+
+        initialPositionData: null,
+        velocityData: null,
+        accelData: null,
+        spawnTimeData: null,
+        activeData: null,
+        typeData: null,
+        ttlData: null,
+        sizeFromData: null,
+        sizeToData: null,
+        colorFromData: null,
+        colorToData: null,
+
+        initialPosition: null,
+        velocity: null,
+        accel: null,
+        spawnTime: null,
+        active: null,
+        type: null,
+        ttl: null,
+        sizeFrom: null,
+        sizeTo: null,
+        colorFrom: null,
+        colorTo: null,
+
+        vboNeedUpdate: false,
+
+        init: function() {
+            this.superInit();
+
+            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());;
+            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.accelData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.ttlData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.sizeFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.sizeToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.colorFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [1, 1, 1, 1];
+            }).flatten());
+            this.colorToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0, 0, 0];
+            }).flatten());
+        },
+
+        initialize: function(glContext) {
+            var gl = glContext.gl;
+
+            this.initialPosition = this.createVbo(gl, this.initialPositionData);
+            this.velocity = this.createVbo(gl, this.velocityData);
+            this.accel = this.createVbo(gl, this.accelData);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
+            this.active = this.createVbo(gl, this.activeData);
+            this.type = this.createVbo(gl, this.typeData);
+            this.ttl = this.createVbo(gl, this.ttlData);
+            this.sizeFrom = this.createVbo(gl, this.sizeFromData);
+            this.sizeTo = this.createVbo(gl, this.sizeToData);
+            this.colorFrom = this.createVbo(gl, this.colorFromData);
+            this.colorTo = this.createVbo(gl, this.colorToData);
+        },
+
+        rebind: function(gl) {
+            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
+            this.transfarVbo(gl, this.velocity, this.velocityData);
+            this.transfarVbo(gl, this.accel, this.accelData);
+            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
+            this.transfarVbo(gl, this.active, this.activeData);
+            this.transfarVbo(gl, this.type, this.typeData);
+            this.transfarVbo(gl, this.ttl, this.ttlData);
+            this.transfarVbo(gl, this.sizeFrom, this.sizeFromData);
+            this.transfarVbo(gl, this.sizeTo, this.sizeToData);
+            this.transfarVbo(gl, this.colorFrom, this.colorFromData);
+            this.transfarVbo(gl, this.colorTo, this.colorToData);
+        },
+
+        spawn: function(now, param) {
+            var index = find(this.activeData, 0);
+            if (index < 0) {
+                console.warn("パーティクルが足りない");
+                return -1;
+            }
+
+            this.initialPositionData[index * 2 + 0] = param.position.x;
+            this.initialPositionData[index * 2 + 1] = param.position.y;
+            this.velocityData[index * 2 + 0] = param.velocity.x;
+            this.velocityData[index * 2 + 1] = param.velocity.y;
+            this.accelData[index * 2 + 0] = param.accel.x;
+            this.accelData[index * 2 + 1] = param.accel.y;
+            this.spawnTimeData[index] = now;
+            this.activeData[index] = 1;
+            this.typeData[index] = param.type;
+            this.ttlData[index] = param.ttl;
+            this.sizeFromData[index] = param.sizeFrom;
+            this.sizeToData[index] = param.sizeTo;
+            this.colorFromData[index * 4 + 0] = param.colorFrom.r / 255;
+            this.colorFromData[index * 4 + 1] = param.colorFrom.g / 255;
+            this.colorFromData[index * 4 + 2] = param.colorFrom.b / 255;
+            this.colorFromData[index * 4 + 3] = param.colorFrom.a;
+            this.colorToData[index * 4 + 0] = param.colorTo.r / 255;
+            this.colorToData[index * 4 + 1] = param.colorTo.g / 255;
+            this.colorToData[index * 4 + 2] = param.colorTo.b / 255;
+            this.colorToData[index * 4 + 3] = param.colorTo.a;
+
+            this.vboNeedUpdate = true;
+
+            return index;
+        },
+
+        despawn: function(index) {
+            if (index < this.activeData.length) {
+                this.activeData[index] = 0;
+                this.vboNeedUpdate = true;
+            }
+        },
+
+    });
+
+    var find = function(array, value) {
+        return Array.prototype.indexOf.call(array, value);
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.ParticleMaterial", {
+        superClass: "glb.Material",
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+            this.image = image;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            this.superSetAttributes(glContext, attributeValues);
+
+            var gl = glContext.gl;
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+            gl.drawArrays(gl.POINTS, 0, length);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "initialPosition",
+        size: 2,
+    }, {
+        name: "velocity",
+        size: 2,
+    }, {
+        name: "accel",
+        size: 2,
+    }, {
+        name: "spawnTime",
+        size: 1,
+    }, {
+        name: "active",
+        size: 1,
+    }, {
+        name: "type",
+        size: 1,
+    }, {
+        name: "ttl",
+        size: 1,
+    }, {
+        name: "sizeFrom",
+        size: 1,
+    }, {
+        name: "sizeTo",
+        size: 1,
+    }, {
+        name: "colorFrom",
+        size: 4,
+    }, {
+        name: "colorTo",
+        size: 4,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "time",
+        type: "float",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec2 initialPosition;",
+        "attribute vec2 velocity;",
+        "attribute vec2 accel;",
+        "attribute float spawnTime;",
+        "attribute float active;",
+        "attribute float type;",
+
+        "attribute float ttl;",
+
+        "attribute float sizeFrom;",
+        "attribute float sizeTo;",
+        "attribute vec4 colorFrom;",
+        "attribute vec4 colorTo;",
+        
+        "uniform mat4 vpMatrix;",
+        "uniform float time;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vType;",
+        "varying float vSize;",
+        "varying vec4 vColor;",
+        
+        "float lerp(float from, float to, float time, float duration) {",
+        "    return from + (to - from) * time / duration;",
+        "}",
+        "vec4 lerp(vec4 from, vec4 to, float time, float duration) {",
+        "    return from + (to - from) * time / duration;",
+        "}",
+
+        "void main(void) {",
+        "    vActive = active;",
+        "    vType = type;",
+        "    if (active < 0.5) {",
+        "        gl_Position = vec4(0.0);",
+        "        gl_PointSize = 0.0;",
+        "    } else {",
+        "        vAge = time - spawnTime;",
+        "        vSize = lerp(sizeFrom, sizeTo, vAge, ttl);",
+        "        vColor = lerp(colorFrom, colorTo, vAge, ttl);",
+
+        "        float tm = vAge * 10000.0;",
+        "        vec2 pos = initialPosition + velocity * tm + accel * (tm * tm * 0.5);",
+        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
+        "        gl_PointSize = vSize * {0};".format(GL_QUALITY),
+        "    }",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+        
+        "uniform sampler2D texture;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vType;",
+        "varying float vSize;",
+        "varying vec4 vColor;",
+
+        "void main(void) {",
+        "    if (vActive < 0.5) discard;",
+
+        "    vec2 uv = vec2((gl_PointCoord.x + vType) * 0.0625, gl_PointCoord.y);",
+        "    gl_FragColor = vColor * texture2D(texture, uv);",
+        "}",
+    ].join("\n");
+
+})();
+
+tm.define("glb.Hud", {
+    superClass: "tm.display.CanvasElement",
+    init: function() {
+        this.superInit();
+    }
+});
+
+(function() {
+
+    tm.define("glb.Matrix3", {
+
+        array: null,
+
+        init: function() {
+            this.array = mat3.create();
+        },
+
+        fromMat4: function(m) {
+            mat3.fromMat4(this.array, m.array);
+            return this;
+        },
+
+        clone: function() {
+            var result = glb.Matrix3();
+            result.array = mat3.clone(this.array);
+            return result;
+        },
+
+        identity: function() {
+            mat3.identity(this.array);
+            return this;
+        },
+
+        transpose: function() {
+            mat3.transpose(this.array, this.array);
+            return this;
+        },
+
+        invert: function() {
+            mat3.invert(this.array, this.array);
+            return this;
+        },
+
+        adjoint: function() {
+            mat3.adjoint(this.array, this.array);
+            return this;
+        },
+
+        determinant: function() {
+            return mat3.determinant(this.array);
+        },
+
+        mul: function(m) {
+            mat3.multiply(this.array, this.array, m.array);
+            return this;
+        },
+
+        translate: function(v) {
+            mat3.translate(this.array, this.array, v.array);
+            return this;
+        },
+
+        scale: function(v) {
+            mat3.scale(this.array, this.array, v.array);
+            return this;
+        },
+
+        rotate: function(rad, axis) {
+            mat3.rotate(this.array, this.array, rad, axis.array);
+            return this;
+        },
+
+        fromTranslation: function(v) {
+            mat3.fromTranslation(this.array, v.array);
+        },
+
+        fromRotation: function(rad) {
+            mat3.fromRotation(this.array, rad);
+            return this;
+        },
+
+        fromScaling: function(v) {
+            mat3.fromScaling(this.array, v.array);
+            return this;
+        },
+
+        fromQuat: function(q) {
+            mat3.fromQuat(this.array, q.array);
+            return this;
+        },
+
+        normalFromMat4: function(m) {
+            mat3.normalFromMat4(this.array, m.array);
+            return this;
+        },
+
+    });
+
+})();
+
+(function() {
+
+    tm.define("glb.Matrix4", {
+
+        array: null,
+
+        init: function() {
+            this.array = mat4.create();
+        },
+
+        clone: function() {
+            var result = glb.Matrix4();
+            result.array = mat4.clone(this.array);
+            return result;
+        },
+
+        identity: function() {
+            mat4.identity(this.array);
+            return this;
+        },
+
+        transpose: function() {
+            mat4.transpose(this.array, this.array);
+            return this;
+        },
+
+        invert: function() {
+            mat4.invert(this.array, this.array);
+            return this;
+        },
+
+        adjoint: function() {
+            mat4.adjoint(this.array, this.array);
+            return this;
+        },
+
+        determinant: function() {
+            return mat4.determinant(this.array);
+        },
+
+        mul: function(m) {
+            mat4.multiply(this.array, this.array, m.array);
+            return this;
+        },
+
+        translate: function(v) {
+            mat4.translate(this.array, this.array, v.array);
+            return this;
+        },
+
+        scale: function(v) {
+            mat4.scale(this.array, this.array, v.array);
+            return this;
+        },
+
+        rotate: function(rad, axis) {
+            mat4.rotate(this.array, this.array, rad, axis.array);
+            return this;
+        },
+
+        rotateX: function(rad) {
+            mat4.rotateX(this.array, this.array, rad);
+            return this;
+        },
+        rotateY: function(rad) {
+            mat4.rotateY(this.array, this.array, rad);
+            return this;
+        },
+        rotateZ: function(rad) {
+            mat4.rotateZ(this.array, this.array, rad);
+            return this;
+        },
+
+        fromTranslation: function(v) {
+            mat4.fromTranslation(this.array, v.array);
+            return this;
+        },
+
+        fromScaling: function(v) {
+            mat4.fromScaling(this.array, v.array);
+            return this;
+        },
+
+        fromRotation: function(rad, axis) {
+            mat4.fromRotation(this.array, rad, axis.array);
+            return this;
+        },
+
+        fromXRotation: function(rad) {
+            mat4.fromXRotation(this.array, rad);
+            return this;
+        },
+        fromYRotation: function(rad) {
+            mat4.fromYRotation(this.array, rad);
+            return this;
+        },
+        fromZRotation: function(rad) {
+            mat4.fromZRotation(this.array, rad);
+            return this;
+        },
+
+        fromRotationTranslation: function(q, v) {
+            mat4.fromRotationTranslation(this.array, q.array, v.array);
+            return this;
+        },
+
+        fromRotationTranslationScale: function(q, v, s) {
+            mat4.fromRotationTranslationScale(this.array, q.array, v.array, s.array);
+            return this;
+        },
+
+        fromRotationTranslationScaleOrigin: function(q, v, s, o) {
+            mat4.fromRotationTranslationScaleOrigin(this.array, q.array, v.array, s.array, o.array);
+            return this;
+        },
+
+        fromQuat: function(q) {
+            mat4.fromQuat(this.array, q.array);
+            return this;
+        },
+
+        frustum: function(left, right, bottom, top, near, far) {
+            mat4.frustum(this.array, left, right, bottom, top, near, far);
+            return this;
+        },
+
+        perspective: function(fovy, aspect, near, far) {
+            mat4.perspective(this.array, fovy, aspect, near, far);
+            return this;
+        },
+
+        perspectiveFromFieldOfView: function(fov, near, far) {
+            mat4.perspectiveFromFieldOfView(this.array, fov, near, far);
+            return this;
+        },
+
+        ortho: function(left, right, bottom, top, near, far) {
+            mat4.ortho(this.array, left, right, bottom, top, near, far);
+            return this;
+        },
+
+        lookAt: function(eye, center, up) {
+            mat4.lookAt(this.array, eye.array, center.array, up.array);
+            return this;
+        },
+    });
+
+    glb.Matrix4.mul = function(a, b) {
+        var result = glb.Matrix4();
+        mat4.mul(result.array, a.array, b.array);
+        return result;
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.Quat", {
+
+        array: null,
+
+        init: function(x, y, z, w) {
+            this.array = quat.create();
+            this.set(x || 0, y || 0, z || 0, w || 1);
+        },
+
+        set: function(x, y, z, w) {
+            quat.set(this.array, x, y, z, w);
+            return this;
+        },
+
+        rotationTo: function(va, vb) {
+            quat.rotationTo(this.array, va.array, vb.array);
+            return this;
+        },
+
+        setAxes: function(view, right, up) {
+            quat.setAxes(this.array, view.array, right.array, up.array);
+            return this;
+        },
+
+        clone: function() {
+            var result = glb.Quat();
+            quat.clone(result.array, this.array);
+            return result;
+        },
+
+        identity: function() {
+            quat.identity(this.array);
+            return this;
+        },
+
+        setAxisAngle: function(axis, rad) {
+            quat.setAxisAngle(this.array, axis.array, rad);
+            return this;
+        },
+
+        add: function(q) {
+            quat.add(this.array, this.array, q.array);
+            return this;
+        },
+
+        mul: function(q) {
+            quat.multiply(this.array, this.array, q.array);
+            return this;
+        },
+
+        rotateX: function(rad) {
+            quat.rotateX(this.array, this.array, rad);
+            return this;
+        },
+        rotateY: function(rad) {
+            quat.rotateY(this.array, this.array, rad);
+            return this;
+        },
+        rotateZ: function(rad) {
+            quat.rotateZ(this.array, this.array, rad);
+            return this;
+        },
+
+        calculateW: function() {
+            quat.calculateW(this.array, this.array);
+            return this;
+        },
+
+        dot: function(q) {
+            return quat.dot(this.array, q.array);
+        },
+
+        slerp: function(q, t) {
+            quat.slerp(this.array, this.array, q.array, t);
+            return this;
+        },
+        
+        invert: function() {
+            quat.invert(this.array, this.array);
+            return this;
+        },
+        
+        conjugate: function() {
+            quat.conjugate(this.array, this.array);
+            return this;
+        },
+        
+        length: function() {
+            return quat.length(this.array);
+        },
+        squaredLength: function() {
+            return quat.squaredLength(this.array);
+        },
+        
+        normalize: function() {
+            quat.normalize(this.array, this.array);
+            return this;
+        },
+        
+        fromMat3: function(m) {
+            quat.fromMat3(this.array, m.array);
+            return this;
+        },
+
+    });
+
+    glb.Quat.slerp = function(a, b, t) {
+        var result = glb.Quat();
+        quat.slerp(result.array, a.array, b.array, t);
+        return result;
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.Vector2", {
+
+        init: function(x, y) {
+            this.array = vec2.create();
+            this.set(x || 0, y || 0);
+        },
+
+        clone: function() {
+            return glb.Vector2(this.x, this.y);
+        },
+
+        set: function(x, y) {
+            vec2.set(this.array, x, y);
+            return this;
+        },
+
+        add: function(v) {
+            vec2.add(this.array, this.array, v.array);
+            return this;
+        },
+
+        sub: function(v) {
+            vec2.sub(this.array, this.array, v.array);
+            return this;
+        },
+
+        mul: function(v) {
+            vec2.scale(this.array, this.array, v);
+            return this;
+        },
+
+        length: function() {
+            return vec2.length(this.array);
+        },
+
+        squaredLength: function() {
+            return vec2.squaredLength(this.array);
+        },
+
+        negate: function() {
+            vec2.negate(this.array, this.array);
+            return this;
+        },
+
+        inverse: function() {
+            vec2.inverse(this.array, this.array);
+            return this;
+        },
+
+        normalize: function() {
+            vec2.normalize(this.array, this.array);
+            return this;
+        },
+
+        dot: function(v) {
+            return vec2.dot(this.array, v.array);
+        },
+
+        cross: function(v) {
+            var result = glb.Vector3();
+            vec2.cross(result.array, this.array, v.array);
+            return result;
+        },
+        
+        fromAngleLength: function(rad, len) {
+            return this.set(Math.cos(rad) * len, Math.sin(rad) * len);
+        },
+
+    });
+
+    glb.Vector2.prototype.accessor("x", {
+        set: function(v) {
+            this.array[0] = v;
+        },
+        get: function() {
+            return this.array[0];
+        },
+    });
+    glb.Vector2.prototype.accessor("y", {
+        set: function(v) {
+            this.array[1] = v;
+        },
+        get: function() {
+            return this.array[1];
+        },
+    });
+
+    glb.Vector2.distance = function(a, b) {
+        return vec2.distance(a.array, b.array);
+    };
+    glb.Vector2.squaredDistance = function(a, b) {
+        return vec2.squaredDistance(a.array, b.array);
+    };
+
+})();
+
+(function() {
+    tm.define("glb.Vector3", {
+        array: null,
+
+        init: function(x, y, z) {
+            this.array = vec3.create();
+            this.set(x || 0, y || 0, z || 0);
+        },
+
+        set: function(x, y, z) {
+            vec3.set(this.array, x, y, z);
+            return this;
+        },
+
+        clone: function() {
+            return glb.Vector3(this.x, this.y, this.z);
+        },
+        
+        add: function(v) {
+            vec3.add(this.array, this.array, v.array);
+            return this;
+        },
+        
+        sub: function(v) {
+            vec3.sub(this.array, this.array, v.array);
+            return this;
+        },
+        
+        mul: function(v) {
+            vec3.scale(this.array, v);
+            return this;
+        },
+        
+        length: function() {
+            return vec3.length(this.array);
+        },
+        squaredLength: function() {
+            return vec3.squaredLength(this.array);
+        },
+        
+        negate: function() {
+            vec3.negate(this.array, this.array);
+            return this;
+        },
+        
+        inverse: function() {
+            vec3.inverse(this.array, this.array);
+            return this;
+        },
+        
+        normalize: function() {
+            vec3.normalize(this.array, this.array);
+            return this;
+        },
+        
+        dot: function(v) {
+            return vec3.dot(this.array, v.array);
+        },
+        
+        cross: function(v) {
+            var result = glb.Vector3();
+            vec3.create(result.array, this.array, v.array);
+            return result;
+        },
+        
+        transformMat4: function(m) {
+            vec3.transformMat4(this.array, this.array, m.array);
+            return this;
+        },
+
+        transformMat3: function(m) {
+            vec3.transformMat3(this.array, this.array, m.array);
+            return this;
+        },
+        
+        transformQuat: function(q) {
+            vec3.transformQuat(this.array, this.array, q.array);
+            return this;
+        },
+        
+    });
+
+    glb.Vector3.prototype.accessor("x", {
+        set: function(v) {
+            this.array[0] = v;
+        },
+        get: function() {
+            return this.array[0];
+        },
+    });
+    glb.Vector3.prototype.accessor("y", {
+        set: function(v) {
+            this.array[1] = v;
+        },
+        get: function() {
+            return this.array[1];
+        },
+    });
+    glb.Vector3.prototype.accessor("z", {
+        set: function(v) {
+            this.array[2] = v;
+        },
+        get: function() {
+            return this.array[2];
+        },
+    });
+    
+    glb.Vector3.distance = function(a, b) {
+        return vec3.distance(a.array, b.array);
+    };
+    glb.Vector3.squaredDistance = function(a, b) {
+        return vec3.squaredDistance(a.array, b.array);
+    };
+    
+    glb.Vector3.angle = function(a, b) {
+        return vec3.angle(a.array, b.array);
+    }
+
+    glb.Vector3.X = glb.Vector3(1, 0, 0);
+    glb.Vector3.Y = glb.Vector3(0, 1, 0);
+    glb.Vector3.Z = glb.Vector3(0, 0, 1);
+
+})();
+
+(function() {
+
+    tm.define("glb.Camera", {
+
+        position: null,
+        target: null,
+        up: null,
+        vMatrix: null,
+        pMatrix: null,
+        vpMatrix: null,
+
+        init: function() {
+            this.position = glb.Vector3(0, 0, SCREEN_WIDTH * 0.5);
+            this.target = glb.Vector3();
+            this.up = glb.Vector3(0, 1, 0);
+            this.vMatrix = glb.Matrix4();
+            this.pMatrix = this._setupProjectionMatrix();
+            this.vpMatrix = glb.Matrix4();
+
+            this.updateMatrix();
+
+            this._defineAccessors();
+        },
+        
+        _setupProjectionMatrix: function() {
+            return glb.Matrix4().perspective(45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
+        },
+
+        _defineAccessors: function() {
+            this.accessor("x", {
+                set: function(v) {
+                    this.position.x = v;
+                },
+                get: function() {
+                    return this.position.x;
+                },
+            });
+            this.accessor("y", {
+                set: function(v) {
+                    this.position.y = v;
+                },
+                get: function() {
+                    return this.position.y;
+                },
+            });
+            this.accessor("z", {
+                set: function(v) {
+                    this.position.z = v;
+                },
+                get: function() {
+                    return this.position.z;
+                },
+            });
+        },
+
+        setPosition: function(x, y, z) {
+            this.position.set(x, y, z);
+            this.updateMatrix();
+        },
+
+        calcVpMatrix: function() {
+            this.vpMatrix = glb.Matrix4.mul(this.pMatrix, this.vMatrix);
+            return this.vpMatrix;
+        },
+
+        updateMatrix: function() {
+            this.vMatrix.lookAt(this.position, this.target, this.up);
+        },
+
+    });
+
+})();
+
+
+tm.define("glb.DirectionalLight", {
+    superClass: "tm.app.Element",
+    
+    position: null,
+    
+    init: function() {
+        this.superInit();
+    }
+
+});
+
+tm.define("glb.BoxGeometry", {
+    superClass: "glb.Geometry",
+    
+    vertex: null,
+    uv: null,
+    index: null,
+
+    init: function(w, h, d) {
+        this.superInit();
+
+        w = w || 1;
+        h = h || w;
+        d = d || w;
+        
+        w *= 0.5;
+        h *= 0.5;
+        d *= 0.5;
+
+        this.vertexData = new Float32Array([
+            -w,  h, -d,
+             w,  h, -d,
+            -w,  h,  d,
+             w,  h,  d,
+            -w, -h, -d,
+             w, -h, -d,
+            -w, -h,  d,
+             w, -h,  d,
+        ]);
+        this.uvData = new Float32Array([
+            0, 1,
+            1, 1,
+            0, 0,
+            1, 0,
+            0, 0,
+            1, 0,
+            0, 1,
+            1, 1,
+        ]);
+        this.indexData = new Int16Array([
+            0, 4, 6,
+            0, 6, 2,
+
+            0, 2, 3,
+            0, 3, 1,
+
+            3, 7, 5,
+            3, 5, 1,
+
+            2, 6, 7,
+            2, 7, 3,
+
+            6, 4, 5,
+            6, 5, 7,
+
+            1, 5, 4,
+            1, 4, 0,
+        ]);
+    },
+    
+    initialize: function(glContext) {
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
+    },
+
+});
+
+tm.define("glb.Geometry", {
+    init: function() {},
+
+    initialize: function(glContext) {},
+    
+    bufferUsage: 0,
+
+    createVbo: function(gl, data) {
+        var usage = [gl.STATIC_DRAW, gl.DYNAMIC_DRAW][this.bufferUsage];
+        
+        var vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        return vbo;
+    },
+
+    transfarVbo: function(gl, vbo, data) {
+        var usage = [gl.STATIC_DRAW, gl.DYNAMIC_DRAW][this.bufferUsage];
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        return vbo;
+    },
+
+    createIbo: function(gl, data) {
+        var usage = [gl.STATIC_DRAW, gl.DYNAMIC_DRAW][this.bufferUsage];
+
+        var ibo = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        return ibo;
+    },
+});
+
+tm.define("glb.PlaneGeometry", {
+    superClass: "glb.Geometry",
+    
+    vertex: null,
+    uv: null,
+    index: null,
+
+    init: function(size, frameCountH, frameCountV) {
+        this.superInit();
+
+        size = size || 32;
+        frameCountH = frameCountH || 1;
+        frameCountV = frameCountV || 1;
+
+        this.vertexData = new Float32Array([
+            -size * 0.5, -size * 0.5, 0,
+             size * 0.5, -size * 0.5, 0,
+            -size * 0.5,  size * 0.5, 0,
+             size * 0.5,  size * 0.5, 0,
+        ]);
+        this.uvData = new Float32Array([
+            0,               1 / frameCountV,
+            1 / frameCountH, 1 / frameCountV,
+            0,               0,
+            1 / frameCountH, 0,
+        ]);
+        this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
+    },
+    
+    initialize: function(glContext) {
+        var gl = glContext.gl;
+        this.vertex = this.createVbo(gl, this.vertexData);
+        this.uv = this.createVbo(gl, this.uvData);
+        this.index = this.createIbo(gl, this.indexData);
+    },
+    
+});
+
+tm.define("glb.GLContext", {
+
+    element: null,
+    gl: null,
+
+    init: function(canvasId) {
+        this.element = window.document.querySelector(canvasId);
+        this.gl = this.element.getContext("webgl");
+
+        var gl = this.gl;
+        gl.clearColor(0, 0, 0, 1);
+        gl.clearDepth(1);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+        gl.enable(gl.CULL_FACE);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.activeTexture(gl.TEXTURE0);
+    },
+
+    resize: function(width, height) {
+        this.element.width = width;
+        this.element.height = height;
+        this.gl.viewport(0, 0, width, height);
+        return this;
+    },
+
+    fitWindow: function(everFlag) {
+        var _fitFunc = function() {
+            everFlag = everFlag === undefined ? true : everFlag;
+            var e = this.element;
+            var s = e.style;
+
+            s.position = "absolute";
+            s.margin = "auto";
+            s.left = "0px";
+            s.top = "0px";
+            s.bottom = "0px";
+            s.right = "0px";
+
+            var rateWidth = e.width / window.innerWidth;
+            var rateHeight = e.height / window.innerHeight;
+            var rate = e.height / e.width;
+
+            if (rateWidth > rateHeight) {
+                s.width = (innerWidth).floor() + "px";
+                s.height = (innerWidth * rate).floor() + "px";
+            } else {
+                s.width = (innerHeight / rate).floor() + "px";
+                s.height = (innerHeight).floor() + "px";
+            }
+        }.bind(this);
+
+        // 一度実行しておく
+        _fitFunc();
+        // リサイズ時のリスナとして登録しておく
+        if (everFlag) {
+            window.addEventListener("resize", _fitFunc, false);
+        }
+
+        return this;
+    },
+
+    createTexture: function(img) {
+        var gl = this.gl;
+        var texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        gl.generateMipmap(gl.TEXTURE_2D);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        return texture;
+    },
+
+    attachScreen: function(screen) {
+        var gl = this.gl;
+
+        if (screen) {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, screen.frameBuffer);
+        } else {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        }
+
+        return this;
+    },
+
+    render: function(scene, camera) {
+        var gl = this.gl;
+
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.renderObj(scene, camera.calcVpMatrix());
+        gl.flush();
+    },
+    renderObj: function(obj, vpMatrix) {
+        if (!obj.isInitialized) {
+            obj.initialize && obj.initialize(this);
+            obj.isInitialized = true;
+        }
+        if (obj.render) {
+            obj.render(this, vpMatrix);
+        }
+        obj.children.forEach(function(child) {
+            this.renderObj(child, vpMatrix);
+        }.bind(this));
+    },
+
+});
+
+(function() {
+
+    tm.define("glb.BasicMaterial", {
+        superClass: "glb.Material",
+
+        color: null,
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+
+            this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
+            this.image = image;
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+        
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            this.superSetAttributes(glContext, attributeValues);
+
+            var gl = glContext.gl;
+
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+            
+            this.setUniform(glContext, "color", this.color);
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        setRGBA: function(r, g, b, a) {
+            this.color[0] = r;
+            this.color[1] = g;
+            this.color[2] = b;
+            this.color[3] = a;
+            return this;
+        },
+
+        setColor: function(color) {
+            vec4.copy(this.color, color);
+            return this;
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+            gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "vertex",
+        size: 3,
+    }, {
+        name: "uv",
+        size: 2,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "mMatrix",
+        type: "mat4",
+    }, {
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "texture",
+        type: "texture",
+    }, {
+        name: "uvTranslate",
+        type: "vec2",
+    }, {
+        name: "color",
+        type: "vec4",
+    }, {
+        name: "useTexture",
+        type: "int",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec3 vertex;",
+        "attribute vec2 uv;",
+
+        "uniform mat4 mMatrix;",
+        "uniform mat4 vpMatrix;",
+        "uniform vec4 color;",
+
+        "varying vec2 vUv;",
+        "varying vec4 vColor;",
+
+        "void main(void) {",
+        "    vUv = uv;",
+        "    vColor = color;",
+        "    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+
+        "uniform sampler2D texture;",
+        "uniform vec2 uvTranslate;",
+        "uniform int useTexture;",
+
+        "varying vec2 vUv;",
+        "varying vec4 vColor;",
+
+        "void main(void) {",
+        "    if (bool(useTexture)) {",
+        "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
+        "    } else {",
+        "        gl_FragColor = vColor;",
+        "    }",
+        "}",
+    ].join("\n");
+
+})();
+
+(function() {
+
+    tm.define("glb.Material", {
+
+        program: null,
+
+        attributes: null,
+        uniforms: null,
+
+        init: function() {
+        },
+
+        initialize: function(glContext) {
+            this._createProgram(glContext);
+        },
+        
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+
+        _createProgram: function(glContext) {
+            var gl = glContext.gl;
+            var vs = this._createShader(gl, gl.VERTEX_SHADER, this._getVertexShaderSource());
+            var fs = this._createShader(gl, gl.FRAGMENT_SHADER, this._getFragmentShaderSource());
+            this.program = gl.createProgram();
+            gl.attachShader(this.program, vs);
+            gl.attachShader(this.program, fs);
+            gl.linkProgram(this.program);
+            if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+                throw new Error(gl.getProgramInfoLog(this.program));
+            }
+
+            this.attributes = this._getAttributeMetaData().reduce(function(attributes, attr) {
+                attributes[attr.name] = {
+                    name: attr.name,
+                    size: attr.size,
+                    location: gl.getAttribLocation(this.program, attr.name),
+                };
+                return attributes;
+            }.bind(this), {});
+
+            this.uniforms = this._getUniformMetaData().reduce(function(uniforms, uni) {
+                uniforms[uni.name] = {
+                    name: uni.name,
+                    type: uni.type,
+                    location: gl.getUniformLocation(this.program, uni.name),
+                };
+                return uniforms;
+            }.bind(this), {});
+
+            return this;
+        },
+        _createShader: function(gl, type, source) {
+            var shader = gl.createShader(type);
+            gl.shaderSource(shader, source)
+            gl.compileShader(shader);
+            if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                return shader;
+            } else {
+                console.error(gl.getShaderInfoLog(shader));
+            }
+        },
+
+        setProgram: function(glContext) {
+            var gl = glContext.gl;
+            gl.useProgram(this.program);
+        },
+
+        setAttributes: function(glContext, attributeValues) {
+            var gl = glContext.gl;
+            var attributes = this.attributes;
+
+            Object.keys(this.attributes).forEach(function(name) {
+                var attr = attributes[name];
+
+                if (attributeValues[name]) {
+                    gl.bindBuffer(gl.ARRAY_BUFFER, attributeValues[name]);
+                    gl.enableVertexAttribArray(attr.location);
+                    gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
+                }
+            });
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            var gl = glContext.gl;
+            var self = this;
+            var uniforms = this.uniforms;
+
+            Object.keys(this.uniforms).forEach(function(name) {
+                var attr = uniforms[name];
+
+                if (uniformValues[name]) {
+                    self.setUniform(glContext, name, uniformValues[name]);
+                }
+            });
+        },
+
+        setUniform: function(glContext, name, value) {
+            var gl = glContext.gl;
+
+            var uni = this.uniforms[name];
+            
+            if (value.array) {
+                value = value.array;
+            }
+
+            if (uni) {
+                switch (uni.type) {
+                    case "float":
+                        gl.uniform1f(uni.location, value);
+                        break;
+                    case "int":
+                        gl.uniform1i(uni.location, value);
+                        break;
+                    case "vec2":
+                        gl.uniform2fv(uni.location, value);
+                        break;
+                    case "vec3":
+                        gl.uniform3fv(uni.location, value);
+                        break;
+                    case "vec4":
+                        gl.uniform4fv(uni.location, value);
+                        break;
+                    case "mat3":
+                        gl.uniformMatrix3fv(uni.location, false, value);
+                        break;
+                    case "mat4":
+                        gl.uniformMatrix4fv(uni.location, false, value);
+                        break;
+                }
+            }
+        },
+
+        draw: function(glContext, length) {},
+    });
+
+    glb.Material.prototype.superSetAttributes = glb.Material.prototype.setAttributes;
+    glb.Material.prototype.superSetUniforms = glb.Material.prototype.setUniforms;
+
+    var ATTRIBUTE_META_DATA = [];
+
+    var UNIFORM_META_DATA = [];
+
+    var VERTEX_SHADER_SOURCE = [
+        "void main(void) {",
+        "    gl_Position = vec4(1.0);",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+
+        "void main(void) {",
+        "    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);",
+        "}",
+    ].join("\n");
+
+})();
+
+(function() {
+
+    tm.define("glb.Mesh", {
+        superClass: "glb.Object3D",
+
+        mMatrix: null,
+        vpMatrix: null,
+        uvTranslate: null,
+
+        position: null,
+        rotation: null,
+        scale: null,
+
+        geometry: null,
+        material: null,
+
+        init: function(geometry, material) {
+            this.superInit();
+
+            this.mMatrix = glb.Matrix4();
+            this.uvTranslate = glb.Vector2();
+
+            this.position = glb.Vector3();
+            this.rotation = glb.Quat();
+            this.scale = glb.Vector3(1, 1, 1);
+
+            this.geometry = geometry;
+            this.material = material;
+
+            this.updateMatrix();
+
+            this._defineAccessors();
+        },
+        
+        setGeometry: function(geometry) {
+            this.geometry = geometry;
+            return this;
+        },
+        getMaterial: function(material) {
+            this.material = material;
+            return this;
+        },
+
+        _defineAccessors: function() {
+            this.accessor("x", {
+                set: function(v) {
+                    this.position.x = v;
+                },
+                get: function() {
+                    return this.position.x;
+                },
+            });
+            this.accessor("y", {
+                set: function(v) {
+                    this.position.y = v;
+                },
+                get: function() {
+                    return this.position.y;
+                },
+            });
+            this.accessor("z", {
+                set: function(v) {
+                    this.position.z = v;
+                },
+                get: function() {
+                    return this.position.z;
+                },
+            });
+            this.accessor("scaleX", {
+                set: function(v) {
+                    this.scale.x = v;
+                },
+                get: function() {
+                    return this.scale.x;
+                },
+            });
+            this.accessor("scaleY", {
+                set: function(v) {
+                    this.scale.y = v;
+                },
+                get: function() {
+                    return this.scale.y;
+                },
+            });
+            this.accessor("scaleZ", {
+                set: function(v) {
+                    this.scale.z = v;
+                },
+                get: function() {
+                    return this.scale.z;
+                },
+            });
+        },
+
+        initialize: function(glContext) {
+            this.geometry.initialize(glContext);
+            this.material.initialize(glContext);
+        },
+
+        updateMatrix: function() {
+            this.mMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
+            return this;
+        },
+
+        render: function(glContext, vpMatrix) {
+            var gl = glContext.gl;
+            
+            this.updateMatrix();
+
+            this.material.setProgram(glContext);
+            this.material.setAttributes(glContext, this.geometry);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+
+            this.material.setUniforms(glContext, this);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+            
+            this.material.draw(glContext, this.geometry.indexData.length);
+        },
+
+        setPosition: function(x, y, z) {
+            this.position.set(x, y, z);
+            return this;
+        },
+
+        setScale: function(x, y, z) {
+            if (arguments.length === 1) {
+                y = x;
+                z = x;
+            }
+            this.scale.set(x, y, z);
+            return this;
+        },
+
+        setRotationX: function(rad) {
+            this.rotation.setAxisAngle(glb.Vector3.X, rad);
+            return this;
+        },
+
+        setRotationY: function(rad) {
+            this.rotation.setAxisAngle(glb.Vector3.Y, rad);
+            return this;
+        },
+
+        setRotationZ: function(rad) {
+            this.rotation.setAxisAngle(glb.Vector3.Z, rad);
+            return this;
+        },
+
+        translate: function(x, y, z) {
+            this.position[0] += x;
+            this.position[1] += y;
+            this.position[2] += z;
+            return this;
+        },
+
+        scale: function(x, y, z) {
+            if (arguments.length === 1) {
+                y = x;
+                z = x;
+            }
+            this.scale[0] *= x;
+            this.scale[1] *= y;
+            this.scale[2] *= z;
+            return this;
+        },
+
+        rotateX: function(rad) {
+            this.rotation.rotateX(rad);
+            return this;
+        },
+        rotateY: function(rad) {
+            this.rotation.rotateY(rad);
+            return this;
+        },
+        rotateZ: function(rad) {
+            this.rotation.rotateZ(rad);
+            return this;
+        },
+    });
+})();
+
+tm.define("glb.Object3D", {
+    superClass: "tm.app.Element",
+
+    init: function() {
+        this.superInit();
+    },
+
+    initialize: function(glContext) {},
+
+    update: function(app) {
+
+    },
+
+    draw: function(glContext, vpMatrix) {},
+
+});
+
+tm.define("glb.OrthoCamera", {
+    superClass: "glb.Camera",
+
+    init: function() {
+        this.superInit();
+    },
+
+    _setupProjectionMatrix: function() {
+        return glb.Matrix4().ortho(
+            SCREEN_WIDTH * -0.5,
+            SCREEN_WIDTH * 0.5,
+            SCREEN_HEIGHT * -0.5,
+            SCREEN_HEIGHT * 0.5,
+            0.1,
+            1000
+        );
+    },
+
+});
+
+tm.define("glb.Scene", {
+    superClass: "glb.Object3D",
+    init: function() {
+        this.superInit();
+    }
+});
+
+tm.define("glb.Screen", {
+
+    depthRenderBuffer: null,
+    frameBuffer: null,
+    texture: null,
+
+    init: function(width, height) {
+        this.width = width || 512;
+        this.height = height || 512;
+    },
+
+    initialize: function(glContext) {
+        var gl = glContext.gl;
+
+        this.frameBuffer = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
+
+        this.depthRenderBuffer = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthRenderBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
+        
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.depthRenderBuffer);
+        
+        this.texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this.width, this.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        
+        gl.texParameter(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameter(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        
+        gl.frameBufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+        
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        
+        return this;
+    },
+});
+
+tm.define("glb.GameScene", {
+    superClass: "tm.app.Scene",
+    init: function() {
+        this.superInit();
+
+        this.fromJSON({
+            children: {
+                hud: {
+                    type: "glb.Hud",
+                    x: 0,
+                    y: 0,
+                }
+            }
+        });
+
+        this._renderable = true;
+        this.glContext = null;
+
+        this.camera = glb.Camera();
+
+        this.on("enter", function(e) {
+            e.app.background = "transparent";
+            this.glContext = e.app.glContext;
+        });
+
+        // var axis = glb.Vector3(3, 1, 0).normalize();
+        // var rot = glb.Quat().setAxisAngle(axis, 0.02);
+        // glb.Mesh(
+        //     glb.BoxGeometry(60),
+        //     glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
+        // )
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         this.rotation.mul(rot);
+        //     });
+
+        // var axis2 = glb.Vector3(-3, 1, 0).normalize();
+        // var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
+        // glb.Mesh(
+        //     glb.BoxGeometry(60, 20, 100),
+        //     glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
+        // )
+        //     .setPosition(-30, 0, 0)
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         this.rotation.mul(rot2);
+        //     });
+
+        // var geo = glb.PlaneGeometry(32, 8, 1);
+        // var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
+        // this.on("enterframe", function(e) {
+        //     if (e.app.frame % 5 !== 0) return;
+
+        //     var dir = Math.randf(0, Math.PI * 2);
+        //     var bullet = glb.Mesh(geo, mat)
+        //         .addChildTo(this)
+        //         .setRotationZ(dir)
+        //         .on("enterframe", function(e) {
+        //             this.x += Math.cos(dir) * 2;
+        //             this.y += Math.sin(dir) * 2;
+        //             this.setScale(1, 0.9 + Math.sin(e.app.frame) * 0.1, 1);
+
+        //             if (this.x < -SCREEN_WIDTH * 0.5 || SCREEN_WIDTH * 0.5 < this.x
+        //                 || this.y < -SCREEN_HEIGHT * 0.5 || SCREEN_HEIGHT * 0.5 < this.y) {
+        //                 this.remove();
+        //             }
+        //         });
+        //     bullet.uvTranslate.x = Math.rand(0, 7) / 8;
+        // });
+
+        var bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
+        this.on("enterframe", function(e) {
+            var f = e.app.frame;
+            if (f % 10 !== 0) return;
+            var way = 2;
+            Array.range(0, way).forEach(function(i) {
+                var d = Math.PI*2 * i/way + e.app.frame * 0.1;
+                var s = 1.5;
+                bullets.spawn(
+                    glb.Vector2().fromAngleLength(f * 0.02, 60),
+                    glb.Vector2().fromAngleLength(d, s),
+                    0
+                );
+
+                bullets.spawn(
+                    glb.Vector2().fromAngleLength(f * 0.02 + Math.PI, 60),
+                    glb.Vector2().fromAngleLength(d, s),
+                    4
+                );
+
+                d = Math.PI*2 * i/way - e.app.frame * 0.1;
+                s = 1.2;
+
+                bullets.spawn(
+                    glb.Vector2().fromAngleLength(f * -0.02 + Math.PI * 0.5, 40),
+                    glb.Vector2().fromAngleLength(d, s),
+                    8
+                );
+                bullets.spawn(
+                    glb.Vector2().fromAngleLength(f * -0.02 + Math.PI * 1.5, 40),
+                    glb.Vector2().fromAngleLength(d, s),
+                    10
+                );
+            });
+        });
+        
+        tm.display.Label("bullet count = 0", 40)
+            .setFillStyle("darkgreen")
+            .setPosition(200, 30)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                this.text = "bullet count = " + bullets.bullets.length;
+            });
+            
+        var particles = glb.Particle(tm.asset.Manager.get("particles").element).addChildTo(this);
+        this.on("enterframe", function() {
+            (50).times(function() {
+                var d = Math.randf(-Math.PI, Math.PI);
+                var s = 0.8;
+
+                var v = glb.Vector2().fromAngleLength(d, s);
+                var a = glb.Vector2(0, 0.05);
+                particles.spawn({
+                    position: glb.Vector2(Math.rand(-100, 100), SCREEN_HEIGHT * -0.15),
+                    velocity: v,
+                    accel: a,
+                    ttl: 50 * 0.0001,
+                    sizeFrom: 10,
+                    sizeTo: 300,
+                    type: 2,
+                });
+            });
+        });
+        
+    },
+
+    draw: function() {
+        this.glContext.render(this, this.camera);
+    },
+});
+
+//# sourceMappingURL=game.js.map
