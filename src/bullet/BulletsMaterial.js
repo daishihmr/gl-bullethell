@@ -70,6 +70,9 @@
     }, {
         name: "active",
         size: 1,
+    }, {
+        name: "type",
+        size: 1,
     }, ];
 
     var UNIFORM_META_DATA = [{
@@ -85,35 +88,16 @@
         "attribute vec2 velocity;",
         "attribute float spawnTime;",
         "attribute float active;",
+        "attribute float type;",
 
         "uniform mat4 vpMatrix;",
         "uniform float time;",
 
+        "varying float vAge;",
         "varying float vActive;",
+        "varying float vType;",
         "varying float vAngle;",
-
-        "void main(void) {",
-        "    vActive = active;",
-        "    if (active < 0.5) {",
-        "        vAngle = 0.0;",
-        "        gl_Position = vec4(0.0);",
-        "        gl_PointSize = 0.0;",
-        "    } else {",
-        "        vAngle = atan(velocity.y, velocity.x);",
-        "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
-        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
-        "        gl_PointSize = 64.0;",
-        "    }",
-        "}",
-    ].join("\n");
-
-    var FRAGMENT_SHADER_SOURCE = [
-        "precision mediump float;",
-
-        "uniform sampler2D texture;",
-
-        "varying float vActive;",
-        "varying float vAngle;",
+        "varying mat3 vUvMat;",
 
         "mat3 translate(float x, float y) {",
         "    return mat3(",
@@ -134,12 +118,47 @@
         "}",
 
         "void main(void) {",
+        "    vActive = active;",
+        "    vType = type;",
+        "    if (active < 0.5) {",
+        "        vAngle = 0.0;",
+        "        gl_Position = vec4(0.0);",
+        "        gl_PointSize = 0.0;",
+        "    } else {",
+        "        if (type < 8.0) {",
+        "            vAngle = atan(velocity.y, velocity.x);",
+        "        } else {",
+        "            vAngle = time * 3000.0;",
+        "        }",
+        "        vAge = time - spawnTime;",
+        "        vUvMat = translate(0.5, 0.5) * rotate(vAngle) * translate(-0.5, -0.5);",
+        "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
+        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
+        "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
+        "        gl_PointSize = 80.0 + c;",
+        "    }",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+        
+        "uniform sampler2D texture;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vType;",
+        "varying float vAngle;",
+        "varying mat3 vUvMat;",
+
+        "void main(void) {",
         "    if (vActive < 0.5) discard;",
 
-        // "    mat3 m = translate(-0.5, -0.5) * rotate(vAngle) * translate(0.5, 0.5);",
-        // "    vec3 uv = m * vec3(gl_PointCoord, 1.0);",
-        "    vec2 uv = vec2(gl_PointCoord.x * 0.125, gl_PointCoord.y);",
-        "    gl_FragColor = texture2D(texture, uv);",
+        "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
+        "    vec3 uv = vUvMat * buv;",
+        "    float c = sin(vAge * 6200.0) * 0.12;",
+        "    vec4 light = vec4(0.0, c, 0.0, 0.0);",
+        "    gl_FragColor = light + texture2D(texture, vec2((uv.x + vType) * 0.0625, uv.y));",
         "}",
     ].join("\n");
 

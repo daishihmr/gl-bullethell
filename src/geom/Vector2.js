@@ -63,6 +63,10 @@
             vec2.cross(result.array, this.array, v.array);
             return result;
         },
+        
+        fromAngleLength: function(rad, len) {
+            return this.set(Math.cos(rad) * len, Math.sin(rad) * len);
+        },
 
     });
 

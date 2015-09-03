@@ -56,8 +56,8 @@
             this.material.draw(glContext, this.geometry.COUNT);
         },
 
-        spawn: function(pos, vel) {
-            var index = this.geometry.spawn(pos, vel);
+        spawn: function(pos, vel, type) {
+            var index = this.geometry.spawn(pos, vel, type);
             if (index < 0) return;
             this.bullets.push({
                 position: pos,

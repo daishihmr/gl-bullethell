@@ -69,23 +69,48 @@ tm.define("glb.GameScene", {
         // });
 
         var bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
-
         this.on("enterframe", function(e) {
-            Array.range(0, 6).forEach(function(i) {
-                var d = Math.PI * 2 * i / 6 + e.app.frame * 0.1;
+            var f = e.app.frame;
+            if (f % 1 !== 0) return;
+            var way = 6;
+            Array.range(0, way).forEach(function(i) {
+                var d = Math.PI * 2 * i / way + e.app.frame * 0.1;
                 var s = 1.5;
                 bullets.spawn(
-                    glb.Vector2(0, 0),
-                    glb.Vector2(Math.cos(d) * s, Math.sin(d) * s)
+                    glb.Vector2().fromAngleLength(f * 0.04, 60),
+                    glb.Vector2().fromAngleLength(d, s),
+                    0
                 );
 
-                d = Math.PI * 2 * i / 6 - e.app.frame * 0.1;
                 bullets.spawn(
-                    glb.Vector2(0, 0),
-                    glb.Vector2(Math.cos(d) * s, Math.sin(d) * s)
+                    glb.Vector2().fromAngleLength(f * 0.04 + Math.PI, 60),
+                    glb.Vector2().fromAngleLength(d, s),
+                    4
+                );
+
+                d = Math.PI * 2 * i / way - e.app.frame * 0.1;
+                s = 1.2;
+
+                bullets.spawn(
+                    glb.Vector2().fromAngleLength(f * -0.04 + Math.PI * 0.5, 40),
+                    glb.Vector2().fromAngleLength(d, s),
+                    8
+                );
+                bullets.spawn(
+                    glb.Vector2().fromAngleLength(f * -0.04 + Math.PI * 1.5, 40),
+                    glb.Vector2().fromAngleLength(d, s),
+                    10
                 );
             });
         });
+        
+        tm.display.Label("bullet count = 0", 40)
+            .setFillStyle("darkgreen")
+            .setPosition(200, 30)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                this.text = "bullet count = " + bullets.bullets.length;
+            });
     },
 
     draw: function() {

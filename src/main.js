@@ -5,6 +5,8 @@ var SCREEN_HEIGHT = 960;
 
 var ASSETS = {
     bullets: "./asset/bullets.png",
+    
+    test: "./asset/test.png",
 };
 
 tm.main(function() {

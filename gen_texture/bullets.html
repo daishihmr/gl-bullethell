@@ -5,18 +5,18 @@
 <script src="../lib/tmlib.js"></script>
 <script>
 var sz = 64;
-var H = 8;
+var H = 16;
 var V = 1;
 
 tm.main(function() {
     tm.globalize();
     
-    var output = Canvas().resize(sz * H, sz * V);
+    var output = Canvas().resize(sz * 2 * H, sz * 2 * V);
     
     for (var y = 0; y < V; y++) {
         for (var x = 0; x < H; x++) {
             var cell = drawCell(x, y);
-            output.drawImage(cell.element, x * sz, y * sz);
+            output.drawImage(cell.element, (x + 0.25) * sz * 2, (y + 0.25) * sz * 2);
         }
     }
     
@@ -39,7 +39,7 @@ var drawParticle = function(canvas, x, y, radius, colors) {
     
     canvas.globalCompositeOperation = "lighter";
     canvas.setFillStyle(
-        RadialGradient(x, y, 0, x, y, radius)
+        RadialGradient(x + radius * 0.2, y, 0, x, y, radius)
             .addColorStopList(colorStopList)
             .toStyle()
     );
@@ -127,9 +127,8 @@ _(function(canvas) {
             Array.range(0, 90).forEach(function(j, _, range) {
                 var rad = 1 + Math.sin(j / range.length * Math.PI) * 3;
                 drawParticle(canvas, p.x, p.y, rad,
-                    "hsla(230,40%,20%,0.5)",
-                    "hsla(230,60%,30%,0.5)",
-                    "hsla(230,95%,30%,0.5)"
+                    "hsla(230, 80%, 50%,0.1)",
+                    "hsla(230, 50%, 50%,0.11)"
                 );
                 p.add(v);
             });
@@ -211,6 +210,66 @@ _(function(canvas) {
                 p.add(v);
             });
         });
+    });
+});
+
+_(function(canvas) {
+    (20).times(function() {
+        var s = sz * 0.05;
+        var rnd0 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        var rnd1 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        drawParticle(canvas, sz*0.5 + rnd0, sz*0.5 + rnd1, sz*0.3,
+            "hsla(200, 90%, 90%, 0.1)",
+            "hsla(200, 90%, 90%, 0.1)",
+            "hsla(200, 90%, 90%, 0.1)",
+            "hsla(200, 90%, 50%, 0.1)",
+            "hsla(230, 80%, 50%, 0.1)"
+        );
+    });
+});
+
+_(function(canvas) {
+    (30).times(function() {
+        var s = sz * 0.05;
+        var rnd0 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        var rnd1 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        drawParticle(canvas, sz*0.5 + rnd0, sz*0.5 + rnd1, sz*0.2,
+            "hsla(200,100%,100%, 0.1)",
+            "hsla(200,100%, 80%, 0.1)",
+            "hsla(200,100%, 80%, 0.1)",
+            "hsla(200,100%, 50%, 0.1)",
+            "hsla(230, 80%, 50%, 0.1)"
+        );
+    });
+});
+
+_(function(canvas) {
+    (30).times(function() {
+        var s = sz * 0.05;
+        var rnd0 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        var rnd1 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        drawParticle(canvas, sz*0.5 + rnd0, sz*0.5 + rnd1, sz*0.3,
+            "hsla(  2, 90%, 80%, 0.1)",
+            "hsla(  2, 90%, 80%, 0.1)",
+            "hsla(  2, 90%, 80%, 0.1)",
+            "hsla( 50, 90%, 50%, 0.1)",
+            "hsla(  2, 80%, 50%, 0.1)"
+        );
+    });
+});
+
+_(function(canvas) {
+    (30).times(function() {
+        var s = sz * 0.05;
+        var rnd0 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        var rnd1 = (Math.randf(-s, s) + Math.randf(-s, s)) * 0.5;
+        drawParticle(canvas, sz*0.5 + rnd0, sz*0.5 + rnd1, sz*0.2,
+            "hsla(  2,100%,100%, 0.1)",
+            "hsla(  2,100%, 80%, 0.1)",
+            "hsla(  2,100%, 80%, 0.1)",
+            "hsla( 50,100%, 50%, 0.1)",
+            "hsla(  2, 80%, 50%, 0.1)"
+        );
     });
 });
 

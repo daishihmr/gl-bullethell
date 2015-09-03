@@ -3,7 +3,7 @@
     tm.define("glb.BulletsGeometry", {
         superClass: "glb.Geometry",
 
-        COUNT: 4096,
+        COUNT: 8192,
 
         bufferUsage: 1,
 
@@ -11,11 +11,13 @@
         velocityData: null,
         spawnTimeData: null,
         activeData: null,
+        typeData: null,
 
         initialPosition: null,
         velocity: null,
         spawnTime: null,
         active: null,
+        type: null,
 
         time: 0,
 
@@ -36,6 +38,9 @@
             this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return 0;
             }));
+            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
         },
 
         initialize: function(glContext) {
@@ -45,6 +50,7 @@
             this.velocity = this.createVbo(gl, this.velocityData);
             this.spawnTime = this.createVbo(gl, this.spawnTimeData);
             this.active = this.createVbo(gl, this.activeData);
+            this.type = this.createVbo(gl, this.typeData);
         },
 
         rebind: function(gl) {
@@ -52,9 +58,10 @@
             this.transfarVbo(gl, this.velocity, this.velocityData);
             this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
             this.transfarVbo(gl, this.active, this.activeData);
+            this.transfarVbo(gl, this.type, this.typeData);
         },
 
-        spawn: function(pos, vel) {
+        spawn: function(pos, vel, type) {
             var index = find(this.activeData, 0);
             if (index < 0) {
                 console.warn("弾が足りない");
@@ -67,6 +74,7 @@
             this.velocityData[index * 2 + 1] = vel.y;
             this.spawnTimeData[index] = this.time;
             this.activeData[index] = 1;
+            this.typeData[index] = type;
 
             this.vboNeedUpdate = true;
 
