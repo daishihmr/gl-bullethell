@@ -11,6 +11,8 @@
 
             this._normals = [];
             this._texcoords = [];
+            this._materialName = null;
+            
         },
 
         load: function(url) {
@@ -41,6 +43,8 @@
             var m;
             if (line.length === 0 || line[0] === "#") {
                 return;
+            } else if (m = line.match(/^usemtl (.+)$/)) {
+                this._materialName = m[1];
             } else if (m = line.match(/^mtllib (.+)$/)) {
                 var mtlName = m[1];
                 var parent = this.url.substring(0, this.url.lastIndexOf("/"));
@@ -115,6 +119,7 @@
                 a: vs[0],
                 b: vs[1],
                 c: vs[2],
+                materialName: this._materialName,
             });
         },
     });

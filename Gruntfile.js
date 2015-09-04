@@ -16,11 +16,10 @@ module.exports = function(grunt) {
             });
         };
 
-        var libs = scan("./lib").flatten();
         var srcs = scan("./src").flatten().erase("./src/main.js");
         srcs.unshift("./src/main.js");
 
-        return libs.concat(srcs);
+        return srcs;
     };
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
@@ -32,9 +31,20 @@ module.exports = function(grunt) {
             product: {
                 src: getSourceList(),
                 dest: "build/game.js",
+            },
+            develop: {
+                src: getSourceList(),
+                dest: "build/game.js",
+                options: {
+                    sourceMap: true
+                }
             }
         },
         concat: {
+            product: {
+                src: getSourceList(),
+                dest: "build/game.js",
+            },
             develop: {
                 src: getSourceList(),
                 dest: "build/game.js",
@@ -46,10 +56,10 @@ module.exports = function(grunt) {
         watch: {
             develop: {
                 files: getSourceList(),
-                tasks: ["concat"],
+                tasks: ["uglify:develop"],
             }
         }
     });
 
-    grunt.registerTask("default", ["uglify"]);
+    grunt.registerTask("default", ["uglify:product"]);
 };

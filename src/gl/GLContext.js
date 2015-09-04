@@ -3,14 +3,18 @@ tm.define("glb.GLContext", {
     element: null,
     gl: null,
 
+    screen: null,
+
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
-        this.gl = this.element.getContext("webgl", { antialias: false });
+        this.gl = this.element.getContext("webgl", {
+            preserveDrawingBuffer: true
+        });
         this.ext = this.gl.getExtension("OES_vertex_array_object");
         if (this.ext == null) {
             console.warn("VAOはサポートされてない！");
         }
-        
+
         var gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
         gl.clearDepth(1);

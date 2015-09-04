@@ -15,6 +15,7 @@
 
             this.geometry = glb.BulletsGeometry();
             this.material = glb.BulletsMaterial(texture);
+            this.collisionMaterial = glb.BulletsCollisionMaterial();
 
             this.bullets = [];
         },

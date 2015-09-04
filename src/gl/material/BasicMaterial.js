@@ -61,9 +61,9 @@
         },
 
         setRGBA: function(r, g, b, a) {
-            this.color[0] = r;
-            this.color[1] = g;
-            this.color[2] = b;
+            this.color[0] = r / 255;
+            this.color[1] = g / 255;
+            this.color[2] = b / 255;
             this.color[3] = a;
             return this;
         },

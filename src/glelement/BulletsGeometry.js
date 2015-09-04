@@ -88,8 +88,18 @@
 
     });
 
+    var cursor = 0;
     var find = function(array, value) {
-        return Array.prototype.indexOf.call(array, value);
+        var before = cursor;
+        var len = array.length;
+        for (; cursor < len; cursor++) {
+            if (array[cursor] === value) return cursor;
+        }
+        for (cursor = 0; cursor < before; cursor++) {
+            if (array[cursor] === value) return cursor;
+        }
+        cursor = 0;
+        return -1;
     };
 
 })();
