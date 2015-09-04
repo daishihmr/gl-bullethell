@@ -10,7 +10,7 @@
         vpMatrix: null,
 
         init: function() {
-            this.position = glb.Vector3(0, 0, SCREEN_WIDTH * 0.5);
+            this.position = glb.Vector3(0, 0, SCREEN_HEIGHT*0.5 / Math.tan(0.78 * 0.5));
             this.target = glb.Vector3();
             this.up = glb.Vector3(0, 1, 0);
             this.vMatrix = glb.Matrix4();
@@ -23,7 +23,7 @@
         },
         
         _setupProjectionMatrix: function() {
-            return glb.Matrix4().perspective(45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
+            return glb.Matrix4().perspective(0.78, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
         },
 
         _defineAccessors: function() {

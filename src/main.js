@@ -1,14 +1,16 @@
 var glb = {};
 
-var SCREEN_WIDTH = 640;
-var SCREEN_HEIGHT = 960;
+var SCREEN_WIDTH = W = 640;
+var SCREEN_HEIGHT = H = 960;
 
-var BULLET_APPEALANCE = "160.0";
-var GL_QUALITY = "0.5";
+var BULLET_APPEALANCE = SCREEN_WIDTH * 0.2;
+var GL_QUALITY = 0.5;
 
 var ASSETS = {
     bullets: "./asset/bullets.png",
     particles: "./asset/particles.png",
+    
+    hime: "./asset/p32.obj",
     
     test: "./asset/test.png",
 };
@@ -36,3 +38,11 @@ tm.main(function() {
         application.enableStats();
     };
 });
+
+Number.prototype.toFloatString = function() {
+    if (this % 1) {
+        return "" + this;
+    } else {
+        return "" + this + ".0";
+    }
+};

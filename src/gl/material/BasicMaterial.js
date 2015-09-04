@@ -15,7 +15,7 @@
             this.image = image;
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             this._createProgram(glContext);
             if (this.image) {
                 this._createTexture(glContext);
@@ -39,9 +39,11 @@
             this._texture = glContext.createTexture(this.image);
         },
 
-        setAttributes: function(glContext, attributeValues) {
-            this.superSetAttributes(glContext, attributeValues);
-
+        setAttributes: function(glContext, geometry) {
+            this.superSetAttributes(glContext, geometry);
+        },
+        
+        setTextures: function(glContext) {
             var gl = glContext.gl;
 
             if (this.image) {

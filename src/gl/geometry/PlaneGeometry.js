@@ -27,7 +27,7 @@ tm.define("glb.PlaneGeometry", {
         this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
     },
     
-    initialize: function(glContext) {
+    build: function(glContext) {
         var gl = glContext.gl;
         this.vertex = this.createVbo(gl, this.vertexData);
         this.uv = this.createVbo(gl, this.uvData);

@@ -14,6 +14,8 @@
         geometry: null,
         material: null,
 
+        needsUpdate: false,
+
         init: function(geometry, material) {
             this.superInit();
 
@@ -31,7 +33,7 @@
 
             this._defineAccessors();
         },
-        
+
         setGeometry: function(geometry) {
             this.geometry = geometry;
             return this;
@@ -45,6 +47,7 @@
             this.accessor("x", {
                 set: function(v) {
                     this.position.x = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.position.x;
@@ -53,6 +56,7 @@
             this.accessor("y", {
                 set: function(v) {
                     this.position.y = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.position.y;
@@ -61,6 +65,7 @@
             this.accessor("z", {
                 set: function(v) {
                     this.position.z = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.position.z;
@@ -69,6 +74,7 @@
             this.accessor("scaleX", {
                 set: function(v) {
                     this.scale.x = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.scale.x;
@@ -77,6 +83,7 @@
             this.accessor("scaleY", {
                 set: function(v) {
                     this.scale.y = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.scale.y;
@@ -85,6 +92,7 @@
             this.accessor("scaleZ", {
                 set: function(v) {
                     this.scale.z = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.scale.z;
@@ -92,33 +100,54 @@
             });
         },
 
-        initialize: function(glContext) {
-            this.geometry.initialize(glContext);
-            this.material.initialize(glContext);
+        build: function(glContext) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            this.geometry.build(glContext);
+            this.material.build(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+                this.material.setAttributes(glContext, this.geometry);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+                this.material.unsetVao(glContext);
+            }
         },
 
         updateMatrix: function() {
             this.mMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
+            this.needsUpdate = false;
             return this;
         },
 
         render: function(glContext, vpMatrix) {
             var gl = glContext.gl;
-            
+            var ext = glContext.ext;
+
             this.updateMatrix();
 
             this.material.setProgram(glContext);
-            this.material.setAttributes(glContext, this.geometry);
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+            } else {
+                this.material.setAttributes(glContext, this.geometry);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+            }
+            this.material.setTextures(glContext);
 
             this.material.setUniforms(glContext, this);
             this.material.setUniform(glContext, "vpMatrix", vpMatrix);
-            
+
             this.material.draw(glContext, this.geometry.indexData.length);
+
+            if (ext !== null) this.material.unsetVao(glContext);
         },
 
         setPosition: function(x, y, z) {
             this.position.set(x, y, z);
+            this.needsUpdate = true;
             return this;
         },
 
@@ -128,21 +157,25 @@
                 z = x;
             }
             this.scale.set(x, y, z);
+            this.needsUpdate = true;
             return this;
         },
 
         setRotationX: function(rad) {
             this.rotation.setAxisAngle(glb.Vector3.X, rad);
+            this.needsUpdate = true;
             return this;
         },
 
         setRotationY: function(rad) {
             this.rotation.setAxisAngle(glb.Vector3.Y, rad);
+            this.needsUpdate = true;
             return this;
         },
 
         setRotationZ: function(rad) {
             this.rotation.setAxisAngle(glb.Vector3.Z, rad);
+            this.needsUpdate = true;
             return this;
         },
 
@@ -150,6 +183,7 @@
             this.position[0] += x;
             this.position[1] += y;
             this.position[2] += z;
+            this.needsUpdate = true;
             return this;
         },
 
@@ -161,19 +195,23 @@
             this.scale[0] *= x;
             this.scale[1] *= y;
             this.scale[2] *= z;
+            this.needsUpdate = true;
             return this;
         },
 
         rotateX: function(rad) {
             this.rotation.rotateX(rad);
+            this.needsUpdate = true;
             return this;
         },
         rotateY: function(rad) {
             this.rotation.rotateY(rad);
+            this.needsUpdate = true;
             return this;
         },
         rotateZ: function(rad) {
             this.rotation.rotateZ(rad);
+            this.needsUpdate = true;
             return this;
         },
     });

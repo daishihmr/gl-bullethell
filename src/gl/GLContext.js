@@ -5,8 +5,12 @@ tm.define("glb.GLContext", {
 
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
-        this.gl = this.element.getContext("webgl");
-
+        this.gl = this.element.getContext("webgl", { antialias: false });
+        this.ext = this.gl.getExtension("OES_vertex_array_object");
+        if (this.ext == null) {
+            console.warn("VAOはサポートされてない！");
+        }
+        
         var gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
         gl.clearDepth(1);
@@ -15,7 +19,6 @@ tm.define("glb.GLContext", {
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.activeTexture(gl.TEXTURE0);
     },
 
     resize: function(width, height) {
@@ -63,6 +66,9 @@ tm.define("glb.GLContext", {
 
     createTexture: function(img) {
         var gl = this.gl;
+
+        gl.activeTexture(gl.TEXTURE0);
+
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
@@ -91,9 +97,9 @@ tm.define("glb.GLContext", {
         gl.flush();
     },
     renderObj: function(obj, vpMatrix) {
-        if (!obj.isInitialized) {
-            obj.initialize && obj.initialize(this);
-            obj.isInitialized = true;
+        if (!obj.isBuilt) {
+            obj.build && obj.build(this);
+            obj.isBuilt = true;
         }
         if (obj.render) {
             obj.render(this, vpMatrix);

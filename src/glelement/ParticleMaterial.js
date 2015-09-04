@@ -11,7 +11,7 @@
             this.image = image;
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             this._createProgram(glContext);
             if (this.image) {
                 this._createTexture(glContext);
@@ -34,9 +34,11 @@
             this._texture = glContext.createTexture(this.image);
         },
 
-        setAttributes: function(glContext, attributeValues) {
-            this.superSetAttributes(glContext, attributeValues);
-
+        setAttributes: function(glContext, geometry) {
+            this.superSetAttributes(glContext, geometry);
+        },
+        
+        setTextures: function(glContext) {
             var gl = glContext.gl;
             if (this.image) {
                 gl.bindTexture(gl.TEXTURE_2D, this._texture);
@@ -53,8 +55,15 @@
 
         draw: function(glContext, length) {
             var gl = glContext.gl;
+
+            gl.disable(gl.DEPTH_TEST);
+            gl.disable(gl.CULL_FACE);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
             gl.drawArrays(gl.POINTS, 0, length);
+
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.CULL_FACE);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         },
 
@@ -64,10 +73,10 @@
         name: "initialPosition",
         size: 2,
     }, {
-        name: "velocity",
+        name: "velocityFrom",
         size: 2,
     }, {
-        name: "accel",
+        name: "velocityTo",
         size: 2,
     }, {
         name: "spawnTime",
@@ -76,7 +85,7 @@
         name: "active",
         size: 1,
     }, {
-        name: "type",
+        name: "frameIndex",
         size: 1,
     }, {
         name: "ttl",
@@ -105,14 +114,14 @@
 
     var VERTEX_SHADER_SOURCE = [
         "attribute vec2 initialPosition;",
-        "attribute vec2 velocity;",
-        "attribute vec2 accel;",
         "attribute float spawnTime;",
         "attribute float active;",
-        "attribute float type;",
+        "attribute float frameIndex;",
 
         "attribute float ttl;",
 
+        "attribute vec2 velocityFrom;",
+        "attribute vec2 velocityTo;",
         "attribute float sizeFrom;",
         "attribute float sizeTo;",
         "attribute vec4 colorFrom;",
@@ -123,11 +132,14 @@
 
         "varying float vAge;",
         "varying float vActive;",
-        "varying float vType;",
+        "varying float vFrameIndex;",
         "varying float vSize;",
         "varying vec4 vColor;",
         
         "float lerp(float from, float to, float time, float duration) {",
+        "    return from + (to - from) * time / duration;",
+        "}",
+        "vec2 lerp(vec2 from, vec2 to, float time, float duration) {",
         "    return from + (to - from) * time / duration;",
         "}",
         "vec4 lerp(vec4 from, vec4 to, float time, float duration) {",
@@ -136,7 +148,7 @@
 
         "void main(void) {",
         "    vActive = active;",
-        "    vType = type;",
+        "    vFrameIndex = frameIndex;",
         "    if (active < 0.5) {",
         "        gl_Position = vec4(0.0);",
         "        gl_PointSize = 0.0;",
@@ -145,10 +157,11 @@
         "        vSize = lerp(sizeFrom, sizeTo, vAge, ttl);",
         "        vColor = lerp(colorFrom, colorTo, vAge, ttl);",
 
+        "        vec2 v = lerp(velocityFrom, velocityTo, vAge, ttl);",
         "        float tm = vAge * 10000.0;",
-        "        vec2 pos = initialPosition + velocity * tm + accel * (tm * tm * 0.5);",
+        "        vec2 pos = initialPosition + velocityFrom * tm + (v - velocityFrom) * tm * 0.5;",
         "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
-        "        gl_PointSize = vSize * {0};".format(GL_QUALITY),
+        "        gl_PointSize = vSize * {0};".format(GL_QUALITY.toFloatString()),
         "    }",
         "}",
     ].join("\n");
@@ -160,14 +173,14 @@
 
         "varying float vAge;",
         "varying float vActive;",
-        "varying float vType;",
+        "varying float vFrameIndex;",
         "varying float vSize;",
         "varying vec4 vColor;",
 
         "void main(void) {",
         "    if (vActive < 0.5) discard;",
 
-        "    vec2 uv = vec2((gl_PointCoord.x + vType) * 0.0625, gl_PointCoord.y);",
+        "    vec2 uv = vec2((gl_PointCoord.x + vFrameIndex) * 0.0625, gl_PointCoord.y);",
         "    gl_FragColor = vColor * texture2D(texture, uv);",
         "}",
     ].join("\n");

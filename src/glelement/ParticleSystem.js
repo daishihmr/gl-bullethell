@@ -1,6 +1,6 @@
 (function() {
 
-    tm.define("glb.Particle", {
+    tm.define("glb.ParticleSystem", {
         superClass: "glb.Object3D",
 
         geometry: null,
@@ -21,9 +21,18 @@
             this.time = 0;
         },
 
-        initialize: function(glContext) {
-            this.geometry.initialize(glContext);
-            this.material.initialize(glContext);
+        build: function(glContext) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            this.geometry.build(glContext);
+            this.material.build(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+                this.material.setAttributes(glContext, this.geometry);
+                this.material.unsetVao(glContext);
+            }
         },
 
         update: function(app) {
@@ -43,6 +52,7 @@
 
         render: function(glContext, vpMatrix) {
             var gl = glContext.gl;
+            var ext = glContext.ext;
 
             if (this.geometry.vboNeedUpdate) {
                 this.geometry.rebind(gl);
@@ -50,13 +60,21 @@
             }
 
             this.material.setProgram(glContext);
-            this.material.setAttributes(glContext, this.geometry);
+            
+            if (ext !== null) {
+                this.material.setVao(glContext);
+            } else {
+                this.material.setAttributes(glContext, this.geometry);
+            }
+            this.material.setTextures(glContext);
 
             this.material.setUniforms(glContext, this);
             this.material.setUniform(glContext, "time", this.time);
             this.material.setUniform(glContext, "vpMatrix", vpMatrix);
 
             this.material.draw(glContext, this.geometry.COUNT);
+            
+            if (ext !== null) this.material.unsetVao(glContext);
         },
 
         spawn: function(param) {
@@ -77,10 +95,10 @@
 
     var DEFAULT_PARAM = {
         position: { x:0, y:0 },
-        velocity: { x:1, y:0 },
-        accel: { x:-0.1, y:0 },
-        type: 0,
+        frameIndex: 0,
         ttl: 60 * 0.0001,
+        velocityFrom: { x:1, y:0 },
+        velocityTo: { x:0, y:0 },
         sizeFrom: 30,
         sizeTo: 30,
         colorFrom: { r:255, g:255, b:255, a:1 },

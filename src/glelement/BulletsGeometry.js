@@ -11,13 +11,13 @@
         velocityData: null,
         spawnTimeData: null,
         activeData: null,
-        typeData: null,
+        frameIndexData: null,
 
         initialPosition: null,
         velocity: null,
         spawnTime: null,
         active: null,
-        type: null,
+        frameIndex: null,
 
         vboNeedUpdate: false,
 
@@ -36,19 +36,19 @@
             this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return 0;
             }));
-            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+            this.frameIndexData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return 0;
             }));
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             var gl = glContext.gl;
 
             this.initialPosition = this.createVbo(gl, this.initialPositionData);
             this.velocity = this.createVbo(gl, this.velocityData);
             this.spawnTime = this.createVbo(gl, this.spawnTimeData);
             this.active = this.createVbo(gl, this.activeData);
-            this.type = this.createVbo(gl, this.typeData);
+            this.frameIndex = this.createVbo(gl, this.frameIndexData);
         },
 
         rebind: function(gl) {
@@ -56,10 +56,10 @@
             this.transfarVbo(gl, this.velocity, this.velocityData);
             this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
             this.transfarVbo(gl, this.active, this.activeData);
-            this.transfarVbo(gl, this.type, this.typeData);
+            this.transfarVbo(gl, this.frameIndex, this.frameIndexData);
         },
 
-        spawn: function(now, pos, vel, type) {
+        spawn: function(now, pos, vel, frameIndex) {
             var index = find(this.activeData, 0);
             if (index < 0) {
                 console.warn("弾が足りない");
@@ -72,7 +72,7 @@
             this.velocityData[index * 2 + 1] = vel.y;
             this.spawnTimeData[index] = now;
             this.activeData[index] = 1;
-            this.typeData[index] = type;
+            this.frameIndexData[index] = frameIndex;
 
             this.vboNeedUpdate = true;
 

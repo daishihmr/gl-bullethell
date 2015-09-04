@@ -11,8 +11,8 @@ tm.define("glb.OrthoCamera", {
             SCREEN_WIDTH * 0.5,
             SCREEN_HEIGHT * -0.5,
             SCREEN_HEIGHT * 0.5,
-            0.1,
-            1000
+            100,
+            10000
         );
     },
 

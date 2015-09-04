@@ -1,7 +1,7 @@
 tm.define("glb.Geometry", {
     init: function() {},
 
-    initialize: function(glContext) {},
+    build: function(glContext) {},
     
     bufferUsage: 0,
 

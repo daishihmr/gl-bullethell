@@ -8,11 +8,11 @@
         bufferUsage: 1,
 
         initialPositionData: null,
-        velocityData: null,
-        accelData: null,
+        velocityFromData: null,
+        velocityToData: null,
         spawnTimeData: null,
         activeData: null,
-        typeData: null,
+        frameIndexData: null,
         ttlData: null,
         sizeFromData: null,
         sizeToData: null,
@@ -20,11 +20,11 @@
         colorToData: null,
 
         initialPosition: null,
-        velocity: null,
-        accel: null,
+        velocityFrom: null,
+        velocityTo: null,
         spawnTime: null,
         active: null,
-        type: null,
+        frameIndex: null,
         ttl: null,
         sizeFrom: null,
         sizeTo: null,
@@ -39,10 +39,10 @@
             this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return [0, 0];
             }).flatten());;
-            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+            this.velocityFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return [0, 0];
             }).flatten());
-            this.accelData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+            this.velocityToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return [0, 0];
             }).flatten());
             this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
@@ -51,7 +51,7 @@
             this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return 0;
             }));
-            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+            this.frameIndexData = new Float32Array(Array.range(0, this.COUNT).map(function() {
                 return 0;
             }));
             this.ttlData = new Float32Array(Array.range(0, this.COUNT).map(function() {
@@ -71,15 +71,15 @@
             }).flatten());
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             var gl = glContext.gl;
 
             this.initialPosition = this.createVbo(gl, this.initialPositionData);
-            this.velocity = this.createVbo(gl, this.velocityData);
-            this.accel = this.createVbo(gl, this.accelData);
+            this.velocityFrom = this.createVbo(gl, this.velocityFromData);
+            this.velocityTo = this.createVbo(gl, this.velocityToData);
             this.spawnTime = this.createVbo(gl, this.spawnTimeData);
             this.active = this.createVbo(gl, this.activeData);
-            this.type = this.createVbo(gl, this.typeData);
+            this.frameIndex = this.createVbo(gl, this.frameIndexData);
             this.ttl = this.createVbo(gl, this.ttlData);
             this.sizeFrom = this.createVbo(gl, this.sizeFromData);
             this.sizeTo = this.createVbo(gl, this.sizeToData);
@@ -89,11 +89,11 @@
 
         rebind: function(gl) {
             this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
-            this.transfarVbo(gl, this.velocity, this.velocityData);
-            this.transfarVbo(gl, this.accel, this.accelData);
+            this.transfarVbo(gl, this.velocityFrom, this.velocityFromData);
+            this.transfarVbo(gl, this.velocityTo, this.velocityToData);
             this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
             this.transfarVbo(gl, this.active, this.activeData);
-            this.transfarVbo(gl, this.type, this.typeData);
+            this.transfarVbo(gl, this.frameIndex, this.frameIndexData);
             this.transfarVbo(gl, this.ttl, this.ttlData);
             this.transfarVbo(gl, this.sizeFrom, this.sizeFromData);
             this.transfarVbo(gl, this.sizeTo, this.sizeToData);
@@ -110,13 +110,13 @@
 
             this.initialPositionData[index * 2 + 0] = param.position.x;
             this.initialPositionData[index * 2 + 1] = param.position.y;
-            this.velocityData[index * 2 + 0] = param.velocity.x;
-            this.velocityData[index * 2 + 1] = param.velocity.y;
-            this.accelData[index * 2 + 0] = param.accel.x;
-            this.accelData[index * 2 + 1] = param.accel.y;
+            this.velocityFromData[index * 2 + 0] = param.velocityFrom.x;
+            this.velocityFromData[index * 2 + 1] = param.velocityFrom.y;
+            this.velocityToData[index * 2 + 0] = param.velocityTo.x;
+            this.velocityToData[index * 2 + 1] = param.velocityTo.y;
             this.spawnTimeData[index] = now;
             this.activeData[index] = 1;
-            this.typeData[index] = param.type;
+            this.frameIndexData[index] = param.frameIndex;
             this.ttlData[index] = param.ttl;
             this.sizeFromData[index] = param.sizeFrom;
             this.sizeToData[index] = param.sizeTo;

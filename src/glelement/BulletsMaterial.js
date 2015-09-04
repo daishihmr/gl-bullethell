@@ -11,7 +11,7 @@
             this.image = image;
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             this._createProgram(glContext);
             if (this.image) {
                 this._createTexture(glContext);
@@ -34,9 +34,11 @@
             this._texture = glContext.createTexture(this.image);
         },
 
-        setAttributes: function(glContext, attributeValues) {
-            this.superSetAttributes(glContext, attributeValues);
-
+        setAttributes: function(glContext, geometry) {
+            this.superSetAttributes(glContext, geometry);
+        },
+        
+        setTextures: function(glContext) {
             var gl = glContext.gl;
             if (this.image) {
                 gl.bindTexture(gl.TEXTURE_2D, this._texture);
@@ -53,7 +55,14 @@
 
         draw: function(glContext, length) {
             var gl = glContext.gl;
+
+            gl.disable(gl.DEPTH_TEST);
+            gl.disable(gl.CULL_FACE);
+
             gl.drawArrays(gl.POINTS, 0, length);
+
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.CULL_FACE);
         },
 
     });
@@ -71,7 +80,7 @@
         name: "active",
         size: 1,
     }, {
-        name: "type",
+        name: "frameIndex",
         size: 1,
     }, ];
 
@@ -88,14 +97,14 @@
         "attribute vec2 velocity;",
         "attribute float spawnTime;",
         "attribute float active;",
-        "attribute float type;",
+        "attribute float frameIndex;",
 
         "uniform mat4 vpMatrix;",
         "uniform float time;",
 
         "varying float vAge;",
         "varying float vActive;",
-        "varying float vType;",
+        "varying float vFrameIndex;",
         "varying float vAngle;",
         "varying mat3 vUvMat;",
 
@@ -119,13 +128,13 @@
 
         "void main(void) {",
         "    vActive = active;",
-        "    vType = type;",
+        "    vFrameIndex = frameIndex;",
         "    if (active < 0.5) {",
         "        vAngle = 0.0;",
         "        gl_Position = vec4(0.0);",
         "        gl_PointSize = 0.0;",
         "    } else {",
-        "        if (type < 8.0) {",
+        "        if (frameIndex < 8.0) {",
         "            vAngle = atan(velocity.y, velocity.x);",
         "        } else {",
         "            vAngle = time * 3000.0;",
@@ -135,7 +144,7 @@
         "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
         "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
         "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
-        "        gl_PointSize = ({0} + c) * {1};".format(BULLET_APPEALANCE, GL_QUALITY),
+        "        gl_PointSize = ({0} + c) * {1};".format(BULLET_APPEALANCE.toFloatString(), GL_QUALITY.toFloatString()),
         "    }",
         "}",
     ].join("\n");
@@ -147,7 +156,7 @@
 
         "varying float vAge;",
         "varying float vActive;",
-        "varying float vType;",
+        "varying float vFrameIndex;",
         "varying float vAngle;",
         "varying mat3 vUvMat;",
 
@@ -157,7 +166,7 @@
 
         "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
         "    vec3 ruv = vUvMat * buv;",
-        "    vec2 uv = vec2((ruv.x + vType) * 0.0625, ruv.y);",
+        "    vec2 uv = vec2((ruv.x + vFrameIndex) * 0.0625, ruv.y);",
 
         "    float c = sin(vAge * 6200.0) * 0.12;",
         "    vec4 light = vec4(0.0, c, 0.0, 0.0);",

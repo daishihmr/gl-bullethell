@@ -10,6 +10,10 @@
         clone: function() {
             return glb.Vector2(this.x, this.y);
         },
+        
+        copy: function(v) {
+            return this.set(v.x, v.y);
+        },
 
         set: function(x, y) {
             vec2.set(this.array, x, y);
@@ -66,6 +70,12 @@
         
         fromAngleLength: function(rad, len) {
             return this.set(Math.cos(rad) * len, Math.sin(rad) * len);
+        },
+        
+        random: function(cx, cy, radiusMin, radiusMax) {
+            var angle = Math.random() * Math.PI;
+            var radius = Math.randf(radiusMin, radiusMax);
+            return this.set(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
         },
 
     });

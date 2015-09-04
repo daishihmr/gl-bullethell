@@ -20139,17 +20139,1089 @@ tm.google = tm.google || {};
 
 })();
 
+"use strict";
+
+/**
+ * @namespace
+ */
+var vox = {};
+
+(function() {
+    if (typeof(window) !== "undefined") {
+        vox.global = window;
+        vox.global.vox = vox;
+    } else {
+        vox.global = global;
+    }
+
+    if (typeof(module) !== "undefined") {
+        module.exports = vox;
+    }
+
+})();
+
+(function() {
+
+    /**
+     * @constructor
+     * @property {Object} size {x, y, z}
+     * @property {Array} voxels [{x, y, z, colorIndex}...]
+     * @property {Array} palette [{r, g, b, a}...]
+     */
+    vox.VoxelData = function() {
+        this.size = {
+            x: 0,
+            y: 0,
+            z: 0
+        };
+        this.voxels = [];
+        this.palette = [];
+    };
+    
+})();
+
+(function() {
+    
+    vox.Xhr = function() {};
+    vox.Xhr.prototype.getBinary = function(url) {
+        return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.responseType = "arraybuffer";
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && (xhr.status === 200 || xhr.statue === 0)) {
+                    var arrayBuffer = xhr.response;
+                    if (arrayBuffer) {
+                        var byteArray = new Uint8Array(arrayBuffer);
+                        resolve(byteArray);
+                    }
+                }
+            };
+            xhr.send(null);
+        });
+    };
+    
+})();
+
+(function() {
+    
+    /** 
+     * @constructor
+     */
+    vox.Parser = function() {};
+    
+    /**
+     * 戻り値のPromiseは成功すると{@link vox.VoxelData}を返す.
+     * @param {String} url
+     * @return {Promise}
+     */
+    vox.Parser.prototype.parse = function(url) {
+        var self = this;
+        var xhr = new vox.Xhr();
+        return xhr.getBinary(url).then(function(uint8Array) {
+            return new Promise(function(resolve, reject) {
+                self.parseUint8Array(uint8Array, function(error, voxelData) {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(voxelData);
+                    }
+                });
+            });
+        });
+    };
+
+    if (typeof(require) !== "undefined") {
+        var fs = require("fs");
+        /**
+         * for node.js
+         * @param {String} path
+         * @param {function} callback
+         */
+        vox.Parser.prototype.parseFile = function(path, callback) {
+            fs.readFile(path, function(error, data) {
+                if (error) {
+                    return callback(error);
+                } else {
+                    var uint8Array = new Uint8Array(new ArrayBuffer(data.length));
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        uint8Array[i] = data[i];
+                    }
+                    this.parseUint8Array(uint8Array, callback);
+                }
+            }.bind(this));
+        };
+    }
+    
+    /**
+     * @param {Uint8Array} uint8Array
+     * @param {function} callback
+     */
+    vox.Parser.prototype.parseUint8Array = function(uint8Array, callback) {
+        var dataHolder = new DataHolder(uint8Array);
+        try {
+            root(dataHolder);
+            if (dataHolder.data.palette.length === 0) {
+                // console.debug("use default palette");
+                dataHolder.data.palette = vox.defaultPalette;
+            } else {
+                dataHolder.data.palette.unshift(dataHolder.data.palette[0]);
+                dataHolder.data.palette.pop();
+            }
+
+            callback(null, dataHolder.data);
+        } catch (e) {
+            callback(e);
+        }
+    };
+    
+    var DataHolder = function(uint8Array) {
+        this.uint8Array = uint8Array;
+        this.cursor = 0;
+        this.data = new vox.VoxelData();
+        
+        this._currentChunkId = null;
+        this._currentChunkSize = 0;
+    };
+    DataHolder.prototype.next = function() {
+        if (this.uint8Array.byteLength <= this.cursor) {
+            throw new Error("uint8Array index out of bounds: " + this.uint8Array.byteLength);
+        }
+        return this.uint8Array[this.cursor++];
+    };
+    DataHolder.prototype.hasNext = function() {
+        return this.cursor < this.uint8Array.byteLength;
+    };
+    
+    var root = function(dataHolder) {
+        magicNumber(dataHolder);
+        versionNumber(dataHolder);
+        chunk(dataHolder); // main chunk
+    };
+    
+    var magicNumber = function(dataHolder) {
+        var str = "";
+        for (var i = 0; i < 4; i++) {
+            str += String.fromCharCode(dataHolder.next());
+        }
+        
+        if (str !== "VOX ") {
+            throw new Error("invalid magic number '" + str + "'");
+        }
+    };
+    
+    var versionNumber = function(dataHolder) {
+        var ver = 0;
+        for (var i = 0; i < 4; i++) {
+            ver += dataHolder.next() * Math.pow(256, i);
+        }
+        console.info(".vox format version " + ver);
+    };
+    
+    var chunk = function(dataHolder) {
+        if (!dataHolder.hasNext()) return false;
+
+        chunkId(dataHolder);
+        sizeOfChunkContents(dataHolder);
+        totalSizeOfChildrenChunks(dataHolder);
+        contents(dataHolder);
+        while (chunk(dataHolder));
+        return dataHolder.hasNext();
+    };
+    
+    var chunkId = function(dataHolder) {
+        var id = "";
+        for (var i = 0; i < 4; i++) {
+            id += String.fromCharCode(dataHolder.next());
+        }
+        dataHolder._currentChunkId = id;
+        dataHolder._currentChunkSize = 0;
+        
+        // console.debug("chunk id = " + id);
+    };
+    
+    var sizeOfChunkContents = function(dataHolder) {
+        var size = 0;
+        for (var i = 0; i < 4; i++) {
+            size += dataHolder.next() * Math.pow(256, i);
+        }
+        dataHolder._currentChunkSize = size;
+        
+        // console.debug("size of chunk = " + size);
+    };
+    
+    var totalSizeOfChildrenChunks = function(dataHolder) {
+        var size = 0;
+        for (var i = 0; i < 4; i++) {
+            size += dataHolder.next() * Math.pow(256, i);
+        }
+        
+        // console.debug("total size of children chunks = " + size);
+    };
+    
+    var contents = function(dataHolder) {
+        // console.debug("content " + dataHolder._currentChunkId + ", size = " + dataHolder._currentChunkSize);
+        switch (dataHolder._currentChunkId) {
+        case "SIZE":
+            contentsOfSizeChunk(dataHolder);
+            break;
+        case "XYZI":
+            contentsOfVoxelChunk(dataHolder);
+            break;
+        case "RGBA":
+            contentsOfPaletteChunk(dataHolder);
+            break;
+        }
+    };
+    
+    var contentsOfSizeChunk = function(dataHolder) {
+        var x = 0;
+        for (var i = 0; i < 4; i++) {
+            x += dataHolder.next() * Math.pow(256, i);
+        }
+        var y = 0;
+        for (var i = 0; i < 4; i++) {
+            y += dataHolder.next() * Math.pow(256, i);
+        }
+        var z = 0;
+        for (var i = 0; i < 4; i++) {
+            z += dataHolder.next() * Math.pow(256, i);
+        }
+        // console.debug("bounding box size = " + x + ", " + y + ", " + z);
+        dataHolder.data.size = {
+            x: x,
+            y: y,
+            z: z,
+        };
+    };
+    
+    var contentsOfVoxelChunk = function(dataHolder) {
+        var num = 0;
+        for (var i = 0; i < 4; i++) {
+            num += dataHolder.next() * Math.pow(256, i);
+        }
+        // console.debug("voxel size = " + num);
+        for (var i = 0; i < num; i++) {
+            dataHolder.data.voxels.push({
+                x: dataHolder.next(),
+                y: dataHolder.next(),
+                z: dataHolder.next(),
+                colorIndex: dataHolder.next(),
+            });
+        }
+    };
+
+    var contentsOfPaletteChunk = function(dataHolder) {
+        for (var i = 0; i < 256; i++) {
+            var p = {
+                r: dataHolder.next(),
+                g: dataHolder.next(),
+                b: dataHolder.next(),
+                a: dataHolder.next(),
+            };
+            dataHolder.data.palette.push(p);
+        }
+    };
+
+})();
+
+(function() {
+
+    /**
+     * @constructor
+     *
+     * @param {vox.VoxelData} voxelData
+     * @param {Object=} param
+     * @param {number=} param.voxelSize ボクセルの大きさ. default = 1.0.
+     * @param {boolean=} param.vertexColor 頂点色を使用する. default = false.
+     * @param {boolean=} param.optimizeFaces 隠れた頂点／面を削除する. dafalue = true.
+     * @param {boolean=} param.originToBottom 地面の高さを形状の中心にする. dafalue = true.
+     * @property {THREE.Geometry} geometry
+     * @property {THREE.Material} material
+     */
+    vox.MeshBuilder = function(voxelData, param) {
+        if (vox.MeshBuilder.textureFactory === null) vox.MeshBuilder.textureFactory = new vox.TextureFactory();
+        
+        param = param || {};
+        this.voxelData = voxelData;
+        this.voxelSize = param.voxelSize || vox.MeshBuilder.DEFAULT_PARAM.voxelSize;
+        this.vertexColor = (param.vertexColor === undefined) ? vox.MeshBuilder.DEFAULT_PARAM.vertexColor : param.vertexColor;
+        this.optimizeFaces = (param.optimizeFaces === undefined) ? vox.MeshBuilder.DEFAULT_PARAM.optimizeFaces : param.optimizeFaces;
+        this.originToBottom = (param.originToBottom === undefined) ? vox.MeshBuilder.DEFAULT_PARAM.originToBottom : param.originToBottom;
+
+        this.geometry = null;
+        this.material = null;
+        
+        this.build();
+    };
+
+    vox.MeshBuilder.DEFAULT_PARAM = {
+        voxelSize: 1.0,
+        vertexColor: false,
+        optimizeFaces: true,
+        originToBottom: true,
+    };
+
+    /**
+     * Voxelデータからジオメトリとマテリアルを作成する.
+     */
+    vox.MeshBuilder.prototype.build = function() {
+        this.geometry = new THREE.Geometry();
+        this.material = new THREE.MeshPhongMaterial();
+
+        // 隣接ボクセル検索用ハッシュテーブル
+        this.hashTable = createHashTable(this.voxelData.voxels);
+        
+        var offsetX = this.voxelData.size.x * -0.5;
+        var offsetY = this.voxelData.size.y * -0.5;
+        var offsetZ = (this.originToBottom) ? 0 : this.voxelData.size.z * -0.5;
+        var matrix = new THREE.Matrix4();
+        this.voxelData.voxels.forEach(function(voxel) {
+            var voxGeometry = this._createVoxGeometry(voxel);
+            if (voxGeometry) {
+                matrix.makeTranslation((voxel.x + offsetX) * this.voxelSize, (voxel.z + offsetZ) * this.voxelSize, -(voxel.y + offsetY) * this.voxelSize);
+                this.geometry.merge(voxGeometry, matrix);
+            }
+        }.bind(this));
+
+        if (this.optimizeFaces) {
+            this.geometry.mergeVertices();
+        }
+        this.geometry.computeFaceNormals();
+        
+        if (this.vertexColor) {
+            this.material.vertexColors = THREE.FaceColors;
+        } else {
+            this.material.map = vox.MeshBuilder.textureFactory.getTexture(this.voxelData);
+        }
+    };
+
+    /**
+     * @return {THREE.Texture}
+     */
+    vox.MeshBuilder.prototype.getTexture = function() {
+        return vox.MeshBuilder.textureFactory.getTexture(this.voxelData);
+    };
+
+    vox.MeshBuilder.prototype._createVoxGeometry = function(voxel) {
+
+        // 隣接するボクセルを検索し、存在する場合は面を無視する
+        var ignoreFaces = [];
+        if (this.optimizeFaces) {
+            six.forEach(function(s) {
+                if (this.hashTable.has(voxel.x + s.x, voxel.y + s.y, voxel.z + s.z)) {
+                    ignoreFaces.push(s.ignoreFace);
+                }
+            }.bind(this));
+        }
+        
+        // 6方向すべて隣接されていたらnullを返す
+        if (ignoreFaces.length ===  6) return null;
+
+        // 頂点データ
+        var voxVertices = voxVerticesSource.map(function(voxel) {
+            return new THREE.Vector3(voxel.x * this.voxelSize * 0.5, voxel.y * this.voxelSize * 0.5, voxel.z * this.voxelSize * 0.5);
+        }.bind(this));
+
+        // 面データ
+        var voxFaces = voxFacesSource.map(function(f) {
+            return {
+                faceA: new THREE.Face3(f.faceA.a, f.faceA.b, f.faceA.c),
+                faceB: new THREE.Face3(f.faceB.a, f.faceB.b, f.faceB.c),
+            };
+        });
+        
+        // 頂点色
+        if (this.vertexColor) {
+            var c = this.voxelData.palette[voxel.colorIndex];
+            var color = new THREE.Color(c.r / 255, c.g / 255, c.b / 255);
+        }
+
+        var vox = new THREE.Geometry();
+        vox.faceVertexUvs[0] = [];
+        
+        // 面を作る
+        voxFaces.forEach(function(faces, i) {
+            if (ignoreFaces.indexOf(i) >= 0) return;
+            
+            if (this.vertexColor) {
+                faces.faceA.color = color;
+                faces.faceB.color = color;
+            } else {
+                var uv = new THREE.Vector2((voxel.colorIndex + 0.5) / 256, 0.5);
+                vox.faceVertexUvs[0].push([uv, uv, uv], [uv, uv, uv]);
+            }
+            vox.faces.push(faces.faceA, faces.faceB);
+        }.bind(this));
+        
+        // 使っている頂点を抽出
+        var usingVertices = {};
+        vox.faces.forEach(function(face) {
+            usingVertices[face.a] = true;
+            usingVertices[face.b] = true;
+            usingVertices[face.c] = true;
+        });
+        
+        // 面の頂点インデックスを詰める処理
+        var splice = function(index) {
+            vox.faces.forEach(function(face) {
+                if (face.a > index) face.a -= 1;
+                if (face.b > index) face.b -= 1;
+                if (face.c > index) face.c -= 1;
+            });
+        };
+
+        // 使っている頂点のみ追加する
+        var j = 0;
+        voxVertices.forEach(function(vertex, i) {
+            if (usingVertices[i]) {
+                vox.vertices.push(vertex);
+            } else {
+                splice(i - j);
+                j += 1;
+            }
+        });
+        
+        return vox;
+    };
+
+    /**
+     * @return {THREE.Mesh}
+     */
+    vox.MeshBuilder.prototype.createMesh = function() {
+        return new THREE.Mesh(this.geometry, this.material);
+    };
+    
+    /**
+     * 外側に面したボクセルか
+     * @return {boolean}
+     */
+    vox.MeshBuilder.prototype.isOuterVoxel = function(voxel) {
+        return six.filter(function(s) {
+            return this.hashTable.has(voxel.x + s.x, voxel.y + s.y, voxel.z + s.z);
+        }.bind(this)).length < 6;
+    };
+
+    /**
+     * @static
+     * @type {vox.TextureFactory}
+     */
+    vox.MeshBuilder.textureFactory = null;
+
+    // 隣接方向と無視する面の対応表
+    var six = [
+        { x: -1, y: 0, z: 0, ignoreFace: 0 },
+        { x:  1, y: 0, z: 0, ignoreFace: 1 },
+        { x:  0, y:-1, z: 0, ignoreFace: 5 },
+        { x:  0, y: 1, z: 0, ignoreFace: 4 },
+        { x:  0, y: 0, z:-1, ignoreFace: 2 },
+        { x:  0, y: 0, z: 1, ignoreFace: 3 },
+    ];
+
+    // 頂点データソース
+    var voxVerticesSource = [
+        { x: -1, y: 1, z:-1 },
+        { x:  1, y: 1, z:-1 },
+        { x: -1, y: 1, z: 1 },
+        { x:  1, y: 1, z: 1 },
+        { x: -1, y:-1, z:-1 },
+        { x:  1, y:-1, z:-1 },
+        { x: -1, y:-1, z: 1 },
+        { x:  1, y:-1, z: 1 },
+    ];
+
+    // 面データソース
+    var voxFacesSource = [
+        { faceA: { a:6, b:2, c:0 }, faceB: { a:6, b:0, c:4 } },
+        { faceA: { a:5, b:1, c:3 }, faceB: { a:5, b:3, c:7 } },
+        { faceA: { a:5, b:7, c:6 }, faceB: { a:5, b:6, c:4 } },
+        { faceA: { a:2, b:3, c:1 }, faceB: { a:2, b:1, c:0 } },
+        { faceA: { a:4, b:0, c:1 }, faceB: { a:4, b:1, c:5 } },
+        { faceA: { a:7, b:3, c:2 }, faceB: { a:7, b:2, c:6 } },
+    ];
+
+    var hash = function(x, y, z) {
+        var result = 1;
+        var prime = 31;
+        result = prime * result + x;
+        result = prime * result + y;
+        result = prime * result + z;
+        return "" + result;
+    };
+
+    var createHashTable = function(voxels) {
+        var hashTable = {};
+        voxels.forEach(function(v) {
+            hashTable[hash(v.x, v.y, v.z)] = true;
+        });
+        
+        hashTable.has = function(x, y, z) {
+            return hash(x, y, z) in this;
+        }
+        return hashTable;
+    };
+
+})();
+
+(function() {
+    /**
+     * @constructor
+     */
+    vox.TextureFactory = function() {};
+
+    /**
+     * @param {vox.VoxelData} voxelData
+     * @return {HTMLCanvasElement}
+     */
+    vox.TextureFactory.prototype.createCanvas = function(voxelData) {
+        var canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height= 1;
+        var context = canvas.getContext("2d");
+        for (var i = 0, len = voxelData.palette.length; i < len; i++) {
+            var p = voxelData.palette[i];
+            context.fillStyle = "rgb(" + p.r + "," + p.g + "," + p.b + ")";
+            context.fillRect(i * 1, 0, 1, 1);
+        }
+        
+        return canvas;
+    };
+    
+    /**
+     * パレット情報を元に作成したテクスチャを返す.
+     * 生成されたテクスチャはキャッシュされ、同一のパレットからは同じテクスチャオブジェクトが返される.
+     * @param {vox.VoxelData} voxelData
+     * @return {THREE.Texture}
+     */
+    vox.TextureFactory.prototype.getTexture = function(voxelData) {
+        var palette = voxelData.palette;
+        var hashCode = getHashCode(palette);
+        if (hashCode in cache) {
+            // console.log("cache hit");
+            return cache[hashCode];
+        }
+        
+        var canvas = this.createCanvas(voxelData);
+        var texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+        
+        cache[hashCode] = texture;
+        
+        return texture;
+    };
+    
+    var cache = {};
+    
+    var getHashCode = function(palette) {
+        var str = "";
+        for (var i = 0; i < 256; i++) {
+            var p = palette[i];
+            str += hex(p.r);
+            str += hex(p.g);
+            str += hex(p.b);
+            str += hex(p.a);
+        }
+        return vox.md5(str);
+    };
+    var hex = function(num) {
+        var r = num.toString(16);
+        return (r.length === 1) ? "0" + r : r;
+    };
+
+})();
+
+(function() {
+
+    /**
+     * MagicaVoxelのデフォルトパレット
+     * @static
+     */    
+    vox.defaultPalette = [
+        {r:255,g:255,b:255,a:255},
+        {r:255,g:255,b:255,a:255},
+        {r:255,g:255,b:204,a:255},
+        {r:255,g:255,b:153,a:255},
+        {r:255,g:255,b:102,a:255},
+        {r:255,g:255,b:51,a:255},
+        {r:255,g:255,b:0,a:255},
+        {r:255,g:204,b:255,a:255},
+        {r:255,g:204,b:204,a:255},
+        {r:255,g:204,b:153,a:255},
+        {r:255,g:204,b:102,a:255},
+        {r:255,g:204,b:51,a:255},
+        {r:255,g:204,b:0,a:255},
+        {r:255,g:153,b:255,a:255},
+        {r:255,g:153,b:204,a:255},
+        {r:255,g:153,b:153,a:255},
+        {r:255,g:153,b:102,a:255},
+        {r:255,g:153,b:51,a:255},
+        {r:255,g:153,b:0,a:255},
+        {r:255,g:102,b:255,a:255},
+        {r:255,g:102,b:204,a:255},
+        {r:255,g:102,b:153,a:255},
+        {r:255,g:102,b:102,a:255},
+        {r:255,g:102,b:51,a:255},
+        {r:255,g:102,b:0,a:255},
+        {r:255,g:51,b:255,a:255},
+        {r:255,g:51,b:204,a:255},
+        {r:255,g:51,b:153,a:255},
+        {r:255,g:51,b:102,a:255},
+        {r:255,g:51,b:51,a:255},
+        {r:255,g:51,b:0,a:255},
+        {r:255,g:0,b:255,a:255},
+        {r:255,g:0,b:204,a:255},
+        {r:255,g:0,b:153,a:255},
+        {r:255,g:0,b:102,a:255},
+        {r:255,g:0,b:51,a:255},
+        {r:255,g:0,b:0,a:255},
+        {r:204,g:255,b:255,a:255},
+        {r:204,g:255,b:204,a:255},
+        {r:204,g:255,b:153,a:255},
+        {r:204,g:255,b:102,a:255},
+        {r:204,g:255,b:51,a:255},
+        {r:204,g:255,b:0,a:255},
+        {r:204,g:204,b:255,a:255},
+        {r:204,g:204,b:204,a:255},
+        {r:204,g:204,b:153,a:255},
+        {r:204,g:204,b:102,a:255},
+        {r:204,g:204,b:51,a:255},
+        {r:204,g:204,b:0,a:255},
+        {r:204,g:153,b:255,a:255},
+        {r:204,g:153,b:204,a:255},
+        {r:204,g:153,b:153,a:255},
+        {r:204,g:153,b:102,a:255},
+        {r:204,g:153,b:51,a:255},
+        {r:204,g:153,b:0,a:255},
+        {r:204,g:102,b:255,a:255},
+        {r:204,g:102,b:204,a:255},
+        {r:204,g:102,b:153,a:255},
+        {r:204,g:102,b:102,a:255},
+        {r:204,g:102,b:51,a:255},
+        {r:204,g:102,b:0,a:255},
+        {r:204,g:51,b:255,a:255},
+        {r:204,g:51,b:204,a:255},
+        {r:204,g:51,b:153,a:255},
+        {r:204,g:51,b:102,a:255},
+        {r:204,g:51,b:51,a:255},
+        {r:204,g:51,b:0,a:255},
+        {r:204,g:0,b:255,a:255},
+        {r:204,g:0,b:204,a:255},
+        {r:204,g:0,b:153,a:255},
+        {r:204,g:0,b:102,a:255},
+        {r:204,g:0,b:51,a:255},
+        {r:204,g:0,b:0,a:255},
+        {r:153,g:255,b:255,a:255},
+        {r:153,g:255,b:204,a:255},
+        {r:153,g:255,b:153,a:255},
+        {r:153,g:255,b:102,a:255},
+        {r:153,g:255,b:51,a:255},
+        {r:153,g:255,b:0,a:255},
+        {r:153,g:204,b:255,a:255},
+        {r:153,g:204,b:204,a:255},
+        {r:153,g:204,b:153,a:255},
+        {r:153,g:204,b:102,a:255},
+        {r:153,g:204,b:51,a:255},
+        {r:153,g:204,b:0,a:255},
+        {r:153,g:153,b:255,a:255},
+        {r:153,g:153,b:204,a:255},
+        {r:153,g:153,b:153,a:255},
+        {r:153,g:153,b:102,a:255},
+        {r:153,g:153,b:51,a:255},
+        {r:153,g:153,b:0,a:255},
+        {r:153,g:102,b:255,a:255},
+        {r:153,g:102,b:204,a:255},
+        {r:153,g:102,b:153,a:255},
+        {r:153,g:102,b:102,a:255},
+        {r:153,g:102,b:51,a:255},
+        {r:153,g:102,b:0,a:255},
+        {r:153,g:51,b:255,a:255},
+        {r:153,g:51,b:204,a:255},
+        {r:153,g:51,b:153,a:255},
+        {r:153,g:51,b:102,a:255},
+        {r:153,g:51,b:51,a:255},
+        {r:153,g:51,b:0,a:255},
+        {r:153,g:0,b:255,a:255},
+        {r:153,g:0,b:204,a:255},
+        {r:153,g:0,b:153,a:255},
+        {r:153,g:0,b:102,a:255},
+        {r:153,g:0,b:51,a:255},
+        {r:153,g:0,b:0,a:255},
+        {r:102,g:255,b:255,a:255},
+        {r:102,g:255,b:204,a:255},
+        {r:102,g:255,b:153,a:255},
+        {r:102,g:255,b:102,a:255},
+        {r:102,g:255,b:51,a:255},
+        {r:102,g:255,b:0,a:255},
+        {r:102,g:204,b:255,a:255},
+        {r:102,g:204,b:204,a:255},
+        {r:102,g:204,b:153,a:255},
+        {r:102,g:204,b:102,a:255},
+        {r:102,g:204,b:51,a:255},
+        {r:102,g:204,b:0,a:255},
+        {r:102,g:153,b:255,a:255},
+        {r:102,g:153,b:204,a:255},
+        {r:102,g:153,b:153,a:255},
+        {r:102,g:153,b:102,a:255},
+        {r:102,g:153,b:51,a:255},
+        {r:102,g:153,b:0,a:255},
+        {r:102,g:102,b:255,a:255},
+        {r:102,g:102,b:204,a:255},
+        {r:102,g:102,b:153,a:255},
+        {r:102,g:102,b:102,a:255},
+        {r:102,g:102,b:51,a:255},
+        {r:102,g:102,b:0,a:255},
+        {r:102,g:51,b:255,a:255},
+        {r:102,g:51,b:204,a:255},
+        {r:102,g:51,b:153,a:255},
+        {r:102,g:51,b:102,a:255},
+        {r:102,g:51,b:51,a:255},
+        {r:102,g:51,b:0,a:255},
+        {r:102,g:0,b:255,a:255},
+        {r:102,g:0,b:204,a:255},
+        {r:102,g:0,b:153,a:255},
+        {r:102,g:0,b:102,a:255},
+        {r:102,g:0,b:51,a:255},
+        {r:102,g:0,b:0,a:255},
+        {r:51,g:255,b:255,a:255},
+        {r:51,g:255,b:204,a:255},
+        {r:51,g:255,b:153,a:255},
+        {r:51,g:255,b:102,a:255},
+        {r:51,g:255,b:51,a:255},
+        {r:51,g:255,b:0,a:255},
+        {r:51,g:204,b:255,a:255},
+        {r:51,g:204,b:204,a:255},
+        {r:51,g:204,b:153,a:255},
+        {r:51,g:204,b:102,a:255},
+        {r:51,g:204,b:51,a:255},
+        {r:51,g:204,b:0,a:255},
+        {r:51,g:153,b:255,a:255},
+        {r:51,g:153,b:204,a:255},
+        {r:51,g:153,b:153,a:255},
+        {r:51,g:153,b:102,a:255},
+        {r:51,g:153,b:51,a:255},
+        {r:51,g:153,b:0,a:255},
+        {r:51,g:102,b:255,a:255},
+        {r:51,g:102,b:204,a:255},
+        {r:51,g:102,b:153,a:255},
+        {r:51,g:102,b:102,a:255},
+        {r:51,g:102,b:51,a:255},
+        {r:51,g:102,b:0,a:255},
+        {r:51,g:51,b:255,a:255},
+        {r:51,g:51,b:204,a:255},
+        {r:51,g:51,b:153,a:255},
+        {r:51,g:51,b:102,a:255},
+        {r:51,g:51,b:51,a:255},
+        {r:51,g:51,b:0,a:255},
+        {r:51,g:0,b:255,a:255},
+        {r:51,g:0,b:204,a:255},
+        {r:51,g:0,b:153,a:255},
+        {r:51,g:0,b:102,a:255},
+        {r:51,g:0,b:51,a:255},
+        {r:51,g:0,b:0,a:255},
+        {r:0,g:255,b:255,a:255},
+        {r:0,g:255,b:204,a:255},
+        {r:0,g:255,b:153,a:255},
+        {r:0,g:255,b:102,a:255},
+        {r:0,g:255,b:51,a:255},
+        {r:0,g:255,b:0,a:255},
+        {r:0,g:204,b:255,a:255},
+        {r:0,g:204,b:204,a:255},
+        {r:0,g:204,b:153,a:255},
+        {r:0,g:204,b:102,a:255},
+        {r:0,g:204,b:51,a:255},
+        {r:0,g:204,b:0,a:255},
+        {r:0,g:153,b:255,a:255},
+        {r:0,g:153,b:204,a:255},
+        {r:0,g:153,b:153,a:255},
+        {r:0,g:153,b:102,a:255},
+        {r:0,g:153,b:51,a:255},
+        {r:0,g:153,b:0,a:255},
+        {r:0,g:102,b:255,a:255},
+        {r:0,g:102,b:204,a:255},
+        {r:0,g:102,b:153,a:255},
+        {r:0,g:102,b:102,a:255},
+        {r:0,g:102,b:51,a:255},
+        {r:0,g:102,b:0,a:255},
+        {r:0,g:51,b:255,a:255},
+        {r:0,g:51,b:204,a:255},
+        {r:0,g:51,b:153,a:255},
+        {r:0,g:51,b:102,a:255},
+        {r:0,g:51,b:51,a:255},
+        {r:0,g:51,b:0,a:255},
+        {r:0,g:0,b:255,a:255},
+        {r:0,g:0,b:204,a:255},
+        {r:0,g:0,b:153,a:255},
+        {r:0,g:0,b:102,a:255},
+        {r:0,g:0,b:51,a:255},
+        {r:238,g:0,b:0,a:255},
+        {r:221,g:0,b:0,a:255},
+        {r:187,g:0,b:0,a:255},
+        {r:170,g:0,b:0,a:255},
+        {r:136,g:0,b:0,a:255},
+        {r:119,g:0,b:0,a:255},
+        {r:85,g:0,b:0,a:255},
+        {r:68,g:0,b:0,a:255},
+        {r:34,g:0,b:0,a:255},
+        {r:17,g:0,b:0,a:255},
+        {r:0,g:238,b:0,a:255},
+        {r:0,g:221,b:0,a:255},
+        {r:0,g:187,b:0,a:255},
+        {r:0,g:170,b:0,a:255},
+        {r:0,g:136,b:0,a:255},
+        {r:0,g:119,b:0,a:255},
+        {r:0,g:85,b:0,a:255},
+        {r:0,g:68,b:0,a:255},
+        {r:0,g:34,b:0,a:255},
+        {r:0,g:17,b:0,a:255},
+        {r:0,g:0,b:238,a:255},
+        {r:0,g:0,b:221,a:255},
+        {r:0,g:0,b:187,a:255},
+        {r:0,g:0,b:170,a:255},
+        {r:0,g:0,b:136,a:255},
+        {r:0,g:0,b:119,a:255},
+        {r:0,g:0,b:85,a:255},
+        {r:0,g:0,b:68,a:255},
+        {r:0,g:0,b:34,a:255},
+        {r:0,g:0,b:17,a:255},
+
+        {r:238,g:238,b:238,a:255},
+
+        {r:221,g:221,b:221,a:255},
+        {r:187,g:187,b:187,a:255},
+        {r:170,g:170,b:170,a:255},
+        {r:136,g:136,b:136,a:255},
+        {r:119,g:119,b:119,a:255},
+        {r:85,g:85,b:85,a:255},
+        {r:68,g:68,b:68,a:255},
+        {r:34,g:34,b:34,a:255},
+        {r:17,g:17,b:17,a:255},
+        // {r:0,g:0,b:0,a:255},
+    ];
+    
+})();
+
+(function() {
+
+
+
+/* md5.js - MD5 Message-Digest
+ * Copyright (C) 1999,2002 Masanao Izumo <iz@onicos.co.jp>
+ * Version: 2.0.0
+ * LastModified: May 13 2002
+ *
+ * This program is free software.  You can redistribute it and/or modify
+ * it without any warranty.  This library calculates the MD5 based on RFC1321.
+ * See RFC1321 for more information and algorism.
+ */
+
+/* Interface:
+ * md5_128bits = MD5_hash(data);
+ * md5_hexstr = MD5_hexhash(data);
+ */
+
+/* ChangeLog
+ * 2002/05/13: Version 2.0.0 released
+ * NOTICE: API is changed.
+ * 2002/04/15: Bug fix about MD5 length.
+ */
+
+
+//    md5_T[i] = parseInt(Math.abs(Math.sin(i)) * 4294967296.0);
+var MD5_T = new Array(0x00000000, 0xd76aa478, 0xe8c7b756, 0x242070db,
+              0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613,
+              0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1,
+              0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e,
+              0x49b40821, 0xf61e2562, 0xc040b340, 0x265e5a51,
+              0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681,
+              0xe7d3fbc8, 0x21e1cde6, 0xc33707d6, 0xf4d50d87,
+              0x455a14ed, 0xa9e3e905, 0xfcefa3f8, 0x676f02d9,
+              0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122,
+              0xfde5380c, 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60,
+              0xbebfbc70, 0x289b7ec6, 0xeaa127fa, 0xd4ef3085,
+              0x04881d05, 0xd9d4d039, 0xe6db99e5, 0x1fa27cf8,
+              0xc4ac5665, 0xf4292244, 0x432aff97, 0xab9423a7,
+              0xfc93a039, 0x655b59c3, 0x8f0ccc92, 0xffeff47d,
+              0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314,
+              0x4e0811a1, 0xf7537e82, 0xbd3af235, 0x2ad7d2bb,
+              0xeb86d391);
+
+var MD5_round1 = new Array(new Array( 0, 7, 1), new Array( 1,12, 2),
+               new Array( 2,17, 3), new Array( 3,22, 4),
+               new Array( 4, 7, 5), new Array( 5,12, 6),
+               new Array( 6,17, 7), new Array( 7,22, 8),
+               new Array( 8, 7, 9), new Array( 9,12,10),
+               new Array(10,17,11), new Array(11,22,12),
+               new Array(12, 7,13), new Array(13,12,14),
+               new Array(14,17,15), new Array(15,22,16));
+
+var MD5_round2 = new Array(new Array( 1, 5,17), new Array( 6, 9,18),
+               new Array(11,14,19), new Array( 0,20,20),
+               new Array( 5, 5,21), new Array(10, 9,22),
+               new Array(15,14,23), new Array( 4,20,24),
+               new Array( 9, 5,25), new Array(14, 9,26),
+               new Array( 3,14,27), new Array( 8,20,28),
+               new Array(13, 5,29), new Array( 2, 9,30),
+               new Array( 7,14,31), new Array(12,20,32));
+
+var MD5_round3 = new Array(new Array( 5, 4,33), new Array( 8,11,34),
+               new Array(11,16,35), new Array(14,23,36),
+               new Array( 1, 4,37), new Array( 4,11,38),
+               new Array( 7,16,39), new Array(10,23,40),
+               new Array(13, 4,41), new Array( 0,11,42),
+               new Array( 3,16,43), new Array( 6,23,44),
+               new Array( 9, 4,45), new Array(12,11,46),
+               new Array(15,16,47), new Array( 2,23,48));
+
+var MD5_round4 = new Array(new Array( 0, 6,49), new Array( 7,10,50),
+               new Array(14,15,51), new Array( 5,21,52),
+               new Array(12, 6,53), new Array( 3,10,54),
+               new Array(10,15,55), new Array( 1,21,56),
+               new Array( 8, 6,57), new Array(15,10,58),
+               new Array( 6,15,59), new Array(13,21,60),
+               new Array( 4, 6,61), new Array(11,10,62),
+               new Array( 2,15,63), new Array( 9,21,64));
+
+function MD5_F(x, y, z) { return (x & y) | (~x & z); }
+function MD5_G(x, y, z) { return (x & z) | (y & ~z); }
+function MD5_H(x, y, z) { return x ^ y ^ z;          }
+function MD5_I(x, y, z) { return y ^ (x | ~z);       }
+
+var MD5_round = new Array(new Array(MD5_F, MD5_round1),
+              new Array(MD5_G, MD5_round2),
+              new Array(MD5_H, MD5_round3),
+              new Array(MD5_I, MD5_round4));
+
+function MD5_pack(n32) {
+  return String.fromCharCode(n32 & 0xff) +
+     String.fromCharCode((n32 >>> 8) & 0xff) +
+     String.fromCharCode((n32 >>> 16) & 0xff) +
+     String.fromCharCode((n32 >>> 24) & 0xff);
+}
+
+function MD5_unpack(s4) {
+  return  s4.charCodeAt(0)        |
+     (s4.charCodeAt(1) <<  8) |
+     (s4.charCodeAt(2) << 16) |
+     (s4.charCodeAt(3) << 24);
+}
+
+function MD5_number(n) {
+  while (n < 0)
+    n += 4294967296;
+  while (n > 4294967295)
+    n -= 4294967296;
+  return n;
+}
+
+function MD5_apply_round(x, s, f, abcd, r) {
+  var a, b, c, d;
+  var kk, ss, ii;
+  var t, u;
+
+  a = abcd[0];
+  b = abcd[1];
+  c = abcd[2];
+  d = abcd[3];
+  kk = r[0];
+  ss = r[1];
+  ii = r[2];
+
+  u = f(s[b], s[c], s[d]);
+  t = s[a] + u + x[kk] + MD5_T[ii];
+  t = MD5_number(t);
+  t = ((t<<ss) | (t>>>(32-ss)));
+  t += s[b];
+  s[a] = MD5_number(t);
+}
+
+function MD5_hash(data) {
+  var abcd, x, state, s;
+  var len, index, padLen, f, r;
+  var i, j, k;
+  var tmp;
+
+  state = new Array(0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476);
+  len = data.length;
+  index = len & 0x3f;
+  padLen = (index < 56) ? (56 - index) : (120 - index);
+  if(padLen > 0) {
+    data += "\x80";
+    for(i = 0; i < padLen - 1; i++)
+      data += "\x00";
+  }
+  data += MD5_pack(len * 8);
+  data += MD5_pack(0);
+  len  += padLen + 8;
+  abcd = new Array(0, 1, 2, 3);
+  x    = new Array(16);
+  s    = new Array(4);
+
+  for(k = 0; k < len; k += 64) {
+    for(i = 0, j = k; i < 16; i++, j += 4) {
+      x[i] = data.charCodeAt(j) |
+        (data.charCodeAt(j + 1) <<  8) |
+        (data.charCodeAt(j + 2) << 16) |
+        (data.charCodeAt(j + 3) << 24);
+    }
+    for(i = 0; i < 4; i++)
+      s[i] = state[i];
+    for(i = 0; i < 4; i++) {
+      f = MD5_round[i][0];
+      r = MD5_round[i][1];
+      for(j = 0; j < 16; j++) {
+    MD5_apply_round(x, s, f, abcd, r[j]);
+    tmp = abcd[0];
+    abcd[0] = abcd[3];
+    abcd[3] = abcd[2];
+    abcd[2] = abcd[1];
+    abcd[1] = tmp;
+      }
+    }
+
+    for(i = 0; i < 4; i++) {
+      state[i] += s[i];
+      state[i] = MD5_number(state[i]);
+    }
+  }
+
+  return MD5_pack(state[0]) +
+     MD5_pack(state[1]) +
+     MD5_pack(state[2]) +
+     MD5_pack(state[3]);
+}
+
+function MD5_hexhash(data) {
+    var i, out, c;
+    var bit128;
+
+    bit128 = MD5_hash(data);
+    out = "";
+    for(i = 0; i < 16; i++) {
+    c = bit128.charCodeAt(i);
+    out += "0123456789abcdef".charAt((c>>4) & 0xf);
+    out += "0123456789abcdef".charAt(c & 0xf);
+    }
+    return out;
+}
+
+
+
+vox.md5 = MD5_hexhash;
+})();
+
 var glb = {};
 
-var SCREEN_WIDTH = 640;
-var SCREEN_HEIGHT = 960;
+var SCREEN_WIDTH = W = 640;
+var SCREEN_HEIGHT = H = 960;
 
-var BULLET_APPEALANCE = "160.0";
-var GL_QUALITY = "0.5";
+var BULLET_APPEALANCE = SCREEN_WIDTH * 0.2;
+var GL_QUALITY = 0.5;
 
 var ASSETS = {
     bullets: "./asset/bullets.png",
     particles: "./asset/particles.png",
+    
+    hime: "./asset/p32.obj",
     
     test: "./asset/test.png",
 };
@@ -20178,768 +21250,146 @@ tm.main(function() {
     };
 });
 
-(function() {
+Number.prototype.toFloatString = function() {
+    if (this % 1) {
+        return "" + this;
+    } else {
+        return "" + this + ".0";
+    }
+};
 
-    tm.define("glb.Bullets", {
-        superClass: "glb.Object3D",
+tm.define("glb.ExplosionS", {
+    superClass: "tm.app.Element",
 
-        geometry: null,
-        material: null,
+    particleSystem: null,
+    position: null,
+    emitParFrame: 0,
+    param: null,
 
-        time: 0,
+    init: function(particleSystem, frameIndex) {
+        this.superInit();
+        if (frameIndex === undefined) frameIndex = 2;
 
-        bullets: null,
-
-        init: function(texture) {
-            this.superInit();
-
-            this.geometry = glb.BulletsGeometry();
-            this.material = glb.BulletsMaterial(texture);
-
-            this.bullets = [];
-        },
-
-        initialize: function(glContext) {
-            this.geometry.initialize(glContext);
-            this.material.initialize(glContext);
-        },
-
-        update: function(app) {
-            this.time += 0.0001;
-
-            var self = this;
-            this.bullets = this.bullets.filter(function(b) {
-                b.position.add(b.velocity);
-                if (b.position.x < SCREEN_WIDTH * -0.2 || SCREEN_WIDTH * 0.2 < b.position.x ||
-                    b.position.y < SCREEN_HEIGHT * -0.2 || SCREEN_HEIGHT * 0.2 < b.position.y) {
-                    self.despawn(b.index);
-                    return false;
-                } else {
-                    return true;
-                }
-            });
-        },
-
-        render: function(glContext, vpMatrix) {
-            var gl = glContext.gl;
-
-            if (this.geometry.vboNeedUpdate) {
-                this.geometry.rebind(gl);
-                this.geometry.vboNeedUpdate = false;
-            }
-
-            this.material.setProgram(glContext);
-            this.material.setAttributes(glContext, this.geometry);
-
-            this.material.setUniforms(glContext, this);
-            this.material.setUniform(glContext, "time", this.time);
-            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
-
-            this.material.draw(glContext, this.geometry.COUNT);
-        },
-
-        spawn: function(pos, vel, type) {
-            var index = this.geometry.spawn(this.time, pos, vel, type);
-            if (index < 0) return;
-            this.bullets.push({
-                position: pos,
-                velocity: vel,
-                index: index,
-            });
-            return index;
-        },
-
-        despawn: function(index) {
-            this.geometry.despawn(index);
-        },
-
-    });
-
-})();
-
-(function() {
-
-    tm.define("glb.BulletsGeometry", {
-        superClass: "glb.Geometry",
-
-        COUNT: 8192,
-
-        bufferUsage: 1,
-
-        initialPositionData: null,
-        velocityData: null,
-        spawnTimeData: null,
-        activeData: null,
-        typeData: null,
-
-        initialPosition: null,
-        velocity: null,
-        spawnTime: null,
-        active: null,
-        type: null,
-
-        vboNeedUpdate: false,
-
-        init: function() {
-            this.superInit();
-
-            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [0, 0];
-            }).flatten());;
-            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [0, 0];
-            }).flatten());
-            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-        },
-
-        initialize: function(glContext) {
-            var gl = glContext.gl;
-
-            this.initialPosition = this.createVbo(gl, this.initialPositionData);
-            this.velocity = this.createVbo(gl, this.velocityData);
-            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
-            this.active = this.createVbo(gl, this.activeData);
-            this.type = this.createVbo(gl, this.typeData);
-        },
-
-        rebind: function(gl) {
-            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
-            this.transfarVbo(gl, this.velocity, this.velocityData);
-            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
-            this.transfarVbo(gl, this.active, this.activeData);
-            this.transfarVbo(gl, this.type, this.typeData);
-        },
-
-        spawn: function(now, pos, vel, type) {
-            var index = find(this.activeData, 0);
-            if (index < 0) {
-                console.warn("弾が足りない");
-                return -1;
-            }
-
-            this.initialPositionData[index * 2 + 0] = pos.x;
-            this.initialPositionData[index * 2 + 1] = pos.y;
-            this.velocityData[index * 2 + 0] = vel.x;
-            this.velocityData[index * 2 + 1] = vel.y;
-            this.spawnTimeData[index] = now;
-            this.activeData[index] = 1;
-            this.typeData[index] = type;
-
-            this.vboNeedUpdate = true;
-
-            return index;
-        },
-
-        despawn: function(index) {
-            if (index < this.activeData.length) {
-                this.activeData[index] = 0;
-                this.vboNeedUpdate = true;
-            }
-        },
-
-    });
-
-    var find = function(array, value) {
-        return Array.prototype.indexOf.call(array, value);
-    };
-
-})();
-
-(function() {
-
-    tm.define("glb.BulletsMaterial", {
-        superClass: "glb.Material",
-
-        image: null,
-        _texture: null,
-
-        init: function(image) {
-            this.superInit();
-            this.image = image;
-        },
-
-        initialize: function(glContext) {
-            this._createProgram(glContext);
-            if (this.image) {
-                this._createTexture(glContext);
-            }
-        },
-
-        _getVertexShaderSource: function() {
-            return VERTEX_SHADER_SOURCE;
-        },
-        _getFragmentShaderSource: function() {
-            return FRAGMENT_SHADER_SOURCE;
-        },
-        _getAttributeMetaData: function() {
-            return ATTRIBUTE_META_DATA;
-        },
-        _getUniformMetaData: function() {
-            return UNIFORM_META_DATA;
-        },
-        _createTexture: function(glContext) {
-            this._texture = glContext.createTexture(this.image);
-        },
-
-        setAttributes: function(glContext, attributeValues) {
-            this.superSetAttributes(glContext, attributeValues);
-
-            var gl = glContext.gl;
-            if (this.image) {
-                gl.bindTexture(gl.TEXTURE_2D, this._texture);
-            } else {
-                gl.bindTexture(gl.TEXTURE_2D, null);
-            }
-        },
-
-        setUniforms: function(glContext, uniformValues) {
-            this.superSetUniforms(glContext, uniformValues);
-
-            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
-        },
-
-        draw: function(glContext, length) {
-            var gl = glContext.gl;
-            gl.drawArrays(gl.POINTS, 0, length);
-        },
-
-    });
-
-    var ATTRIBUTE_META_DATA = [{
-        name: "initialPosition",
-        size: 2,
-    }, {
-        name: "velocity",
-        size: 2,
-    }, {
-        name: "spawnTime",
-        size: 1,
-    }, {
-        name: "active",
-        size: 1,
-    }, {
-        name: "type",
-        size: 1,
-    }, ];
-
-    var UNIFORM_META_DATA = [{
-        name: "vpMatrix",
-        type: "mat4",
-    }, {
-        name: "time",
-        type: "float",
-    }, ];
-
-    var VERTEX_SHADER_SOURCE = [
-        "attribute vec2 initialPosition;",
-        "attribute vec2 velocity;",
-        "attribute float spawnTime;",
-        "attribute float active;",
-        "attribute float type;",
-
-        "uniform mat4 vpMatrix;",
-        "uniform float time;",
-
-        "varying float vAge;",
-        "varying float vActive;",
-        "varying float vType;",
-        "varying float vAngle;",
-        "varying mat3 vUvMat;",
-
-        "mat3 translate(float x, float y) {",
-        "    return mat3(",
-        "        1.0, 0.0, 0.0,",
-        "        0.0, 1.0, 0.0,",
-        "          x,   y, 1.0",
-        "    );",
-        "}",
-
-        "mat3 rotate(float rad) {",
-        "    float s = sin(rad);",
-        "    float c = cos(rad);",
-        "    return mat3(",
-        "        c, s, 0,",
-        "       -s, c, 0,",
-        "        0, 0, 1",
-        "    );",
-        "}",
-
-        "void main(void) {",
-        "    vActive = active;",
-        "    vType = type;",
-        "    if (active < 0.5) {",
-        "        vAngle = 0.0;",
-        "        gl_Position = vec4(0.0);",
-        "        gl_PointSize = 0.0;",
-        "    } else {",
-        "        if (type < 8.0) {",
-        "            vAngle = atan(velocity.y, velocity.x);",
-        "        } else {",
-        "            vAngle = time * 3000.0;",
-        "        }",
-        "        vAge = time - spawnTime;",
-        "        vUvMat = translate(0.5, 0.5) * rotate(vAngle) * translate(-0.5, -0.5);",
-        "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
-        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
-        "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
-        "        gl_PointSize = ({0} + c) * {1};".format(BULLET_APPEALANCE, GL_QUALITY),
-        "    }",
-        "}",
-    ].join("\n");
-
-    var FRAGMENT_SHADER_SOURCE = [
-        "precision mediump float;",
+        this.particleSystem = particleSystem;
+        this.position = glb.Vector2();
+        this.emitParFrame = 30;
         
-        "uniform sampler2D texture;",
-
-        "varying float vAge;",
-        "varying float vActive;",
-        "varying float vType;",
-        "varying float vAngle;",
-        "varying mat3 vUvMat;",
-
-        "void main(void) {",
-        "    if (vActive < 0.5) discard;",
-        "    if (0.7 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
-
-        "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
-        "    vec3 ruv = vUvMat * buv;",
-        "    vec2 uv = vec2((ruv.x + vType) * 0.0625, ruv.y);",
-
-        "    float c = sin(vAge * 6200.0) * 0.12;",
-        "    vec4 light = vec4(0.0, c, 0.0, 0.0);",
-
-        "    gl_FragColor = light + texture2D(texture, uv);",
-        "}",
-    ].join("\n");
-
-})();
-
-(function() {
-
-    tm.define("glb.Particle", {
-        superClass: "glb.Object3D",
-
-        geometry: null,
-        material: null,
-
-        particles: null,
+        this.param = {
+            ttl: 20 * 0.0001,
+            sizeFrom: 100,
+            sizeTo: 130,
+            frameIndex: 2,
+            colorFrom: tm.graphics.Color(255, 255, 255, 0.2),
+            colorTo: tm.graphics.Color(255, 255, 255, 0.0),
+        };
         
-        time: 0,
-
-        init: function(texture) {
-            this.superInit();
-
-            this.geometry = glb.ParticleGeometry();
-            this.material = glb.ParticleMaterial(texture);
-
-            this.particles = [];
-            
-            this.time = 0;
-        },
-
-        initialize: function(glContext) {
-            this.geometry.initialize(glContext);
-            this.material.initialize(glContext);
-        },
-
-        update: function(app) {
-            this.time += 0.0001;
-
-            var self = this;
-            var time = this.time;
-            this.particles = this.particles.filter(function(p) {
-                if (p.deathTime <= time) {
-                    self.despawn(p.index);
-                    return false;
-                } else {
-                    return true;
-                }
-            });
-        },
-
-        render: function(glContext, vpMatrix) {
-            var gl = glContext.gl;
-
-            if (this.geometry.vboNeedUpdate) {
-                this.geometry.rebind(gl);
-                this.geometry.vboNeedUpdate = false;
-            }
-
-            this.material.setProgram(glContext);
-            this.material.setAttributes(glContext, this.geometry);
-
-            this.material.setUniforms(glContext, this);
-            this.material.setUniform(glContext, "time", this.time);
-            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
-
-            this.material.draw(glContext, this.geometry.COUNT);
-        },
-
-        spawn: function(param) {
-            var index = this.geometry.spawn(this.time, {}.$extend(DEFAULT_PARAM, param));
-            if (index < 0) return;
-            this.particles.push({
-                deathTime: this.time + param.ttl,
-                index: index,
-            });
-            return index;
-        },
-
-        despawn: function(index) {
-            this.geometry.despawn(index);
-        },
-
-    });
-
-    var DEFAULT_PARAM = {
-        position: { x:0, y:0 },
-        velocity: { x:1, y:0 },
-        accel: { x:-0.1, y:0 },
-        type: 0,
-        ttl: 60 * 0.0001,
-        sizeFrom: 30,
-        sizeTo: 30,
-        colorFrom: { r:255, g:255, b:255, a:1 },
-        colorTo: { r:255, g:255, b:255, a:0 },
-    };
-
-})();
-
-(function() {
-
-    tm.define("glb.ParticleGeometry", {
-        superClass: "glb.Geometry",
-
-        COUNT: 8192,
-
-        bufferUsage: 1,
-
-        initialPositionData: null,
-        velocityData: null,
-        accelData: null,
-        spawnTimeData: null,
-        activeData: null,
-        typeData: null,
-        ttlData: null,
-        sizeFromData: null,
-        sizeToData: null,
-        colorFromData: null,
-        colorToData: null,
-
-        initialPosition: null,
-        velocity: null,
-        accel: null,
-        spawnTime: null,
-        active: null,
-        type: null,
-        ttl: null,
-        sizeFrom: null,
-        sizeTo: null,
-        colorFrom: null,
-        colorTo: null,
-
-        vboNeedUpdate: false,
-
-        init: function() {
-            this.superInit();
-
-            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [0, 0];
-            }).flatten());;
-            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [0, 0];
-            }).flatten());
-            this.accelData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [0, 0];
-            }).flatten());
-            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.typeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.ttlData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.sizeFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.sizeToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return 0;
-            }));
-            this.colorFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [1, 1, 1, 1];
-            }).flatten());
-            this.colorToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
-                return [0, 0, 0, 0];
-            }).flatten());
-        },
-
-        initialize: function(glContext) {
-            var gl = glContext.gl;
-
-            this.initialPosition = this.createVbo(gl, this.initialPositionData);
-            this.velocity = this.createVbo(gl, this.velocityData);
-            this.accel = this.createVbo(gl, this.accelData);
-            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
-            this.active = this.createVbo(gl, this.activeData);
-            this.type = this.createVbo(gl, this.typeData);
-            this.ttl = this.createVbo(gl, this.ttlData);
-            this.sizeFrom = this.createVbo(gl, this.sizeFromData);
-            this.sizeTo = this.createVbo(gl, this.sizeToData);
-            this.colorFrom = this.createVbo(gl, this.colorFromData);
-            this.colorTo = this.createVbo(gl, this.colorToData);
-        },
-
-        rebind: function(gl) {
-            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
-            this.transfarVbo(gl, this.velocity, this.velocityData);
-            this.transfarVbo(gl, this.accel, this.accelData);
-            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
-            this.transfarVbo(gl, this.active, this.activeData);
-            this.transfarVbo(gl, this.type, this.typeData);
-            this.transfarVbo(gl, this.ttl, this.ttlData);
-            this.transfarVbo(gl, this.sizeFrom, this.sizeFromData);
-            this.transfarVbo(gl, this.sizeTo, this.sizeToData);
-            this.transfarVbo(gl, this.colorFrom, this.colorFromData);
-            this.transfarVbo(gl, this.colorTo, this.colorToData);
-        },
-
-        spawn: function(now, param) {
-            var index = find(this.activeData, 0);
-            if (index < 0) {
-                console.warn("パーティクルが足りない");
-                return -1;
-            }
-
-            this.initialPositionData[index * 2 + 0] = param.position.x;
-            this.initialPositionData[index * 2 + 1] = param.position.y;
-            this.velocityData[index * 2 + 0] = param.velocity.x;
-            this.velocityData[index * 2 + 1] = param.velocity.y;
-            this.accelData[index * 2 + 0] = param.accel.x;
-            this.accelData[index * 2 + 1] = param.accel.y;
-            this.spawnTimeData[index] = now;
-            this.activeData[index] = 1;
-            this.typeData[index] = param.type;
-            this.ttlData[index] = param.ttl;
-            this.sizeFromData[index] = param.sizeFrom;
-            this.sizeToData[index] = param.sizeTo;
-            this.colorFromData[index * 4 + 0] = param.colorFrom.r / 255;
-            this.colorFromData[index * 4 + 1] = param.colorFrom.g / 255;
-            this.colorFromData[index * 4 + 2] = param.colorFrom.b / 255;
-            this.colorFromData[index * 4 + 3] = param.colorFrom.a;
-            this.colorToData[index * 4 + 0] = param.colorTo.r / 255;
-            this.colorToData[index * 4 + 1] = param.colorTo.g / 255;
-            this.colorToData[index * 4 + 2] = param.colorTo.b / 255;
-            this.colorToData[index * 4 + 3] = param.colorTo.a;
-
-            this.vboNeedUpdate = true;
-
-            return index;
-        },
-
-        despawn: function(index) {
-            if (index < this.activeData.length) {
-                this.activeData[index] = 0;
-                this.vboNeedUpdate = true;
-            }
-        },
-
-    });
-
-    var find = function(array, value) {
-        return Array.prototype.indexOf.call(array, value);
-    };
-
-})();
-
-(function() {
-
-    tm.define("glb.ParticleMaterial", {
-        superClass: "glb.Material",
-
-        image: null,
-        _texture: null,
-
-        init: function(image) {
-            this.superInit();
-            this.image = image;
-        },
-
-        initialize: function(glContext) {
-            this._createProgram(glContext);
-            if (this.image) {
-                this._createTexture(glContext);
-            }
-        },
-
-        _getVertexShaderSource: function() {
-            return VERTEX_SHADER_SOURCE;
-        },
-        _getFragmentShaderSource: function() {
-            return FRAGMENT_SHADER_SOURCE;
-        },
-        _getAttributeMetaData: function() {
-            return ATTRIBUTE_META_DATA;
-        },
-        _getUniformMetaData: function() {
-            return UNIFORM_META_DATA;
-        },
-        _createTexture: function(glContext) {
-            this._texture = glContext.createTexture(this.image);
-        },
-
-        setAttributes: function(glContext, attributeValues) {
-            this.superSetAttributes(glContext, attributeValues);
-
-            var gl = glContext.gl;
-            if (this.image) {
-                gl.bindTexture(gl.TEXTURE_2D, this._texture);
-            } else {
-                gl.bindTexture(gl.TEXTURE_2D, null);
-            }
-        },
-
-        setUniforms: function(glContext, uniformValues) {
-            this.superSetUniforms(glContext, uniformValues);
-
-            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
-        },
-
-        draw: function(glContext, length) {
-            var gl = glContext.gl;
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-            gl.drawArrays(gl.POINTS, 0, length);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        },
-
-    });
-
-    var ATTRIBUTE_META_DATA = [{
-        name: "initialPosition",
-        size: 2,
-    }, {
-        name: "velocity",
-        size: 2,
-    }, {
-        name: "accel",
-        size: 2,
-    }, {
-        name: "spawnTime",
-        size: 1,
-    }, {
-        name: "active",
-        size: 1,
-    }, {
-        name: "type",
-        size: 1,
-    }, {
-        name: "ttl",
-        size: 1,
-    }, {
-        name: "sizeFrom",
-        size: 1,
-    }, {
-        name: "sizeTo",
-        size: 1,
-    }, {
-        name: "colorFrom",
-        size: 4,
-    }, {
-        name: "colorTo",
-        size: 4,
-    }, ];
-
-    var UNIFORM_META_DATA = [{
-        name: "vpMatrix",
-        type: "mat4",
-    }, {
-        name: "time",
-        type: "float",
-    }, ];
-
-    var VERTEX_SHADER_SOURCE = [
-        "attribute vec2 initialPosition;",
-        "attribute vec2 velocity;",
-        "attribute vec2 accel;",
-        "attribute float spawnTime;",
-        "attribute float active;",
-        "attribute float type;",
-
-        "attribute float ttl;",
-
-        "attribute float sizeFrom;",
-        "attribute float sizeTo;",
-        "attribute vec4 colorFrom;",
-        "attribute vec4 colorTo;",
+        tm.app.Element().addChildTo(this).tweener
+            .to({
+                emitParFrame: 0
+            }, 100, "easeOutQuad")
+            .call(function() {
+                this.remove();
+            }.bind(this));
+    },
+    update: function() {
         
-        "uniform mat4 vpMatrix;",
-        "uniform float time;",
+        var particleSystem = this.particleSystem;
+        var param = this.param;
+        var p = this.position;
 
-        "varying float vAge;",
-        "varying float vActive;",
-        "varying float vType;",
-        "varying float vSize;",
-        "varying vec4 vColor;",
+        this.emitParFrame.times(function() {
+            param.velocityFrom = glb.Vector2().fromAngleLength(Math.randf(0, Math.PI*2), Math.randf(0.5, 6));
+            param.velocityTo = param.velocityFrom.clone().mul(0.01);
+            param.position = p.clone().add(param.velocityFrom);
+            particleSystem.spawn(param);
+        });
+    },
+    setPosition: function(x, y) {
+        this.position.set(x, y);
+        return this;
+    },
+    setPositionVector: function(v) {
+        this.position = v;
+        return this;
+    },
+});
+glb.ExplosionS.prototype.accessor("x", {
+    set: function(v) {
+        this.position.x = x;
+    },
+    get: function() {
+        return this.position.x;
+    },
+});
+glb.ExplosionS.prototype.accessor("y", {
+    set: function(v) {
+        this.position.y = y;
+    },
+    get: function() {
+        return this.position.y;
+    },
+});
+
+tm.define("glb.Flame", {
+    superClass: "tm.app.Element",
+
+    particleSystem: null,
+    position: null,
+    emitParFrame: 0,
+    param: null,
+
+    init: function(particleSystem, frameIndex) {
+        this.superInit();
         
-        "float lerp(float from, float to, float time, float duration) {",
-        "    return from + (to - from) * time / duration;",
-        "}",
-        "vec4 lerp(vec4 from, vec4 to, float time, float duration) {",
-        "    return from + (to - from) * time / duration;",
-        "}",
+        if (frameIndex === undefined) frameIndex = 2;
 
-        "void main(void) {",
-        "    vActive = active;",
-        "    vType = type;",
-        "    if (active < 0.5) {",
-        "        gl_Position = vec4(0.0);",
-        "        gl_PointSize = 0.0;",
-        "    } else {",
-        "        vAge = time - spawnTime;",
-        "        vSize = lerp(sizeFrom, sizeTo, vAge, ttl);",
-        "        vColor = lerp(colorFrom, colorTo, vAge, ttl);",
-
-        "        float tm = vAge * 10000.0;",
-        "        vec2 pos = initialPosition + velocity * tm + accel * (tm * tm * 0.5);",
-        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
-        "        gl_PointSize = vSize * {0};".format(GL_QUALITY),
-        "    }",
-        "}",
-    ].join("\n");
-
-    var FRAGMENT_SHADER_SOURCE = [
-        "precision mediump float;",
+        this.particleSystem = particleSystem;
+        this.position = glb.Vector2();
+        this.emitParFrame = 10;
         
-        "uniform sampler2D texture;",
+        this.param = {
+            ttl: 20 * 0.0001,
+            sizeFrom: 80,
+            sizeTo: 30,
+            frameIndex: frameIndex,
+            colorFrom: tm.graphics.Color(255, 255, 255, 0.5),
+            colorTo: tm.graphics.Color(255, 255, 255, 0.0),
+        };
+    },
+    update: function() {
+        
+        var particleSystem = this.particleSystem;
+        var param = this.param;
+        var p = this.position;
 
-        "varying float vAge;",
-        "varying float vActive;",
-        "varying float vType;",
-        "varying float vSize;",
-        "varying vec4 vColor;",
-
-        "void main(void) {",
-        "    if (vActive < 0.5) discard;",
-
-        "    vec2 uv = vec2((gl_PointCoord.x + vType) * 0.0625, gl_PointCoord.y);",
-        "    gl_FragColor = vColor * texture2D(texture, uv);",
-        "}",
-    ].join("\n");
-
-})();
+        this.emitParFrame.times(function() {
+            param.velocityFrom = glb.Vector2(0, Math.randf(1, 8));
+            param.velocityTo = param.velocityFrom;
+            param.position = glb.Vector2().random(p.x, p.y, 0, 25);
+            particleSystem.spawn(param);
+        });
+    },
+    setPosition: function(x, y) {
+        this.position.set(x, y);
+        return this;
+    },
+});
+glb.Flame.prototype.accessor("x", {
+    set: function(v) {
+        this.position.x = x;
+    },
+    get: function() {
+        return this.position.x;
+    },
+});
+glb.Flame.prototype.accessor("y", {
+    set: function(v) {
+        this.position.y = y;
+    },
+    get: function() {
+        return this.position.y;
+    },
+});
 
 tm.define("glb.Hud", {
     superClass: "tm.display.CanvasElement",
@@ -20947,6 +21397,178 @@ tm.define("glb.Hud", {
         this.superInit();
     }
 });
+
+(function() {
+
+    tm.define("glb.MtlAsset", {
+        superClass: "tm.event.EventDispatcher",
+
+        init: function() {
+            this.superInit();
+        },
+
+        load: function(url) {
+            this.url = url;
+
+            var self = this;
+            var params = {
+                url: url,
+                success: function(data) {
+                    self.parse(data);
+                    self.flare("load");
+                }
+            };
+            tm.util.Ajax.load(params);
+
+            return this;
+        },
+
+        parse: function(data) {
+            var self = this;
+            var lines = data.split("\n");
+            lines.forEach(function(line) {
+                console.log(line);
+            });
+        },
+
+    });
+
+    var loadMtlFunc = function(path) {
+        return glb.MtlAsset().load(path);
+    };
+
+    tm.asset.Loader.register("mtl", loadMtlFunc);
+
+})();
+
+(function() {
+
+    tm.define("glb.ObjAsset", {
+        superClass: "tm.event.EventDispatcher",
+
+        init: function() {
+            this.superInit();
+            
+            this.vertices = [];
+            this.faces = [];
+
+            this._normals = [];
+            this._texcoords = [];
+        },
+
+        load: function(url) {
+            this.url = url;
+            
+            var self = this;
+            var params = {
+                url: url,
+                success: function(data) {
+                    self.parse(data);
+                    self.flare("load");
+                }
+            };
+            tm.util.Ajax.load(params);
+            
+            return this;
+        },
+        
+        parse: function(data) {
+            var self = this;
+            var lines = data.split("\n");
+            lines.forEach(function(line) {
+                self.parseLine(line.trim());
+            });
+        },
+        
+        parseLine: function(line) {
+            var m;
+            if (line.length === 0 || line[0] === "#") {
+                return;
+            } else if (m = line.match(/^mtllib (.+)$/)) {
+                var mtlName = m[1];
+                var parent = this.url.substring(0, this.url.lastIndexOf("/"));
+                var mtlUrl = glb.MtlAsset().load(parent + "/" + mtlName);
+
+                var loader = tm.asset.Loader();
+                var p = {};
+                p[mtlName] = mtlUrl;
+                loader.load(p);
+            } else {
+                var type = line.substring(0, 2);
+                switch (type.trim()) {
+                    case "vn":
+                        this.parseVn(line.substring(3));
+                        return;
+                    case "vt":
+                        this.parseVt(line.substring(3));
+                        return;
+                    case "v":
+                        this.parseV(line.substring(2));
+                        return;
+                    case "f":
+                        this.parseF(line.substring(2));
+                        return;
+                }
+            }
+        },
+        
+        parseVn: function(data) {
+            var values = data.split(" ");
+            this._normals.push({
+                x: Number(values[0]),
+                y: Number(values[1]),
+                z: Number(values[2]),
+            });
+        },
+
+        parseVt: function(data) {
+            var values = data.split(" ");
+            this._texcoords.push({
+                x: Number(values[0]),
+                y: Number(values[1]),
+            });
+        },
+        parseV: function(data) {
+            var values = data.split(" ");
+            this.vertices.push({
+                x: Number(values[0]),
+                y: Number(values[1]),
+                z: Number(values[2]),
+            });
+        },
+        parseF: function(data) {
+            var self = this;
+            var pattern0 = /^(-?\d+)\/(\d+)\/(\d+)$/;
+            var vs = data.split(" ").map(function(v) {
+                var m;
+                if (m = v.trim().match(pattern0)) {
+                    var vi = Number(m[1]);
+                    var ti = Number(m[2]);
+                    var ni = Number(m[3]);
+                    
+                    return {
+                        index: vi<0 ? self.vertices.length + vi : vi - 1,
+                        texcoord: self._texcoords[ti - 1],
+                        normal: self._normals[ni - 1],
+                    };
+                }
+            });
+            
+            this.faces.push({
+                a: vs[0],
+                b: vs[1],
+                c: vs[2],
+            });
+        },
+    });
+
+    var loadObjFunc = function(path) {
+        return glb.ObjAsset().load(path);
+    };
+
+    tm.asset.Loader.register("obj", loadObjFunc);
+
+})();
 
 (function() {
 
@@ -21324,6 +21946,10 @@ tm.define("glb.Hud", {
         clone: function() {
             return glb.Vector2(this.x, this.y);
         },
+        
+        copy: function(v) {
+            return this.set(v.x, v.y);
+        },
 
         set: function(x, y) {
             vec2.set(this.array, x, y);
@@ -21380,6 +22006,12 @@ tm.define("glb.Hud", {
         
         fromAngleLength: function(rad, len) {
             return this.set(Math.cos(rad) * len, Math.sin(rad) * len);
+        },
+        
+        random: function(cx, cy, radiusMin, radiusMax) {
+            var angle = Math.random() * Math.PI;
+            var radius = Math.randf(radiusMin, radiusMax);
+            return this.set(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
         },
 
     });
@@ -21546,7 +22178,7 @@ tm.define("glb.Hud", {
         vpMatrix: null,
 
         init: function() {
-            this.position = glb.Vector3(0, 0, SCREEN_WIDTH * 0.5);
+            this.position = glb.Vector3(0, 0, SCREEN_HEIGHT*0.5 / Math.tan(0.78 * 0.5));
             this.target = glb.Vector3();
             this.up = glb.Vector3(0, 1, 0);
             this.vMatrix = glb.Matrix4();
@@ -21559,7 +22191,7 @@ tm.define("glb.Hud", {
         },
         
         _setupProjectionMatrix: function() {
-            return glb.Matrix4().perspective(45, SCREEN_WIDTH / SCREEN_HEIGHT, 0.1, 1000);
+            return glb.Matrix4().perspective(0.78, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
         },
 
         _defineAccessors: function() {
@@ -21678,7 +22310,7 @@ tm.define("glb.BoxGeometry", {
         ]);
     },
     
-    initialize: function(glContext) {
+    build: function(glContext) {
         var gl = glContext.gl;
         this.vertex = this.createVbo(gl, this.vertexData);
         this.uv = this.createVbo(gl, this.uvData);
@@ -21690,7 +22322,7 @@ tm.define("glb.BoxGeometry", {
 tm.define("glb.Geometry", {
     init: function() {},
 
-    initialize: function(glContext) {},
+    build: function(glContext) {},
     
     bufferUsage: 0,
 
@@ -21753,7 +22385,7 @@ tm.define("glb.PlaneGeometry", {
         this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
     },
     
-    initialize: function(glContext) {
+    build: function(glContext) {
         var gl = glContext.gl;
         this.vertex = this.createVbo(gl, this.vertexData);
         this.uv = this.createVbo(gl, this.uvData);
@@ -21769,8 +22401,12 @@ tm.define("glb.GLContext", {
 
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
-        this.gl = this.element.getContext("webgl");
-
+        this.gl = this.element.getContext("webgl", { antialias: false });
+        this.ext = this.gl.getExtension("OES_vertex_array_object");
+        if (this.ext == null) {
+            console.warn("VAOはサポートされてない！");
+        }
+        
         var gl = this.gl;
         gl.clearColor(0, 0, 0, 1);
         gl.clearDepth(1);
@@ -21779,7 +22415,6 @@ tm.define("glb.GLContext", {
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.activeTexture(gl.TEXTURE0);
     },
 
     resize: function(width, height) {
@@ -21827,6 +22462,9 @@ tm.define("glb.GLContext", {
 
     createTexture: function(img) {
         var gl = this.gl;
+
+        gl.activeTexture(gl.TEXTURE0);
+
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
@@ -21855,9 +22493,9 @@ tm.define("glb.GLContext", {
         gl.flush();
     },
     renderObj: function(obj, vpMatrix) {
-        if (!obj.isInitialized) {
-            obj.initialize && obj.initialize(this);
-            obj.isInitialized = true;
+        if (!obj.isBuilt) {
+            obj.build && obj.build(this);
+            obj.isBuilt = true;
         }
         if (obj.render) {
             obj.render(this, vpMatrix);
@@ -21886,7 +22524,7 @@ tm.define("glb.GLContext", {
             this.image = image;
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             this._createProgram(glContext);
             if (this.image) {
                 this._createTexture(glContext);
@@ -21910,9 +22548,11 @@ tm.define("glb.GLContext", {
             this._texture = glContext.createTexture(this.image);
         },
 
-        setAttributes: function(glContext, attributeValues) {
-            this.superSetAttributes(glContext, attributeValues);
-
+        setAttributes: function(glContext, geometry) {
+            this.superSetAttributes(glContext, geometry);
+        },
+        
+        setTextures: function(glContext) {
             var gl = glContext.gl;
 
             if (this.image) {
@@ -22022,13 +22662,14 @@ tm.define("glb.GLContext", {
 
         program: null,
 
+        vao: null,
         attributes: null,
         uniforms: null,
 
         init: function() {
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             this._createProgram(glContext);
         },
         
@@ -22047,6 +22688,7 @@ tm.define("glb.GLContext", {
 
         _createProgram: function(glContext) {
             var gl = glContext.gl;
+            var ext = glContext.ext;
             var vs = this._createShader(gl, gl.VERTEX_SHADER, this._getVertexShaderSource());
             var fs = this._createShader(gl, gl.FRAGMENT_SHADER, this._getFragmentShaderSource());
             this.program = gl.createProgram();
@@ -22055,6 +22697,10 @@ tm.define("glb.GLContext", {
             gl.linkProgram(this.program);
             if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
                 throw new Error(gl.getProgramInfoLog(this.program));
+            }
+            
+            if (ext !== null) {
+                this.vao = ext.createVertexArrayOES();
             }
 
             this.attributes = this._getAttributeMetaData().reduce(function(attributes, attr) {
@@ -22092,21 +22738,32 @@ tm.define("glb.GLContext", {
             var gl = glContext.gl;
             gl.useProgram(this.program);
         },
+        
+        setVao: function(glContext) {
+            var ext = glContext.ext;
+            if (ext !== null) ext.bindVertexArrayOES(this.vao);
+        },
+        unsetVao: function(glContext) {
+            var ext = glContext.ext;
+            if (ext !== null) ext.bindVertexArrayOES(null);
+        },
 
-        setAttributes: function(glContext, attributeValues) {
+        setAttributes: function(glContext, geometry) {
             var gl = glContext.gl;
             var attributes = this.attributes;
 
             Object.keys(this.attributes).forEach(function(name) {
                 var attr = attributes[name];
 
-                if (attributeValues[name]) {
-                    gl.bindBuffer(gl.ARRAY_BUFFER, attributeValues[name]);
+                if (geometry[name]) {
+                    gl.bindBuffer(gl.ARRAY_BUFFER, geometry[name]);
                     gl.enableVertexAttribArray(attr.location);
                     gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
                 }
             });
         },
+        
+        setTextures: function(glContext) {},
 
         setUniforms: function(glContext, uniformValues) {
             var gl = glContext.gl;
@@ -22200,6 +22857,8 @@ tm.define("glb.GLContext", {
         geometry: null,
         material: null,
 
+        needsUpdate: false,
+
         init: function(geometry, material) {
             this.superInit();
 
@@ -22217,7 +22876,7 @@ tm.define("glb.GLContext", {
 
             this._defineAccessors();
         },
-        
+
         setGeometry: function(geometry) {
             this.geometry = geometry;
             return this;
@@ -22231,6 +22890,7 @@ tm.define("glb.GLContext", {
             this.accessor("x", {
                 set: function(v) {
                     this.position.x = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.position.x;
@@ -22239,6 +22899,7 @@ tm.define("glb.GLContext", {
             this.accessor("y", {
                 set: function(v) {
                     this.position.y = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.position.y;
@@ -22247,6 +22908,7 @@ tm.define("glb.GLContext", {
             this.accessor("z", {
                 set: function(v) {
                     this.position.z = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.position.z;
@@ -22255,6 +22917,7 @@ tm.define("glb.GLContext", {
             this.accessor("scaleX", {
                 set: function(v) {
                     this.scale.x = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.scale.x;
@@ -22263,6 +22926,7 @@ tm.define("glb.GLContext", {
             this.accessor("scaleY", {
                 set: function(v) {
                     this.scale.y = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.scale.y;
@@ -22271,6 +22935,7 @@ tm.define("glb.GLContext", {
             this.accessor("scaleZ", {
                 set: function(v) {
                     this.scale.z = v;
+                    this.needsUpdate = true;
                 },
                 get: function() {
                     return this.scale.z;
@@ -22278,33 +22943,54 @@ tm.define("glb.GLContext", {
             });
         },
 
-        initialize: function(glContext) {
-            this.geometry.initialize(glContext);
-            this.material.initialize(glContext);
+        build: function(glContext) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            this.geometry.build(glContext);
+            this.material.build(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+                this.material.setAttributes(glContext, this.geometry);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+                this.material.unsetVao(glContext);
+            }
         },
 
         updateMatrix: function() {
             this.mMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
+            this.needsUpdate = false;
             return this;
         },
 
         render: function(glContext, vpMatrix) {
             var gl = glContext.gl;
-            
+            var ext = glContext.ext;
+
             this.updateMatrix();
 
             this.material.setProgram(glContext);
-            this.material.setAttributes(glContext, this.geometry);
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+            } else {
+                this.material.setAttributes(glContext, this.geometry);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
+            }
+            this.material.setTextures(glContext);
 
             this.material.setUniforms(glContext, this);
             this.material.setUniform(glContext, "vpMatrix", vpMatrix);
-            
+
             this.material.draw(glContext, this.geometry.indexData.length);
+
+            if (ext !== null) this.material.unsetVao(glContext);
         },
 
         setPosition: function(x, y, z) {
             this.position.set(x, y, z);
+            this.needsUpdate = true;
             return this;
         },
 
@@ -22314,21 +23000,25 @@ tm.define("glb.GLContext", {
                 z = x;
             }
             this.scale.set(x, y, z);
+            this.needsUpdate = true;
             return this;
         },
 
         setRotationX: function(rad) {
             this.rotation.setAxisAngle(glb.Vector3.X, rad);
+            this.needsUpdate = true;
             return this;
         },
 
         setRotationY: function(rad) {
             this.rotation.setAxisAngle(glb.Vector3.Y, rad);
+            this.needsUpdate = true;
             return this;
         },
 
         setRotationZ: function(rad) {
             this.rotation.setAxisAngle(glb.Vector3.Z, rad);
+            this.needsUpdate = true;
             return this;
         },
 
@@ -22336,6 +23026,7 @@ tm.define("glb.GLContext", {
             this.position[0] += x;
             this.position[1] += y;
             this.position[2] += z;
+            this.needsUpdate = true;
             return this;
         },
 
@@ -22347,19 +23038,23 @@ tm.define("glb.GLContext", {
             this.scale[0] *= x;
             this.scale[1] *= y;
             this.scale[2] *= z;
+            this.needsUpdate = true;
             return this;
         },
 
         rotateX: function(rad) {
             this.rotation.rotateX(rad);
+            this.needsUpdate = true;
             return this;
         },
         rotateY: function(rad) {
             this.rotation.rotateY(rad);
+            this.needsUpdate = true;
             return this;
         },
         rotateZ: function(rad) {
             this.rotation.rotateZ(rad);
+            this.needsUpdate = true;
             return this;
         },
     });
@@ -22395,18 +23090,11 @@ tm.define("glb.OrthoCamera", {
             SCREEN_WIDTH * 0.5,
             SCREEN_HEIGHT * -0.5,
             SCREEN_HEIGHT * 0.5,
-            0.1,
-            1000
+            100,
+            10000
         );
     },
 
-});
-
-tm.define("glb.Scene", {
-    superClass: "glb.Object3D",
-    init: function() {
-        this.superInit();
-    }
 });
 
 tm.define("glb.Screen", {
@@ -22449,10 +23137,834 @@ tm.define("glb.Screen", {
     },
 });
 
+(function() {
+
+    tm.define("glb.Bullets", {
+        superClass: "glb.Object3D",
+
+        geometry: null,
+        material: null,
+
+        time: 0,
+
+        bullets: null,
+
+        init: function(texture) {
+            this.superInit();
+
+            this.geometry = glb.BulletsGeometry();
+            this.material = glb.BulletsMaterial(texture);
+
+            this.bullets = [];
+        },
+
+        build: function(glContext) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            this.geometry.build(glContext);
+            this.material.build(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+                this.material.setAttributes(glContext, this.geometry);
+                this.material.unsetVao(glContext);
+            }
+        },
+
+        update: function(app) {
+            this.time += 0.0001;
+
+            var self = this;
+            this.bullets = this.bullets.filter(function(b) {
+                b.position.add(b.velocity);
+                if (b.position.x < (SCREEN_WIDTH + 128) * -0.5 || (SCREEN_WIDTH + 128) * 0.5 < b.position.x ||
+                    b.position.y < (SCREEN_HEIGHT + 128) * -0.5 || (SCREEN_HEIGHT + 128) * 0.5 < b.position.y) {
+                    self.despawn(b.index);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        },
+
+        render: function(glContext, vpMatrix) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            if (this.geometry.vboNeedUpdate) {
+                this.geometry.rebind(gl);
+                this.geometry.vboNeedUpdate = false;
+            }
+
+            this.material.setProgram(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+            } else {
+                this.material.setAttributes(glContext, this.geometry);
+            }
+            this.material.setTextures(glContext);
+
+            this.material.setUniforms(glContext, this);
+            this.material.setUniform(glContext, "time", this.time);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+
+            this.material.draw(glContext, this.geometry.COUNT);
+
+            if (ext !== null) this.material.unsetVao(glContext);
+        },
+
+        spawn: function(pos, vel, frameIndex) {
+            var index = this.geometry.spawn(this.time, pos, vel, frameIndex);
+            if (index < 0) return;
+            this.bullets.push({
+                position: pos,
+                velocity: vel,
+                index: index,
+            });
+            return index;
+        },
+
+        despawn: function(index) {
+            this.geometry.despawn(index);
+        },
+
+    });
+
+})();
+
+(function() {
+
+    tm.define("glb.BulletsGeometry", {
+        superClass: "glb.Geometry",
+
+        COUNT: 8192,
+
+        bufferUsage: 1,
+
+        initialPositionData: null,
+        velocityData: null,
+        spawnTimeData: null,
+        activeData: null,
+        frameIndexData: null,
+
+        initialPosition: null,
+        velocity: null,
+        spawnTime: null,
+        active: null,
+        frameIndex: null,
+
+        vboNeedUpdate: false,
+
+        init: function() {
+            this.superInit();
+
+            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());;
+            this.velocityData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.frameIndexData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+        },
+
+        build: function(glContext) {
+            var gl = glContext.gl;
+
+            this.initialPosition = this.createVbo(gl, this.initialPositionData);
+            this.velocity = this.createVbo(gl, this.velocityData);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
+            this.active = this.createVbo(gl, this.activeData);
+            this.frameIndex = this.createVbo(gl, this.frameIndexData);
+        },
+
+        rebind: function(gl) {
+            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
+            this.transfarVbo(gl, this.velocity, this.velocityData);
+            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
+            this.transfarVbo(gl, this.active, this.activeData);
+            this.transfarVbo(gl, this.frameIndex, this.frameIndexData);
+        },
+
+        spawn: function(now, pos, vel, frameIndex) {
+            var index = find(this.activeData, 0);
+            if (index < 0) {
+                console.warn("弾が足りない");
+                return -1;
+            }
+
+            this.initialPositionData[index * 2 + 0] = pos.x;
+            this.initialPositionData[index * 2 + 1] = pos.y;
+            this.velocityData[index * 2 + 0] = vel.x;
+            this.velocityData[index * 2 + 1] = vel.y;
+            this.spawnTimeData[index] = now;
+            this.activeData[index] = 1;
+            this.frameIndexData[index] = frameIndex;
+
+            this.vboNeedUpdate = true;
+
+            return index;
+        },
+
+        despawn: function(index) {
+            if (index < this.activeData.length) {
+                this.activeData[index] = 0;
+                this.vboNeedUpdate = true;
+            }
+        },
+
+    });
+
+    var find = function(array, value) {
+        return Array.prototype.indexOf.call(array, value);
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.BulletsMaterial", {
+        superClass: "glb.Material",
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+            this.image = image;
+        },
+
+        build: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, geometry) {
+            this.superSetAttributes(glContext, geometry);
+        },
+        
+        setTextures: function(glContext) {
+            var gl = glContext.gl;
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+
+            gl.disable(gl.DEPTH_TEST);
+            gl.disable(gl.CULL_FACE);
+
+            gl.drawArrays(gl.POINTS, 0, length);
+
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.CULL_FACE);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "initialPosition",
+        size: 2,
+    }, {
+        name: "velocity",
+        size: 2,
+    }, {
+        name: "spawnTime",
+        size: 1,
+    }, {
+        name: "active",
+        size: 1,
+    }, {
+        name: "frameIndex",
+        size: 1,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "time",
+        type: "float",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec2 initialPosition;",
+        "attribute vec2 velocity;",
+        "attribute float spawnTime;",
+        "attribute float active;",
+        "attribute float frameIndex;",
+
+        "uniform mat4 vpMatrix;",
+        "uniform float time;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vFrameIndex;",
+        "varying float vAngle;",
+        "varying mat3 vUvMat;",
+
+        "mat3 translate(float x, float y) {",
+        "    return mat3(",
+        "        1.0, 0.0, 0.0,",
+        "        0.0, 1.0, 0.0,",
+        "          x,   y, 1.0",
+        "    );",
+        "}",
+
+        "mat3 rotate(float rad) {",
+        "    float s = sin(rad);",
+        "    float c = cos(rad);",
+        "    return mat3(",
+        "        c, s, 0,",
+        "       -s, c, 0,",
+        "        0, 0, 1",
+        "    );",
+        "}",
+
+        "void main(void) {",
+        "    vActive = active;",
+        "    vFrameIndex = frameIndex;",
+        "    if (active < 0.5) {",
+        "        vAngle = 0.0;",
+        "        gl_Position = vec4(0.0);",
+        "        gl_PointSize = 0.0;",
+        "    } else {",
+        "        if (frameIndex < 8.0) {",
+        "            vAngle = atan(velocity.y, velocity.x);",
+        "        } else {",
+        "            vAngle = time * 3000.0;",
+        "        }",
+        "        vAge = time - spawnTime;",
+        "        vUvMat = translate(0.5, 0.5) * rotate(vAngle) * translate(-0.5, -0.5);",
+        "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
+        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
+        "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
+        "        gl_PointSize = ({0} + c) * {1};".format(BULLET_APPEALANCE.toFloatString(), GL_QUALITY.toFloatString()),
+        "    }",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+        
+        "uniform sampler2D texture;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vFrameIndex;",
+        "varying float vAngle;",
+        "varying mat3 vUvMat;",
+
+        "void main(void) {",
+        "    if (vActive < 0.5) discard;",
+        "    if (0.7 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
+
+        "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
+        "    vec3 ruv = vUvMat * buv;",
+        "    vec2 uv = vec2((ruv.x + vFrameIndex) * 0.0625, ruv.y);",
+
+        "    float c = sin(vAge * 6200.0) * 0.12;",
+        "    vec4 light = vec4(0.0, c, 0.0, 0.0);",
+
+        "    gl_FragColor = light + texture2D(texture, uv);",
+        "}",
+    ].join("\n");
+
+})();
+
+(function() {
+
+    tm.define("glb.ParticleGeometry", {
+        superClass: "glb.Geometry",
+
+        COUNT: 8192,
+
+        bufferUsage: 1,
+
+        initialPositionData: null,
+        velocityFromData: null,
+        velocityToData: null,
+        spawnTimeData: null,
+        activeData: null,
+        frameIndexData: null,
+        ttlData: null,
+        sizeFromData: null,
+        sizeToData: null,
+        colorFromData: null,
+        colorToData: null,
+
+        initialPosition: null,
+        velocityFrom: null,
+        velocityTo: null,
+        spawnTime: null,
+        active: null,
+        frameIndex: null,
+        ttl: null,
+        sizeFrom: null,
+        sizeTo: null,
+        colorFrom: null,
+        colorTo: null,
+
+        vboNeedUpdate: false,
+
+        init: function() {
+            this.superInit();
+
+            this.initialPositionData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());;
+            this.velocityFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.velocityToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0];
+            }).flatten());
+            this.spawnTimeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.activeData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.frameIndexData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.ttlData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.sizeFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.sizeToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return 0;
+            }));
+            this.colorFromData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [1, 1, 1, 1];
+            }).flatten());
+            this.colorToData = new Float32Array(Array.range(0, this.COUNT).map(function() {
+                return [0, 0, 0, 0];
+            }).flatten());
+        },
+
+        build: function(glContext) {
+            var gl = glContext.gl;
+
+            this.initialPosition = this.createVbo(gl, this.initialPositionData);
+            this.velocityFrom = this.createVbo(gl, this.velocityFromData);
+            this.velocityTo = this.createVbo(gl, this.velocityToData);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
+            this.active = this.createVbo(gl, this.activeData);
+            this.frameIndex = this.createVbo(gl, this.frameIndexData);
+            this.ttl = this.createVbo(gl, this.ttlData);
+            this.sizeFrom = this.createVbo(gl, this.sizeFromData);
+            this.sizeTo = this.createVbo(gl, this.sizeToData);
+            this.colorFrom = this.createVbo(gl, this.colorFromData);
+            this.colorTo = this.createVbo(gl, this.colorToData);
+        },
+
+        rebind: function(gl) {
+            this.transfarVbo(gl, this.initialPosition, this.initialPositionData);
+            this.transfarVbo(gl, this.velocityFrom, this.velocityFromData);
+            this.transfarVbo(gl, this.velocityTo, this.velocityToData);
+            this.transfarVbo(gl, this.spawnTime, this.spawnTimeData);
+            this.transfarVbo(gl, this.active, this.activeData);
+            this.transfarVbo(gl, this.frameIndex, this.frameIndexData);
+            this.transfarVbo(gl, this.ttl, this.ttlData);
+            this.transfarVbo(gl, this.sizeFrom, this.sizeFromData);
+            this.transfarVbo(gl, this.sizeTo, this.sizeToData);
+            this.transfarVbo(gl, this.colorFrom, this.colorFromData);
+            this.transfarVbo(gl, this.colorTo, this.colorToData);
+        },
+
+        spawn: function(now, param) {
+            var index = find(this.activeData, 0);
+            if (index < 0) {
+                console.warn("パーティクルが足りない");
+                return -1;
+            }
+
+            this.initialPositionData[index * 2 + 0] = param.position.x;
+            this.initialPositionData[index * 2 + 1] = param.position.y;
+            this.velocityFromData[index * 2 + 0] = param.velocityFrom.x;
+            this.velocityFromData[index * 2 + 1] = param.velocityFrom.y;
+            this.velocityToData[index * 2 + 0] = param.velocityTo.x;
+            this.velocityToData[index * 2 + 1] = param.velocityTo.y;
+            this.spawnTimeData[index] = now;
+            this.activeData[index] = 1;
+            this.frameIndexData[index] = param.frameIndex;
+            this.ttlData[index] = param.ttl;
+            this.sizeFromData[index] = param.sizeFrom;
+            this.sizeToData[index] = param.sizeTo;
+            this.colorFromData[index * 4 + 0] = param.colorFrom.r / 255;
+            this.colorFromData[index * 4 + 1] = param.colorFrom.g / 255;
+            this.colorFromData[index * 4 + 2] = param.colorFrom.b / 255;
+            this.colorFromData[index * 4 + 3] = param.colorFrom.a;
+            this.colorToData[index * 4 + 0] = param.colorTo.r / 255;
+            this.colorToData[index * 4 + 1] = param.colorTo.g / 255;
+            this.colorToData[index * 4 + 2] = param.colorTo.b / 255;
+            this.colorToData[index * 4 + 3] = param.colorTo.a;
+
+            this.vboNeedUpdate = true;
+
+            return index;
+        },
+
+        despawn: function(index) {
+            if (index < this.activeData.length) {
+                this.activeData[index] = 0;
+                this.vboNeedUpdate = true;
+            }
+        },
+
+    });
+
+    var find = function(array, value) {
+        return Array.prototype.indexOf.call(array, value);
+    };
+
+})();
+
+(function() {
+
+    tm.define("glb.ParticleMaterial", {
+        superClass: "glb.Material",
+
+        image: null,
+        _texture: null,
+
+        init: function(image) {
+            this.superInit();
+            this.image = image;
+        },
+
+        build: function(glContext) {
+            this._createProgram(glContext);
+            if (this.image) {
+                this._createTexture(glContext);
+            }
+        },
+
+        _getVertexShaderSource: function() {
+            return VERTEX_SHADER_SOURCE;
+        },
+        _getFragmentShaderSource: function() {
+            return FRAGMENT_SHADER_SOURCE;
+        },
+        _getAttributeMetaData: function() {
+            return ATTRIBUTE_META_DATA;
+        },
+        _getUniformMetaData: function() {
+            return UNIFORM_META_DATA;
+        },
+        _createTexture: function(glContext) {
+            this._texture = glContext.createTexture(this.image);
+        },
+
+        setAttributes: function(glContext, geometry) {
+            this.superSetAttributes(glContext, geometry);
+        },
+        
+        setTextures: function(glContext) {
+            var gl = glContext.gl;
+            if (this.image) {
+                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, null);
+            }
+        },
+
+        setUniforms: function(glContext, uniformValues) {
+            this.superSetUniforms(glContext, uniformValues);
+
+            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+        },
+
+        draw: function(glContext, length) {
+            var gl = glContext.gl;
+
+            gl.disable(gl.DEPTH_TEST);
+            gl.disable(gl.CULL_FACE);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+            gl.drawArrays(gl.POINTS, 0, length);
+
+            gl.enable(gl.DEPTH_TEST);
+            gl.enable(gl.CULL_FACE);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        },
+
+    });
+
+    var ATTRIBUTE_META_DATA = [{
+        name: "initialPosition",
+        size: 2,
+    }, {
+        name: "velocityFrom",
+        size: 2,
+    }, {
+        name: "velocityTo",
+        size: 2,
+    }, {
+        name: "spawnTime",
+        size: 1,
+    }, {
+        name: "active",
+        size: 1,
+    }, {
+        name: "frameIndex",
+        size: 1,
+    }, {
+        name: "ttl",
+        size: 1,
+    }, {
+        name: "sizeFrom",
+        size: 1,
+    }, {
+        name: "sizeTo",
+        size: 1,
+    }, {
+        name: "colorFrom",
+        size: 4,
+    }, {
+        name: "colorTo",
+        size: 4,
+    }, ];
+
+    var UNIFORM_META_DATA = [{
+        name: "vpMatrix",
+        type: "mat4",
+    }, {
+        name: "time",
+        type: "float",
+    }, ];
+
+    var VERTEX_SHADER_SOURCE = [
+        "attribute vec2 initialPosition;",
+        "attribute float spawnTime;",
+        "attribute float active;",
+        "attribute float frameIndex;",
+
+        "attribute float ttl;",
+
+        "attribute vec2 velocityFrom;",
+        "attribute vec2 velocityTo;",
+        "attribute float sizeFrom;",
+        "attribute float sizeTo;",
+        "attribute vec4 colorFrom;",
+        "attribute vec4 colorTo;",
+        
+        "uniform mat4 vpMatrix;",
+        "uniform float time;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vFrameIndex;",
+        "varying float vSize;",
+        "varying vec4 vColor;",
+        
+        "float lerp(float from, float to, float time, float duration) {",
+        "    return from + (to - from) * time / duration;",
+        "}",
+        "vec2 lerp(vec2 from, vec2 to, float time, float duration) {",
+        "    return from + (to - from) * time / duration;",
+        "}",
+        "vec4 lerp(vec4 from, vec4 to, float time, float duration) {",
+        "    return from + (to - from) * time / duration;",
+        "}",
+
+        "void main(void) {",
+        "    vActive = active;",
+        "    vFrameIndex = frameIndex;",
+        "    if (active < 0.5) {",
+        "        gl_Position = vec4(0.0);",
+        "        gl_PointSize = 0.0;",
+        "    } else {",
+        "        vAge = time - spawnTime;",
+        "        vSize = lerp(sizeFrom, sizeTo, vAge, ttl);",
+        "        vColor = lerp(colorFrom, colorTo, vAge, ttl);",
+
+        "        vec2 v = lerp(velocityFrom, velocityTo, vAge, ttl);",
+        "        float tm = vAge * 10000.0;",
+        "        vec2 pos = initialPosition + velocityFrom * tm + (v - velocityFrom) * tm * 0.5;",
+        "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
+        "        gl_PointSize = vSize * {0};".format(GL_QUALITY.toFloatString()),
+        "    }",
+        "}",
+    ].join("\n");
+
+    var FRAGMENT_SHADER_SOURCE = [
+        "precision mediump float;",
+        
+        "uniform sampler2D texture;",
+
+        "varying float vAge;",
+        "varying float vActive;",
+        "varying float vFrameIndex;",
+        "varying float vSize;",
+        "varying vec4 vColor;",
+
+        "void main(void) {",
+        "    if (vActive < 0.5) discard;",
+
+        "    vec2 uv = vec2((gl_PointCoord.x + vFrameIndex) * 0.0625, gl_PointCoord.y);",
+        "    gl_FragColor = vColor * texture2D(texture, uv);",
+        "}",
+    ].join("\n");
+
+})();
+
+(function() {
+
+    tm.define("glb.ParticleSystem", {
+        superClass: "glb.Object3D",
+
+        geometry: null,
+        material: null,
+
+        particles: null,
+        
+        time: 0,
+
+        init: function(texture) {
+            this.superInit();
+
+            this.geometry = glb.ParticleGeometry();
+            this.material = glb.ParticleMaterial(texture);
+
+            this.particles = [];
+            
+            this.time = 0;
+        },
+
+        build: function(glContext) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            this.geometry.build(glContext);
+            this.material.build(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+                this.material.setAttributes(glContext, this.geometry);
+                this.material.unsetVao(glContext);
+            }
+        },
+
+        update: function(app) {
+            this.time += 0.0001;
+
+            var self = this;
+            var time = this.time;
+            this.particles = this.particles.filter(function(p) {
+                if (p.deathTime <= time) {
+                    self.despawn(p.index);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        },
+
+        render: function(glContext, vpMatrix) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            if (this.geometry.vboNeedUpdate) {
+                this.geometry.rebind(gl);
+                this.geometry.vboNeedUpdate = false;
+            }
+
+            this.material.setProgram(glContext);
+            
+            if (ext !== null) {
+                this.material.setVao(glContext);
+            } else {
+                this.material.setAttributes(glContext, this.geometry);
+            }
+            this.material.setTextures(glContext);
+
+            this.material.setUniforms(glContext, this);
+            this.material.setUniform(glContext, "time", this.time);
+            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+
+            this.material.draw(glContext, this.geometry.COUNT);
+            
+            if (ext !== null) this.material.unsetVao(glContext);
+        },
+
+        spawn: function(param) {
+            var index = this.geometry.spawn(this.time, {}.$extend(DEFAULT_PARAM, param));
+            if (index < 0) return;
+            this.particles.push({
+                deathTime: this.time + param.ttl,
+                index: index,
+            });
+            return index;
+        },
+
+        despawn: function(index) {
+            this.geometry.despawn(index);
+        },
+
+    });
+
+    var DEFAULT_PARAM = {
+        position: { x:0, y:0 },
+        frameIndex: 0,
+        ttl: 60 * 0.0001,
+        velocityFrom: { x:1, y:0 },
+        velocityTo: { x:0, y:0 },
+        sizeFrom: 30,
+        sizeTo: 30,
+        colorFrom: { r:255, g:255, b:255, a:1 },
+        colorTo: { r:255, g:255, b:255, a:0 },
+    };
+
+})();
+
 tm.define("glb.GameScene", {
     superClass: "tm.app.Scene",
     init: function() {
         this.superInit();
+
+        console.log(tm.asset.Manager.get("hime"));
+        console.log(tm.asset.Manager.get("p32.mtl"));
 
         this.fromJSON({
             children: {
@@ -22468,121 +23980,97 @@ tm.define("glb.GameScene", {
         this.glContext = null;
 
         this.camera = glb.Camera();
+        // this.camera = glb.OrthoCamera();
 
         this.on("enter", function(e) {
             e.app.background = "transparent";
             this.glContext = e.app.glContext;
         });
 
-        // var axis = glb.Vector3(3, 1, 0).normalize();
-        // var rot = glb.Quat().setAxisAngle(axis, 0.02);
-        // glb.Mesh(
-        //     glb.BoxGeometry(60),
-        //     glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
-        // )
-        //     .addChildTo(this)
-        //     .on("enterframe", function() {
-        //         this.rotation.mul(rot);
-        //     });
+        return;
 
-        // var axis2 = glb.Vector3(-3, 1, 0).normalize();
-        // var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
-        // glb.Mesh(
-        //     glb.BoxGeometry(60, 20, 100),
-        //     glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
-        // )
-        //     .setPosition(-30, 0, 0)
-        //     .addChildTo(this)
-        //     .on("enterframe", function() {
-        //         this.rotation.mul(rot2);
-        //     });
+        var axis = glb.Vector3(3, 1, 0).normalize();
+        var rot = glb.Quat().setAxisAngle(axis, 0.02);
+        glb.Mesh(
+                glb.BoxGeometry(180),
+                glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
+            )
+            .setPosition(10, 380, 0)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                this.rotation.mul(rot);
+            });
 
-        // var geo = glb.PlaneGeometry(32, 8, 1);
-        // var mat = glb.BasicMaterial(tm.asset.Manager.get("bullet").element);
-        // this.on("enterframe", function(e) {
-        //     if (e.app.frame % 5 !== 0) return;
-
-        //     var dir = Math.randf(0, Math.PI * 2);
-        //     var bullet = glb.Mesh(geo, mat)
-        //         .addChildTo(this)
-        //         .setRotationZ(dir)
-        //         .on("enterframe", function(e) {
-        //             this.x += Math.cos(dir) * 2;
-        //             this.y += Math.sin(dir) * 2;
-        //             this.setScale(1, 0.9 + Math.sin(e.app.frame) * 0.1, 1);
-
-        //             if (this.x < -SCREEN_WIDTH * 0.5 || SCREEN_WIDTH * 0.5 < this.x
-        //                 || this.y < -SCREEN_HEIGHT * 0.5 || SCREEN_HEIGHT * 0.5 < this.y) {
-        //                 this.remove();
-        //             }
-        //         });
-        //     bullet.uvTranslate.x = Math.rand(0, 7) / 8;
-        // });
+        var axis2 = glb.Vector3(-3, 1, 0).normalize();
+        var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
+        glb.Mesh(
+                glb.BoxGeometry(180, 60, 300),
+                glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
+            )
+            .setPosition(-60, 380, 0)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                this.rotation.mul(rot2);
+            });
 
         var bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
-        this.on("enterframe", function(e) {
-            var f = e.app.frame;
-            if (f % 10 !== 0) return;
-            var way = 2;
-            Array.range(0, way).forEach(function(i) {
-                var d = Math.PI*2 * i/way + e.app.frame * 0.1;
-                var s = 1.5;
-                bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * 0.02, 60),
-                    glb.Vector2().fromAngleLength(d, s),
-                    0
-                );
-
-                bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * 0.02 + Math.PI, 60),
-                    glb.Vector2().fromAngleLength(d, s),
-                    4
-                );
-
-                d = Math.PI*2 * i/way - e.app.frame * 0.1;
-                s = 1.2;
-
-                bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * -0.02 + Math.PI * 0.5, 40),
-                    glb.Vector2().fromAngleLength(d, s),
-                    8
-                );
-                bullets.spawn(
-                    glb.Vector2().fromAngleLength(f * -0.02 + Math.PI * 1.5, 40),
-                    glb.Vector2().fromAngleLength(d, s),
-                    10
-                );
-            });
-        });
-        
         tm.display.Label("bullet count = 0", 40)
+            .setAlign("left")
             .setFillStyle("darkgreen")
-            .setPosition(200, 30)
+            .setPosition(10, 30)
             .addChildTo(this)
             .on("enterframe", function() {
                 this.text = "bullet count = " + bullets.bullets.length;
             });
-            
-        var particles = glb.Particle(tm.asset.Manager.get("particles").element).addChildTo(this);
-        this.on("enterframe", function() {
-            (50).times(function() {
-                var d = Math.randf(-Math.PI, Math.PI);
-                var s = 0.8;
 
-                var v = glb.Vector2().fromAngleLength(d, s);
-                var a = glb.Vector2(0, 0.05);
-                particles.spawn({
-                    position: glb.Vector2(Math.rand(-100, 100), SCREEN_HEIGHT * -0.15),
-                    velocity: v,
-                    accel: a,
-                    ttl: 50 * 0.0001,
-                    sizeFrom: 10,
-                    sizeTo: 300,
-                    type: 2,
-                });
+        this.on("enterframe", function(e) {
+            (4).times(function(i) {
+
+                bullets.spawn(
+                    glb.Vector2(0, 0),
+                    glb.Vector2().fromAngleLength(e.app.frame * 0.04 + Math.PI * 0.5 * i, 9),
+                    2
+                );
+                bullets.spawn(
+                    glb.Vector2(0, 0),
+                    glb.Vector2().fromAngleLength(e.app.frame * -0.04 + Math.PI * 0.5 * i, 9),
+                    6
+                );
+
             });
         });
-        
+
+        var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
+        tm.display.Label("particle count = 0", 40)
+            .setAlign("left")
+            .setFillStyle("darkgreen")
+            .setPosition(10, 60)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                this.text = "particle count = " + particleSystem.particles.length;
+            });
+
+        this.on("enterframe", function(e) {
+            if (e.app.frame % 60 !== 0) return;
+            (1).times(function() {
+                glb.ExplosionS(particleSystem)
+                    .addChildTo(this)
+                    .position.random(0, 0, 0, W * 0.5);
+            }.bind(this));
+        });
+
+        this.on("enterframe", function(e) {
+            if (e.app.frame % 180 !== 0) return;
+
+            var flame = glb.Flame(particleSystem)
+                .addChildTo(this);
+            flame.position.random(0, 0, 0, W * 0.5);
+            flame.tweener.wait(5000).call(function() {
+                flame.remove();
+            });
+
+        })
+
     },
 
     draw: function() {

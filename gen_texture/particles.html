@@ -39,7 +39,7 @@ var drawParticle = function(canvas, x, y, radius, colors) {
     
     canvas.globalCompositeOperation = "lighter";
     canvas.setFillStyle(
-        RadialGradient(x + radius * 0.2, y, 0, x, y, radius)
+        RadialGradient(x, y, 0, x, y, radius)
             .addColorStopList(colorStopList)
             .toStyle()
     );
@@ -82,7 +82,18 @@ _(function(canvas) {
         "rgba(255,255,255,1.0)",
         "rgba(255,255,  0,1.0)",
         "rgba(255,  0,  0,1.0)",
+        "rgba(255,  0,  0,1.0)",
         "rgba(255,  0,  0,0.0)"
+    );
+});
+
+_(function(canvas) {
+    drawParticle(canvas, sz*0.5, sz*0.5, sz*0.4,
+        "rgba(255,255,255,1.0)",
+        "rgba(255,255,255,1.0)",
+        "rgba(  0,128,255,1.0)",
+        "rgba(  0,  0,255,1.0)",
+        "rgba(  0,  0,255,0.0)"
     );
 });
 

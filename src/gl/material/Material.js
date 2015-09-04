@@ -4,13 +4,14 @@
 
         program: null,
 
+        vao: null,
         attributes: null,
         uniforms: null,
 
         init: function() {
         },
 
-        initialize: function(glContext) {
+        build: function(glContext) {
             this._createProgram(glContext);
         },
         
@@ -29,6 +30,7 @@
 
         _createProgram: function(glContext) {
             var gl = glContext.gl;
+            var ext = glContext.ext;
             var vs = this._createShader(gl, gl.VERTEX_SHADER, this._getVertexShaderSource());
             var fs = this._createShader(gl, gl.FRAGMENT_SHADER, this._getFragmentShaderSource());
             this.program = gl.createProgram();
@@ -37,6 +39,10 @@
             gl.linkProgram(this.program);
             if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
                 throw new Error(gl.getProgramInfoLog(this.program));
+            }
+            
+            if (ext !== null) {
+                this.vao = ext.createVertexArrayOES();
             }
 
             this.attributes = this._getAttributeMetaData().reduce(function(attributes, attr) {
@@ -74,21 +80,32 @@
             var gl = glContext.gl;
             gl.useProgram(this.program);
         },
+        
+        setVao: function(glContext) {
+            var ext = glContext.ext;
+            if (ext !== null) ext.bindVertexArrayOES(this.vao);
+        },
+        unsetVao: function(glContext) {
+            var ext = glContext.ext;
+            if (ext !== null) ext.bindVertexArrayOES(null);
+        },
 
-        setAttributes: function(glContext, attributeValues) {
+        setAttributes: function(glContext, geometry) {
             var gl = glContext.gl;
             var attributes = this.attributes;
 
             Object.keys(this.attributes).forEach(function(name) {
                 var attr = attributes[name];
 
-                if (attributeValues[name]) {
-                    gl.bindBuffer(gl.ARRAY_BUFFER, attributeValues[name]);
+                if (geometry[name]) {
+                    gl.bindBuffer(gl.ARRAY_BUFFER, geometry[name]);
                     gl.enableVertexAttribArray(attr.location);
                     gl.vertexAttribPointer(attr.location, attr.size, gl.FLOAT, false, 0, 0);
                 }
             });
         },
+        
+        setTextures: function(glContext) {},
 
         setUniforms: function(glContext, uniformValues) {
             var gl = glContext.gl;

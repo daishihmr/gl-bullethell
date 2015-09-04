@@ -2,22 +2,27 @@ var fs = require("fs");
 require("high");
 
 module.exports = function(grunt) {
-    var scan = function(file) {
-        var fileList = fs.readdirSync(file);
-        return fileList.map(function(child) {
-            var stat = fs.statSync(file + "/" + child);
-            if (stat.isFile()) {
-                return file + "/" + child;
-            } else if (stat.isDirectory()) {
-                return scan(file + "/" + child);
-            }
-        });
+
+    var getSourceList = function() {
+        var scan = function(file) {
+            var fileList = fs.readdirSync(file);
+            return fileList.map(function(child) {
+                var stat = fs.statSync(file + "/" + child);
+                if (stat.isFile()) {
+                    return file + "/" + child;
+                } else if (stat.isDirectory()) {
+                    return scan(file + "/" + child);
+                }
+            });
+        };
+
+        var libs = scan("./lib").flatten();
+        var srcs = scan("./src").flatten().erase("./src/main.js");
+        srcs.unshift("./src/main.js");
+
+        return libs.concat(srcs);
     };
 
-    var LIB = scan("./lib").flatten();
-    var SRC = scan("./src").flatten().erase("./src/main.js");
-    SRC.unshift("./src/main.js");
-    
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-watch");
@@ -25,13 +30,13 @@ module.exports = function(grunt) {
     grunt.initConfig({
         uglify: {
             product: {
-                src: LIB.concat(SRC),
+                src: getSourceList(),
                 dest: "build/game.js",
             }
         },
         concat: {
             develop: {
-                src: LIB.concat(SRC),
+                src: getSourceList(),
                 dest: "build/game.js",
                 options: {
                     sourceMap: true
@@ -40,7 +45,7 @@ module.exports = function(grunt) {
         },
         watch: {
             develop: {
-                files: LIB.concat(SRC),
+                files: getSourceList(),
                 tasks: ["concat"],
             }
         }

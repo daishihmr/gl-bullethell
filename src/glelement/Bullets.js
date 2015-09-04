@@ -19,9 +19,18 @@
             this.bullets = [];
         },
 
-        initialize: function(glContext) {
-            this.geometry.initialize(glContext);
-            this.material.initialize(glContext);
+        build: function(glContext) {
+            var gl = glContext.gl;
+            var ext = glContext.ext;
+
+            this.geometry.build(glContext);
+            this.material.build(glContext);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+                this.material.setAttributes(glContext, this.geometry);
+                this.material.unsetVao(glContext);
+            }
         },
 
         update: function(app) {
@@ -30,8 +39,8 @@
             var self = this;
             this.bullets = this.bullets.filter(function(b) {
                 b.position.add(b.velocity);
-                if (b.position.x < SCREEN_WIDTH * -0.2 || SCREEN_WIDTH * 0.2 < b.position.x ||
-                    b.position.y < SCREEN_HEIGHT * -0.2 || SCREEN_HEIGHT * 0.2 < b.position.y) {
+                if (b.position.x < (SCREEN_WIDTH + 128) * -0.5 || (SCREEN_WIDTH + 128) * 0.5 < b.position.x ||
+                    b.position.y < (SCREEN_HEIGHT + 128) * -0.5 || (SCREEN_HEIGHT + 128) * 0.5 < b.position.y) {
                     self.despawn(b.index);
                     return false;
                 } else {
@@ -42,6 +51,7 @@
 
         render: function(glContext, vpMatrix) {
             var gl = glContext.gl;
+            var ext = glContext.ext;
 
             if (this.geometry.vboNeedUpdate) {
                 this.geometry.rebind(gl);
@@ -49,17 +59,25 @@
             }
 
             this.material.setProgram(glContext);
-            this.material.setAttributes(glContext, this.geometry);
+
+            if (ext !== null) {
+                this.material.setVao(glContext);
+            } else {
+                this.material.setAttributes(glContext, this.geometry);
+            }
+            this.material.setTextures(glContext);
 
             this.material.setUniforms(glContext, this);
             this.material.setUniform(glContext, "time", this.time);
             this.material.setUniform(glContext, "vpMatrix", vpMatrix);
 
             this.material.draw(glContext, this.geometry.COUNT);
+
+            if (ext !== null) this.material.unsetVao(glContext);
         },
 
-        spawn: function(pos, vel, type) {
-            var index = this.geometry.spawn(this.time, pos, vel, type);
+        spawn: function(pos, vel, frameIndex) {
+            var index = this.geometry.spawn(this.time, pos, vel, frameIndex);
             if (index < 0) return;
             this.bullets.push({
                 position: pos,

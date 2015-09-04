@@ -57,7 +57,7 @@ tm.define("glb.BoxGeometry", {
         ]);
     },
     
-    initialize: function(glContext) {
+    build: function(glContext) {
         var gl = glContext.gl;
         this.vertex = this.createVbo(gl, this.vertexData);
         this.uv = this.createVbo(gl, this.uvData);
