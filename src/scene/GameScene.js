@@ -52,8 +52,8 @@ tm.define("glb.GameScene", {
 
             this.effectComposer = glb.AfterEffectComposer(this.glContext);
             // this.effectComposer.addPass(glb.ShaderPass(glb.MonotoneShader()));
-            this.effectComposer.addPass(reverseShader);
-            this.effectComposer.addPass(glb.BlurPass());
+            // this.effectComposer.addPass(reverseShader);
+            // this.effectComposer.addPass(glb.BlurPass());
         });
 
         // var axis = glb.Vector3(3, 1, 0).normalize();
@@ -147,12 +147,12 @@ tm.define("glb.GameScene", {
                 bullets.spawn(
                     glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
                     glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
-                    2
+                    0
                 );
                 bullets.spawn(
                     glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
                     glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
-                    6
+                    4
                 );
 
             });

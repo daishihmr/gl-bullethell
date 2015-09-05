@@ -6,8 +6,7 @@
         init: function() {
             this.superInit();
 
-            this.previousFrameScreenA = glb.Screen();
-            this.previousFrameScreenB = glb.Screen();
+            this.previousFrameScreen = glb.Screen();
 
             this.rect.mixFactor0 = 0.8;
             this.rect.mixFactor1 = 0.8;
@@ -52,14 +51,13 @@
         render: function(glContext, beforeScreen) {
             if (!this.isBuilt) {
                 this.screen.build(glContext);
-                this.previousFrameScreenA.build(glContext);
-                this.previousFrameScreenB.build(glContext);
+                this.previousFrameScreen.build(glContext);
                 this.isBuilt = true;
             }
 
             // 前のフレームと今回のフレームをミックスしてscreenに描画
             this.rect.material = this.rect.mixMaterial;
-            this.rect.material.texture0 = this.previousFrameScreenA.texture;
+            this.rect.material.texture0 = this.previousFrameScreen.texture;
             this.rect.material.texture1 = beforeScreen.texture;
             glContext.attachScreen(this.screen);
             glContext.render(this.scene, this.camera);
@@ -67,12 +65,8 @@
             // 描画したやつをpreviousFrameScreenに描画（次回使う）
             this.rect.material = this.rect.mainMaterial;
             this.rect.material.texture = this.screen.texture;
-            glContext.attachScreen(this.previousFrameScreenB);
+            glContext.attachScreen(this.previousFrameScreen);
             glContext.render(this.scene, this.camera);
-
-            var _temp = this.previousFrameScreenA;
-            this.previousFrameScreenA = this.previousFrameScreenB;
-            this.previousFrameScreenB = _temp;
 
             return this.screen;
         },
