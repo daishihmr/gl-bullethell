@@ -10,7 +10,7 @@
 
         rect: null,
         
-        enable: true,
+        enabled: true,
 
         init: function(shader) {
             shader = shader || glb.DefaultShader();

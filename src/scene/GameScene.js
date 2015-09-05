@@ -39,7 +39,7 @@ tm.define("glb.GameScene", {
         camera.updateMatrix();
 
         var reverseShader = glb.ShaderPass(glb.ReverseShader());
-        reverseShader.enable = false;
+        reverseShader.enabled = false;
 
         this.on("enter", function(e) {
             // 2Dキャンバスの背景を透明にする
@@ -118,12 +118,12 @@ tm.define("glb.GameScene", {
             glb.ExplosionS(particleSystem)
                 .setPosition(this.x, this.y, 0)
                 .addChildTo(this);
-            reverseShader.enable = true;
+            reverseShader.enabled = true;
             this.tweener
                 .clear()
                 .wait(50)
                 .call(function() {
-                    reverseShader.enable = false;
+                    reverseShader.enabled = false;
                 });
         });
 

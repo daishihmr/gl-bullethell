@@ -182,9 +182,9 @@
         },
 
         translate: function(x, y, z) {
-            this.position[0] += x;
-            this.position[1] += y;
-            this.position[2] += z;
+            this.position.x += x;
+            this.position.y += y;
+            this.position.z += z;
             this.needsUpdate = true;
             return this;
         },
@@ -194,9 +194,9 @@
                 y = x;
                 z = x;
             }
-            this.scale[0] *= x;
-            this.scale[1] *= y;
-            this.scale[2] *= z;
+            this.scale.x *= x;
+            this.scale.y *= y;
+            this.scale.z *= z;
             this.needsUpdate = true;
             return this;
         },
