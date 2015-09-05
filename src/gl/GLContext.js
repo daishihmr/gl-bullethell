@@ -5,7 +5,6 @@ tm.define("glb.GLContext", {
     ext: null,
 
     screen: null,
-    isRenderToOffScreen: false,
 
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
@@ -26,7 +25,7 @@ tm.define("glb.GLContext", {
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     },
-
+    
     resize: function(width, height) {
         this.width = this.element.width = width;
         this.height = this.element.height = height;
@@ -70,10 +69,11 @@ tm.define("glb.GLContext", {
         return this;
     },
 
-    createTexture: function(img) {
+    createTexture: function(img, index) {
+        index = index || 0;
         var gl = this.gl;
 
-        gl.activeTexture(gl.TEXTURE0);
+        gl.activeTexture(gl.TEXTURE0 + index);
 
         var texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -91,14 +91,26 @@ tm.define("glb.GLContext", {
         if (screen) {
             gl.bindFramebuffer(gl.FRAMEBUFFER, screen.frameBuffer);
             gl.viewport(0, 0, screen.width, screen.height);
-            this.isRenderToOffScreen = true;
         } else {
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.viewport(0, 0, this.width, this.height);
-            this.isRenderToOffScreen = false;
         }
 
         return this;
+    },
+    
+    build: function(scene) {
+        this.buildObj(scene);
+    },
+    buildObj: function(obj) {
+        var self = this;
+        if (!obj.isBuilt) {
+            obj.build && obj.build(this);
+            obj.isBuilt = true;
+        }
+        obj.children.forEach(function(child) {
+            self.buildObj(child);
+        });
     },
 
     render: function(scene, camera) {

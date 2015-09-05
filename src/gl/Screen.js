@@ -1,3 +1,6 @@
+/**
+ * オフスクリーンレンダリング用
+ */
 tm.define("glb.Screen", {
 
     frameBuffer: null,

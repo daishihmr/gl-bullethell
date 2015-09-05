@@ -47,6 +47,7 @@
             var gl = glContext.gl;
 
             if (this.image) {
+                gl.activeTexture(gl.TEXTURE0);
                 gl.bindTexture(gl.TEXTURE_2D, this._texture);
             } else {
                 gl.bindTexture(gl.TEXTURE_2D, null);

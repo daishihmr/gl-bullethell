@@ -129,13 +129,14 @@
             if (value.array) {
                 value = value.array;
             }
-
+            
             if (uni) {
                 switch (uni.type) {
                     case "float":
                         gl.uniform1f(uni.location, value);
                         break;
                     case "int":
+                    case "texture":
                         gl.uniform1i(uni.location, value);
                         break;
                     case "vec2":

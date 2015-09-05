@@ -44,11 +44,11 @@
         build: function(glContext) {
             var gl = glContext.gl;
 
-            this.initialPosition = this.createVbo(gl, this.initialPositionData);
-            this.velocity = this.createVbo(gl, this.velocityData);
-            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
-            this.active = this.createVbo(gl, this.activeData);
-            this.frameIndex = this.createVbo(gl, this.frameIndexData);
+            this.initialPosition = this.createVbo(gl, this.initialPositionData, gl.DYNAMIC_DRAW);
+            this.velocity = this.createVbo(gl, this.velocityData, gl.DYNAMIC_DRAW);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData, gl.DYNAMIC_DRAW);
+            this.active = this.createVbo(gl, this.activeData, gl.DYNAMIC_DRAW);
+            this.frameIndex = this.createVbo(gl, this.frameIndexData, gl.DYNAMIC_DRAW);
         },
 
         rebind: function(gl) {

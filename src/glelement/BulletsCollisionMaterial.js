@@ -84,8 +84,7 @@
         "        float age = time - spawnTime;",
         "        vec2 pos = initialPosition + velocity * age * 10000.0;",
         "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
-        // "        gl_PointSize = 32.0 * {0};".format(GL_QUALITY.toFloatString()),
-        "        gl_PointSize = 12.0;",
+        "        gl_PointSize = {0};".format(BULLET_SIZE.toFloatString()),
         "    }",
         "}",
     ].join("\n");

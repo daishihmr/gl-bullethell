@@ -6,20 +6,30 @@
         geometry: null,
         material: null,
 
+        // メイン表示用
+        _mainMaterial: null,
+        // 当たり判定用
+        _collisionMaterial: null,
+
         time: 0,
 
         bullets: null,
-        
+
         visible: true,
 
         init: function(texture) {
             this.superInit();
 
             this.geometry = glb.BulletsGeometry();
-            this.material = glb.BulletsMaterial(texture);
-            this.collisionMaterial = glb.BulletsCollisionMaterial();
+            this._mainMaterial = glb.BulletsMaterial(texture);
+            this._collisionMaterial = glb.BulletsCollisionMaterial();
+            this.switchMaterial(true);
 
             this.bullets = [];
+        },
+
+        switchMaterial: function(toMain) {
+            this.material = toMain ? this._mainMaterial : this._collisionMaterial;
         },
 
         build: function(glContext) {
@@ -27,19 +37,19 @@
             var ext = glContext.ext;
 
             this.geometry.build(glContext);
-            this.material.build(glContext);
-            this.collisionMaterial.build(glContext);
+            this._mainMaterial.build(glContext);
+            this._collisionMaterial.build(glContext);
 
             if (ext !== null) {
-                this.material.setVao(glContext);
-                this.material.setAttributes(glContext, this.geometry);
-                this.material.unsetVao(glContext);
+                this._mainMaterial.setVao(glContext);
+                this._mainMaterial.setAttributes(glContext, this.geometry);
+                this._mainMaterial.unsetVao(glContext);
 
-                this.collisionMaterial.setVao(glContext);
-                this.collisionMaterial.setAttributes(glContext, this.geometry);
-                this.collisionMaterial.unsetVao(glContext);
+                this._collisionMaterial.setVao(glContext);
+                this._collisionMaterial.setAttributes(glContext, this.geometry);
+                this._collisionMaterial.unsetVao(glContext);
             }
-            
+
             this.isBuilt = true;
         },
 

@@ -67,6 +67,11 @@
             this.vMatrix.lookAt(this.position, this.target, this.up);
         },
 
+        /**
+         * 画面上の座標を得る。原点は左下。
+         * @param  {{x:Number, y:Number}}} obj
+         * @return {glb.Vector2}
+         */
         getScreenCoord: function(obj) {
             var out = vec4.set(vec4.create(), obj.x, obj.y, 0, 1);
             vec4.transformMat4(out, out, this.vpMatrix.array);

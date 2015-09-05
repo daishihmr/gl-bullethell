@@ -23,6 +23,8 @@ tm.define("glb.GameScene", {
         // 敵弾vs自機判定用
         this.screen = glb.Screen(256, 256);
 
+        this.effectComposer = null;
+
         // カメラ
         // var camera = this.camera = glb.Camera(45 * Math.DEG_TO_RAD, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
         var camera = this.camera = glb.OrthoCamera(
@@ -36,6 +38,9 @@ tm.define("glb.GameScene", {
         camera.position.z = SCREEN_HEIGHT * 0.5 / Math.tan(45 * Math.DEG_TO_RAD * 0.5);
         camera.updateMatrix();
 
+        var reverseShader = glb.ShaderPass(glb.ReverseShader());
+        reverseShader.enable = false;
+
         this.on("enter", function(e) {
             // 2Dキャンバスの背景を透明にする
             e.app.background = "transparent";
@@ -44,6 +49,11 @@ tm.define("glb.GameScene", {
 
             this.bullets.build(this.glContext);
             this.screen.build(this.glContext);
+
+            this.effectComposer = glb.AfterEffectComposer(this.glContext);
+            // this.effectComposer.addPass(glb.ShaderPass(glb.MonotoneShader()));
+            this.effectComposer.addPass(reverseShader);
+            this.effectComposer.addPass(glb.BlurPass());
         });
 
         // var axis = glb.Vector3(3, 1, 0).normalize();
@@ -108,6 +118,13 @@ tm.define("glb.GameScene", {
             glb.ExplosionS(particleSystem)
                 .setPosition(this.x, this.y, 0)
                 .addChildTo(this);
+            reverseShader.enable = true;
+            this.tweener
+                .clear()
+                .wait(50)
+                .call(function() {
+                    reverseShader.enable = false;
+                });
         });
 
         // 弾
@@ -242,7 +259,6 @@ tm.define("glb.GameScene", {
         //         flame.remove();
         //     });
         // });
-
     },
 
     draw: function() {
@@ -250,8 +266,7 @@ tm.define("glb.GameScene", {
         var bullets = this.bullets;
 
         // 弾だけをscreenに描画する
-        var _material = this.bullets.material;
-        this.bullets.material = this.bullets.collisionMaterial;
+        this.bullets.switchMaterial(false);
         this.children.forEach(function(c) {
             c._visibleBkup = c.visible;
             c.visible = (c === bullets);
@@ -264,11 +279,12 @@ tm.define("glb.GameScene", {
         gl.readPixels(~~(sc.x * this.screen.width), ~~(sc.y * this.screen.height), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
 
         // 状態を元に戻してメインキャンバスに描画
-        this.bullets.material = _material;
+        this.bullets.switchMaterial(true);
         this.children.forEach(function(c) {
             c.visible = c._visibleBkup;
         });
-        this.glContext.attachScreen(null);
-        this.glContext.render(this, this.camera);
+        // this.glContext.attachScreen(null);
+        // this.glContext.render(this, this.camera);
+        this.effectComposer.render(this, this.camera);
     },
 });

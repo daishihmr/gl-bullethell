@@ -5,12 +5,8 @@ tm.define("glb.Object3D", {
         this.superInit();
     },
 
-    initialize: function(glContext) {},
+    build: function(glContext) {},
 
-    update: function(app) {
-
-    },
-
-    draw: function(glContext, vpMatrix) {},
+    render: function(glContext, vpMatrix) {},
 
 });

@@ -74,17 +74,17 @@
         build: function(glContext) {
             var gl = glContext.gl;
 
-            this.initialPosition = this.createVbo(gl, this.initialPositionData);
-            this.velocityFrom = this.createVbo(gl, this.velocityFromData);
-            this.velocityTo = this.createVbo(gl, this.velocityToData);
-            this.spawnTime = this.createVbo(gl, this.spawnTimeData);
-            this.active = this.createVbo(gl, this.activeData);
-            this.frameIndex = this.createVbo(gl, this.frameIndexData);
-            this.ttl = this.createVbo(gl, this.ttlData);
-            this.sizeFrom = this.createVbo(gl, this.sizeFromData);
-            this.sizeTo = this.createVbo(gl, this.sizeToData);
-            this.colorFrom = this.createVbo(gl, this.colorFromData);
-            this.colorTo = this.createVbo(gl, this.colorToData);
+            this.initialPosition = this.createVbo(gl, this.initialPositionData, gl.DYNAMIC_DRAW);
+            this.velocityFrom = this.createVbo(gl, this.velocityFromData, gl.DYNAMIC_DRAW);
+            this.velocityTo = this.createVbo(gl, this.velocityToData, gl.DYNAMIC_DRAW);
+            this.spawnTime = this.createVbo(gl, this.spawnTimeData, gl.DYNAMIC_DRAW);
+            this.active = this.createVbo(gl, this.activeData, gl.DYNAMIC_DRAW);
+            this.frameIndex = this.createVbo(gl, this.frameIndexData, gl.DYNAMIC_DRAW);
+            this.ttl = this.createVbo(gl, this.ttlData, gl.DYNAMIC_DRAW);
+            this.sizeFrom = this.createVbo(gl, this.sizeFromData, gl.DYNAMIC_DRAW);
+            this.sizeTo = this.createVbo(gl, this.sizeToData, gl.DYNAMIC_DRAW);
+            this.colorFrom = this.createVbo(gl, this.colorFromData, gl.DYNAMIC_DRAW);
+            this.colorTo = this.createVbo(gl, this.colorToData, gl.DYNAMIC_DRAW);
         },
 
         rebind: function(gl) {
