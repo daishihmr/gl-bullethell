@@ -12,7 +12,7 @@ tm.define("glb.ExplosionS", {
 
         this.particleSystem = particleSystem;
         this.position = glb.Vector2();
-        this.emitParFrame = 30;
+        this.emitParFrame = 20;
         
         this.param = {
             ttl: 20 * 0.0001,
@@ -26,7 +26,7 @@ tm.define("glb.ExplosionS", {
         tm.app.Element().addChildTo(this).tweener
             .to({
                 emitParFrame: 0
-            }, 100, "easeOutQuad")
+            }, 30, "easeOutQuad")
             .call(function() {
                 this.remove();
             }.bind(this));

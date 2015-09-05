@@ -9,6 +9,8 @@
         time: 0,
 
         bullets: null,
+        
+        visible: true,
 
         init: function(texture) {
             this.superInit();
@@ -26,12 +28,19 @@
 
             this.geometry.build(glContext);
             this.material.build(glContext);
+            this.collisionMaterial.build(glContext);
 
             if (ext !== null) {
                 this.material.setVao(glContext);
                 this.material.setAttributes(glContext, this.geometry);
                 this.material.unsetVao(glContext);
+
+                this.collisionMaterial.setVao(glContext);
+                this.collisionMaterial.setAttributes(glContext, this.geometry);
+                this.collisionMaterial.unsetVao(glContext);
             }
+            
+            this.isBuilt = true;
         },
 
         update: function(app) {

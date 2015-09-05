@@ -14,6 +14,8 @@
         geometry: null,
         material: null,
 
+        visible: true,
+
         needsUpdate: false,
 
         init: function(geometry, material) {

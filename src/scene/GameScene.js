@@ -1,10 +1,11 @@
 tm.define("glb.GameScene", {
     superClass: "tm.app.Scene",
+    visible: true,
     init: function() {
         this.superInit();
 
-        console.log(tm.asset.Manager.get("hime"));
-        console.log(tm.asset.Manager.get("p32.mtl"));
+        // console.log(tm.asset.Manager.get("hime"));
+        // console.log(tm.asset.Manager.get("p32.mtl"));
 
         this.fromJSON({
             children: {
@@ -18,17 +19,28 @@ tm.define("glb.GameScene", {
 
         this._renderable = true;
         this.glContext = null;
-        
-        var screen = glb.Screen();
 
-        // this.camera = glb.Camera();
-        this.camera = glb.OrthoCamera();
+        var screen = this.screen = glb.Screen(256, 256);
+
+        // var camera = this.camera = glb.Camera(45 * Math.DEG_TO_RAD, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
+        var camera = this.camera = glb.OrthoCamera(
+            SCREEN_WIDTH * -0.5,
+            SCREEN_WIDTH * 0.5,
+            SCREEN_HEIGHT * -0.5,
+            SCREEN_HEIGHT * 0.5,
+            100,
+            10000
+        );
+        camera.position.z = SCREEN_HEIGHT * 0.5 / Math.tan(45 * Math.DEG_TO_RAD * 0.5);
+        camera.updateMatrix();
 
         this.on("enter", function(e) {
             e.app.background = "transparent";
             this.glContext = e.app.glContext;
 
-            screen.build(this.glContext);
+            this.bullets.build(this.glContext);
+
+            this.screen.build(this.glContext);
         });
 
         // var axis = glb.Vector3(3, 1, 0).normalize();
@@ -62,7 +74,35 @@ tm.define("glb.GameScene", {
         //     .setPosition(200, 200, 0)
         //     .addChildTo(this);
 
-        var bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
+        var player = this.player = glb.Mesh(
+                glb.BoxGeometry(30),
+                glb.BasicMaterial().setRGBA(0, 100, 255, 1)
+            )
+            .setPosition(0, -200, 0)
+            .addChildTo(this);
+        var axis2 = glb.Vector3(-3, 1, 0).normalize();
+        var rot2 = glb.Quat().setAxisAngle(axis2, 0.2);
+        player.on("enterframe", function(e) {
+            this.rotation.mul(rot2);
+
+            var kb = e.app.keyboard.getKeyDirection();
+            this.x += kb.x * 4;
+            this.y -= kb.y * 4;
+
+            var p = e.app.pointing;
+            if (p.getPointing()) {
+                var d = p.deltaPosition;
+                this.x += d.x * 2;
+                this.y -= d.y * 2;
+            }
+        });
+        player.on("hit", function() {
+            glb.ExplosionS(particleSystem)
+                .setPosition(this.x, this.y, 0)
+                .addChildTo(this);
+        });
+
+        var bullets = this.bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
         tm.display.Label("bullet count = 0", 40)
             .setAlign("left")
             .setFillStyle("darkgreen")
@@ -74,86 +114,95 @@ tm.define("glb.GameScene", {
 
         this.on("enterframe", function(e) {
             if (e.app.frame % 3 !== 0) return;
-            var w = 8;
+            var w = 2;
             (w).times(function(i) {
 
                 bullets.spawn(
-                    glb.Vector2(Math.cos(e.app.frame * 0.02) * 200, Math.sin(e.app.frame * 0.02) * 200),
+                    glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
                     glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
                     2
                 );
                 bullets.spawn(
-                    glb.Vector2(Math.cos(e.app.frame * 0.02) * 200, Math.sin(e.app.frame * 0.02) * 200),
+                    glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
                     glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
                     6
                 );
 
             });
         });
-        
-        var player = glb.Mesh(
-                glb.BoxGeometry(10),
-                glb.BasicMaterial().setRGBA(0, 0, 0, 0)
-            )
-            .setPosition(230, 40, 0)
-            .addChildTo(this);
-        var axis2 = glb.Vector3(-3, 1, 0).normalize();
-        var rot2 = glb.Quat().setAxisAngle(axis2, 0.2);
-        player.on("enterframe", function() {
-            this.rotation.mul(rot2);
-        });
 
-        var camera = this.camera;
-        var pixels = new Uint8Array(1 * 1 * 4);
+        var marker = tm.display.RectangleShape({
+                width: 5,
+                height: 5,
+                fillStyle: "rgba(255,0,0,0.8)",
+                strokeStyle: "transparent"
+            })
+            .addChildTo(this)
+            .on("enterframe", function() {
+                var sc = camera.getScreenCoord(player);
+                this.setPosition(sc.x * SCREEN_WIDTH, (1 - sc.y) * SCREEN_HEIGHT);
+            });
+
+        this.pixels = new Uint8Array(1 * 1 * 4);
         this.on("enterframe", function(e) {
-            var gl = this.glContext.gl;
-            var sc = camera.getScreenCoord(player);
-            marker.setPosition(sc.x / GL_QUALITY, H - sc.y / GL_QUALITY);
-            gl.readPixels(sc.x | 0, sc.y | 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-            if (pixels[0] && pixels[3]) {
+            if (this.pixels[0] && this.pixels[3]) {
                 marker.setScale(5);
+                player.flare("hit");
             } else {
                 marker.setScale(1);
             }
         });
 
-        var pixels2 = new Uint8Array(GL_PIXEL_WIDTH * GL_PIXEL_HEIGHT * 4);
-        this.on("enterframe", function() {
-            var gl = this.glContext.gl;
-            gl.readPixels(0, 0, GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT, gl.RGBA, gl.UNSIGNED_BYTE, pixels2);
-        });
+        // var pixels2 = new Uint8Array(GL_PIXEL_WIDTH * GL_PIXEL_HEIGHT * 4);
+        // this.on("enterframe", function() {
+        //     var gl = this.glContext.gl;
+        //     gl.readPixels(0, 0, GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT, gl.RGBA, gl.UNSIGNED_BYTE, pixels2);
+        // });
 
-        var marker = tm.display.RectangleShape({
-            width: 10,
-            height: 10,
-            fillStyle: "rgba(255,0,0,0.8)",
-            strokeStyle: "transparent"
-        }).addChildTo(this);
+        // this.monitor = glb.Mesh(
+        //     glb.PlaneGeometry(screen.width),
+        //     glb.BasicMaterial()
+        // ).addChildTo(this);
+        // this.monitor.geometry.uvData = new Float32Array([
+        //     0, 0,
+        //     1, 0,
+        //     0, 1,
+        //     1, 1,
+        // ]);
+        // this.monitor.material.setTextures = function(glContext) {
+        //     var gl = glContext.gl;
+        //     gl.bindTexture(gl.TEXTURE_2D, screen.texture);
+        // };
+        // this.monitor.material.setUniforms = function(glContext, uniformValues) {
+        //     this.superSetUniforms(glContext, uniformValues);
+        //     this.setUniform(glContext, "color", this.color);
+        //     this.setUniform(glContext, "useTexture", 1);
+        // };
 
-        var hit = function(pixels2, rect, colorIndex) {
-            var xMin = rect.x - rect.w * 0.5;
-            var xMax = rect.x + rect.w * 0.5;
-            var yMin = rect.y - rect.h * 0.5;
-            var yMax = rect.y + rect.h * 0.5;
-            for (var y = yMin; y < yMax; y += 5) {
-                for (var x = xMin; x < xMax; x += 5) {
-                    if (pixels2[(x + y * GL_PIXEL_WIDTH) * 4 + colorIndex]) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
+        // var hit = function(pixels2, rect, colorIndex) {
+        //     var xMin = rect.x - rect.w * 0.5;
+        //     var xMax = rect.x + rect.w * 0.5;
+        //     var yMin = rect.y - rect.h * 0.5;
+        //     var yMax = rect.y + rect.h * 0.5;
+        //     for (var y = yMin; y < yMax; y += 5) {
+        //         for (var x = xMin; x < xMax; x += 5) {
+        //             if (pixels2[(x + y * GL_PIXEL_WIDTH) * 4 + colorIndex]) {
+        //                 return true;
+        //             }
+        //         }
+        //     }
+        //     return false;
+        // };
 
-        // var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
-        // tm.display.Label("particle count = 0", 40)
-        //     .setAlign("left")
-        //     .setFillStyle("darkgreen")
-        //     .setPosition(10, 60)
-        //     .addChildTo(this)
-        //     .on("enterframe", function() {
-        //         this.text = "particle count = " + particleSystem.particles.length;
-        //     });
+        var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
+        tm.display.Label("particle count = 0", 40)
+            .setAlign("left")
+            .setFillStyle("darkgreen")
+            .setPosition(10, 60)
+            .addChildTo(this)
+            .on("enterframe", function() {
+                this.text = "particle count = " + particleSystem.particles.length;
+            });
 
         // this.on("enterframe", function(e) {
         //     if (e.app.frame % 60 !== 0) return;
@@ -179,6 +228,26 @@ tm.define("glb.GameScene", {
     },
 
     draw: function() {
+        var gl = this.glContext.gl;
+        var bullets = this.bullets;
+
+        var _material = this.bullets.material;
+        this.bullets.material = this.bullets.collisionMaterial;
+        this.children.forEach(function(c) {
+            c._visibleBkup = c.visible;
+            c.visible = (c === bullets);
+        });
+        this.glContext.attachScreen(this.screen);
+        this.glContext.render(this, this.camera);
+
+        var sc = this.camera.getScreenCoord(this.player);
+        gl.readPixels(~~(sc.x * this.screen.width), ~~(sc.y * this.screen.height), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
+
+        this.bullets.material = _material;
+        this.children.forEach(function(c) {
+            c.visible = c._visibleBkup;
+        });
+        this.glContext.attachScreen(null);
         this.glContext.render(this, this.camera);
     },
 });

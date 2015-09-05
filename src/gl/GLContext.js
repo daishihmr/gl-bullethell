@@ -2,8 +2,10 @@ tm.define("glb.GLContext", {
 
     element: null,
     gl: null,
+    ext: null,
 
     screen: null,
+    isRenderToOffScreen: false,
 
     init: function(canvasId) {
         this.element = window.document.querySelector(canvasId);
@@ -26,8 +28,8 @@ tm.define("glb.GLContext", {
     },
 
     resize: function(width, height) {
-        this.element.width = width;
-        this.element.height = height;
+        this.width = this.element.width = width;
+        this.height = this.element.height = height;
         this.gl.viewport(0, 0, width, height);
         return this;
     },
@@ -83,11 +85,17 @@ tm.define("glb.GLContext", {
 
     attachScreen: function(screen) {
         var gl = this.gl;
+        
+        this.screen = screen;
 
         if (screen) {
             gl.bindFramebuffer(gl.FRAMEBUFFER, screen.frameBuffer);
+            gl.viewport(0, 0, screen.width, screen.height);
+            this.isRenderToOffScreen = true;
         } else {
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.viewport(0, 0, this.width, this.height);
+            this.isRenderToOffScreen = false;
         }
 
         return this;
@@ -101,16 +109,17 @@ tm.define("glb.GLContext", {
         gl.flush();
     },
     renderObj: function(obj, vpMatrix) {
+        var self = this;
         if (!obj.isBuilt) {
             obj.build && obj.build(this);
             obj.isBuilt = true;
         }
-        if (obj.render) {
+        if (obj.render && obj.visible) {
             obj.render(this, vpMatrix);
         }
         obj.children.forEach(function(child) {
-            this.renderObj(child, vpMatrix);
-        }.bind(this));
+            self.renderObj(child, vpMatrix);
+        });
     },
 
 });

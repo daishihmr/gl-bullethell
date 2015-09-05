@@ -6,8 +6,8 @@ var SCREEN_HEIGHT = H = 960;
 var BULLET_APPEALANCE = SCREEN_WIDTH * 0.2;
 var GL_QUALITY = 0.5;
 
-var GL_PIXEL_WIDTH = (SCREEN_WIDTH * GL_QUALITY) | 0;
-var GL_PIXEL_HEIGHT = (SCREEN_HEIGHT * GL_QUALITY) | 0;
+var GL_PIXEL_WIDTH = ~~(SCREEN_WIDTH * GL_QUALITY);
+var GL_PIXEL_HEIGHT = ~~(SCREEN_HEIGHT * GL_QUALITY);
 
 var ASSETS = {
     bullets: "./asset/bullets.png",
@@ -27,7 +27,7 @@ tm.main(function() {
         .run();
 
     application.glContext = glb.GLContext("#c3")
-        .resize(SCREEN_WIDTH * GL_QUALITY, SCREEN_HEIGHT * GL_QUALITY)
+        .resize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT)
         .fitWindow();
 
     application.replaceScene(tm.game.LoadingScene({

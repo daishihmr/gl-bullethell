@@ -1,18 +1,24 @@
 tm.define("glb.OrthoCamera", {
     superClass: "glb.Camera",
 
-    init: function() {
+    init: function(left, right, bottom, top, near, far) {
+        this.left = left;
+        this.right = right;
+        this.bottom = bottom;
+        this.top = top;
+        this.near = near;
+        this.far = far;
         this.superInit();
     },
 
     _setupProjectionMatrix: function() {
         return glb.Matrix4().ortho(
-            SCREEN_WIDTH * -0.5,
-            SCREEN_WIDTH * 0.5,
-            SCREEN_HEIGHT * -0.5,
-            SCREEN_HEIGHT * 0.5,
-            100,
-            10000
+            this.left,
+            this.right,
+            this.bottom,
+            this.top,
+            this.near,
+            this.far
         );
     },
 

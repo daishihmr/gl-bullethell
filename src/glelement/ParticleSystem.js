@@ -10,6 +10,8 @@
         
         time: 0,
 
+        visible: true,
+
         init: function(texture) {
             this.superInit();
 
