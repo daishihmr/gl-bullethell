@@ -23,24 +23,10 @@ module.exports = function(grunt) {
     };
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
     grunt.initConfig({
         uglify: {
-            product: {
-                src: getSourceList(),
-                dest: "build/game.js",
-            },
-            develop: {
-                src: getSourceList(),
-                dest: "build/game.js",
-                options: {
-                    sourceMap: true
-                }
-            }
-        },
-        concat: {
             product: {
                 src: getSourceList(),
                 dest: "build/game.js",
