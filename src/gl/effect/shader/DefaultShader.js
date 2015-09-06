@@ -10,7 +10,7 @@
     });
 
     var ATTRIBUTE_META_DATA = [{
-        name: "vertex",
+        name: "position",
         size: 3,
     }, {
         name: "uv",
@@ -29,7 +29,7 @@
     }, ];
 
     var VERTEX_SHADER_SOURCE = [
-        "attribute vec3 vertex;",
+        "attribute vec3 position;",
         "attribute vec2 uv;",
 
         "uniform mat4 mMatrix;",
@@ -39,7 +39,7 @@
 
         "void main(void) {",
         "    vUv = vec2(uv.x, 1.0 - uv.y);",
-        "    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);",
+        "    gl_Position = vpMatrix * mMatrix * vec4(position, 1.0);",
         "}",
     ].join("\n");
 

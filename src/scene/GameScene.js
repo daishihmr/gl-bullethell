@@ -7,7 +7,7 @@ tm.define("glb.GameScene", {
     init: function() {
         this.superInit();
 
-        // console.log(tm.asset.Manager.get("hime"));
+        console.log(tm.asset.Manager.get("hime"));
         // console.log(tm.asset.Manager.get("p32.mtl"));
 
         this.fromJSON({
@@ -89,18 +89,17 @@ tm.define("glb.GameScene", {
 
         // 自機
         var player = this.player = glb.Mesh(
-                glb.BoxGeometry(30),
+                tm.asset.Manager.get("hime").geometry,
                 glb.BasicMaterial({
-                    color: tm.graphics.Color(0, 100, 255, 1)
+                    image: tm.asset.Manager.get("himetex").element,
                 })
             )
+            .setScale(5, 5, 5)
             .setPosition(0, -200, 0)
             .addChildTo(this);
-        // なんか適当に回転させる
-        var rot2 = glb.Quat().setAxisAngle(glb.Vector3(-3, 1, 0).normalize(), 0.2);
         player.on("enterframe", function(e) {
-            this.rotation.mul(rot2);
-
+            this.rotateY(0.06);
+            
             // 移動入力：キーボード
             var kb = e.app.keyboard.getKeyDirection();
             this.x += kb.x * 4;

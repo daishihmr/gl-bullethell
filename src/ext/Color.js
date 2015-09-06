@@ -14,7 +14,7 @@
             a[0] = this.r / 255;
             a[1] = this.g / 255;
             a[2] = this.b / 255;
-            a[3] = this.a / 255;
+            a[3] = this.a;
             return a;
         },
     });

@@ -5,32 +5,36 @@
 
         init: function() {
             this.superInit();
-            
-            this.vertices = [];
-            this.faces = [];
 
+            this.geometry = null;
+            this.materials = null;
+
+            this._vertices = [];
+            this._faces = [];
             this._normals = [];
             this._texcoords = [];
             this._materialName = null;
-            
+
         },
 
         load: function(url) {
             this.url = url;
-            
+
             var self = this;
             var params = {
                 url: url,
                 success: function(data) {
                     self.parse(data);
+                    self.geometry = self.buildGeometry();
+                    self.materials = self.buildMaterials();
                     self.flare("load");
                 }
             };
             tm.util.Ajax.load(params);
-            
+
             return this;
         },
-        
+
         parse: function(data) {
             var self = this;
             var lines = data.split("\n");
@@ -38,7 +42,27 @@
                 self.parseLine(line.trim());
             });
         },
-        
+        buildGeometry: function() {
+            var builder = glb.GeometryBuilder();
+            
+            var vertices = this._vertices;
+
+            this._faces.forEach(function(f) {
+                var face = glb.Face();
+                [f.a, f.b, f.c].forEach(function(v, i) {
+                    var vertex = vertices[v.index];
+                    face
+                        .setPositionIndex(i, vertex.x, vertex.y, vertex.z)
+                        .setNormalIndex(i, v.normal.x, v.normal.y, v.normal.z)
+                        .setUvIndex(i, v.texcoord.x, v.texcoord.y, v.texcoord.z);
+                });
+                builder.addFace(face);
+            });
+            
+            return builder.build();
+        },
+        buildMaterials: function() {},
+
         parseLine: function(line) {
             var m;
             if (line.length === 0 || line[0] === "#") {
@@ -72,7 +96,7 @@
                 }
             }
         },
-        
+
         parseVn: function(data) {
             var values = data.split(" ");
             this._normals.push({
@@ -91,7 +115,7 @@
         },
         parseV: function(data) {
             var values = data.split(" ");
-            this.vertices.push({
+            this._vertices.push({
                 x: Number(values[0]),
                 y: Number(values[1]),
                 z: Number(values[2]),
@@ -106,16 +130,16 @@
                     var vi = Number(m[1]);
                     var ti = Number(m[2]);
                     var ni = Number(m[3]);
-                    
+
                     return {
-                        index: vi<0 ? self.vertices.length + vi : vi - 1,
+                        index: vi < 0 ? self._vertices.length + vi : vi - 1,
                         texcoord: self._texcoords[ti - 1],
                         normal: self._normals[ni - 1],
                     };
                 }
             });
-            
-            this.faces.push({
+
+            this._faces.push({
                 a: vs[0],
                 b: vs[1],
                 c: vs[2],

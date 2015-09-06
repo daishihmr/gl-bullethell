@@ -27,7 +27,6 @@
             var self = this;
             var lines = data.split("\n");
             lines.forEach(function(line) {
-                console.log(line);
             });
         },
 

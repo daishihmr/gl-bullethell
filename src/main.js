@@ -18,6 +18,7 @@ var ASSETS = {
     particles: "./asset/particles.png",
 
     hime: "./asset/p32.obj",
+    himetex: "./asset/p32.png",
 
     test: "./asset/test.png",
 };

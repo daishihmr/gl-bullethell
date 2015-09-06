@@ -1,7 +1,7 @@
 tm.define("glb.PlaneGeometry", {
     superClass: "glb.Geometry",
     
-    vertex: null,
+    position: null,
     uv: null,
     index: null,
 
@@ -12,7 +12,7 @@ tm.define("glb.PlaneGeometry", {
         frameCountH = frameCountH || 1;
         frameCountV = frameCountV || 1;
 
-        this.vertexData = new Float32Array([
+        this.positionData = new Float32Array([
             -size * 0.5, -size * 0.5, 0,
              size * 0.5, -size * 0.5, 0,
             -size * 0.5,  size * 0.5, 0,
@@ -29,7 +29,7 @@ tm.define("glb.PlaneGeometry", {
     
     build: function(glContext) {
         var gl = glContext.gl;
-        this.vertex = this.createVbo(gl, this.vertexData);
+        this.position = this.createVbo(gl, this.positionData);
         this.uv = this.createVbo(gl, this.uvData);
         this.index = this.createIbo(gl, this.indexData);
     },

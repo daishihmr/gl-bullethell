@@ -1,7 +1,7 @@
 tm.define("glb.BoxGeometry", {
     superClass: "glb.Geometry",
     
-    vertex: null,
+    position: null,
     uv: null,
     index: null,
 
@@ -16,7 +16,7 @@ tm.define("glb.BoxGeometry", {
         h *= 0.5;
         d *= 0.5;
 
-        this.vertexData = new Float32Array([
+        this.positionData = new Float32Array([
             -w,  h, -d,
              w,  h, -d,
             -w,  h,  d,
@@ -59,7 +59,7 @@ tm.define("glb.BoxGeometry", {
     
     build: function(glContext) {
         var gl = glContext.gl;
-        this.vertex = this.createVbo(gl, this.vertexData);
+        this.position = this.createVbo(gl, this.positionData);
         this.uv = this.createVbo(gl, this.uvData);
         this.index = this.createIbo(gl, this.indexData);
     },

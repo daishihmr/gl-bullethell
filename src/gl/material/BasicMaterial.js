@@ -72,12 +72,12 @@
     });
 
     var DEFAULT_PARAM = {
-        color: tm.graphics.Color(),
+        color: tm.graphics.Color(255, 255, 255, 1),
         image: null,
     };
 
     var ATTRIBUTE_META_DATA = [{
-        name: "vertex",
+        name: "position",
         size: 3,
     }, {
         name: "uv",
@@ -105,7 +105,7 @@
     }, ];
 
     var VERTEX_SHADER_SOURCE = [
-        "attribute vec3 vertex;",
+        "attribute vec3 position;",
         "attribute vec2 uv;",
 
         "uniform mat4 mMatrix;",
@@ -118,7 +118,7 @@
         "void main(void) {",
         "    vUv = uv;",
         "    vColor = color;",
-        "    gl_Position = vpMatrix * mMatrix * vec4(vertex, 1.0);",
+        "    gl_Position = vpMatrix * mMatrix * vec4(position, 1.0);",
         "}",
     ].join("\n");
 
