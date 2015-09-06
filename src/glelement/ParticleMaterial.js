@@ -3,18 +3,18 @@
     tm.define("glb.ParticleMaterial", {
         superClass: "glb.Material",
 
-        image: null,
-        _texture: null,
+        _image: null,
+        texture: null,
 
         init: function(image) {
             this.superInit();
-            this.image = image;
+            this._image = image;
         },
 
         build: function(glContext) {
             this._createProgram(glContext);
-            if (this.image) {
-                this._createTexture(glContext);
+            if (this._image) {
+                this.texture = glContext.createTexture(this._image);
             }
         },
 
@@ -30,18 +30,12 @@
         _getUniformMetaData: function() {
             return UNIFORM_META_DATA;
         },
-        _createTexture: function(glContext) {
-            this._texture = glContext.createTexture(this.image);
-        },
 
-        setAttributes: function(glContext, geometry) {
-            this.superSetAttributes(glContext, geometry);
-        },
-        
         setTextures: function(glContext) {
             var gl = glContext.gl;
-            if (this.image) {
-                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+            if (this.texture) {
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, this.texture);
             } else {
                 gl.bindTexture(gl.TEXTURE_2D, null);
             }
@@ -50,7 +44,7 @@
         setUniforms: function(glContext, uniformValues) {
             this.superSetUniforms(glContext, uniformValues);
 
-            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
+            this.setUniform(glContext, "useTexture", this.texture ? 1 : 0);
         },
 
         draw: function(glContext, length) {

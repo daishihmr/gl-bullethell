@@ -5,20 +5,27 @@
 
         color: null,
 
-        image: null,
-        _texture: null,
+        _image: null,
+        texture: null,
 
-        init: function(image) {
+        init: function(param) {
             this.superInit();
+            
+            param = {}.$extend(DEFAULT_PARAM, param);
 
-            this.color = vec4.set(vec4.create(), 1, 1, 1, 1);
-            this.image = image;
+            this.color = param.color;
+            this._image = param.image;
+        },
+        
+        setColor: function(color) {
+            this.color = color;
+            return this;
         },
 
         build: function(glContext) {
             this._createProgram(glContext);
-            if (this.image) {
-                this._createTexture(glContext);
+            if (this._image) {
+                this.texture = glContext.createTexture(this._image);
             }
         },
         
@@ -35,10 +42,6 @@
             return UNIFORM_META_DATA;
         },
 
-        _createTexture: function(glContext) {
-            this._texture = glContext.createTexture(this.image);
-        },
-
         setAttributes: function(glContext, geometry) {
             this.superSetAttributes(glContext, geometry);
         },
@@ -46,9 +49,9 @@
         setTextures: function(glContext) {
             var gl = glContext.gl;
 
-            if (this.image) {
+            if (this.texture) {
                 gl.activeTexture(gl.TEXTURE0);
-                gl.bindTexture(gl.TEXTURE_2D, this._texture);
+                gl.bindTexture(gl.TEXTURE_2D, this.texture);
             } else {
                 gl.bindTexture(gl.TEXTURE_2D, null);
             }
@@ -58,20 +61,7 @@
             this.superSetUniforms(glContext, uniformValues);
             
             this.setUniform(glContext, "color", this.color);
-            this.setUniform(glContext, "useTexture", this.image ? 1 : 0);
-        },
-
-        setRGBA: function(r, g, b, a) {
-            this.color[0] = r / 255;
-            this.color[1] = g / 255;
-            this.color[2] = b / 255;
-            this.color[3] = a;
-            return this;
-        },
-
-        setColor: function(color) {
-            vec4.copy(this.color, color);
-            return this;
+            this.setUniform(glContext, "useTexture", this.texture ? 1 : 0);
         },
 
         draw: function(glContext, length) {
@@ -80,6 +70,11 @@
         },
 
     });
+
+    var DEFAULT_PARAM = {
+        color: tm.graphics.Color(),
+        image: null,
+    };
 
     var ATTRIBUTE_META_DATA = [{
         name: "vertex",
@@ -103,7 +98,7 @@
         type: "vec2",
     }, {
         name: "color",
-        type: "vec4",
+        type: "color",
     }, {
         name: "useTexture",
         type: "int",

@@ -60,7 +60,7 @@ tm.define("glb.GameScene", {
         // var rot = glb.Quat().setAxisAngle(axis, 0.02);
         // glb.Mesh(
         //         glb.BoxGeometry(180),
-        //         glb.BasicMaterial().setRGBA(0, 0.5, 1, 1)
+        //         glb.BasicMaterial({ color: tm.graphics.Color(0, 128, 255, 1) })
         //     )
         //     .setPosition(10, 380, 0)
         //     .addChildTo(this)
@@ -72,7 +72,7 @@ tm.define("glb.GameScene", {
         // var rot2 = glb.Quat().setAxisAngle(axis2, 0.03);
         // glb.Mesh(
         //         glb.BoxGeometry(180, 60, 300),
-        //         glb.BasicMaterial().setRGBA(1, 0.5, 0, 1)
+        //         glb.BasicMaterial({ color: tm.graphics.Color(255, 128, 0, 1) })
         //     )
         //     .setPosition(-60, 380, 0)
         //     .addChildTo(this)
@@ -82,7 +82,7 @@ tm.define("glb.GameScene", {
 
         // var player = glb.Mesh(
         //         glb.PlaneGeometry(4),
-        //         glb.BasicMaterial().setRGBA(0, 128, 255, 1.0)
+        //         glb.BasicMaterial({ color: tm.graphics.Color(0, 128, 255, 1.0) })
         //     )
         //     .setPosition(200, 200, 0)
         //     .addChildTo(this);
@@ -90,7 +90,9 @@ tm.define("glb.GameScene", {
         // 自機
         var player = this.player = glb.Mesh(
                 glb.BoxGeometry(30),
-                glb.BasicMaterial().setRGBA(0, 100, 255, 1)
+                glb.BasicMaterial({
+                    color: tm.graphics.Color(0, 100, 255, 1)
+                })
             )
             .setPosition(0, -200, 0)
             .addChildTo(this);

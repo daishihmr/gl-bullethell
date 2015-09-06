@@ -7,10 +7,6 @@
             this.superInit();
         },
 
-        build: function(glContext) {
-            this._createProgram(glContext);
-        },
-
         _getVertexShaderSource: function() {
             return VERTEX_SHADER_SOURCE;
         },
@@ -22,17 +18,6 @@
         },
         _getUniformMetaData: function() {
             return UNIFORM_META_DATA;
-        },
-        _createTexture: function(glContext) {},
-
-        setAttributes: function(glContext, geometry) {
-            this.superSetAttributes(glContext, geometry);
-        },
-        
-        setTextures: function(glContext) {},
-
-        setUniforms: function(glContext, uniformValues) {
-            this.superSetUniforms(glContext, uniformValues);
         },
 
         draw: function(glContext, length) {

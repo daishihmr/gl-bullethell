@@ -8,13 +8,12 @@
         attributes: null,
         uniforms: null,
 
-        init: function() {
-        },
+        init: function() {},
 
         build: function(glContext) {
             this._createProgram(glContext);
         },
-        
+
         _getVertexShaderSource: function() {
             return VERTEX_SHADER_SOURCE;
         },
@@ -40,7 +39,7 @@
             if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
                 throw new Error(gl.getProgramInfoLog(this.program));
             }
-            
+
             if (ext !== null) {
                 this.vao = ext.createVertexArrayOES();
             }
@@ -80,7 +79,7 @@
             var gl = glContext.gl;
             gl.useProgram(this.program);
         },
-        
+
         setVao: function(glContext) {
             var ext = glContext.ext;
             if (ext !== null) ext.bindVertexArrayOES(this.vao);
@@ -104,7 +103,7 @@
                 }
             });
         },
-        
+
         setTextures: function(glContext) {},
 
         setUniforms: function(glContext, uniformValues) {
@@ -125,11 +124,11 @@
             var gl = glContext.gl;
 
             var uni = this.uniforms[name];
-            
+
             if (value.array) {
                 value = value.array;
             }
-            
+
             if (uni) {
                 switch (uni.type) {
                     case "float":
@@ -146,6 +145,7 @@
                         gl.uniform3fv(uni.location, value);
                         break;
                     case "vec4":
+                    case "color":
                         gl.uniform4fv(uni.location, value);
                         break;
                     case "mat3":
