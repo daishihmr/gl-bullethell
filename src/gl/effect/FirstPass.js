@@ -7,14 +7,14 @@ tm.define("glb.FirstPass", {
         this.screen = glb.Screen();
     },
     
-    render: function(glContext, scene, camera) {
+    render: function(glContext, scene, camera, light) {
         if (!this.isBuilt) {
             this.screen.build(glContext);
             this.isBuilt = true;
         }
         
         glContext.attachScreen(this.screen);
-        glContext.render(scene, camera);
+        glContext.render(scene, camera, light);
         return this.screen;
     }
 });

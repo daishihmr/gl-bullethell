@@ -113,24 +113,24 @@ tm.define("glb.GLContext", {
         });
     },
 
-    render: function(scene, camera) {
+    render: function(scene, camera, lightDirection, ambientColor) {
         var gl = this.gl;
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        this.renderObj(scene, camera.calcVpMatrix());
+        this.renderObj(scene, camera.calcVpMatrix(), lightDirection, ambientColor);
         gl.flush();
     },
-    renderObj: function(obj, vpMatrix) {
+    renderObj: function(obj, vpMatrix, light) {
         var self = this;
         if (!obj.isBuilt) {
             obj.build && obj.build(this);
             obj.isBuilt = true;
         }
         if (obj.render && obj.visible) {
-            obj.render(this, vpMatrix);
+            obj.render(this, vpMatrix, light);
         }
         obj.children.forEach(function(child) {
-            self.renderObj(child, vpMatrix);
+            self.renderObj(child, vpMatrix, light);
         });
     },
 

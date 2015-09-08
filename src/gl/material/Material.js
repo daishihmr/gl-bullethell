@@ -50,6 +50,7 @@
                     size: attr.size,
                     location: gl.getAttribLocation(this.program, attr.name),
                 };
+                console.log(attr.name + " : " + attributes[attr.name].location);
                 return attributes;
             }.bind(this), {});
 
@@ -59,6 +60,7 @@
                     type: uni.type,
                     location: gl.getUniformLocation(this.program, uni.name),
                 };
+                console.log(uni.name + " : " + uniforms[uni.name].location);
                 return uniforms;
             }.bind(this), {});
 
@@ -122,7 +124,7 @@
 
         setUniform: function(glContext, name, value) {
             var gl = glContext.gl;
-
+            
             var uni = this.uniforms[name];
 
             if (value.array) {

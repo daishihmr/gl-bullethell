@@ -1,5 +1,5 @@
 tm.define("glb.GameScene", {
-    superClass: "tm.app.Scene",
+    superClass: "glb.Scene",
     _renderable: true,
 
     glContext: null,
@@ -7,21 +7,18 @@ tm.define("glb.GameScene", {
     init: function() {
         this.superInit();
 
-        console.log(tm.asset.Manager.get("hime"));
-        // console.log(tm.asset.Manager.get("p32.mtl"));
-
-        this.fromJSON({
-            children: {
-                hud: {
-                    type: "glb.Hud",
-                    x: 0,
-                    y: 0,
-                }
-            }
-        });
-
+        // this.fromJSON({
+        //     children: {
+        //         hud: {
+        //             type: "glb.Hud",
+        //             x: 0,
+        //             y: 0,
+        //         }
+        //     }
+        // });
+        
         // 敵弾vs自機判定用
-        this.screen = glb.Screen(256, 256);
+        // this.screen = glb.Screen(256, 256);
 
         this.effectComposer = null;
 
@@ -47,8 +44,8 @@ tm.define("glb.GameScene", {
 
             this.glContext = e.app.glContext;
 
-            this.bullets.build(this.glContext);
-            this.screen.build(this.glContext);
+            // this.bullets.build(this.glContext);
+            // this.screen.build(this.glContext);
 
             this.effectComposer = glb.AfterEffectComposer(this.glContext);
             // this.effectComposer.addPass(glb.ShaderPass(glb.MonotoneShader()));
@@ -90,7 +87,7 @@ tm.define("glb.GameScene", {
         // 自機
         var player = this.player = glb.Mesh(
                 tm.asset.Manager.get("hime").geometry,
-                glb.BasicMaterial({
+                glb.PhongMaterial({
                     image: tm.asset.Manager.get("himetex").element,
                 })
             )
@@ -113,77 +110,77 @@ tm.define("glb.GameScene", {
                 this.y -= d.y * 2;
             }
         });
-        player.on("hit", function() {
-            // 弾が当たったイベント処理
-            // 爆発を表示する
-            glb.ExplosionS(particleSystem)
-                .setPosition(this.x, this.y, 0)
-                .addChildTo(this);
-            reverseShader.enabled = true;
-            this.tweener
-                .clear()
-                .wait(50)
-                .call(function() {
-                    reverseShader.enabled = false;
-                });
-        });
+        // player.on("hit", function() {
+        //     // 弾が当たったイベント処理
+        //     // 爆発を表示する
+        //     glb.ExplosionS(particleSystem)
+        //         .setPosition(this.x, this.y, 0)
+        //         .addChildTo(this);
+        //     reverseShader.enabled = true;
+        //     this.tweener
+        //         .clear()
+        //         .wait(50)
+        //         .call(function() {
+        //             reverseShader.enabled = false;
+        //         });
+        // });
 
         // 弾
-        var bullets = this.bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
-        tm.display.Label("bullet count = 0", 40)
-            .setAlign("left")
-            .setFillStyle("darkgreen")
-            .setPosition(10, 30)
-            .addChildTo(this)
-            .on("enterframe", function() {
-                this.text = "bullet count = " + bullets.bullets.length;
-            });
+        // var bullets = this.bullets = glb.Bullets(tm.asset.Manager.get("bullets").element).addChildTo(this);
+        // tm.display.Label("bullet count = 0", 40)
+        //     .setAlign("left")
+        //     .setFillStyle("darkgreen")
+        //     .setPosition(10, 30)
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         this.text = "bullet count = " + bullets.bullets.length;
+        //     });
 
         // 弾幕を適当に
-        this.on("enterframe", function(e) {
-            if (e.app.frame % 3 !== 0) return;
-            var w = 2;
-            (w).times(function(i) {
+        // this.on("enterframe", function(e) {
+        //     if (e.app.frame % 3 !== 0) return;
+        //     var w = 2;
+        //     (w).times(function(i) {
 
-                bullets.spawn(
-                    glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
-                    glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
-                    0
-                );
-                bullets.spawn(
-                    glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
-                    glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
-                    4
-                );
+        //         bullets.spawn(
+        //             glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
+        //             glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
+        //             0
+        //         );
+        //         bullets.spawn(
+        //             glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
+        //             glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
+        //             4
+        //         );
 
-            });
-        });
+        //     });
+        // });
 
         // 自機の当たり判定マーカー
-        var marker = tm.display.RectangleShape({
-                width: 5,
-                height: 5,
-                fillStyle: "rgba(255,0,0,0.8)",
-                strokeStyle: "transparent"
-            })
-            .addChildTo(this)
-            .on("enterframe", function() {
-                var sc = camera.getScreenCoord(player);
-                this.setPosition(sc.x * SCREEN_WIDTH, (1 - sc.y) * SCREEN_HEIGHT);
-            });
+        // var marker = tm.display.RectangleShape({
+        //         width: 5,
+        //         height: 5,
+        //         fillStyle: "rgba(255,0,0,0.8)",
+        //         strokeStyle: "transparent"
+        //     })
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         var sc = camera.getScreenCoord(player);
+        //         this.setPosition(sc.x * SCREEN_WIDTH, (1 - sc.y) * SCREEN_HEIGHT);
+        //     });
 
         // screenから自機位置の色を取って入れるための配列
-        this.pixels = new Uint8Array(1 * 1 * 4);
+        // this.pixels = new Uint8Array(1 * 1 * 4);
 
         // 自機vs敵弾の当たり判定処理
-        this.on("enterframe", function(e) {
-            if (this.pixels[0] && this.pixels[3]) {
-                marker.setScale(5);
-                player.flare("hit");
-            } else {
-                marker.setScale(1);
-            }
-        });
+        // this.on("enterframe", function(e) {
+        //     if (this.pixels[0] && this.pixels[3]) {
+        //         marker.setScale(5);
+        //         player.flare("hit");
+        //     } else {
+        //         marker.setScale(1);
+        //     }
+        // });
 
         // screenの可視化モニタ
         // this.monitor = glb.Mesh(
@@ -230,15 +227,15 @@ tm.define("glb.GameScene", {
         // };
 
         // パーティクルシステム
-        var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
-        tm.display.Label("particle count = 0", 40)
-            .setAlign("left")
-            .setFillStyle("darkgreen")
-            .setPosition(10, 60)
-            .addChildTo(this)
-            .on("enterframe", function() {
-                this.text = "particle count = " + particleSystem.particles.length;
-            });
+        // var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
+        // tm.display.Label("particle count = 0", 40)
+        //     .setAlign("left")
+        //     .setFillStyle("darkgreen")
+        //     .setPosition(10, 60)
+        //     .addChildTo(this)
+        //     .on("enterframe", function() {
+        //         this.text = "particle count = " + particleSystem.particles.length;
+        //     });
 
         // ランダムな位置に爆発表示
         // this.on("enterframe", function(e) {
@@ -263,29 +260,29 @@ tm.define("glb.GameScene", {
     },
 
     draw: function() {
-        var gl = this.glContext.gl;
-        var bullets = this.bullets;
+        // var gl = this.glContext.gl;
+        // var bullets = this.bullets;
 
         // 弾だけをscreenに描画する
-        this.bullets.switchMaterial(false);
-        this.children.forEach(function(c) {
-            c._visibleBkup = c.visible;
-            c.visible = (c === bullets);
-        });
-        this.glContext.attachScreen(this.screen);
-        this.glContext.render(this, this.camera);
+        // this.bullets.switchMaterial(false);
+        // this.children.forEach(function(c) {
+        //     c._visibleBkup = c.visible;
+        //     c.visible = (c === bullets);
+        // });
+        // this.glContext.attachScreen(this.screen);
+        // this.glContext.render(this, this.camera);
 
         // screenから自機位置のピクセルだけ色データを取得
-        var sc = this.camera.getScreenCoord(this.player);
-        gl.readPixels(~~(sc.x * this.screen.width), ~~(sc.y * this.screen.height), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
+        // var sc = this.camera.getScreenCoord(this.player);
+        // gl.readPixels(~~(sc.x * this.screen.width), ~~(sc.y * this.screen.height), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, this.pixels);
 
         // 状態を元に戻してメインキャンバスに描画
-        this.bullets.switchMaterial(true);
-        this.children.forEach(function(c) {
-            c.visible = c._visibleBkup;
-        });
+        // this.bullets.switchMaterial(true);
+        // this.children.forEach(function(c) {
+        //     c.visible = c._visibleBkup;
+        // });
         // this.glContext.attachScreen(null);
         // this.glContext.render(this, this.camera);
-        this.effectComposer.render(this, this.camera);
+        this.effectComposer.render(this, this.camera, this.light);
     },
 });

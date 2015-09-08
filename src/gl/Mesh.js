@@ -4,7 +4,7 @@
         superClass: "glb.Object3D",
 
         mMatrix: null,
-        vpMatrix: null,
+        invMatrix: null,
         uvTranslate: null,
 
         position: null,
@@ -22,6 +22,7 @@
             this.superInit();
 
             this.mMatrix = glb.Matrix4();
+            this.invMatrix = glb.Matrix4();
             this.uvTranslate = glb.Vector2();
 
             this.position = glb.Vector3();
@@ -123,7 +124,7 @@
             return this;
         },
 
-        render: function(glContext, vpMatrix) {
+        render: function(glContext, vpMatrix, light) {
             var gl = glContext.gl;
             var ext = glContext.ext;
 
@@ -141,6 +142,15 @@
 
             this.material.setUniforms(glContext, this);
             this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+            if (this.material.uniforms.invMatrix) {
+                mat4.invert(this.invMatrix.array, glb.Matrix4.mul(vpMatrix, this.mMatrix).array);
+                this.material.setUniform(glContext, "invMatrix", this.invMatrix);
+            }
+            if (light) {
+                this.material.setUniform(glContext, "lightDirection", light.lightDirection);
+                this.material.setUniform(glContext, "lightColor", light.lightColor);
+                this.material.setUniform(glContext, "ambientColor", light.ambientColor);
+            }
 
             this.material.draw(glContext, this.geometry.indexData.length);
 

@@ -100,9 +100,9 @@
         parseVn: function(data) {
             var values = data.split(" ");
             this._normals.push({
-                x: Number(values[0]),
-                y: Number(values[1]),
-                z: Number(values[2]),
+                x: -Number(values[0]),
+                y: -Number(values[1]),
+                z: -Number(values[2]),
             });
         },
 
