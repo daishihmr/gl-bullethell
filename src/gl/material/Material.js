@@ -50,7 +50,7 @@
                     size: attr.size,
                     location: gl.getAttribLocation(this.program, attr.name),
                 };
-                console.log(attr.name + " : " + attributes[attr.name].location);
+                // console.log(attr.name + " : " + attributes[attr.name].location);
                 return attributes;
             }.bind(this), {});
 
@@ -60,7 +60,7 @@
                     type: uni.type,
                     location: gl.getUniformLocation(this.program, uni.name),
                 };
-                console.log(uni.name + " : " + uniforms[uni.name].location);
+                // console.log(uni.name + " : " + uniforms[uni.name].location);
                 return uniforms;
             }.bind(this), {});
 
@@ -73,7 +73,7 @@
             if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
                 return shader;
             } else {
-                console.error(gl.getShaderInfoLog(shader));
+                throw new Error(gl.getShaderInfoLog(shader));
             }
         },
 

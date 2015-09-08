@@ -23,15 +23,15 @@ tm.define("glb.GameScene", {
         this.effectComposer = null;
 
         // カメラ
-        // var camera = this.camera = glb.Camera(45 * Math.DEG_TO_RAD, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
-        var camera = this.camera = glb.OrthoCamera(
-            SCREEN_WIDTH * -0.5,
-            SCREEN_WIDTH * 0.5,
-            SCREEN_HEIGHT * -0.5,
-            SCREEN_HEIGHT * 0.5,
-            100,
-            10000
-        );
+        var camera = this.camera = glb.PerspectiveCamera(45 * Math.DEG_TO_RAD, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
+        // var camera = this.camera = glb.OrthoCamera(
+        //     SCREEN_WIDTH * -0.5,
+        //     SCREEN_WIDTH * 0.5,
+        //     SCREEN_HEIGHT * -0.5,
+        //     SCREEN_HEIGHT * 0.5,
+        //     100,
+        //     10000
+        // );
         camera.position.z = SCREEN_HEIGHT * 0.5 / Math.tan(45 * Math.DEG_TO_RAD * 0.5);
         camera.updateMatrix();
 
@@ -91,11 +91,12 @@ tm.define("glb.GameScene", {
                     image: tm.asset.Manager.get("himetex").element,
                 })
             )
-            .setScale(5, 5, 5)
+            .setScale(15, 15, 15)
             .setPosition(0, -200, 0)
             .addChildTo(this);
         player.on("enterframe", function(e) {
-            this.rotateY(0.06);
+            this.rotateY(0.008);
+            // this.rotateX(0.005);
             
             // 移動入力：キーボード
             var kb = e.app.keyboard.getKeyDirection();
@@ -227,7 +228,7 @@ tm.define("glb.GameScene", {
         // };
 
         // パーティクルシステム
-        // var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
+        var particleSystem = glb.ParticleSystem(tm.asset.Manager.get("particles").element).addChildTo(this);
         // tm.display.Label("particle count = 0", 40)
         //     .setAlign("left")
         //     .setFillStyle("darkgreen")

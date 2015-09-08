@@ -24,8 +24,13 @@
             var vertices = [];
             var hashList = [];
             var indices = [];
+            
+            var faces = this.faces.map(function(f) {
+                if (f instanceof glb.Face) return f;
+                else return f.split();
+            }).flatten();
 
-            this.faces.forEach(function(face, fi) {
+            faces.forEach(function(face, fi) {
                 if (face.positionA == null || face.positionB == null || face.positionC == null) {
                     console.error(face);
                     throw new Error("faceの頂点が欠けてる(" + fi + ")");
