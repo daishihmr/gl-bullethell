@@ -1,144 +1,144 @@
 (function() {
 
-    tm.define("glb.BasicMaterial", {
-        superClass: "glb.Material",
+  phina.define("glb.BasicMaterial", {
+    superClass: "glb.Material",
 
-        color: null,
+    color: null,
 
-        _image: null,
-        texture: null,
+    _image: null,
+    texture: null,
 
-        init: function(param) {
-            this.superInit();
-            
-            param = {}.$extend(DEFAULT_PARAM, param);
+    init: function(param) {
+      this.superInit();
 
-            this.color = param.color;
-            this._image = param.image;
-        },
-        
-        setColor: function(color) {
-            this.color = color;
-            return this;
-        },
+      param = {}.$extend(DEFAULT_PARAM, param);
 
-        build: function(glContext) {
-            this._createProgram(glContext);
-            if (this._image) {
-                this.texture = glContext.createTexture(this._image);
-            }
-        },
-        
-        _getVertexShaderSource: function() {
-            return VERTEX_SHADER_SOURCE;
-        },
-        _getFragmentShaderSource: function() {
-            return FRAGMENT_SHADER_SOURCE;
-        },
-        _getAttributeMetaData: function() {
-            return ATTRIBUTE_META_DATA;
-        },
-        _getUniformMetaData: function() {
-            return UNIFORM_META_DATA;
-        },
+      this.color = param.color;
+      this._image = param.image;
+    },
 
-        setAttributes: function(glContext, geometry) {
-            this.superSetAttributes(glContext, geometry);
-        },
-        
-        setTextures: function(glContext) {
-            var gl = glContext.gl;
+    setColor: function(color) {
+      this.color = color;
+      return this;
+    },
 
-            if (this.texture) {
-                gl.activeTexture(gl.TEXTURE0);
-                gl.bindTexture(gl.TEXTURE_2D, this.texture);
-            } else {
-                gl.bindTexture(gl.TEXTURE_2D, null);
-            }
-        },
+    build: function(glContext) {
+      this._createProgram(glContext);
+      if (this._image) {
+        this.texture = glContext.createTexture(this._image);
+      }
+    },
 
-        setUniforms: function(glContext, uniformValues) {
-            this.superSetUniforms(glContext, uniformValues);
-            
-            this.setUniform(glContext, "color", this.color);
-            this.setUniform(glContext, "useTexture", this.texture ? 1 : 0);
-        },
+    _getVertexShaderSource: function() {
+      return VERTEX_SHADER_SOURCE;
+    },
+    _getFragmentShaderSource: function() {
+      return FRAGMENT_SHADER_SOURCE;
+    },
+    _getAttributeMetaData: function() {
+      return ATTRIBUTE_META_DATA;
+    },
+    _getUniformMetaData: function() {
+      return UNIFORM_META_DATA;
+    },
 
-        draw: function(glContext, length) {
-            var gl = glContext.gl;
-            gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
-        },
+    setAttributes: function(glContext, geometry) {
+      this.superSetAttributes(glContext, geometry);
+    },
 
-    });
+    setTextures: function(glContext) {
+      var gl = glContext.gl;
 
-    var DEFAULT_PARAM = {
-        color: tm.graphics.Color(255, 255, 255, 1),
-        image: null,
-    };
+      if (this.texture) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+      } else {
+        gl.bindTexture(gl.TEXTURE_2D, null);
+      }
+    },
 
-    var ATTRIBUTE_META_DATA = [{
-        name: "position",
-        size: 3,
-    }, {
-        name: "uv",
-        size: 2,
-    }, ];
+    setUniforms: function(glContext, uniformValues) {
+      this.superSetUniforms(glContext, uniformValues);
 
-    var UNIFORM_META_DATA = [{
-        name: "mMatrix",
-        type: "mat4",
-    }, {
-        name: "vpMatrix",
-        type: "mat4",
-    }, {
-        name: "texture",
-        type: "texture",
-    }, {
-        name: "uvTranslate",
-        type: "vec2",
-    }, {
-        name: "color",
-        type: "color",
-    }, {
-        name: "useTexture",
-        type: "int",
-    }, ];
+      this.setUniform(glContext, "color", this.color);
+      this.setUniform(glContext, "useTexture", this.texture ? 1 : 0);
+    },
 
-    var VERTEX_SHADER_SOURCE = [
-        "attribute vec3 position;",
-        "attribute vec2 uv;",
+    draw: function(glContext, length) {
+      var gl = glContext.gl;
+      gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
+    },
 
-        "uniform mat4 mMatrix;",
-        "uniform mat4 vpMatrix;",
-        "uniform vec4 color;",
+  });
 
-        "varying vec2 vUv;",
-        "varying vec4 vColor;",
+  var DEFAULT_PARAM = {
+    color: phina.graphics.Color(255, 255, 255, 1),
+    image: null,
+  };
 
-        "void main(void) {",
-        "    vUv = uv;",
-        "    vColor = color;",
-        "    gl_Position = vpMatrix * mMatrix * vec4(position, 1.0);",
-        "}",
-    ].join("\n");
+  var ATTRIBUTE_META_DATA = [{
+    name: "position",
+    size: 3,
+  }, {
+    name: "uv",
+    size: 2,
+  }, ];
 
-    var FRAGMENT_SHADER_SOURCE = [
-        "precision mediump float;",
+  var UNIFORM_META_DATA = [{
+    name: "mMatrix",
+    type: "mat4",
+  }, {
+    name: "vpMatrix",
+    type: "mat4",
+  }, {
+    name: "texture",
+    type: "texture",
+  }, {
+    name: "uvTranslate",
+    type: "vec2",
+  }, {
+    name: "color",
+    type: "color",
+  }, {
+    name: "useTexture",
+    type: "int",
+  }, ];
 
-        "uniform sampler2D texture;",
-        "uniform vec2 uvTranslate;",
-        "uniform int useTexture;",
+  var VERTEX_SHADER_SOURCE = [
+    "attribute vec3 position;",
+    "attribute vec2 uv;",
 
-        "varying vec2 vUv;",
-        "varying vec4 vColor;",
+    "uniform mat4 mMatrix;",
+    "uniform mat4 vpMatrix;",
+    "uniform vec4 color;",
 
-        "void main(void) {",
-        "    if (bool(useTexture)) {",
-        "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
-        "    } else {",
-        "        gl_FragColor = vColor;",
-        "    }",
-        "}",
-    ].join("\n");
+    "varying vec2 vUv;",
+    "varying vec4 vColor;",
+
+    "void main(void) {",
+    "    vUv = uv;",
+    "    vColor = color;",
+    "    gl_Position = vpMatrix * mMatrix * vec4(position, 1.0);",
+    "}",
+  ].join("\n");
+
+  var FRAGMENT_SHADER_SOURCE = [
+    "precision mediump float;",
+
+    "uniform sampler2D texture;",
+    "uniform vec2 uvTranslate;",
+    "uniform int useTexture;",
+
+    "varying vec2 vUv;",
+    "varying vec4 vColor;",
+
+    "void main(void) {",
+    "    if (bool(useTexture)) {",
+    "        gl_FragColor = vColor * texture2D(texture, uvTranslate + vUv);",
+    "    } else {",
+    "        gl_FragColor = vColor;",
+    "    }",
+    "}",
+  ].join("\n");
 
 })();

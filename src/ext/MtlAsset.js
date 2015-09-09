@@ -1,41 +1,40 @@
 (function() {
 
-    tm.define("glb.MtlAsset", {
-        superClass: "tm.event.EventDispatcher",
+  phina.define("glb.MtlAsset", {
+    superClass: "phina.util.EventDispatcher",
 
-        init: function() {
-            this.superInit();
-        },
+    init: function() {
+      this.superInit();
+    },
 
-        load: function(url) {
-            this.url = url;
+    load: function(url) {
+      this.url = url;
 
-            var self = this;
-            var params = {
-                url: url,
-                success: function(data) {
-                    self.parse(data);
-                    self.flare("load");
-                }
-            };
-            tm.util.Ajax.load(params);
+      var self = this;
+      var params = {
+        url: url,
+        success: function(data) {
+          self.parse(data);
+          self.flare("load");
+        }
+      };
+      phina.util.Ajax.load(params);
 
-            return this;
-        },
+      return this;
+    },
 
-        parse: function(data) {
-            var self = this;
-            var lines = data.split("\n");
-            lines.forEach(function(line) {
-            });
-        },
+    parse: function(data) {
+      var self = this;
+      var lines = data.split("\n");
+      lines.forEach(function(line) {});
+    },
 
-    });
+  });
 
-    var loadMtlFunc = function(path) {
-        return glb.MtlAsset().load(path);
-    };
+  var loadMtlFunc = function(path) {
+    return glb.MtlAsset().load(path);
+  };
 
-    tm.asset.Loader.register("mtl", loadMtlFunc);
+  // phina.asset.Loader.register("mtl", loadMtlFunc);
 
 })();

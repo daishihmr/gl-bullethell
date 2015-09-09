@@ -1,110 +1,129 @@
 (function() {
 
-    tm.define("glb.ParticleSystem", {
-        superClass: "glb.Object3D",
+  phina.define("glb.ParticleSystem", {
+    superClass: "glb.Object3D",
 
-        geometry: null,
-        material: null,
+    geometry: null,
+    material: null,
 
-        particles: null,
-        
-        time: 0,
+    particles: null,
 
-        visible: true,
+    time: 0,
 
-        init: function(texture) {
-            this.superInit();
+    visible: true,
 
-            this.geometry = glb.ParticleGeometry();
-            this.material = glb.ParticleMaterial(texture);
+    init: function(texture) {
+      this.superInit();
 
-            this.particles = [];
-            
-            this.time = 0;
-        },
+      this.geometry = glb.ParticleGeometry();
+      this.material = glb.ParticleMaterial(texture);
 
-        build: function(glContext) {
-            var gl = glContext.gl;
-            var ext = glContext.ext;
+      this.particles = [];
 
-            this.geometry.build(glContext);
-            this.material.build(glContext);
+      this.time = 0;
+    },
 
-            if (ext !== null) {
-                this.material.setVao(glContext);
-                this.material.setAttributes(glContext, this.geometry);
-                this.material.unsetVao(glContext);
-            }
-        },
+    build: function(glContext) {
+      var gl = glContext.gl;
+      var ext = glContext.ext;
 
-        update: function(app) {
-            this.time += 0.0001;
+      this.geometry.build(glContext);
+      this.material.build(glContext);
 
-            var self = this;
-            var time = this.time;
-            this.particles = this.particles.filter(function(p) {
-                if (p.deathTime <= time) {
-                    self.despawn(p.index);
-                    return false;
-                } else {
-                    return true;
-                }
-            });
-        },
+      if (ext !== null) {
+        this.material.setVao(glContext);
+        this.material.setAttributes(glContext, this.geometry);
+        this.material.unsetVao(glContext);
+      }
+    },
 
-        render: function(glContext, vpMatrix) {
-            var gl = glContext.gl;
-            var ext = glContext.ext;
+    update: function(app) {
+      this.time += 0.0001;
 
-            if (this.geometry.vboNeedUpdate) {
-                this.geometry.rebind(gl);
-                this.geometry.vboNeedUpdate = false;
-            }
+      var self = this;
+      var time = this.time;
+      this.particles = this.particles.filter(function(p) {
+        if (p.deathTime <= time) {
+          self.despawn(p.index);
+          return false;
+        } else {
+          return true;
+        }
+      });
+    },
 
-            this.material.setProgram(glContext);
-            
-            if (ext !== null) {
-                this.material.setVao(glContext);
-            } else {
-                this.material.setAttributes(glContext, this.geometry);
-            }
-            this.material.setTextures(glContext);
+    render: function(glContext, vpMatrix) {
+      var gl = glContext.gl;
+      var ext = glContext.ext;
 
-            this.material.setUniforms(glContext, this);
-            this.material.setUniform(glContext, "time", this.time);
-            this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+      if (this.geometry.vboNeedUpdate) {
+        this.geometry.rebind(gl);
+        this.geometry.vboNeedUpdate = false;
+      }
 
-            this.material.draw(glContext, this.geometry.COUNT);
-            
-            if (ext !== null) this.material.unsetVao(glContext);
-        },
+      this.material.setProgram(glContext);
 
-        spawn: function(param) {
-            var index = this.geometry.spawn(this.time, {}.$extend(DEFAULT_PARAM, param));
-            if (index < 0) return;
-            this.particles.push({
-                deathTime: this.time + param.ttl,
-                index: index,
-            });
-            return index;
-        },
+      if (ext !== null) {
+        this.material.setVao(glContext);
+      } else {
+        this.material.setAttributes(glContext, this.geometry);
+      }
+      this.material.setTextures(glContext);
 
-        despawn: function(index) {
-            this.geometry.despawn(index);
-        },
+      this.material.setUniforms(glContext, this);
+      this.material.setUniform(glContext, "time", this.time);
+      this.material.setUniform(glContext, "vpMatrix", vpMatrix);
 
-    });
+      this.material.draw(glContext, this.geometry.COUNT);
 
-    var DEFAULT_PARAM = {
-        position: { x:0, y:0 },
-        frameIndex: 0,
-        ttl: 60 * 0.0001,
-        velocityFrom: { x:1, y:0 },
-        velocityTo: { x:0, y:0 },
-        sizeFrom: 30,
-        sizeTo: 30,
-        colorFrom: { r:255, g:255, b:255, a:1 },
-        colorTo: { r:255, g:255, b:255, a:0 },
-    };
+      if (ext !== null) this.material.unsetVao(glContext);
+    },
+
+    spawn: function(param) {
+      var index = this.geometry.spawn(this.time, {}.$extend(DEFAULT_PARAM, param));
+      if (index < 0) return;
+      this.particles.push({
+        deathTime: this.time + param.ttl,
+        index: index,
+      });
+      return index;
+    },
+
+    despawn: function(index) {
+      this.geometry.despawn(index);
+    },
+
+  });
+
+  var DEFAULT_PARAM = {
+    position: {
+      x: 0,
+      y: 0
+    },
+    frameIndex: 0,
+    ttl: 60 * 0.0001,
+    velocityFrom: {
+      x: 1,
+      y: 0
+    },
+    velocityTo: {
+      x: 0,
+      y: 0
+    },
+    sizeFrom: 30,
+    sizeTo: 30,
+    colorFrom: {
+      r: 255,
+      g: 255,
+      b: 255,
+      a: 1
+    },
+    colorTo: {
+      r: 255,
+      g: 255,
+      b: 255,
+      a: 0
+    },
+  };
 
 })();

@@ -14,43 +14,47 @@ var GL_PIXEL_HEIGHT = ~~(SCREEN_HEIGHT * GL_QUALITY);
 var GL = WebGLRenderingContext;
 
 var ASSETS = {
-    bullets: "./asset/bullets.png",
-    particles: "./asset/particles.png",
+  bullets: "./asset/bullets.png",
+  particles: "./asset/particles.png",
 
-    hime: "./asset/p32.obj",
-    himetex: "./asset/p32.png",
+  hime: "./asset/p32.obj",
+  himetex: "./asset/p32.png",
 
-    test: "./asset/test.png",
+  test: "./asset/test.png",
 };
 
-tm.main(function() {
-    var application = tm.display.CanvasApp("#c2");
-    application.fps = 60;
-    application
-        .resize(SCREEN_WIDTH, SCREEN_HEIGHT)
-        .fitWindow()
-        .run();
+window.addEventListener("load", function() {
+  var application = phina.display.CanvasApp("#c2");
+  application.fps = 60;
+  application
+    .resize(SCREEN_WIDTH, SCREEN_HEIGHT)
+    .fitWindow()
+    .enableStats()
+    .run();
 
-    application.glContext = glb.GLContext("#c3")
-        .resize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT)
-        .fitWindow();
+  application.glContext = glb.GLContext("#c3")
+    .resize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT)
+    .fitWindow();
 
-    application.replaceScene(tm.game.LoadingScene({
-        width: SCREEN_WIDTH,
-        height: SCREEN_HEIGHT,
-        assets: ASSETS,
-        nextScene: glb.GameScene,
-    }));
+  application.replaceScene(glb.GameScene());
 
-    tm.asset.Script.loadStats().onload = function() {
-        application.enableStats();
-    };
-});
+  // application.replaceScene(phina.game.LoadingScene({
+  //     width: SCREEN_WIDTH,
+  //     height: SCREEN_HEIGHT,
+  //     assets: ASSETS,
+  //     nextScene: glb.GameScene,
+  // }));
+
+}, false);
 
 Number.prototype.toFloatString = function() {
-    if (this % 1) {
-        return "" + this;
-    } else {
-        return "" + this + ".0";
-    }
+  if (this % 1) {
+    return "" + this;
+  } else {
+    return "" + this + ".0";
+  }
+};
+
+var log = function() {
+  console.log.apply(console, arguments);
 };

@@ -1,12 +1,12 @@
-tm.define("glb.Object3D", {
-    superClass: "tm.app.Element",
+phina.define("glb.Object3D", {
+  superClass: "phina.app.Element",
 
-    init: function() {
-        this.superInit();
-    },
+  init: function() {
+    this.superInit();
+  },
 
-    build: function(glContext) {},
+  build: function(glContext) {},
 
-    render: function(glContext, vpMatrix) {},
+  render: function(glContext, vpMatrix) {},
 
 });

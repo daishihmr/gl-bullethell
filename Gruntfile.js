@@ -47,5 +47,6 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask("default", ["uglify:product"]);
+    grunt.registerTask("default", ["uglify:develop"]);
+    grunt.registerTask("product", ["uglify:product"]);
 };

@@ -1,6 +1,6 @@
-tm.define("glb.Hud", {
-    superClass: "tm.display.CanvasElement",
-    init: function() {
-        this.superInit();
-    }
+phina.define("glb.Hud", {
+  superClass: "phina.display.CanvasElement",
+  init: function() {
+    this.superInit();
+  }
 });
