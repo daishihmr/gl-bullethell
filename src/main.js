@@ -24,17 +24,15 @@ var ASSETS = {
 };
 
 window.addEventListener("load", function() {
-  var application = phina.display.CanvasApp("#c2");
-  application.fps = 60;
+  var application = phina.display.CanvasApp({
+    query: "#c2",
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+  });
+  application.ticker.fps = 60;
   application
-    .resize(SCREEN_WIDTH, SCREEN_HEIGHT)
-    .fitWindow()
     .enableStats()
     .run();
-
-  application.glContext = glb.GLContext("#c3")
-    .resize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT)
-    .fitWindow();
 
   application.replaceScene(glb.GameScene());
 

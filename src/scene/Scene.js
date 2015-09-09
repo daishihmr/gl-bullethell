@@ -1,12 +1,16 @@
 (function() {
 
   phina.define("glb.Scene", {
-    superClass: "phina.app.Scene",
+    superClass: "phina.display.CanvasScene",
 
     light: null,
 
     init: function() {
-      this.superInit();
+      this.superInit({
+        width: SCREEN_WIDTH,
+        height: SCREEN_HEIGHT,
+      });
+
       this.light = {
         lightDirection: glb.Vector3(1.0, 1.0, 1.0).normalize(),
         lightColor: phina.graphics.Color(255, 255, 255, 1.0),

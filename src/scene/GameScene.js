@@ -7,6 +7,11 @@ phina.define("glb.GameScene", {
   init: function() {
     this.superInit();
 
+    this.glContext = glb.GLLayer()
+        .setSize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT)
+        .addChildTo(this);
+        // .fitScreen();
+
     // this.fromJSON({
     //     children: {
     //         hud: {
@@ -20,7 +25,12 @@ phina.define("glb.GameScene", {
     // 敵弾vs自機判定用
     // this.screen = glb.Screen(256, 256);
 
-    this.effectComposer = null;
+    // this.effectComposer = glb.AfterEffectComposer(this.glContext);
+    // this.effectComposer.addPass(glb.ShaderPass(glb.MonotoneShader()));
+    // var reverseShader = glb.ShaderPass(glb.ReverseShader());
+    // reverseShader.enabled = false;
+    // this.effectComposer.addPass(reverseShader);
+    // this.effectComposer.addPass(glb.BlurPass());
 
     // カメラ
     var camera = this.camera = glb.PerspectiveCamera(45 * Math.DEG_TO_RAD, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
@@ -35,22 +45,14 @@ phina.define("glb.GameScene", {
     camera.position.z = SCREEN_HEIGHT * 0.5 / Math.tan(45 * Math.DEG_TO_RAD * 0.5);
     camera.updateMatrix();
 
-    var reverseShader = glb.ShaderPass(glb.ReverseShader());
-    reverseShader.enabled = false;
-
     this.on("enter", function(e) {
       // 2Dキャンバスの背景を透明にする
-      e.app.background = "transparent";
-
-      this.glContext = e.app.glContext;
+      e.app.domElement.style.background = "transparent";
+      e.app.backgroundColor = "transparent";
 
       // this.bullets.build(this.glContext);
       // this.screen.build(this.glContext);
 
-      this.effectComposer = glb.AfterEffectComposer(this.glContext);
-      // this.effectComposer.addPass(glb.ShaderPass(glb.MonotoneShader()));
-      // this.effectComposer.addPass(reverseShader);
-      // this.effectComposer.addPass(glb.BlurPass());
     });
 
     // var axis = glb.Vector3(3, 1, 0).normalize();
@@ -86,25 +88,26 @@ phina.define("glb.GameScene", {
 
     // 自機
     var player = this.player = glb.Mesh(
-        phina.asset.Manager.get("hime").geometry,
+        // phina.asset.Manager.get("hime").geometry,
+        glb.BoxGeometry(20, 20, 20),
         glb.PhongMaterial({
-          image: phina.asset.Manager.get("himetex").element,
+          // image: phina.asset.Manager.get("himetex").element,
         })
       )
       .setScale(15, 15, 15)
       .setPosition(0, -200, 0)
-      .addChildTo(this);
+      .addChildTo(this.glContext);
     player.on("enterframe", function(e) {
       this.rotateY(0.008);
       // this.rotateX(0.005);
 
       // 移動入力：キーボード
-      var kb = e.app.keyboard.getKeyDirection();
-      this.x += kb.x * 4;
-      this.y -= kb.y * 4;
+      // var kb = e.app.keyboard.getKeyDirection();
+      // this.x += kb.x * 4;
+      // this.y -= kb.y * 4;
 
       // 移動入力：ポインティング
-      var p = e.app.pointing;
+      var p = e.app.pointer;
       if (p.getPointing()) {
         var d = p.deltaPosition;
         this.x += d.x * 2;
@@ -127,35 +130,40 @@ phina.define("glb.GameScene", {
     // });
 
     // 弾
-    // var bullets = this.bullets = glb.Bullets(phina.asset.Manager.get("bullets").element).addChildTo(this);
-    // phina.display.Label("bullet count = 0", 40)
-    //     .setAlign("left")
-    //     .setFillStyle("darkgreen")
-    //     .setPosition(10, 30)
-    //     .addChildTo(this)
-    //     .on("enterframe", function() {
-    //         this.text = "bullet count = " + bullets.bullets.length;
-    //     });
+    var bullets = this.bullets = glb.Bullets(
+        //phina.asset.Manager.get("bullets").element
+        document.querySelector("#bullets")
+    ).addChildTo(this.glContext);
+    phina.display.Label("bullet count = 0", {
+        align: "left",
+        color: "darkgreen",
+        fontSize: 40,
+    })
+        .setPosition(10, 30)
+        .addChildTo(this)
+        .on("enterframe", function() {
+            this.text = "bullet count = " + bullets.bullets.length;
+        });
 
     // 弾幕を適当に
-    // this.on("enterframe", function(e) {
-    //     if (e.app.frame % 3 !== 0) return;
-    //     var w = 2;
-    //     (w).times(function(i) {
+    this.on("enterframe", function(e) {
+        if (e.app.frame % 3 !== 0) return;
+        var w = 2;
+        (w).times(function(i) {
 
-    //         bullets.spawn(
-    //             glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
-    //             glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
-    //             0
-    //         );
-    //         bullets.spawn(
-    //             glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
-    //             glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
-    //             4
-    //         );
+            bullets.spawn(
+                glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
+                glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
+                0
+            );
+            bullets.spawn(
+                glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
+                glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
+                4
+            );
 
-    //     });
-    // });
+        });
+    });
 
     // 自機の当たり判定マーカー
     // var marker = phina.display.RectangleShape({
@@ -228,7 +236,7 @@ phina.define("glb.GameScene", {
     // };
 
     // パーティクルシステム
-    var particleSystem = glb.ParticleSystem(phina.asset.Manager.get("particles").element).addChildTo(this);
+    // var particleSystem = glb.ParticleSystem(phina.asset.Manager.get("particles").element).addChildTo(this);
     // phina.display.Label("particle count = 0", 40)
     //     .setAlign("left")
     //     .setFillStyle("darkgreen")
@@ -282,8 +290,9 @@ phina.define("glb.GameScene", {
     // this.children.forEach(function(c) {
     //     c.visible = c._visibleBkup;
     // });
+
     // this.glContext.attachScreen(null);
-    // this.glContext.render(this, this.camera);
-    this.effectComposer.render(this, this.camera, this.light);
+    this.glContext.render(this.camera, this.light);
+    // this.effectComposer.render(this, this.camera, this.light);
   },
 });
