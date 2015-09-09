@@ -2,12 +2,14 @@ phina.define("glb.GameScene", {
   superClass: "glb.Scene",
   _renderable: true,
 
-  glContext: null,
+  glLayer: null,
 
   init: function() {
     this.superInit();
+    
+    this.backgroundColor = null;
 
-    this.glContext = glb.GLLayer()
+    this.glLayer = glb.GLLayer()
         .setSize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT)
         .addChildTo(this);
         // .fitScreen();
@@ -25,7 +27,7 @@ phina.define("glb.GameScene", {
     // 敵弾vs自機判定用
     // this.screen = glb.Screen(256, 256);
 
-    // this.effectComposer = glb.AfterEffectComposer(this.glContext);
+    // this.effectComposer = glb.AfterEffectComposer(this.glLayer);
     // this.effectComposer.addPass(glb.ShaderPass(glb.MonotoneShader()));
     // var reverseShader = glb.ShaderPass(glb.ReverseShader());
     // reverseShader.enabled = false;
@@ -35,10 +37,10 @@ phina.define("glb.GameScene", {
     // カメラ
     var camera = this.camera = glb.PerspectiveCamera(45 * Math.DEG_TO_RAD, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
     // var camera = this.camera = glb.OrthoCamera(
-    //     SCREEN_WIDTH * -0.5,
-    //     SCREEN_WIDTH * 0.5,
-    //     SCREEN_HEIGHT * -0.5,
-    //     SCREEN_HEIGHT * 0.5,
+    //     GL_PIXEL_WIDTH * -0.5,
+    //     GL_PIXEL_WIDTH * 0.5,
+    //     GL_PIXEL_HEIGHT * -0.5,
+    //     GL_PIXEL_HEIGHT * 0.5,
     //     100,
     //     10000
     // );
@@ -47,11 +49,10 @@ phina.define("glb.GameScene", {
 
     this.on("enter", function(e) {
       // 2Dキャンバスの背景を透明にする
-      e.app.domElement.style.background = "transparent";
-      e.app.backgroundColor = "transparent";
+      e.app.backgroundColor = null;
 
-      // this.bullets.build(this.glContext);
-      // this.screen.build(this.glContext);
+      // this.bullets.build(this.glLayer);
+      // this.screen.build(this.glLayer);
 
     });
 
@@ -96,7 +97,7 @@ phina.define("glb.GameScene", {
       )
       .setScale(15, 15, 15)
       .setPosition(0, -200, 0)
-      .addChildTo(this.glContext);
+      .addChildTo(this.glLayer);
     player.on("enterframe", function(e) {
       this.rotateY(0.008);
       // this.rotateX(0.005);
@@ -133,14 +134,14 @@ phina.define("glb.GameScene", {
     var bullets = this.bullets = glb.Bullets(
         //phina.asset.Manager.get("bullets").element
         document.querySelector("#bullets")
-    ).addChildTo(this.glContext);
+    ).addChildTo(this.glLayer);
     phina.display.Label("bullet count = 0", {
         align: "left",
         color: "darkgreen",
         fontSize: 40,
     })
         .setPosition(10, 30)
-        .addChildTo(this)
+        .addChildTo(this.glLayer)
         .on("enterframe", function() {
             this.text = "bullet count = " + bullets.bullets.length;
         });
@@ -202,20 +203,20 @@ phina.define("glb.GameScene", {
     //     0, 1,
     //     1, 1,
     // ]);
-    // this.monitor.material.setTextures = function(glContext) {
-    //     var gl = glContext.gl;
+    // this.monitor.material.setTextures = function(glLayer) {
+    //     var gl = glLayer.gl;
     //     gl.bindTexture(gl.TEXTURE_2D, this.screen.texture);
     // };
-    // this.monitor.material.setUniforms = function(glContext, uniformValues) {
-    //     this.superSetUniforms(glContext, uniformValues);
-    //     this.setUniform(glContext, "color", this.color);
-    //     this.setUniform(glContext, "useTexture", 1);
+    // this.monitor.material.setUniforms = function(glLayer, uniformValues) {
+    //     this.superSetUniforms(glLayer, uniformValues);
+    //     this.setUniform(glLayer, "color", this.color);
+    //     this.setUniform(glLayer, "useTexture", 1);
     // };
 
     // 画面全体のピクセルデータ
     // var pixels2 = new Uint8Array(this.screen.width * this.sreen.height * 4);
     // this.on("enterframe", function() {
-    //     var gl = this.glContext.gl;
+    //     var gl = this.glLayer.gl;
     //     gl.readPixels(0, 0, this.screen.width, this.screen.height, gl.RGBA, gl.UNSIGNED_BYTE, pixels2);
     // });
 
@@ -236,15 +237,20 @@ phina.define("glb.GameScene", {
     // };
 
     // パーティクルシステム
-    // var particleSystem = glb.ParticleSystem(phina.asset.Manager.get("particles").element).addChildTo(this);
-    // phina.display.Label("particle count = 0", 40)
-    //     .setAlign("left")
-    //     .setFillStyle("darkgreen")
-    //     .setPosition(10, 60)
-    //     .addChildTo(this)
-    //     .on("enterframe", function() {
-    //         this.text = "particle count = " + particleSystem.particles.length;
-    //     });
+    var particleSystem = glb.ParticleSystem(
+        // phina.asset.Manager.get("particles").element
+        document.querySelector("#particles")
+    ).addChildTo(this.glLayer);
+    phina.display.Label("particle count = 0", {
+        align: "left",
+        color: "darkgreen",
+        fontSize: 40,
+    })
+        .setPosition(10, 60)
+        .addChildTo(this)
+        .on("enterframe", function() {
+            this.text = "particle count = " + particleSystem.particles.length;
+        });
 
     // ランダムな位置に爆発表示
     // this.on("enterframe", function(e) {
@@ -257,19 +263,19 @@ phina.define("glb.GameScene", {
     // });
 
     // ランダムな位置に炎表示
-    // this.on("enterframe", function(e) {
-    //     if (e.app.frame % 180 !== 0) return;
-    //     var flame = glb.Flame(particleSystem)
-    //         .addChildTo(this);
-    //     flame.position.random(0, 0, 0, W * 0.5);
-    //     flame.tweener.wait(5000).call(function() {
-    //         flame.remove();
-    //     });
-    // });
+    this.on("enterframe", function(e) {
+        if (e.app.frame % 180 !== 0) return;
+        var flame = glb.Flame(particleSystem)
+            .addChildTo(this.glLayer);
+        flame.position.random(0, 0, 0, W * 0.5);
+        flame.tweener.wait(5000).call(function() {
+            flame.remove();
+        });
+    });
   },
 
   draw: function() {
-    // var gl = this.glContext.gl;
+    // var gl = this.glLayer.gl;
     // var bullets = this.bullets;
 
     // 弾だけをscreenに描画する
@@ -278,8 +284,8 @@ phina.define("glb.GameScene", {
     //     c._visibleBkup = c.visible;
     //     c.visible = (c === bullets);
     // });
-    // this.glContext.attachScreen(this.screen);
-    // this.glContext.render(this, this.camera);
+    // this.glLayer.attachScreen(this.screen);
+    // this.glLayer.render(this, this.camera);
 
     // screenから自機位置のピクセルだけ色データを取得
     // var sc = this.camera.getScreenCoord(this.player);
@@ -291,8 +297,8 @@ phina.define("glb.GameScene", {
     //     c.visible = c._visibleBkup;
     // });
 
-    // this.glContext.attachScreen(null);
-    this.glContext.render(this.camera, this.light);
+    // this.glLayer.attachScreen(null);
+    this.glLayer.render(this.camera, this.light);
     // this.effectComposer.render(this, this.camera, this.light);
   },
 });

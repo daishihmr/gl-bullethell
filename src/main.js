@@ -6,7 +6,7 @@ var SCREEN_HEIGHT = H = 960;
 var BULLET_APPEALANCE = SCREEN_WIDTH * 0.2;
 var BULLET_SIZE = 12;
 
-var GL_QUALITY = 0.35;
+var GL_QUALITY = 0.5;
 
 var GL_PIXEL_WIDTH = ~~(SCREEN_WIDTH * GL_QUALITY);
 var GL_PIXEL_HEIGHT = ~~(SCREEN_HEIGHT * GL_QUALITY);
@@ -25,7 +25,7 @@ var ASSETS = {
 
 window.addEventListener("load", function() {
   var application = phina.display.CanvasApp({
-    query: "#c2",
+    query: "#world",
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
   });
@@ -33,6 +33,8 @@ window.addEventListener("load", function() {
   application
     .enableStats()
     .run();
+  
+  application.canvas.context.imageSmoothingEnabled = false;
 
   application.replaceScene(glb.GameScene());
 

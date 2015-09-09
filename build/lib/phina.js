@@ -1205,8 +1205,11 @@ phina.namespace(function() {
    * ベクトルクラス
    */
   phina.define('phina.geom.Vector2', {
+    
+    array: null,
 
     init: function(x, y) {
+      this.array = new Float32Array(2);
       this.x = x;
       this.y = y;
     },
@@ -1331,10 +1334,14 @@ phina.namespace(function() {
     },
 
     _accessor: {
-      // x: {
-      //   "get": function()   { return this._x; },
-      //   "set": function(v)  { this._x = v; }
-      // },
+      x: {
+        "get": function()   { return this.array[0]; },
+        "set": function(v)  { this.array[0] = v; }
+      },
+      y: {
+        "get": function()   { return this.array[1]; },
+        "set": function(v)  { this.array[1] = v; }
+      },
     },
 
     _defined: function() {
@@ -1353,6 +1360,8 @@ phina.namespace(function() {
    * マトリックスクラス
    */
   phina.define('phina.geom.Matrix33', {
+    
+    array: null,
 
     /**
      * @constructor
@@ -1361,6 +1370,7 @@ phina.namespace(function() {
      * m20 m21 m22
      */
     init: function() {
+      this.array = new Float32Array(9);
       if (arguments.length >= 9) {
           this.set.apply(this, arguments);
       }
@@ -1510,12 +1520,41 @@ phina.namespace(function() {
     },
 
     _accessor: {
-      /**
-       * x
-       */
-      x: {
-        "get": function()   { return this._x; },
-        "set": function(v)  { this._x = v; }
+      m00: {
+        get: function() { return this.array[0]},
+        set: function(v) { this.array[0] = v }
+      },
+      m01: {
+        get: function() { return this.array[1]},
+        set: function(v) { this.array[1] = v }
+      },
+      m02: {
+        get: function() { return this.array[2]},
+        set: function(v) { this.array[2] = v }
+      },
+      m10: {
+        get: function() { return this.array[3]},
+        set: function(v) { this.array[3] = v }
+      },
+      m11: {
+        get: function() { return this.array[4]},
+        set: function(v) { this.array[4] = v }
+      },
+      m12: {
+        get: function() { return this.array[5]},
+        set: function(v) { this.array[5] = v }
+      },
+      m20: {
+        get: function() { return this.array[6]},
+        set: function(v) { this.array[6] = v }
+      },
+      m21: {
+        get: function() { return this.array[7]},
+        set: function(v) { this.array[7] = v }
+      },
+      m22: {
+        get: function() { return this.array[8]},
+        set: function(v) { this.array[8] = v }
       },
     }
     
@@ -6689,7 +6728,11 @@ phina.namespace(function() {
     },
 
     _draw: function() {
-      this.canvas.clearColor(this.backgroundColor);
+      if (this.backgroundColor) {
+        this.canvas.clearColor(this.backgroundColor);
+      } else {
+        this.canvas.clear();
+      }
 
       if (this.currentScene.canvas) {
         this.currentScene._render();
