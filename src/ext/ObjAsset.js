@@ -1,7 +1,10 @@
 (function() {
 
   phina.define("glb.ObjAsset", {
-    superClass: "phina.util.EventDispatcher",
+    superClass: "phina.asset.Asset",
+
+    geometry: null,
+    materials: null,
 
     init: function() {
       this.superInit();
@@ -17,22 +20,22 @@
 
     },
 
-    load: function(url) {
-      this.url = url;
-
+    _load: function(resolve) {
+      var url = this.src.url;
       var self = this;
-      var params = {
-        url: url,
-        success: function(data) {
-          self.parse(data);
-          self.geometry = self.buildGeometry();
-          self.materials = self.buildMaterials();
-          self.flare("load");
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if ([200, 201, 0].indexOf(xhr.status) !== -1) {
+            self.parse(xhr.responseText);
+            self.geometry = self.buildGeometry();
+            self.materials = self.buildMaterials();
+            resolve(self);
+          }
         }
       };
-      phina.util.Ajax.load(params);
-
-      return this;
+      xhr.send(null);
     },
 
     parse: function(data) {
@@ -59,6 +62,10 @@
         builder.addFace(face);
       });
 
+      if (this.src.originToCenter) {
+        builder.setOriginToCenter();
+      }
+
       return builder.build();
     },
     buildMaterials: function() {},
@@ -70,14 +77,14 @@
       } else if (m = line.match(/^usemtl (.+)$/)) {
         this._materialName = m[1];
       } else if (m = line.match(/^mtllib (.+)$/)) {
-        var mtlName = m[1];
-        var parent = this.url.substring(0, this.url.lastIndexOf("/"));
-        var mtlUrl = glb.MtlAsset().load(parent + "/" + mtlName);
+        // var mtlName = m[1];
+        // var parent = this.url.substring(0, this.url.lastIndexOf("/"));
+        // var mtlUrl = glb.MtlAsset().load(parent + "/" + mtlName);
 
-        var loader = phina.asset.Loader();
-        var p = {};
-        p[mtlName] = mtlUrl;
-        loader.load(p);
+        // var loader = phina.asset.Loader();
+        // var p = {};
+        // p[mtlName] = mtlUrl;
+        // loader.load(p);
       } else {
         var type = line.substring(0, 2);
         switch (type.trim()) {
@@ -148,10 +155,13 @@
     },
   });
 
-  var loadObjFunc = function(path) {
-    return glb.ObjAsset().load(path);
+  phina.asset.AssetLoader.assetLoadFunctions["wavefront.obj"] = function(src) {
+    if (typeof src == "string") {
+      src = {
+        url: src
+      };
+    }
+    return glb.ObjAsset().load(src);
   };
-
-  // phina.asset.Loader.register("obj", loadObjFunc);
 
 })();

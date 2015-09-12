@@ -17,6 +17,36 @@
       });
       return this;
     },
+    
+    setOriginToCenter: function() {
+      var sum = vec3.create();
+      var count = 0;
+
+      var faces = this.faces.map(function(f) {
+        if (f instanceof glb.Face) return f;
+        else return f.split();
+      }).flatten();
+      
+      faces.forEach(function(face, fi) {
+        if (face.positionA == null || face.positionB == null || face.positionC == null) {
+          console.error(face);
+          throw new Error("faceの頂点が欠けてる(" + fi + ")");
+        }
+        (3).times(function(i) {
+          var v = face.getVertex(i);
+          vec3.add(sum, sum, v.position);
+          count += 1;
+        });
+      });
+      
+      if (count == 0) return;
+      
+      vec3.scale(sum, sum, 1 / count);
+      vec3.scale(sum, sum, -1);
+      this.faces.forEach(function(face) {
+        face.translate(sum);
+      });
+    },
 
     build: function() {
       var geo = glb.Geometry();

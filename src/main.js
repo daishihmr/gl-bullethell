@@ -14,13 +14,20 @@ var GL_PIXEL_HEIGHT = ~~(SCREEN_HEIGHT * GL_QUALITY);
 var GL = WebGLRenderingContext;
 
 var ASSETS = {
-  bullets: "./asset/bullets.png",
-  particles: "./asset/particles.png",
+  image: {
+    bullets: "./asset/bullets.png",
+    particles: "./asset/particles.png",
 
-  hime: "./asset/p32.obj",
-  himetex: "./asset/p32.png",
+    himetex: "./asset/p32.png",
 
-  test: "./asset/test.png",
+    test: "./asset/test.png",
+  },
+  "wavefront.obj": {
+    hime: {
+      url: "./asset/p32.obj",
+      originToCenter: true,
+    },
+  }
 };
 
 window.addEventListener("load", function() {
@@ -33,17 +40,17 @@ window.addEventListener("load", function() {
   application
     .enableStats()
     .run();
-  
+
   application.canvas.context.imageSmoothingEnabled = false;
 
-  application.replaceScene(glb.GameScene());
+  // application.replaceScene(glb.GameScene());
 
-  // application.replaceScene(phina.game.LoadingScene({
-  //     width: SCREEN_WIDTH,
-  //     height: SCREEN_HEIGHT,
-  //     assets: ASSETS,
-  //     nextScene: glb.GameScene,
-  // }));
+  application.replaceScene(glb.LoadingScene({
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    assets: ASSETS,
+    nextScene: glb.GameScene,
+  }));
 
 }, false);
 

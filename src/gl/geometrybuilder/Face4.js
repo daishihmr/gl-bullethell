@@ -234,6 +234,14 @@
         vertexColor: this.vertexColorD,
       };
     },
+
+    translate: function(v) {
+      vec3.add(this.positionA, this.positionA, v);
+      vec3.add(this.positionB, this.positionB, v);
+      vec3.add(this.positionC, this.positionC, v);
+      vec3.add(this.positionD, this.positionD, v);
+    },
+
   });
 
   var v3 = vec3.create;

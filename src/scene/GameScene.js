@@ -7,6 +7,8 @@ phina.define("glb.GameScene", {
   init: function() {
     this.superInit();
     
+    console.log("GameScene created");
+    
     this.backgroundColor = null;
 
     this.glLayer = glb.GLLayer()
@@ -89,18 +91,17 @@ phina.define("glb.GameScene", {
 
     // 自機
     var player = this.player = glb.Mesh(
-        // phina.asset.Manager.get("hime").geometry,
-        glb.BoxGeometry(20, 20, 20),
+        phina.asset.AssetManager.get("wavefront.obj", "hime").geometry,
+        // glb.BoxGeometry(20, 20, 20),
         glb.PhongMaterial({
-          // image: phina.asset.Manager.get("himetex").element,
+          image: phina.asset.AssetManager.get("image", "himetex").domElement,
         })
       )
       .setScale(15, 15, 15)
-      .setPosition(0, -200, 0)
+      .setPosition(0, 0, 0)
       .addChildTo(this.glLayer);
     player.on("enterframe", function(e) {
-      this.rotateY(0.008);
-      // this.rotateX(0.005);
+      this.rotateY(0.008 * 15);
 
       // 移動入力：キーボード
       // var kb = e.app.keyboard.getKeyDirection();
@@ -132,8 +133,7 @@ phina.define("glb.GameScene", {
 
     // 弾
     var bullets = this.bullets = glb.Bullets(
-        //phina.asset.Manager.get("bullets").element
-        document.querySelector("#bullets")
+        phina.asset.AssetManager.get("image", "bullets").domElement
     ).addChildTo(this.glLayer);
     phina.display.Label("bullet count = 0", {
         align: "left",
@@ -148,18 +148,19 @@ phina.define("glb.GameScene", {
 
     // 弾幕を適当に
     this.on("enterframe", function(e) {
-        if (e.app.frame % 3 !== 0) return;
+        var f = e.app.ticker.frame;
+        if (f % 3 !== 0) return;
         var w = 2;
         (w).times(function(i) {
 
             bullets.spawn(
-                glb.Vector2(Math.cos(e.app.frame * -0.042) * 100, Math.sin(e.app.frame * -0.042) * 100),
-                glb.Vector2().fromAngleLength(e.app.frame * 0.06 + Math.PI * 2 * i / w, 3),
+                glb.Vector2(Math.cos(f * -0.042) * 100, Math.sin(f * -0.042) * 100),
+                glb.Vector2().fromAngleLength(f * 0.06 + Math.PI * 2 * i / w, 3),
                 0
             );
             bullets.spawn(
-                glb.Vector2(Math.cos(e.app.frame * 0.042) * 100, Math.sin(e.app.frame * 0.042) * 100),
-                glb.Vector2().fromAngleLength(e.app.frame * -0.06 + Math.PI * 2 * i / w, 3.5),
+                glb.Vector2(Math.cos(f * 0.042) * 100, Math.sin(f * 0.042) * 100),
+                glb.Vector2().fromAngleLength(f * -0.06 + Math.PI * 2 * i / w, 3.5),
                 4
             );
 
@@ -238,8 +239,7 @@ phina.define("glb.GameScene", {
 
     // パーティクルシステム
     var particleSystem = glb.ParticleSystem(
-        // phina.asset.Manager.get("particles").element
-        document.querySelector("#particles")
+        phina.asset.AssetManager.get("image", "particles").domElement
     ).addChildTo(this.glLayer);
     phina.display.Label("particle count = 0", {
         align: "left",
@@ -254,7 +254,7 @@ phina.define("glb.GameScene", {
 
     // ランダムな位置に爆発表示
     // this.on("enterframe", function(e) {
-    //     if (e.app.frame % 60 !== 0) return;
+    //     if (e.app.ticker.frame % 60 !== 0) return;
     //     (1).times(function() {
     //         glb.ExplosionS(particleSystem)
     //             .addChildTo(this)
@@ -264,7 +264,7 @@ phina.define("glb.GameScene", {
 
     // ランダムな位置に炎表示
     this.on("enterframe", function(e) {
-        if (e.app.frame % 180 !== 0) return;
+        if (e.app.ticker.frame % 180 !== 0) return;
         var flame = glb.Flame(particleSystem)
             .addChildTo(this.glLayer);
         flame.position.random(0, 0, 0, W * 0.5);
