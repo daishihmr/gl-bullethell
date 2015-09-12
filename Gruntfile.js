@@ -16,8 +16,8 @@ module.exports = function(grunt) {
             });
         };
 
-        var srcs = scan("./src").flatten().erase("./src/main.js");
-        srcs.unshift("./src/main.js");
+        var srcs = scan("./src").flatten().erase("./src/constants.js");
+        srcs.unshift("./src/constants.js");
 
         return srcs;
     };
@@ -29,11 +29,11 @@ module.exports = function(grunt) {
         uglify: {
             product: {
                 src: getSourceList(),
-                dest: "build/game.js",
+                dest: "build/gl-bullethell.js",
             },
             develop: {
                 src: getSourceList(),
-                dest: "build/game.js",
+                dest: "build/gl-bullethell.js",
                 options: {
                     sourceMap: true
                 }
