@@ -52,13 +52,14 @@
 
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.CULL_FACE);
+      gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
       gl.drawArrays(gl.POINTS, 0, length);
 
       gl.enable(gl.DEPTH_TEST);
       gl.enable(gl.CULL_FACE);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.disable(gl.BLEND);
     },
 
   });

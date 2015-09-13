@@ -165,7 +165,9 @@
     "    float c = sin(vAge * 6200.0) * 0.12;",
     "    vec4 light = vec4(0.0, c, 0.0, 0.0);",
 
-    "    gl_FragColor = light + texture2D(texture, uv);",
+    "    vec4 result = light + texture2D(texture, uv);",
+    "    if (result.a < 0.9) discard;",
+    "    gl_FragColor = result;",
     "}",
   ].join("\n");
 

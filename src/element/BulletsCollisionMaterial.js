@@ -2,9 +2,19 @@
 
   phina.define("glb.BulletsCollisionMaterial", {
     superClass: "glb.Material",
+    
+    vpMatrix: null,
 
     init: function() {
       this.superInit();
+      this.vpMatrix = glb.Matrix4();
+      
+      var v = mat4.create();
+      mat4.lookAt(v, [0, 0, SCREEN_HEIGHT * 0.5 / Math.tan(45 * Math.DEG_TO_RAD * 0.5)], [0, 0, 0], [0, 1, 0]);
+      var p = mat4.create();
+      mat4.ortho(p, -SCREEN_WIDTH * 0.5, SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * -0.5, SCREEN_HEIGHT * 0.5, 10, 10000);
+      
+      mat4.mul(this.vpMatrix.array, p, v);
     },
 
     _getVertexShaderSource: function() {
@@ -18,6 +28,12 @@
     },
     _getUniformMetaData: function() {
       return UNIFORM_META_DATA;
+    },
+
+    setUniforms: function(glContext, uniformValues) {
+      this.superSetUniforms(glContext, uniformValues);
+
+      this.setUniform(glContext, "vpMatrix", this.vpMatrix);
     },
 
     draw: function(glContext, length) {

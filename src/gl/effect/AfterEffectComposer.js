@@ -21,7 +21,7 @@
       var self = this;
       var glContext = this.glContext;
 
-      if (this.passes.length === 0 || this.passes.filter(isDisabled).length === 0) {
+      if (this.passes.length === 0 || this.passes.filter(isEnabled).length === 0) {
         glContext.attachScreen(null);
         glContext.render(scene, camera, light);
       } else {
@@ -40,7 +40,7 @@
 
   });
 
-  var isDisabled = function(pass) {
+  var isEnabled = function(pass) {
     return pass.enabled;
   };
 

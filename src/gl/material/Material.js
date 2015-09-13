@@ -68,7 +68,7 @@
     },
     _createShader: function(gl, type, source) {
       var shader = gl.createShader(type);
-      gl.shaderSource(shader, source)
+      gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         return shader;

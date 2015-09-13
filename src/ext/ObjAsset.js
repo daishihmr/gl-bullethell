@@ -17,7 +17,15 @@
       this._normals = [];
       this._texcoords = [];
       this._materialName = null;
-
+    },
+    
+    createMesh: function() {
+      return glb.Mesh(
+        this.geometry,
+        glb.BasicMaterial({
+          image: phina.asset.AssetManager.get("image", this.src.key).domElement,
+        })
+      );
     },
 
     _load: function(resolve) {
