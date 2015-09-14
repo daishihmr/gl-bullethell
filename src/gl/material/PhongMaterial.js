@@ -41,7 +41,7 @@
   }, ];
 
   var UNIFORM_META_DATA = [{
-    name: "mMatrix",
+    name: "worldMatrix",
     type: "mat4",
   }, {
     name: "vpMatrix",
@@ -75,7 +75,7 @@
     "attribute vec2 uv;",
     "attribute vec4 vertexColor;",
 
-    "uniform mat4 mMatrix;",
+    "uniform mat4 worldMatrix;",
     "uniform mat4 vpMatrix;",
     "uniform vec4 color;",
     "uniform mat4 invMatrix;",
@@ -95,7 +95,7 @@
     "    vec4 dColor = lightColor * vec4(vec3(d), 1.0);",
     "    vColor = clamp(color * vertexColor * (dColor + ambientColor), 0.0, 1.0);",
 
-    "    gl_Position = vpMatrix * mMatrix * vec4(position, 1.0);",
+    "    gl_Position = vpMatrix * worldMatrix * vec4(position, 1.0);",
     "}",
   ].join("\n");
 

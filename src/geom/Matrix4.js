@@ -42,6 +42,10 @@
       mat4.multiply(this.array, this.array, m.array);
       return this;
     },
+    preMul: function(m) {
+      mat4.multiply(this.array, m.array, this.array);
+      return this;
+    },
 
     translate: function(v) {
       mat4.translate(this.array, this.array, v.array);

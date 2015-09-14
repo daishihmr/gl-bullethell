@@ -32,22 +32,22 @@
       this.material = toMain ? this._mainMaterial : this._collisionMaterial;
     },
 
-    build: function(glContext) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    build: function(glLayer) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
 
-      this.geometry.build(glContext);
-      this._mainMaterial.build(glContext);
-      this._collisionMaterial.build(glContext);
+      this.geometry.build(glLayer);
+      this._mainMaterial.build(glLayer);
+      this._collisionMaterial.build(glLayer);
 
       if (ext !== null) {
-        this._mainMaterial.setVao(glContext);
-        this._mainMaterial.setAttributes(glContext, this.geometry);
-        this._mainMaterial.unsetVao(glContext);
+        this._mainMaterial.setVao(glLayer);
+        this._mainMaterial.setAttributes(glLayer, this.geometry);
+        this._mainMaterial.unsetVao(glLayer);
 
-        this._collisionMaterial.setVao(glContext);
-        this._collisionMaterial.setAttributes(glContext, this.geometry);
-        this._collisionMaterial.unsetVao(glContext);
+        this._collisionMaterial.setVao(glLayer);
+        this._collisionMaterial.setAttributes(glLayer, this.geometry);
+        this._collisionMaterial.unsetVao(glLayer);
       }
 
       this.isBuilt = true;
@@ -69,31 +69,31 @@
       });
     },
 
-    render: function(glContext, vpMatrix) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    render: function(glLayer, vpMatrix) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
 
       if (this.geometry.vboNeedUpdate) {
         this.geometry.rebind(gl);
         this.geometry.vboNeedUpdate = false;
       }
 
-      this.material.setProgram(glContext);
+      this.material.setProgram(glLayer);
 
       if (ext !== null) {
-        this.material.setVao(glContext);
+        this.material.setVao(glLayer);
       } else {
-        this.material.setAttributes(glContext, this.geometry);
+        this.material.setAttributes(glLayer, this.geometry);
       }
-      this.material.setTextures(glContext);
+      this.material.setTextures(glLayer);
 
-      this.material.setUniforms(glContext, this);
-      this.material.setUniform(glContext, "time", this.time);
-      this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+      this.material.setUniforms(glLayer, this);
+      this.material.setUniform(glLayer, "time", this.time);
+      this.material.setUniform(glLayer, "vpMatrix", vpMatrix);
 
-      this.material.draw(glContext, this.geometry.COUNT);
+      this.material.draw(glLayer, this.geometry.COUNT);
 
-      if (ext !== null) this.material.unsetVao(glContext);
+      if (ext !== null) this.material.unsetVao(glLayer);
     },
 
     spawn: function(pos, vel, frameIndex) {

@@ -12,8 +12,8 @@ phina.define("glb.Screen", {
     this.height = height || 512;
   },
 
-  build: function(glContext) {
-    var gl = glContext.gl;
+  build: function(glLayer) {
+    var gl = glLayer.gl;
 
     this.frameBuffer = gl.createFramebuffer();
     this.texture = gl.createTexture();

@@ -64,8 +64,8 @@ phina.define("glb.Geometry", {
     // this.indexData = new Int16Array();
   },
 
-  build: function(glContext) {
-    var gl = glContext.gl;
+  build: function(glLayer) {
+    var gl = glLayer.gl;
     this.materialIndex = this.createVbo(gl, this.materialIndexData);
     this.position = this.createVbo(gl, this.positionData);
     this.normal = this.createVbo(gl, this.normalData);
