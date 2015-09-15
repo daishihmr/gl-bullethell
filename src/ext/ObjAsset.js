@@ -22,7 +22,7 @@
     createMesh: function() {
       return glb.Mesh(
         this.geometry,
-        glb.BasicMaterial({
+        glb.PhongMaterial({
           image: phina.asset.AssetManager.get("image", this.src.key).domElement,
         })
       );
@@ -72,6 +72,9 @@
 
       if (this.src.originToCenter) {
         builder.setOriginToCenter();
+      }
+      if (this.src.transform) {
+        builder.setTransform(this.src.transform);
       }
 
       return builder.build();

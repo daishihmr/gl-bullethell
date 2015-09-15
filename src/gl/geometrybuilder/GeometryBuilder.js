@@ -4,6 +4,7 @@
 
     init: function() {
       this.faces = [];
+      this.transform = glb.Matrix4();
     },
 
     addFace: function(face) {
@@ -47,8 +48,13 @@
         face.translate(sum);
       });
     },
+    
+    setTransform: function(transform) {
+      this.transform = transform;
+    },
 
     build: function() {
+      var self = this;
       var geo = glb.Geometry();
 
       var vertices = [];
@@ -87,6 +93,7 @@
       );
       geo.positionData = new Float32Array(
         vertices.map(function(v) {
+          vec3.transformMat4(v.position, v.position, self.transform.array);
           return v.position;
         }).flatten()
       );
