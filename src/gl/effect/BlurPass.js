@@ -14,8 +14,8 @@
       this.rect.mainMaterial = this.rect.material;
       this.rect.mixMaterial = glb.ScreenTextureMaterial(glb.MixShader());
 
-      this.rect.mixMaterial.setTextures = function(glContext) {
-        var gl = glContext.gl;
+      this.rect.mixMaterial.setTextures = function(glLayer) {
+        var gl = glLayer.gl;
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture0);
@@ -26,32 +26,32 @@
         gl.uniform1i(this.uniforms["texture1"].location, 1);
       };
 
-      this.rect.build = function(glContext) {
-        var gl = glContext.gl;
-        var ext = glContext.ext;
+      this.rect.build = function(glLayer) {
+        var gl = glLayer.gl;
+        var ext = glLayer.ext;
 
-        this.geometry.build(glContext);
+        this.geometry.build(glLayer);
 
-        this.mainMaterial.build(glContext);
-        this.mixMaterial.build(glContext);
+        this.mainMaterial.build(glLayer);
+        this.mixMaterial.build(glLayer);
         if (ext !== null) {
-          this.mainMaterial.setVao(glContext);
-          this.mainMaterial.setAttributes(glContext, this.geometry);
+          this.mainMaterial.setVao(glLayer);
+          this.mainMaterial.setAttributes(glLayer, this.geometry);
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
-          this.mainMaterial.unsetVao(glContext);
+          this.mainMaterial.unsetVao(glLayer);
 
-          this.mixMaterial.setVao(glContext);
-          this.mixMaterial.setAttributes(glContext, this.geometry);
+          this.mixMaterial.setVao(glLayer);
+          this.mixMaterial.setAttributes(glLayer, this.geometry);
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
-          this.mixMaterial.unsetVao(glContext);
+          this.mixMaterial.unsetVao(glLayer);
         }
       };
     },
 
-    render: function(glContext, beforeScreen) {
+    render: function(glLayer, beforeScreen) {
       if (!this.isBuilt) {
-        this.screen.build(glContext);
-        this.previousFrameScreen.build(glContext);
+        this.screen.build(glLayer);
+        this.previousFrameScreen.build(glLayer);
         this.isBuilt = true;
       }
 
@@ -59,14 +59,14 @@
       this.rect.material = this.rect.mixMaterial;
       this.rect.material.texture0 = this.previousFrameScreen.texture;
       this.rect.material.texture1 = beforeScreen.texture;
-      glContext.attachScreen(this.screen);
-      glContext.render(this.scene, this.camera);
+      glLayer.attachScreen(this.screen);
+      glLayer.render(this.scene, this.camera);
 
       // 描画したやつをpreviousFrameScreenに描画（次回使う）
       this.rect.material = this.rect.mainMaterial;
       this.rect.material.texture = this.screen.texture;
-      glContext.attachScreen(this.previousFrameScreen);
-      glContext.render(this.scene, this.camera);
+      glLayer.attachScreen(this.previousFrameScreen);
+      glLayer.render(this.scene, this.camera);
 
       return this.screen;
     },

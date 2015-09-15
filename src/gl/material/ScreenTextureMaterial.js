@@ -26,14 +26,14 @@
       return this._uniformMetaData;
     },
 
-    setTextures: function(glContext) {
-      var gl = glContext.gl;
+    setTextures: function(glLayer) {
+      var gl = glLayer.gl;
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, this.texture);
     },
 
-    draw: function(glContext, length) {
-      var gl = glContext.gl;
+    draw: function(glLayer, length) {
+      var gl = glLayer.gl;
       gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
     },
 

@@ -11,10 +11,10 @@
       this._image = image;
     },
 
-    build: function(glContext) {
-      this._createProgram(glContext);
+    build: function(glLayer) {
+      this._createProgram(glLayer);
       if (this._image) {
-        this.texture = glContext.createTexture(this._image);
+        this.texture = glLayer.createTexture(this._image);
       }
     },
 
@@ -31,8 +31,8 @@
       return UNIFORM_META_DATA;
     },
 
-    setTextures: function(glContext) {
-      var gl = glContext.gl;
+    setTextures: function(glLayer) {
+      var gl = glLayer.gl;
       if (this.texture) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -41,14 +41,14 @@
       }
     },
 
-    setUniforms: function(glContext, uniformValues) {
-      this.superSetUniforms(glContext, uniformValues);
+    setUniforms: function(glLayer, uniformValues) {
+      this.superSetUniforms(glLayer, uniformValues);
 
-      this.setUniform(glContext, "useTexture", this.texture ? 1 : 0);
+      this.setUniform(glLayer, "useTexture", this.texture ? 1 : 0);
     },
 
-    draw: function(glContext, length) {
-      var gl = glContext.gl;
+    draw: function(glLayer, length) {
+      var gl = glLayer.gl;
 
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.CULL_FACE);

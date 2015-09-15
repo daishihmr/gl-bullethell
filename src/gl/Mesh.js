@@ -103,18 +103,18 @@
       });
     },
 
-    build: function(glContext) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    build: function(glLayer) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
 
-      this.geometry.build(glContext);
-      this.material.build(glContext);
+      this.geometry.build(glLayer);
+      this.material.build(glLayer);
 
       if (ext !== null) {
-        this.material.setVao(glContext);
-        this.material.setAttributes(glContext, this.geometry);
+        this.material.setVao(glLayer);
+        this.material.setAttributes(glLayer, this.geometry);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
-        this.material.unsetVao(glContext);
+        this.material.unsetVao(glLayer);
       }
     },
 
@@ -124,9 +124,9 @@
       return this;
     },
 
-    render: function(glContext, vpMatrix, light) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    render: function(glLayer, vpMatrix, light) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
 
       this.updateMatrix();
       
@@ -139,32 +139,32 @@
         p = p.parent;
       }
 
-      this.material.setProgram(glContext);
+      this.material.setProgram(glLayer);
 
       if (ext !== null) {
-        this.material.setVao(glContext);
+        this.material.setVao(glLayer);
       } else {
-        this.material.setAttributes(glContext, this.geometry);
+        this.material.setAttributes(glLayer, this.geometry);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.geometry.index);
       }
-      this.material.setTextures(glContext);
+      this.material.setTextures(glLayer);
 
-      this.material.setUniforms(glContext, this);
-      this.material.setUniform(glContext, "mMatrix", mMatrix);
-      this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+      this.material.setUniforms(glLayer, this);
+      this.material.setUniform(glLayer, "mMatrix", mMatrix);
+      this.material.setUniform(glLayer, "vpMatrix", vpMatrix);
       if (this.material.uniforms.invMatrix) {
         mat4.invert(this.invMatrix.array, glb.Matrix4.mul(vpMatrix, mMatrix).array);
-        this.material.setUniform(glContext, "invMatrix", this.invMatrix);
+        this.material.setUniform(glLayer, "invMatrix", this.invMatrix);
       }
       if (light) {
-        this.material.setUniform(glContext, "lightDirection", light.lightDirection);
-        this.material.setUniform(glContext, "lightColor", light.lightColor);
-        this.material.setUniform(glContext, "ambientColor", light.ambientColor);
+        this.material.setUniform(glLayer, "lightDirection", light.lightDirection);
+        this.material.setUniform(glLayer, "lightColor", light.lightColor);
+        this.material.setUniform(glLayer, "ambientColor", light.ambientColor);
       }
 
-      this.material.draw(glContext, this.geometry.indexData.length);
+      this.material.draw(glLayer, this.geometry.indexData.length);
 
-      if (ext !== null) this.material.unsetVao(glContext);
+      if (ext !== null) this.material.unsetVao(glLayer);
     },
 
     setPosition: function(x, y, z) {

@@ -10,8 +10,8 @@
 
     init: function() {},
 
-    build: function(glContext) {
-      this._createProgram(glContext);
+    build: function(glLayer) {
+      this._createProgram(glLayer);
     },
 
     _getVertexShaderSource: function() {
@@ -27,9 +27,9 @@
       return UNIFORM_META_DATA;
     },
 
-    _createProgram: function(glContext) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    _createProgram: function(glLayer) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
       var vs = this._createShader(gl, gl.VERTEX_SHADER, this._getVertexShaderSource());
       var fs = this._createShader(gl, gl.FRAGMENT_SHADER, this._getFragmentShaderSource());
       this.program = gl.createProgram();
@@ -77,22 +77,22 @@
       }
     },
 
-    setProgram: function(glContext) {
-      var gl = glContext.gl;
+    setProgram: function(glLayer) {
+      var gl = glLayer.gl;
       gl.useProgram(this.program);
     },
 
-    setVao: function(glContext) {
-      var ext = glContext.ext;
+    setVao: function(glLayer) {
+      var ext = glLayer.ext;
       if (ext !== null) ext.bindVertexArrayOES(this.vao);
     },
-    unsetVao: function(glContext) {
-      var ext = glContext.ext;
+    unsetVao: function(glLayer) {
+      var ext = glLayer.ext;
       if (ext !== null) ext.bindVertexArrayOES(null);
     },
 
-    setAttributes: function(glContext, geometry) {
-      var gl = glContext.gl;
+    setAttributes: function(glLayer, geometry) {
+      var gl = glLayer.gl;
       var attributes = this.attributes;
 
       Object.keys(this.attributes).forEach(function(name) {
@@ -106,10 +106,10 @@
       });
     },
 
-    setTextures: function(glContext) {},
+    setTextures: function(glLayer) {},
 
-    setUniforms: function(glContext, uniformValues) {
-      var gl = glContext.gl;
+    setUniforms: function(glLayer, uniformValues) {
+      var gl = glLayer.gl;
       var self = this;
       var uniforms = this.uniforms;
 
@@ -117,13 +117,13 @@
         var attr = uniforms[name];
 
         if (uniformValues[name]) {
-          self.setUniform(glContext, name, uniformValues[name]);
+          self.setUniform(glLayer, name, uniformValues[name]);
         }
       });
     },
 
-    setUniform: function(glContext, name, value) {
-      var gl = glContext.gl;
+    setUniform: function(glLayer, name, value) {
+      var gl = glLayer.gl;
 
       var uni = this.uniforms[name];
 
@@ -160,7 +160,7 @@
       }
     },
 
-    draw: function(glContext, length) {},
+    draw: function(glLayer, length) {},
   });
 
   glb.Material.prototype.superSetAttributes = glb.Material.prototype.setAttributes;

@@ -7,14 +7,14 @@ phina.define("glb.FirstPass", {
     this.screen = glb.Screen();
   },
 
-  render: function(glContext, scene, camera, light) {
+  render: function(glLayer, scene, camera, light) {
     if (!this.isBuilt) {
-      this.screen.build(glContext);
+      this.screen.build(glLayer);
       this.isBuilt = true;
     }
 
-    glContext.attachScreen(this.screen);
-    glContext.render(scene, camera, light);
+    glLayer.attachScreen(this.screen);
+    glLayer.render(scene, camera, light);
     return this.screen;
   }
 });

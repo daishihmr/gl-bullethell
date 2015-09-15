@@ -22,10 +22,10 @@
       return this;
     },
 
-    build: function(glContext) {
-      this._createProgram(glContext);
+    build: function(glLayer) {
+      this._createProgram(glLayer);
       if (this._image) {
-        this.texture = glContext.createTexture(this._image);
+        this.texture = glLayer.createTexture(this._image);
       }
     },
 
@@ -42,12 +42,12 @@
       return UNIFORM_META_DATA;
     },
 
-    setAttributes: function(glContext, geometry) {
-      this.superSetAttributes(glContext, geometry);
+    setAttributes: function(glLayer, geometry) {
+      this.superSetAttributes(glLayer, geometry);
     },
 
-    setTextures: function(glContext) {
-      var gl = glContext.gl;
+    setTextures: function(glLayer) {
+      var gl = glLayer.gl;
 
       if (this.texture) {
         gl.activeTexture(gl.TEXTURE0);
@@ -57,15 +57,15 @@
       }
     },
 
-    setUniforms: function(glContext, uniformValues) {
-      this.superSetUniforms(glContext, uniformValues);
+    setUniforms: function(glLayer, uniformValues) {
+      this.superSetUniforms(glLayer, uniformValues);
 
-      this.setUniform(glContext, "color", this.color);
-      this.setUniform(glContext, "useTexture", this.texture ? 1 : 0);
+      this.setUniform(glLayer, "color", this.color);
+      this.setUniform(glLayer, "useTexture", this.texture ? 1 : 0);
     },
 
-    draw: function(glContext, length) {
-      var gl = glContext.gl;
+    draw: function(glLayer, length) {
+      var gl = glLayer.gl;
       gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
     },
 

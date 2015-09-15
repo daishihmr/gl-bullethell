@@ -89,8 +89,8 @@ phina.define("glb.BoxGeometry", {
     this.$extend(geometry);
   },
 
-  build: function(glContext) {
-    var gl = glContext.gl;
+  build: function(glLayer) {
+    var gl = glLayer.gl;
     this.position = this.createVbo(gl, this.positionData);
     this.normal = this.createVbo(gl, this.normalData);
     this.uv = this.createVbo(gl, this.uvData);

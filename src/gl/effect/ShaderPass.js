@@ -26,15 +26,15 @@
       ).addChildTo(this.scene);
     },
 
-    render: function(glContext, beforeScreen) {
+    render: function(glLayer, beforeScreen) {
       if (!this.isBuilt && this.screen) {
-        this.screen.build(glContext);
+        this.screen.build(glLayer);
         this.isBuilt = true;
       }
 
       this.rect.material.texture = beforeScreen.texture;
-      glContext.attachScreen(this.screen);
-      glContext.render(this.scene, this.camera);
+      glLayer.attachScreen(this.screen);
+      glLayer.render(this.scene, this.camera);
       return this.screen;
     },
 

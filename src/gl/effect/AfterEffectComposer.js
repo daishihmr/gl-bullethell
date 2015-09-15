@@ -2,12 +2,12 @@
 
   phina.define("glb.AfterEffectComposer", {
 
-    glContext: null,
+    glLayer: null,
 
     passes: null,
 
-    init: function(glContext) {
-      this.glContext = glContext;
+    init: function(glLayer) {
+      this.glLayer = glLayer;
       this.firstPass = glb.FirstPass();
       this.endPass = glb.EndPass();
       this.passes = [];
@@ -19,21 +19,21 @@
 
     render: function(scene, camera, light) {
       var self = this;
-      var glContext = this.glContext;
+      var glLayer = this.glLayer;
 
       if (this.passes.length === 0 || this.passes.filter(isEnabled).length === 0) {
-        glContext.attachScreen(null);
-        glContext.render(scene, camera, light);
+        glLayer.attachScreen(null);
+        glLayer.render(scene, camera, light);
       } else {
         var endScreen = this.passes.reduce(function(beforeScreen, pass) {
           if (pass.enabled) {
-            return pass.render(glContext, beforeScreen, light);
+            return pass.render(glLayer, beforeScreen, light);
           } else {
             return beforeScreen;
           }
-        }, this.firstPass.render(glContext, scene, camera, light));
+        }, this.firstPass.render(glLayer, scene, camera, light));
 
-        this.endPass.render(glContext, endScreen, light);
+        this.endPass.render(glLayer, endScreen, light);
       }
 
     },

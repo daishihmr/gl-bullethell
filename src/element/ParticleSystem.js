@@ -23,17 +23,17 @@
       this.time = 0;
     },
 
-    build: function(glContext) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    build: function(glLayer) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
 
-      this.geometry.build(glContext);
-      this.material.build(glContext);
+      this.geometry.build(glLayer);
+      this.material.build(glLayer);
 
       if (ext !== null) {
-        this.material.setVao(glContext);
-        this.material.setAttributes(glContext, this.geometry);
-        this.material.unsetVao(glContext);
+        this.material.setVao(glLayer);
+        this.material.setAttributes(glLayer, this.geometry);
+        this.material.unsetVao(glLayer);
       }
     },
 
@@ -52,31 +52,31 @@
       });
     },
 
-    render: function(glContext, vpMatrix) {
-      var gl = glContext.gl;
-      var ext = glContext.ext;
+    render: function(glLayer, vpMatrix) {
+      var gl = glLayer.gl;
+      var ext = glLayer.ext;
 
       if (this.geometry.vboNeedUpdate) {
         this.geometry.rebind(gl);
         this.geometry.vboNeedUpdate = false;
       }
 
-      this.material.setProgram(glContext);
+      this.material.setProgram(glLayer);
 
       if (ext !== null) {
-        this.material.setVao(glContext);
+        this.material.setVao(glLayer);
       } else {
-        this.material.setAttributes(glContext, this.geometry);
+        this.material.setAttributes(glLayer, this.geometry);
       }
-      this.material.setTextures(glContext);
+      this.material.setTextures(glLayer);
 
-      this.material.setUniforms(glContext, this);
-      this.material.setUniform(glContext, "time", this.time);
-      this.material.setUniform(glContext, "vpMatrix", vpMatrix);
+      this.material.setUniforms(glLayer, this);
+      this.material.setUniform(glLayer, "time", this.time);
+      this.material.setUniform(glLayer, "vpMatrix", vpMatrix);
 
-      this.material.draw(glContext, this.geometry.COUNT);
+      this.material.draw(glLayer, this.geometry.COUNT);
 
-      if (ext !== null) this.material.unsetVao(glContext);
+      if (ext !== null) this.material.unsetVao(glLayer);
     },
 
     spawn: function(param) {

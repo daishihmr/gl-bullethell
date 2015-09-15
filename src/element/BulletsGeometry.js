@@ -41,8 +41,8 @@
       }));
     },
 
-    build: function(glContext) {
-      var gl = glContext.gl;
+    build: function(glLayer) {
+      var gl = glLayer.gl;
 
       this.initialPosition = this.createVbo(gl, this.initialPositionData, gl.DYNAMIC_DRAW);
       this.velocity = this.createVbo(gl, this.velocityData, gl.DYNAMIC_DRAW);

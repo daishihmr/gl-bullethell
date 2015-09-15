@@ -5,8 +5,8 @@ phina.define("glb.Object3D", {
     this.superInit();
   },
 
-  build: function(glContext) {},
+  build: function(glLayer) {},
 
-  render: function(glContext, vpMatrix) {},
+  render: function(glLayer, vpMatrix) {},
 
 });

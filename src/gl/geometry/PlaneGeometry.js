@@ -25,8 +25,8 @@ phina.define("glb.PlaneGeometry", {
     this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
   },
 
-  build: function(glContext) {
-    var gl = glContext.gl;
+  build: function(glLayer) {
+    var gl = glLayer.gl;
     this.position = this.createVbo(gl, this.positionData);
     this.uv = this.createVbo(gl, this.uvData);
     this.index = this.createIbo(gl, this.indexData);

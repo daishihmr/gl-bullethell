@@ -30,14 +30,14 @@
       return UNIFORM_META_DATA;
     },
 
-    setUniforms: function(glContext, uniformValues) {
-      this.superSetUniforms(glContext, uniformValues);
+    setUniforms: function(glLayer, uniformValues) {
+      this.superSetUniforms(glLayer, uniformValues);
 
-      this.setUniform(glContext, "vpMatrix", this.vpMatrix);
+      this.setUniform(glLayer, "vpMatrix", this.vpMatrix);
     },
 
-    draw: function(glContext, length) {
-      var gl = glContext.gl;
+    draw: function(glLayer, length) {
+      var gl = glLayer.gl;
       gl.drawArrays(gl.POINTS, 0, length);
     },
 
