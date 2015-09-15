@@ -99,6 +99,9 @@
       );
       geo.normalData = new Float32Array(
         vertices.map(function(v) {
+          var rotScale = mat3.fromMat4(mat3.create(), self.transform.array);
+          vec3.transformMat3(v.normal, v.normal, rotScale);
+          vec3.normalize(v.normal, v.normal);
           return v.normal;
         }).flatten()
       );
