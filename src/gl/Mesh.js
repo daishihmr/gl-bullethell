@@ -4,6 +4,7 @@
     superClass: "glb.Object3D",
 
     localMatrix: null,
+    worldMatrix: null,
     invMatrix: null,
     uvTranslate: null,
 
@@ -22,6 +23,7 @@
       this.superInit();
 
       this.localMatrix = glb.Matrix4();
+      this.worldMatrix = glb.Matrix4();
       this.invMatrix = glb.Matrix4();
       this.uvTranslate = glb.Vector2();
 
@@ -129,12 +131,12 @@
       var ext = glLayer.ext;
 
       this.updateMatrix();
-      
-      var worldMatrix = glb.Matrix4();
+
+      this.worldMatrix.identity();
       var p = this;
       while (p) {
         if (p.localMatrix) {
-          worldMatrix = glb.Matrix4.mul(p.localMatrix, worldMatrix);
+          this.worldMatrix.preMul(p.localMatrix);
         }
         p = p.parent;
       }
@@ -150,10 +152,9 @@
       this.material.setTextures(glLayer);
 
       this.material.setUniforms(glLayer, this);
-      this.material.setUniform(glLayer, "worldMatrix", worldMatrix);
       this.material.setUniform(glLayer, "vpMatrix", vpMatrix);
       if (this.material.uniforms.invMatrix) {
-        mat4.invert(this.invMatrix.array, glb.Matrix4.mul(vpMatrix, worldMatrix).array);
+        mat4.invert(this.invMatrix.array, glb.Matrix4.mul(vpMatrix, this.worldMatrix).array);
         this.material.setUniform(glLayer, "invMatrix", this.invMatrix);
       }
       if (light) {
