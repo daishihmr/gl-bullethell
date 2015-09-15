@@ -5,7 +5,7 @@
     init: function() {
       this.superInit();
       this.uniformMetaData = [{
-        name: "mMatrix",
+        name: "worldMatrix",
         type: "mat4",
       }, {
         name: "vpMatrix",

@@ -85,7 +85,7 @@
   }, ];
 
   var UNIFORM_META_DATA = [{
-    name: "mMatrix",
+    name: "worldMatrix",
     type: "mat4",
   }, {
     name: "vpMatrix",
@@ -108,7 +108,7 @@
     "attribute vec3 position;",
     "attribute vec2 uv;",
 
-    "uniform mat4 mMatrix;",
+    "uniform mat4 worldMatrix;",
     "uniform mat4 vpMatrix;",
     "uniform vec4 color;",
 
@@ -118,7 +118,7 @@
     "void main(void) {",
     "    vUv = uv;",
     "    vColor = color;",
-    "    gl_Position = vpMatrix * mMatrix * vec4(position, 1.0);",
+    "    gl_Position = vpMatrix * worldMatrix * vec4(position, 1.0);",
     "}",
   ].join("\n");
 

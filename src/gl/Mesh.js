@@ -3,7 +3,7 @@
   phina.define("glb.Mesh", {
     superClass: "glb.Object3D",
 
-    _mMatrix: null,
+    localMatrix: null,
     invMatrix: null,
     uvTranslate: null,
 
@@ -21,7 +21,7 @@
     init: function(geometry, material) {
       this.superInit();
 
-      this._mMatrix = glb.Matrix4();
+      this.localMatrix = glb.Matrix4();
       this.invMatrix = glb.Matrix4();
       this.uvTranslate = glb.Vector2();
 
@@ -119,7 +119,7 @@
     },
 
     updateMatrix: function() {
-      this._mMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
+      this.localMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
       this.needsUpdate = false;
       return this;
     },
@@ -130,11 +130,11 @@
 
       this.updateMatrix();
       
-      var mMatrix = glb.Matrix4();
+      var worldMatrix = glb.Matrix4();
       var p = this;
       while (p) {
-        if (p._mMatrix) {
-          mMatrix = glb.Matrix4.mul(p._mMatrix, mMatrix);
+        if (p.localMatrix) {
+          worldMatrix = glb.Matrix4.mul(p.localMatrix, worldMatrix);
         }
         p = p.parent;
       }
@@ -150,10 +150,10 @@
       this.material.setTextures(glLayer);
 
       this.material.setUniforms(glLayer, this);
-      this.material.setUniform(glLayer, "mMatrix", mMatrix);
+      this.material.setUniform(glLayer, "worldMatrix", worldMatrix);
       this.material.setUniform(glLayer, "vpMatrix", vpMatrix);
       if (this.material.uniforms.invMatrix) {
-        mat4.invert(this.invMatrix.array, glb.Matrix4.mul(vpMatrix, mMatrix).array);
+        mat4.invert(this.invMatrix.array, glb.Matrix4.mul(vpMatrix, worldMatrix).array);
         this.material.setUniform(glLayer, "invMatrix", this.invMatrix);
       }
       if (light) {
