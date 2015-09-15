@@ -158,6 +158,7 @@
         this.material.setUniform(glLayer, "invMatrix", this.invMatrix);
       }
       this.material.setUniforms(glLayer, this);
+      this.material.setUniform(glLayer, "vpMatrix", vpMatrix);
 
       if (light) {
         this.material.setUniform(glLayer, "lightDirection", light.lightDirection);
