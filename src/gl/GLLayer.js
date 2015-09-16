@@ -78,6 +78,10 @@
     render: function(camera, light) {
       var self = this;
       var gl = this.gl;
+      
+      if (camera.needsUpdate) {
+        camera.updateMatrix();
+      }
 
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       this.children.forEach(function(child) {

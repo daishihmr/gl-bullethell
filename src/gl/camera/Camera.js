@@ -8,6 +8,7 @@
     vMatrix: null,
     pMatrix: null,
     vpMatrix: null,
+    needsUpdate: false,
 
     init: function() {
       this.position = glb.Vector3(0, 0, 10);
@@ -65,6 +66,7 @@
 
     updateMatrix: function() {
       this.vMatrix.lookAt(this.position, this.target, this.up);
+      this.needsUpdate = false;
     },
 
     /**

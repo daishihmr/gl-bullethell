@@ -20,7 +20,7 @@ phina.namespace(function() {
 
     visible: true,
 
-    _needsUpdate: false,
+    needsUpdate: false,
 
     init: function(geometry, material) {
       this.superInit();
@@ -66,19 +66,25 @@ phina.namespace(function() {
 
     updateMatrix: function() {
       this.localMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
-
-      this.worldMatrix.copy(this.localMatrix);
-      var p = this.parent;
-      while (p) {
-        if (p.localMatrix) {
-          this.worldMatrix.preMul(p.localMatrix);
-        }
-        p = p.parent;
-      }
-
-      this._needsUpdate = false;
-
+      this.getWorldMatrix();
+      this.needsUpdate = false;
       return this;
+    },
+
+    getWorldMatrix: function() {
+      this.worldMatrix.copy(this.localMatrix);
+      if (this.parent && this.parent.getWorldMatrix) {
+        this.worldMatrix.preMul(this.parent.getWorldMatrix());
+      }
+      return this.worldMatrix;
+    },
+
+    getWorldRotation: function() {
+      var r = this.rotation.clone();
+      if (this.parent && this.parent.rotation) {
+        r.mul(this.parent.getWorldRotation());
+      }
+      return r;
     },
 
     render: function(glLayer, vpMatrix, light) {
@@ -190,17 +196,6 @@ phina.namespace(function() {
     },
 
     _accessor: {
-      needsUpdate: {
-        set: function(v) {
-          this._needsUpdate = true;
-          this.children.forEach(function(child) {
-            child.needsUpdate = true;
-          });
-        },
-        get: function() {
-          return this._needsUpdate;
-        }
-      },
       x: {
         set: function(v) {
           this.position.x = v;
