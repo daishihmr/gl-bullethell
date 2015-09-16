@@ -18,7 +18,7 @@
       this._texcoords = [];
       this._materialName = null;
     },
-    
+
     createMesh: function() {
       return glb.Mesh(
         this.geometry,
@@ -59,14 +59,26 @@
       var vertices = this._vertices;
 
       this._faces.forEach(function(f) {
-        var face = glb.Face();
-        [f.a, f.b, f.c].forEach(function(v, i) {
-          var vertex = vertices[v.index];
-          face
-            .setPositionIndex(i, vertex.x, vertex.y, vertex.z)
-            .setNormalIndex(i, v.normal.x, v.normal.y, v.normal.z)
-            .setUvIndex(i, v.texcoord.x, v.texcoord.y, v.texcoord.z);
-        });
+        var face;
+        if (f.d) {
+          face = glb.Face4();
+          [f.a, f.b, f.c, f.d].forEach(function(v, i) {
+            var vertex = vertices[v.index];
+            face
+              .setPositionIndex(i, vertex.x, vertex.y, vertex.z)
+              .setNormalIndex(i, v.normal.x, v.normal.y, v.normal.z)
+              .setUvIndex(i, v.texcoord.x, v.texcoord.y, v.texcoord.z);
+          });
+        } else {
+          face = glb.Face();
+          [f.a, f.b, f.c].forEach(function(v, i) {
+            var vertex = vertices[v.index];
+            face
+              .setPositionIndex(i, vertex.x, vertex.y, vertex.z)
+              .setNormalIndex(i, v.normal.x, v.normal.y, v.normal.z)
+              .setUvIndex(i, v.texcoord.x, v.texcoord.y, v.texcoord.z);
+          });
+        }
         builder.addFace(face);
       });
 
@@ -157,12 +169,22 @@
         }
       });
 
-      this._faces.push({
-        a: vs[0],
-        b: vs[1],
-        c: vs[2],
-        materialName: this._materialName,
-      });
+      if (vs.length == 4) {
+        this._faces.push({
+          a: vs[0],
+          b: vs[1],
+          c: vs[2],
+          d: vs[3],
+          materialName: this._materialName,
+        });
+      } else if (vs.length == 3) {
+        this._faces.push({
+          a: vs[0],
+          b: vs[1],
+          c: vs[2],
+          materialName: this._materialName,
+        });
+      }
     },
   });
 

@@ -12,6 +12,11 @@
       return this;
     },
 
+    copy: function(v) {
+      vec3.copy(this.array, v.array);
+      return this;
+    },
+
     clone: function() {
       return glb.Vector3(this.x, this.y, this.z);
     },

@@ -26,7 +26,7 @@
       gl.clearDepth(1);
       gl.enable(gl.DEPTH_TEST);
       gl.depthFunc(gl.LEQUAL);
-      gl.enable(gl.CULL_FACE);
+      // gl.enable(gl.CULL_FACE);
     },
 
     createTexture: function(img, index) {
