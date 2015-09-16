@@ -23,6 +23,11 @@
       quat.setAxes(this.array, view.array, right.array, up.array);
       return this;
     },
+    
+    copy: function(q) {
+      quat.copy(this.array, q.array);
+      return this;
+    },
 
     clone: function() {
       var result = glb.Quat();
