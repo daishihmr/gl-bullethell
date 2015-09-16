@@ -27,7 +27,7 @@
     },
 
     mul: function(v) {
-      vec3.scale(this.array, v);
+      vec3.scale(this.array, this.array, v);
       return this;
     },
 
@@ -86,34 +86,34 @@
         set: function(v) {
           this.array = v
         },
-      }
+      },
+      "x": {
+        set: function(v) {
+          this.array[0] = v;
+        },
+        get: function() {
+          return this.array[0];
+        },
+      },
+      "y": {
+        set: function(v) {
+          this.array[1] = v;
+        },
+        get: function() {
+          return this.array[1];
+        },
+      },
+      "z": {
+        set: function(v) {
+          this.array[2] = v;
+        },
+        get: function() {
+          return this.array[2];
+        },
+      },
     }
   });
 
-  glb.Vector3.prototype.accessor("x", {
-    set: function(v) {
-      this.array[0] = v;
-    },
-    get: function() {
-      return this.array[0];
-    },
-  });
-  glb.Vector3.prototype.accessor("y", {
-    set: function(v) {
-      this.array[1] = v;
-    },
-    get: function() {
-      return this.array[1];
-    },
-  });
-  glb.Vector3.prototype.accessor("z", {
-    set: function(v) {
-      this.array[2] = v;
-    },
-    get: function() {
-      return this.array[2];
-    },
-  });
 
   glb.Vector3.distance = function(a, b) {
     return vec3.distance(a.array, b.array);

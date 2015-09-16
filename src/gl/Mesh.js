@@ -1,4 +1,4 @@
-(function() {
+phina.namespace(function() {
 
   phina.define("glb.Mesh", {
     superClass: "glb.Object3D",
@@ -8,8 +8,11 @@
     invMatrix: null,
     uvTranslate: null,
 
+    /** @type {glb.Vector3} */
     position: null,
+    /** @type {glb.Quat} */
     rotation: null,
+    /** @type {glb.Vector3} */
     scale: null,
 
     geometry: null,
@@ -213,6 +216,22 @@
       return this;
     },
 
+    translateX: function(distance) {
+      vec3.set(tempV3, distance, 0, 0);
+      vec3.transformQuat(tempV3, tempV3, this.rotation.array);
+      return this.translate(tempV3[0], tempV3[1], tempV3[2]);
+    },
+    translateY: function(distance) {
+      vec3.set(tempV3, 0, distance, 0);
+      vec3.transformQuat(tempV3, tempV3, this.rotation.array);
+      return this.translate(tempV3[0], tempV3[1], tempV3[2]);
+    },
+    translateZ: function(distance) {
+      vec3.set(tempV3, 0, 0, distance);
+      vec3.transformQuat(tempV3, tempV3, this.rotation.array);
+      return this.translate(tempV3[0], tempV3[1], tempV3[2]);
+    },
+
     scale: function(x, y, z) {
       if (arguments.length === 1) {
         y = x;
@@ -241,4 +260,7 @@
       return this;
     },
   });
-})();
+
+  var tempV3 = vec3.create();
+
+});

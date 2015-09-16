@@ -1,12 +1,12 @@
-phina.define("glb.Object3D", {
-  superClass: "phina.app.Element",
+phina.namespace(function() {
 
-  init: function() {
-    this.superInit();
-  },
+  phina.define("glb.Object3D", {
+    superClass: "glb.Element",
 
-  build: function(glLayer) {},
+    init: function() {
+      this.superInit();
+    },
 
-  render: function(glLayer, vpMatrix) {},
+  });
 
 });
