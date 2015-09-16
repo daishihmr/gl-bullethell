@@ -1,7 +1,7 @@
 (function() {
 
   phina.define("glb.ParticleSystem", {
-    superClass: "glb.Object3D",
+    superClass: "glb.Element",
 
     geometry: null,
     material: null,

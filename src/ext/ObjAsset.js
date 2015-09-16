@@ -166,7 +166,7 @@
     },
   });
 
-  phina.asset.AssetLoader.assetLoadFunctions["wavefront.obj"] = function(src) {
+  phina.asset.AssetLoader.assetLoadFunctions["wavefront.obj"] = function(key, src) {
     if (typeof src == "string") {
       src = {
         url: src

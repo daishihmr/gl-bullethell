@@ -20,7 +20,7 @@ phina.namespace(function() {
 
     visible: true,
 
-    needsUpdate: false,
+    _needsUpdate: false,
 
     init: function(geometry, material) {
       this.superInit();
@@ -38,8 +38,6 @@ phina.namespace(function() {
       this.material = material;
 
       this.updateMatrix();
-
-      this._defineAccessors();
     },
 
     setGeometry: function(geometry) {
@@ -49,63 +47,6 @@ phina.namespace(function() {
     getMaterial: function(material) {
       this.material = material;
       return this;
-    },
-
-    _defineAccessors: function() {
-      this.accessor("x", {
-        set: function(v) {
-          this.position.x = v;
-          this.needsUpdate = true;
-        },
-        get: function() {
-          return this.position.x;
-        },
-      });
-      this.accessor("y", {
-        set: function(v) {
-          this.position.y = v;
-          this.needsUpdate = true;
-        },
-        get: function() {
-          return this.position.y;
-        },
-      });
-      this.accessor("z", {
-        set: function(v) {
-          this.position.z = v;
-          this.needsUpdate = true;
-        },
-        get: function() {
-          return this.position.z;
-        },
-      });
-      this.accessor("scaleX", {
-        set: function(v) {
-          this.scale.x = v;
-          this.needsUpdate = true;
-        },
-        get: function() {
-          return this.scale.x;
-        },
-      });
-      this.accessor("scaleY", {
-        set: function(v) {
-          this.scale.y = v;
-          this.needsUpdate = true;
-        },
-        get: function() {
-          return this.scale.y;
-        },
-      });
-      this.accessor("scaleZ", {
-        set: function(v) {
-          this.scale.z = v;
-          this.needsUpdate = true;
-        },
-        get: function() {
-          return this.scale.z;
-        },
-      });
     },
 
     build: function(glLayer) {
@@ -125,7 +66,18 @@ phina.namespace(function() {
 
     updateMatrix: function() {
       this.localMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
-      this.needsUpdate = false;
+
+      this.worldMatrix.copy(this.localMatrix);
+      var p = this.parent;
+      while (p) {
+        if (p.localMatrix) {
+          this.worldMatrix.preMul(p.localMatrix);
+        }
+        p = p.parent;
+      }
+
+      this._needsUpdate = false;
+
       return this;
     },
 
@@ -133,18 +85,7 @@ phina.namespace(function() {
       var gl = glLayer.gl;
       var ext = glLayer.ext;
 
-      this.updateMatrix();
-
-      // ワールド行列を計算
-      // TODO 計算回数を減らす
-      this.worldMatrix.identity();
-      var p = this;
-      while (p) {
-        if (p.localMatrix) {
-          this.worldMatrix.preMul(p.localMatrix);
-        }
-        p = p.parent;
-      }
+      if (this.needsUpdate) this.updateMatrix();
 
       this.material.setProgram(glLayer);
 
@@ -232,18 +173,6 @@ phina.namespace(function() {
       return this.translate(tempV3[0], tempV3[1], tempV3[2]);
     },
 
-    scale: function(x, y, z) {
-      if (arguments.length === 1) {
-        y = x;
-        z = x;
-      }
-      this.scale.x *= x;
-      this.scale.y *= y;
-      this.scale.z *= z;
-      this.needsUpdate = true;
-      return this;
-    },
-
     rotateX: function(rad) {
       this.rotation.rotateX(rad);
       this.needsUpdate = true;
@@ -259,6 +188,75 @@ phina.namespace(function() {
       this.needsUpdate = true;
       return this;
     },
+
+    _accessor: {
+      needsUpdate: {
+        set: function(v) {
+          this._needsUpdate = true;
+          this.children.forEach(function(child) {
+            child.needsUpdate = true;
+          });
+        },
+        get: function() {
+          return this._needsUpdate;
+        }
+      },
+      x: {
+        set: function(v) {
+          this.position.x = v;
+          this.needsUpdate = true;
+        },
+        get: function() {
+          return this.position.x;
+        },
+      },
+      y: {
+        set: function(v) {
+          this.position.y = v;
+          this.needsUpdate = true;
+        },
+        get: function() {
+          return this.position.y;
+        },
+      },
+      z: {
+        set: function(v) {
+          this.position.z = v;
+          this.needsUpdate = true;
+        },
+        get: function() {
+          return this.position.z;
+        },
+      },
+      scaleX: {
+        set: function(v) {
+          this.scale.x = v;
+          this.needsUpdate = true;
+        },
+        get: function() {
+          return this.scale.x;
+        },
+      },
+      scaleY: {
+        set: function(v) {
+          this.scale.y = v;
+          this.needsUpdate = true;
+        },
+        get: function() {
+          return this.scale.y;
+        },
+      },
+      scaleZ: {
+        set: function(v) {
+          this.scale.z = v;
+          this.needsUpdate = true;
+        },
+        get: function() {
+          return this.scale.z;
+        },
+      },
+    },
+
   });
 
   var tempV3 = vec3.create();

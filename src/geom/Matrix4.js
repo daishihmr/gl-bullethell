@@ -7,6 +7,11 @@
     init: function() {
       this.array = mat4.create();
     },
+    
+    copy: function(m) {
+      mat4.copy(this.array, m.array);
+      return this;
+    },
 
     clone: function() {
       var result = glb.Matrix4();

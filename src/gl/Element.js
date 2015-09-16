@@ -5,9 +5,9 @@ phina.namespace(function() {
 
     init: function() {
       this.superInit();
-    }
+    },
 
-      build: function(glLayer) {},
+    build: function(glLayer) {},
 
     render: function(glLayer, vpMatrix) {},
 

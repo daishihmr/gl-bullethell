@@ -1,7 +1,7 @@
 (function() {
 
   phina.define("glb.Bullets", {
-    superClass: "glb.Object3D",
+    superClass: "glb.Element",
 
     geometry: null,
     material: null,
