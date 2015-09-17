@@ -86,6 +86,10 @@
       mat3.normalFromMat4(this.array, m.array);
       return this;
     },
+    
+    getRotationZ: function() {
+      return Math.atan2(this.array[3], this.array[0]);
+    },
 
     _accessor: {
       "typedArray": {

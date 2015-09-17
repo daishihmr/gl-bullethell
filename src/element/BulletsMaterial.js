@@ -52,11 +52,19 @@
 
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.CULL_FACE);
+      gl.enable(gl.BLEND);
 
+      this.setUniform(glLayer, "aura", 0);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.drawArrays(gl.POINTS, 0, length);
+
+      this.setUniform(glLayer, "aura", 1);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
       gl.drawArrays(gl.POINTS, 0, length);
 
       gl.enable(gl.DEPTH_TEST);
       gl.enable(gl.CULL_FACE);
+      gl.disable(gl.BLEND);
     },
 
   });
@@ -84,6 +92,9 @@
   }, {
     name: "time",
     type: "float",
+  }, {
+    name: "aura",
+    type: "float",
   }, ];
 
   var VERTEX_SHADER_SOURCE = [
@@ -95,12 +106,14 @@
 
     "uniform mat4 vpMatrix;",
     "uniform float time;",
+    "uniform float aura;",
 
     "varying float vAge;",
     "varying float vActive;",
     "varying float vFrameIndex;",
     "varying float vAngle;",
     "varying mat3 vUvMat;",
+    "varying float vAura;",
 
     "mat3 translate(float x, float y) {",
     "    return mat3(",
@@ -122,6 +135,7 @@
 
     "void main(void) {",
     "    vActive = active;",
+    "    vAura = aura;",
     "    vFrameIndex = frameIndex;",
     "    if (active < 0.5) {",
     "        vAngle = 0.0;",
@@ -138,7 +152,7 @@
     "        vec2 pos = initialPosition + velocity * ((time - spawnTime) * 10000.0);",
     "        gl_Position = vpMatrix * vec4(pos, 0.0, 1.0);",
     "        float c = sin(vAge * 5500.0) * 4.0 - 2.0;",
-    "        gl_PointSize = ({0} + c) * {1};".format(BULLET_APPEALANCE.toFloatString(), GL_QUALITY.toFloatString()),
+    "        gl_PointSize = ({0} + c) * {1} * (1.0 + aura * 0.5);".format(BULLET_APPEALANCE.toFloatString(), GL_QUALITY.toFloatString()),
     "    }",
     "}",
   ].join("\n");
@@ -153,10 +167,11 @@
     "varying float vFrameIndex;",
     "varying float vAngle;",
     "varying mat3 vUvMat;",
+    "varying float vAura;",
 
     "void main(void) {",
     "    if (vActive < 0.5) discard;",
-    "    if (0.7 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
+    "    if (0.58 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
 
     "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
     "    vec3 ruv = vUvMat * buv;",
@@ -166,8 +181,14 @@
     "    vec4 light = vec4(0.0, c, 0.0, 0.0);",
 
     "    vec4 result = light + texture2D(texture, uv);",
-    "    if (result.a < 0.9) discard;",
-    "    gl_FragColor = result;",
+    "    if (vAura < 0.5) {",
+    "        if (result.a < 0.9) discard;",
+    "        gl_FragColor = result;",
+    "    } else {",
+    "        if (result.a < 0.9) discard;",
+    "        result.a *= 0.2;",
+    "        gl_FragColor = result;",
+    "    }",
     "}",
   ].join("\n");
 

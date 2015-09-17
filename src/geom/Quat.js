@@ -23,7 +23,7 @@
       quat.setAxes(this.array, view.array, right.array, up.array);
       return this;
     },
-    
+
     copy: function(q) {
       quat.copy(this.array, q.array);
       return this;
@@ -107,6 +107,12 @@
     fromMat3: function(m) {
       quat.fromMat3(this.array, m.array);
       return this;
+    },
+
+    toMat3: function() {
+      var m3 = glb.Matrix3();
+      mat3.fromQuat(m3.array, this.array);
+      return m3;
     },
 
     _accessor: {

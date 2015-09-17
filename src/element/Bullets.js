@@ -59,8 +59,8 @@
       var self = this;
       this.bullets = this.bullets.filter(function(b) {
         b.position.add(b.velocity);
-        if (b.position.x < (SCREEN_WIDTH + 128) * -0.5 || (SCREEN_WIDTH + 128) * 0.5 < b.position.x ||
-          b.position.y < (SCREEN_HEIGHT + 128) * -0.5 || (SCREEN_HEIGHT + 128) * 0.5 < b.position.y) {
+        if (b.position.x < (SCREEN_WIDTH + 128) * -0.6 || (SCREEN_WIDTH + 128) * 0.6 < b.position.x ||
+          b.position.y < (SCREEN_HEIGHT + 128) * -0.6 || (SCREEN_HEIGHT + 128) * 0.6 < b.position.y) {
           self.despawn(b.index);
           return false;
         } else {

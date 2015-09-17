@@ -3,18 +3,14 @@ phina.namespace(function() {
   phina.define("glb.AutoAim", {
     superClass: "phina.accessory.Accessory",
 
-    maxAngularVelocity: 0,
-
     aimTarget: null,
 
-    init: function(maxAngularVelocity) {
+    init: function() {
       this.superInit();
-
-      this.maxAngularVelocity = maxAngularVelocity || Infinity;
 
       var self = this;
       this.on("attached", function() {
-        this.target.lockOnTo = function(obj) {
+        this.target.lockOn = function(obj) {
           self.aimTarget = obj;
         };
       });
@@ -33,12 +29,17 @@ phina.namespace(function() {
         target.updateMatrix();
       }
 
+      var from = glb.Vector3.Y.clone().transformQuat(self.rotation);
       var to = target.position.clone();
       to = self.worldToLocal(to);
-      to = to.sub(self.position);
+      to = to.sub(self.position).normalize();
 
-      self.setRotationZ(Math.atan2(to.y, to.x) - 90 * Math.DEG_TO_RAD);
+      from.z = 0;
+      to.z = 0;
 
+      var q = glb.Quat().rotationTo(from, to);
+
+      self.rotation.mul(q);
       self.needsUpdate = true;
     },
 

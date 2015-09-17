@@ -22,11 +22,13 @@
       }
 
       var gl = this.gl;
-      gl.clearColor(0, 0, 0, 1);
+      gl.clearColor(0, 0, 0, 0);
       gl.clearDepth(1);
       gl.enable(gl.DEPTH_TEST);
       gl.depthFunc(gl.LEQUAL);
-      // gl.enable(gl.CULL_FACE);
+      gl.enable(gl.CULL_FACE);
+
+      this.setSize(GL_PIXEL_WIDTH, GL_PIXEL_HEIGHT);
     },
 
     createTexture: function(img, index) {
@@ -78,7 +80,7 @@
     render: function(camera, light) {
       var self = this;
       var gl = this.gl;
-      
+
       if (camera.needsUpdate) {
         camera.updateMatrix();
       }
@@ -98,7 +100,7 @@
       if (obj.render && obj.visible) {
         obj.render(this, vpMatrix, light);
       }
-      
+
       obj.children.forEach(function(child) {
         self.renderObj(child, vpMatrix, light);
       });

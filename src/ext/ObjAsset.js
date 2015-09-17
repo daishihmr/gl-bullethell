@@ -28,22 +28,38 @@
       );
     },
 
-    _load: function(resolve) {
+    _load: function(parentResolve) {
       var url = this.src.url;
+      var key = this.src.key;
       var self = this;
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          if ([200, 201, 0].indexOf(xhr.status) !== -1) {
-            self.parse(xhr.responseText);
-            self.geometry = self.buildGeometry();
-            self.materials = self.buildMaterials();
-            resolve(self);
+
+      var objLoadTask = phina.util.Flow(function(resolve) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if ([200, 201, 0].indexOf(xhr.status) !== -1) {
+              self.parse(xhr.responseText);
+              self.geometry = self.buildGeometry();
+              self.materials = self.buildMaterials();
+              resolve();
+            }
           }
-        }
-      };
-      xhr.send(null);
+        };
+        xhr.send(null);
+      });
+      
+      var imgLoadTask = phina.util.Flow(function(resolve) {
+        var imgUrl = url.replace(/\.obj/, ".png");
+        phina.asset.Texture().load(imgUrl).then(function(texture) {
+          phina.asset.AssetManager.set("image", key, texture);
+          resolve();
+        })
+      });
+      
+      phina.util.Flow.all([objLoadTask, imgLoadTask]).then(function() {
+        parentResolve(self);
+      });
     },
 
     parse: function(data) {
@@ -191,8 +207,11 @@
   phina.asset.AssetLoader.assetLoadFunctions["wavefront.obj"] = function(key, src) {
     if (typeof src == "string") {
       src = {
-        url: src
+        key: key,
+        url: src,
       };
+    } else {
+      src.key = key;
     }
     return glb.ObjAsset().load(src);
   };
