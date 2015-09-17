@@ -9,9 +9,9 @@ phina.namespace(function() {
 
     init: function(maxAngularVelocity) {
       this.superInit();
-      
+
       this.maxAngularVelocity = maxAngularVelocity || Infinity;
-      
+
       var self = this;
       this.on("attached", function() {
         this.target.lockOnTo = function(obj) {
@@ -33,21 +33,12 @@ phina.namespace(function() {
         target.updateMatrix();
       }
 
-      var from = glb.Vector3.Y; //.clone().transformQuat(self.rotation);
-      var to = glb.Vector3.sub(target.position, self.position).normalize();
-      var rot = glb.Quat().rotationTo(from, to);
-      
-      if (this.maxAngularVelocity != Infinity) {
-        var angle = self.rotation.dot(rot);
-        var t = Math.abs(this.maxAngularVelocity / angle);
-        if (t > 1) {
-          self.rotation.copy(rot);
-        } else {
-          self.rotation.slerp(rot, t);
-        }
-      } else {
-        self.rotation.copy(rot);
-      }
+      var to = target.position.clone();
+      to = self.worldToLocal(to);
+      to = to.sub(self.position);
+
+      self.setRotationZ(Math.atan2(to.y, to.x) - 90 * Math.DEG_TO_RAD);
+
       self.needsUpdate = true;
     },
 

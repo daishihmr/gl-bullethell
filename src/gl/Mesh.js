@@ -79,8 +79,12 @@ phina.namespace(function() {
     },
 
     worldToLocal: function(v3) {
-      var m = this.getWorldMatrix().invert().transpose();
-      return v3.clone().transformMat4(m);
+      if (this.parent.getWorldMatrix) {
+        var m = this.parent.getWorldMatrix().invert();
+        return v3.clone().transformMat4(m);
+      } else {
+        return v3.clone();
+      }
     },
 
     getWorldRotation: function() {
