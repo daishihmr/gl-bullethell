@@ -66,7 +66,6 @@ phina.namespace(function() {
 
     updateMatrix: function() {
       this.localMatrix.fromRotationTranslationScale(this.rotation, this.position, this.scale);
-      this.getWorldMatrix();
       this.needsUpdate = false;
       return this;
     },
@@ -77,6 +76,11 @@ phina.namespace(function() {
         this.worldMatrix.preMul(this.parent.getWorldMatrix());
       }
       return this.worldMatrix;
+    },
+
+    worldToLocal: function(v3) {
+      var m = this.getWorldMatrix().invert().transpose();
+      return v3.clone().transformMat4(m);
     },
 
     getWorldRotation: function() {
@@ -92,6 +96,7 @@ phina.namespace(function() {
       var ext = glLayer.ext;
 
       if (this.needsUpdate) this.updateMatrix();
+      this.getWorldMatrix();
 
       this.material.setProgram(glLayer);
 

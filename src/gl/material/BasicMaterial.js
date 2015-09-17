@@ -72,7 +72,7 @@
   });
 
   var DEFAULT_PARAM = {
-    color: phina.graphics.Color(255, 255, 255, 1),
+    color: phina.util.Color(255, 255, 255, 1),
     image: null,
   };
 
