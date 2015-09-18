@@ -82,7 +82,7 @@
       vec3.transformQuat(this.array, this.array, q.array);
       return this;
     },
-
+    
     _accessor: {
       "typedArray": {
         get: function() {
@@ -191,7 +191,7 @@
     vec3.transformQuat(v.array, v.array, m.array);
     return v;
   };
-
+  
   glb.Vector3.X = glb.Vector3(1, 0, 0);
   glb.Vector3.Y = glb.Vector3(0, 1, 0);
   glb.Vector3.Z = glb.Vector3(0, 0, 1);
