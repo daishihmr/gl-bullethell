@@ -71,16 +71,19 @@
 
     /**
      * 画面上の座標を得る
-     * @param  {{x:Number, y:Number}}} obj
+     * @param  {{x:Number, y:Number, z:Number}}} obj
      * @return {glb.Vector2}
      */
-    getScreenCoord: function(obj) {
-      var out = vec4.set(vec4.create(), obj.x, obj.y, obj.z, 1);
-      vec4.transformMat4(out, out, this.vpMatrix.array);
-      var x = out[0] / out[3];
-      var y = out[1] / out[3];
-      return glb.Vector2(x, y);
-    },
+    getScreenCoord: (function() {
+      var temp = null;
+      return function(obj) {
+        if (temp === null) temp = vec4.create();
+
+        vec4.set(temp, obj.x, obj.y, obj.z || 0, 1);
+        vec4.transformMat4(temp, temp, this.vpMatrix.array);
+        return glb.Vector2(temp[0] / temp[3], temp[1] / temp[3]);
+      };
+    })(),
 
   });
 

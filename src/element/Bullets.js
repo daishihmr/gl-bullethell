@@ -57,10 +57,12 @@
       this.time += 0.0001;
 
       var self = this;
+      var cam = app.currentScene.camera;
       this.bullets = this.bullets.filter(function(b) {
         b.position.add(b.velocity);
-        if (b.position.x < (SCREEN_WIDTH + 128) * -0.6 || (SCREEN_WIDTH + 128) * 0.6 < b.position.x ||
-          b.position.y < (SCREEN_HEIGHT + 128) * -0.6 || (SCREEN_HEIGHT + 128) * 0.6 < b.position.y) {
+
+        var coord = cam.getScreenCoord(b.position);
+        if (coord.x < -1.1 || 1.1 < coord.x || coord.y < -1.1 || 1.1 < coord.y) {
           self.despawn(b.index);
           return false;
         } else {

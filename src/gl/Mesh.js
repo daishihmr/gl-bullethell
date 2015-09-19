@@ -81,10 +81,15 @@ phina.namespace(function() {
     worldToLocal: function(v3) {
       if (this.parent.getWorldMatrix) {
         var m = this.parent.getWorldMatrix().invert();
-        return v3.clone().transformMat4(m);
+        return v3.transformMat4(m);
       } else {
-        return v3.clone();
+        return v3;
       }
+    },
+
+    localToWorld: function(v3) {
+      var m = this.getWorldMatrix();
+      return v3.transformMat4(m);
     },
 
     getWorldRotation: function() {
@@ -93,6 +98,13 @@ phina.namespace(function() {
         r.mul(this.parent.getWorldRotation());
       }
       return r;
+    },
+
+    getScreenCoord: function(camera, localPosition) {
+      localPosition = localPosition || glb.Vector3(0, 0, 0);
+      var position = localPosition.transformMat4(this.worldMatrix);
+      var c = camera.getScreenCoord(position);
+      return glb.Vector2((c + 1) * 0.5 * SCREEN_WIDTH, (c + 1) * 0.5 * SCREEN_HEIGHT);
     },
 
     render: function(glLayer, vpMatrix, light) {
