@@ -70,16 +70,16 @@
     },
 
     /**
-     * 画面上の座標を得る。原点は左下。
+     * 画面上の座標を得る
      * @param  {{x:Number, y:Number}}} obj
      * @return {glb.Vector2}
      */
     getScreenCoord: function(obj) {
-      var out = vec4.set(vec4.create(), obj.x, obj.y, 0, 1);
+      var out = vec4.set(vec4.create(), obj.x, obj.y, obj.z, 1);
       vec4.transformMat4(out, out, this.vpMatrix.array);
       var x = out[0] / out[3];
       var y = out[1] / out[3];
-      return glb.Vector2((x + 1) * 0.5, (y + 1) * 0.5);
+      return glb.Vector2(x, y);
     },
 
   });

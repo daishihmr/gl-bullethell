@@ -7,7 +7,7 @@
     init: function() {
       this.array = mat4.create();
     },
-    
+
     copy: function(m) {
       mat4.copy(this.array, m.array);
       return this;
@@ -152,6 +152,16 @@
       mat4.lookAt(this.array, eye.array, center.array, up.array);
       return this;
     },
+
+    viewport: function(w, h) {
+      this.identity();
+      this.array[0] = w * 0.5;
+      this.array[5] = h * -0.5;
+      this.array[12] = w * 0.5;
+      this.array[13] = h * 0.5;
+      return this;
+    },
+
     _accessor: {
       "typedArray": {
         get: function() {
