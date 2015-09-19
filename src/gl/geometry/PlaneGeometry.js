@@ -12,16 +12,18 @@ phina.define("glb.PlaneGeometry", {
     frameCountH = frameCountH || 1;
     frameCountV = frameCountV || 1;
 
-    this.positionData = new Float32Array([-size * 0.5, -size * 0.5, 0,
-      size * 0.5, -size * 0.5, 0, -size * 0.5, size * 0.5, 0,
-      size * 0.5, size * 0.5, 0,
-    ]);
+    this.positionData = new Float32Array([
+      [-size * 0.5, -size * 0.5, 0],
+      [size * 0.5, -size * 0.5, 0],
+      [-size * 0.5, size * 0.5, 0],
+      [size * 0.5, size * 0.5, 0],
+    ].flatten());
     this.uvData = new Float32Array([
-      0, 1 / frameCountV,
-      1 / frameCountH, 1 / frameCountV,
-      0, 0,
-      1 / frameCountH, 0,
-    ]);
+      [0, 0],
+      [1 / frameCountH, 0],
+      [0, 1 / frameCountV],
+      [1 / frameCountH, 1 / frameCountV],
+    ].flatten());
     this.indexData = new Int16Array([0, 1, 2, 1, 3, 2]);
   },
 

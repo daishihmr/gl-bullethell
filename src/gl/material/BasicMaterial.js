@@ -52,6 +52,7 @@
       if (this.texture) {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       } else {
         gl.bindTexture(gl.TEXTURE_2D, null);
       }

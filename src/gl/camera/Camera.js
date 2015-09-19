@@ -56,7 +56,6 @@
 
     setPosition: function(x, y, z) {
       this.position.set(x, y, z);
-      this.updateMatrix();
     },
 
     calcVpMatrix: function() {
