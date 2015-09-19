@@ -31,7 +31,7 @@
 
     clone: function() {
       var result = glb.Quat();
-      quat.clone(result.array, this.array);
+      result.array = quat.clone(this.array);
       return result;
     },
 
@@ -123,7 +123,39 @@
         set: function(v) {
           this.array = v
         },
-      }
+      },
+      "x": {
+        get: function() {
+          return this.array[0];
+        },
+        set: function(v) {
+          this.array[0] = v;
+        },
+      },
+      "y": {
+        get: function() {
+          return this.array[1];
+        },
+        set: function(v) {
+          this.array[1] = v;
+        },
+      },
+      "z": {
+        get: function() {
+          return this.array[2];
+        },
+        set: function(v) {
+          this.array[2] = v;
+        },
+      },
+      "w": {
+        get: function() {
+          return this.array[3];
+        },
+        set: function(v) {
+          this.array[3] = v;
+        },
+      },
     }
   });
 

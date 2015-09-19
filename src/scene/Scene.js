@@ -1,5 +1,5 @@
 (function() {
-  
+
   var deg = Math.DEG_TO_RAD;
 
   phina.define("glb.Scene", {
@@ -37,11 +37,11 @@
       this.glLayer = glb.GLLayer().addChildTo(this);
     },
 
-    projXY: function(camera, tp) {
-      var cp = camera.position;
-      var sub = glb.Vector3.sub(tp, cp);
-      sub.mul(cp.z / (cp.z - tp.z));
-      
+    projXY: function(position) {
+      var cp = this.camera.position;
+      var sub = glb.Vector3.sub(position, cp);
+      sub.mul(cp.z / (cp.z - position.z));
+
       return cp.clone().add(sub);
     },
 

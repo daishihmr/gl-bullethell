@@ -94,10 +94,14 @@ phina.namespace(function() {
 
     getWorldRotation: function() {
       var r = this.rotation.clone();
-      if (this.parent && this.parent.rotation) {
+      if (this.parent && this.parent.getWorldRotation) {
         r.mul(this.parent.getWorldRotation());
       }
       return r;
+    },
+
+    getDirection: function() {
+      return glb.Vector3(0, 1, 0).transformQuat(this.getWorldRotation());
     },
 
     getScreenCoord: function(camera, localPosition) {
