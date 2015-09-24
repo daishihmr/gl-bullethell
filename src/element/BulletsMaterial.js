@@ -136,7 +136,7 @@
     "void main(void) {",
     "    vActive = active;",
     "    vAura = aura;",
-    "    vFrameIndex = frameIndex;",
+    "    vFrameIndex = frameIndex + mod(floor((time - spawnTime) * 7500.0), 8.0);",
     "    if (active < 0.5) {",
     "        vAngle = 0.0;",
     "        gl_Position = vec4(0.0);",
@@ -171,7 +171,6 @@
 
     "void main(void) {",
     "    if (vActive < 0.5) discard;",
-    "    if (0.58 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
 
     "    vec3 buv = vec3(gl_PointCoord.x, gl_PointCoord.y, 1.0);",
     "    vec3 ruv = vUvMat * buv;",
@@ -182,12 +181,13 @@
 
     "    vec4 result = light + texture2D(texture, uv);",
     "    if (vAura < 0.5) {",
+    "        if (0.58 < length(gl_PointCoord - vec2(0.5, 0.5))) discard;",
     "        if (result.a < 0.9) discard;",
     "        gl_FragColor = result;",
     "    } else {",
-    "        if (result.a < 0.9) discard;",
-    "        result.a *= 0.2;",
-    "        gl_FragColor = result;",
+    "        float c = 0.4 - length(gl_PointCoord - vec2(0.5, 0.5));",
+    "        if (c < 0.0) discard;",
+    "        gl_FragColor = vec4(0.5, 0.5, 1.0, c * 0.8);",
     "    }",
     "}",
   ].join("\n");

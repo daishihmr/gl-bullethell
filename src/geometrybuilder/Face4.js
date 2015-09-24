@@ -242,6 +242,46 @@
       vec3.add(this.positionD, this.positionD, v);
     },
 
+    reverse: function() {
+      var temp = this.positionA;
+      this.positionA = this.positionD;
+      this.positionD = temp;
+      temp = this.positionB
+      this.positionB = this.positionC;
+      this.positionC = temp;
+
+      temp = this.uvA;
+      this.uvA = this.uvD;
+      this.uvD = temp;
+      temp = this.uvB;
+      this.uvB = this.uvC;
+      this.uvC = temp;
+
+      temp = this.vertexColorA;
+      this.vertexColorA = this.vertexColorD;
+      this.vertexColorD = temp;
+      temp = this.vertexColorB;
+      this.vertexColorB = this.vertexColorC;
+      this.vertexColorC = temp;
+
+      temp = this.normalA;
+      this.normalA = this.normalB;
+      this.normalD = temp;
+      temp = this.normalB;
+      this.normalB = this.normalC;
+      this.normalC = temp;
+
+      [this.normalA, this.normalB, this.normalC, this.normalD].forEach(function(n) {
+        if (n) {
+          n[0] *= -1;
+          n[1] *= -1;
+          n[2] *= -1;
+        }
+      });
+
+      return this;
+    },
+
   });
 
   var v3 = vec3.create;

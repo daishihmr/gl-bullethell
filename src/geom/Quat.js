@@ -115,6 +115,13 @@
       return m3;
     },
 
+    getAngle: function() {
+      return Math.acos(quat.dot(this.array, [0, 0, 0, 1])) * 2;
+    },
+    getAngleTo: function(quat) {
+      return Math.acos(quat.dot(this.array, quat.array)) * 2;
+    },
+
     _accessor: {
       "typedArray": {
         get: function() {
@@ -163,6 +170,10 @@
     var result = glb.Quat();
     quat.slerp(result.array, a.array, b.array, t);
     return result;
+  };
+
+  glb.Quat.getAngle = function(a, b)  {
+    return Math.acos(quat.dot(a.array, b.array)) * 2;
   };
 
 })();

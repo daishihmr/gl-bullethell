@@ -5,6 +5,9 @@ phina.namespace(function() {
 
     aimTarget: null,
 
+    /** 最大角速度 */
+    maxAngleVelocity: 12 * Math.DEG_TO_RAD,
+
     init: function() {
       this.superInit();
 
@@ -38,9 +41,16 @@ phina.namespace(function() {
       to.z = 0;
 
       var q = glb.Quat().rotationTo(from, to);
+      var angle = q.getAngle();
 
-      self.rotation.mul(q);
-      self.needsUpdate = true;
+      if (angle <= this.maxAngleVelocity) {
+        self.rotation.mul(q);
+        self.needsUpdate = true;
+      } else {
+        self.rotation.slerp(q, this.maxAngleVelocity / angle);
+        self.needsUpdate = true;
+      }
+
     },
 
   });

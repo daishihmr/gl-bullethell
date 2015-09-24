@@ -18,7 +18,7 @@
       });
       return this;
     },
-    
+
     setOriginToCenter: function() {
       var sum = vec3.create();
       var count = 0;
@@ -27,7 +27,7 @@
         if (f instanceof glb.Face) return f;
         else return f.split();
       }).flatten();
-      
+
       faces.forEach(function(face, fi) {
         if (face.positionA == null || face.positionB == null || face.positionC == null) {
           console.error(face);
@@ -39,16 +39,16 @@
           count += 1;
         });
       });
-      
+
       if (count == 0) return;
-      
+
       vec3.scale(sum, sum, 1 / count);
       vec3.scale(sum, sum, -1);
       this.faces.forEach(function(face) {
         face.translate(sum);
       });
     },
-    
+
     setTransform: function(transform) {
       this.transform = transform;
     },

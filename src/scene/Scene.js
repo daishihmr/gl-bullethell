@@ -13,24 +13,18 @@
         height: SCREEN_HEIGHT,
       });
 
-      var camera = this.camera = glb.PerspectiveCamera(45 * deg, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 10000);
-      var distance = SCREEN_HEIGHT * 0.5 / Math.tan(45 * 0.5 * deg);
-      camera.position.y = Math.sin(-0.2) * distance * 1.1;
-      camera.position.z = Math.cos(-0.2) * distance * 1.1;
+      var fov = 30 * deg;
+      var posAngleX = -30 * deg;
+      var camera = this.camera = glb.PerspectiveCamera(fov, SCREEN_WIDTH / SCREEN_HEIGHT, 100, 20000);
+      var distance = SCREEN_HEIGHT * 0.5 / Math.tan(fov * 0.5);
+      camera.position.y = Math.sin(posAngleX) * distance * 1.1;
+      camera.position.z = Math.cos(posAngleX) * distance * 1.1;
       camera.needsUpdate = true;
-      // var camera = this.camera = glb.OrthoCamera(
-      //     GL_PIXEL_WIDTH * -0.5,
-      //     GL_PIXEL_WIDTH * 0.5,
-      //     GL_PIXEL_HEIGHT * -0.5,
-      //     GL_PIXEL_HEIGHT * 0.5,
-      //     100,
-      //     10000
-      // );
 
       this.light = {
         lightDirection: glb.Vector3(0.0, -1.0, 1.0).normalize(),
-        lightColor: phina.util.Color(255, 255, 255, 1.0),
-        ambientColor: phina.util.Color(50, 50, 50, 1.0),
+        lightColor: phina.util.Color(250, 250, 250, 1.0),
+        ambientColor: phina.util.Color(20, 20, 20, 1.0),
       };
 
       this.backgroundLayer = phina.display.CanvasElement().addChildTo(this);
