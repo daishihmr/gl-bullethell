@@ -220,6 +220,24 @@ phina.namespace(function() {
       return this;
     },
 
+    raycast: function(ray) {
+      // localize
+      if (this.parent.getWorldMatrix) {
+        var m = this.parent.getWorldMatrix().invert();
+        return ray.transformMat4(m);
+      }
+
+      var result = null;
+      var exists = this.geometry.triangles.some(function(triangle) {
+        return result = ray.intersectTriangle(triangle.a, triangle.b, triangle.c);
+      });
+      if (exists) {
+        return result;
+      } else {
+        return null;
+      }
+    },
+
     _accessor: {
       x: {
         set: function(v) {

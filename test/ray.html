@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<script src="../../phina.js/build/phina.js"></script>
+<script src="../../bundle/lib/gl-matrix.js"></script>
+<script src="../build/gl-bullethell.js"></script>
+<script>
+var a = glb.Vector3(1, 1, 0);
+var b = glb.Vector3(5, 1, 0);
+var c = glb.Vector3(3, 4, -2);
+
+var ray = glb.Ray([3, 2, 1], [0, 0, -1]);
+
+console.log(ray.intersectTriangle(a, b, c));
+
+</script>
+</body>
+</html>

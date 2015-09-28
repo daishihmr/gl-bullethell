@@ -63,9 +63,8 @@
     },
 
     cross: function(v) {
-      var result = glb.Vector3();
-      vec3.create(result.array, this.array, v.array);
-      return result;
+      vec3.cross(this.array, this.array, v.array);
+      return this;
     },
 
     transformMat4: function(m) {
