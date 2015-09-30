@@ -7,6 +7,8 @@
 
     _image: null,
     texture: null,
+    
+    isBuild: false,
 
     init: function(param) {
       this.superInit();
@@ -23,10 +25,14 @@
     },
 
     build: function(glLayer) {
+      if (this.isBuild) return;
+
       this._createProgram(glLayer);
       if (this._image) {
         this.texture = glLayer.createTexture(this._image);
       }
+      
+      this.isBuild = true;
     },
 
     _getVertexShaderSource: function() {

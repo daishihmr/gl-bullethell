@@ -20,6 +20,11 @@
     clone: function() {
       return glb.Vector3(this.x, this.y, this.z);
     },
+    
+    lerp: function(v, t) {
+      vec3.lerp(this.array, this.array, v.array, t);
+      return this;
+    },
 
     add: function(v) {
       vec3.add(this.array, this.array, v.array);
@@ -141,6 +146,18 @@
 
   glb.Vector3.angle = function(a, b) {
     return vec3.angle(a.array, b.array);
+  };
+  
+  glb.Vector3.cross = function(a, b) {
+    var result = glb.Vector3();
+    vec3.cross(result.array, a.array, b.array);
+    return result;
+  };
+
+  glb.Vector3.lerp = function(a, b, t) {
+    var result = glb.Vector3();
+    vec3.lerp(result.array, a.array, b.array, t);
+    return result;
   };
 
   glb.Vector3.add = function(a, b) {

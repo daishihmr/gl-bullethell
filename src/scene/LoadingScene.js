@@ -10,7 +10,7 @@ phina.define("glb.LoadingScene", {
       .addChildTo(this)
       .on("enterframe", function(e) {
         var c = e.app.ticker.frame;
-        this.text = "loading" + ".".repeat(c % 5);
+        this.text = "downloading" + ".".repeat(c % 5);
       });
 
     var loader = phina.asset.AssetLoader();

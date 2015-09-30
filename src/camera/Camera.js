@@ -27,31 +27,31 @@
       return glb.Matrix4();
     },
 
-    _defineAccessors: function() {
-      this.accessor("x", {
+    _accessor: {
+      x: {
         set: function(v) {
           this.position.x = v;
         },
         get: function() {
           return this.position.x;
         },
-      });
-      this.accessor("y", {
+      },
+      y: {
         set: function(v) {
           this.position.y = v;
         },
         get: function() {
           return this.position.y;
         },
-      });
-      this.accessor("z", {
+      },
+      z: {
         set: function(v) {
           this.position.z = v;
         },
         get: function() {
           return this.position.z;
         },
-      });
+      },
     },
 
     setPosition: function(x, y, z) {

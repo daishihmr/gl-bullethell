@@ -21,11 +21,7 @@
       camera.position.z = Math.cos(posAngleX) * distance * 1.1;
       camera.needsUpdate = true;
 
-      this.light = {
-        lightDirection: glb.Vector3(0.0, -1.0, 1.0).normalize(),
-        lightColor: phina.util.Color(250, 250, 250, 1.0),
-        ambientColor: phina.util.Color(20, 20, 20, 1.0),
-      };
+      this.light = glb.Light().addChildTo(this);
 
       this.backgroundLayer = phina.display.CanvasElement().addChildTo(this);
       this.glLayer = glb.GLLayer().addChildTo(this);

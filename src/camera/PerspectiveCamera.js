@@ -18,8 +18,4 @@ phina.define("glb.PerspectiveCamera", {
     );
   },
 
-  to3D: function(x, y) {
-    // TODO
-  },
-
 });

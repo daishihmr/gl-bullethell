@@ -7,11 +7,17 @@
     vao: null,
     attributes: null,
     uniforms: null,
+    
+    isBuild: false,
 
     init: function() {},
 
     build: function(glLayer) {
+      if (this.isBuild) return;
+
       this._createProgram(glLayer);
+      
+      this.isBuild = true;
     },
 
     _getVertexShaderSource: function() {

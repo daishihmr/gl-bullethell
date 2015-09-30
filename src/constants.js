@@ -1,15 +1,15 @@
 var glb = {};
 
-var SCREEN_WIDTH = 640;
-var SCREEN_HEIGHT = 960;
+if (window.SCREEN_WIDTH === undefined) window.SCREEN_WIDTH = 640;
+if (window.SCREEN_HEIGHT === undefined) window.SCREEN_HEIGHT = 960;
 
-var BULLET_APPEALANCE = SCREEN_WIDTH * 0.1;
-var BULLET_SIZE = 15;
+if (window.GL_QUALITY === undefined) window.GL_QUALITY = 0.5;
 
-var GL_QUALITY = 0.5;
+if (window.GL_PIXEL_WIDTH === undefined) window.GL_PIXEL_WIDTH = ~~(window.SCREEN_WIDTH * window.GL_QUALITY);
+if (window.GL_PIXEL_HEIGHT === undefined) window.GL_PIXEL_HEIGHT = ~~(window.SCREEN_HEIGHT * window.GL_QUALITY);
 
-var GL_PIXEL_WIDTH = ~~(SCREEN_WIDTH * GL_QUALITY);
-var GL_PIXEL_HEIGHT = ~~(SCREEN_HEIGHT * GL_QUALITY);
+if (window.BULLET_APPEALANCE === undefined) window.BULLET_APPEALANCE = window.GL_PIXEL_WIDTH * 0.1;
+if (window.BULLET_SIZE === undefined) window.BULLET_SIZE = 15;
 
 var GL = WebGLRenderingContext;
 

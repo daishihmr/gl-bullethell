@@ -56,6 +56,8 @@ phina.define("glb.Geometry", {
    */
   index: null,
 
+  isBuild: false,
+
   init: function() {
     // this.positionData = new Float32Array();
     // this.normalData = new Float32Array();
@@ -67,6 +69,8 @@ phina.define("glb.Geometry", {
   },
 
   build: function(glLayer) {
+    if (this.isBuild) return;
+
     var gl = glLayer.gl;
     this.materialIndex = this.createVbo(gl, this.materialIndexData);
     this.position = this.createVbo(gl, this.positionData);
@@ -74,6 +78,8 @@ phina.define("glb.Geometry", {
     this.uv = this.createVbo(gl, this.uvData);
     this.vertexColor = this.createVbo(gl, this.vertexColorData);
     this.index = this.createIbo(gl, this.indexData);
+
+    this.isBuild = true;
   },
 
   createVbo: function(gl, data, usage) {
