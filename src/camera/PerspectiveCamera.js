@@ -9,13 +9,13 @@ phina.define("glb.PerspectiveCamera", {
     this.superInit();
   },
 
-  _setupProjectionMatrix: function() {
-    return glb.Matrix4().perspective(
+  _updateProjectionMatrix: function() {
+    this.pMatrix.perspective(
       this.fovy,
       this.aspect,
       this.near,
       this.far
     );
   },
-
+  
 });

@@ -11,8 +11,8 @@ phina.define("glb.OrthoCamera", {
     this.superInit();
   },
 
-  _setupProjectionMatrix: function() {
-    return glb.Matrix4().ortho(
+  _updateProjectionMatrix: function() {
+    this.pMatrix.ortho(
       this.left,
       this.right,
       this.bottom,
